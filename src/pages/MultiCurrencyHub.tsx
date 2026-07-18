@@ -617,7 +617,7 @@ export default function MultiCurrencyHub() {
           justifyContent: "space-between",
         }}
       >
-        <span>Multi-Currency Hub</span>
+        <span>Multi-currency index</span>
         {branchOptions.length > 0 && (
           <select
             value={branchFilter}

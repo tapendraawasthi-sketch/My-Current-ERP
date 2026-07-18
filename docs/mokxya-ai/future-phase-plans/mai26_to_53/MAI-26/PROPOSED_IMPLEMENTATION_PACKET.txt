@@ -1,0 +1,152 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-26 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+Phase: MAI-26 — TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+Scope: Narrow future implementation plan only
+Authorization: NOT granted until Section 9 handoff in
+  CURSOR_PARALLEL_WORKFLOW_MAI26_TO_53.txt is satisfied
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+WARNING:
+  Paths, interfaces, and contracts controlled by unfinished MAI-07..MAI-25 work
+  are provisional. Do not treat this packet as final design authority.
+
+----------------------------------------------------------------------
+1. PHASE OBJECTIVE (PROPOSED)
+----------------------------------------------------------------------
+
+Deliver a governed temporal resolution layer that:
+  1. Models valid time and system time for document versions and knowledge units.
+  2. Records amendment, supersession, repeal, and commencement relationships
+     without overwriting prior versions.
+  3. Stores structured rates/thresholds with explicit valid intervals and unit
+     provenance.
+  4. Builds a cross-reference graph between citation-ready units.
+  5. Resolves as-of queries for old and current provisions, failing closed on
+     conflicting or unknown effective dates.
+  6. Keeps historical versions accessible after supersession/repeal.
+
+----------------------------------------------------------------------
+2. PROPOSED WORKSTREAMS (POST-HANDOFF ONLY)
+----------------------------------------------------------------------
+
+WS-A — Domain model and schemas
+  Proposed (provisional) deliverables under future knowledge/legal runtime:
+    TemporalIntervalV1 (valid_from, valid_to, calendar_system)
+    SystemIntervalV1 (recorded_from, recorded_to / release_id)
+    LegalRelationshipV1 (type, from_unit_id, to_unit_id, evidence_unit_id,
+      confidence, reviewer_status)
+    StructuredRateThresholdV1 (instrument_id, metric_key, value, unit,
+      valid interval, source_unit_id, content_hash)
+    TemporalQueryV1 / TemporalResolutionV1
+  Persist relationship and rate tables per roadmap knowledge table sketch,
+  reconciled to MAI-24/25 final schema names (UNRESOLVED_PENDING_HANDOFF).
+
+WS-B — Ingestion linking service
+  After MAI-25 segmentation, add deterministic linker stage:
+    extract explicit cross-ref mentions where structured;
+    attach amendment/supersession edges only with reviewed or high-confidence
+      structured metadata;
+    never mutate raw artifacts or prior DocumentVersion rows;
+    queue ambiguous links for human review (MAI-24 review workflow).
+
+WS-C — Temporal resolver application service
+  Proposed service: temporal_resolver (roadmap legal_runtime/application)
+  Inputs: tenant/jurisdiction, instrument or unit hint, as_of_valid_time,
+    optional as_of_system_time / release_id
+  Outputs:
+    RESOLVED (one or ordered set with relationship trail)
+    CONFLICT (multiple incompatible versions; no silent pick)
+    UNKNOWN_EFFECTIVE (missing/partial dates; block definitive)
+    NOT_IN_FORCE / REPEALED (with successor pointers if known)
+  Must support:
+    FY/historical queries without destroying current release views
+    "what did repository believe on date X" via system time / release
+
+WS-D — Integration with existing retrieval pipeline (careful overlap)
+  Extend or replace TemporalFilterStage semantics so historical queries can
+  retrieve superseded versions when as_of demands it.
+  Authority/time filters must run before final evidence (feeds MAI-29/30).
+  Do not implement full hybrid retrieval (MAI-27–29) inside MAI-26.
+
+WS-E — Evaluation pack
+  Frozen temporal critical suite:
+    old vs current provision pairs
+    amendment chains
+    repeal + commencement
+    conflicting effective dates
+    unknown effective dates
+    rate/threshold as-of cases
+  Follow MAI-04 governance: lock candidate before holdout; no answer peeking.
+  Dataset IDs/hashes: UNRESOLVED_PENDING_HANDOFF (create only at implementation).
+
+WS-F — Documentation / ADR (authoritative only when phase executes)
+  Proposed future ADR topic: bitemporal legal time and fail-closed conflicts
+  Phase report + baseline summary after gates pass
+  NOTE: This planning lane must not write those authoritative docs now.
+
+----------------------------------------------------------------------
+3. OUT OF SCOPE FOR MAI-26
+----------------------------------------------------------------------
+
+  Lexical/vector indexes (MAI-27/28)
+  Hybrid fusion / EvidenceBundle completeness (MAI-29)
+  Claim-citation verifier and answer composer (MAI-30)
+  Legal question framer product UX (MAI-36)
+  Tax calculator numeric engines (MAI-38)
+  Any MAI-07 transliteration quality retune
+  Production_approved / linguist flags for unrelated phases
+  Migrating accounting journals or ERP posting logic
+
+----------------------------------------------------------------------
+4. PROPOSED FILE TOUCH SET (PROVISIONAL — REVALIDATE AFTER HANDOFF)
+----------------------------------------------------------------------
+
+Likely new (names provisional):
+  erp_bot/src/oip/modules/knowledge/ or knowledge_runtime/ domain temporal types
+  erp_bot/src/oip/modules/legal_runtime/ (if MAI-24/25 adopt roadmap split)
+  migrations for relationships + structured_rates_thresholds
+  erp_bot/tests/oip/.../test_mai26_temporal_*.py
+  evals/mai26/... (frozen suite)
+  docs/mokxya-ai/MAI_26_*.md (only during authorized implementation)
+
+Likely modify (high conflict risk with Codex until handoff — see conflict register):
+  erp_bot/src/oip/modules/knowledge/application/pipeline/stages.py
+  erp_bot/src/oip/modules/knowledge/domain/value_objects.py
+  erp_bot/src/oip/modules/knowledge/infrastructure/persistence/*
+  knowledge schemas produced by MAI-24/25 (must wait)
+
+Do not touch before handoff. Do not edit Codex-owned dirty paths now.
+
+----------------------------------------------------------------------
+5. IMPLEMENTATION SEQUENCE (AFTER HANDOFF)
+----------------------------------------------------------------------
+
+  1. Re-read handoff report, ledger, MAI-24/25 contracts; resolve all
+     UNRESOLVED_PENDING_HANDOFF items in DEPENDENCIES.txt.
+  2. Mark this packet NEEDS_REVALIDATION_AFTER_MAI25 → update in place under
+     this directory, then implement only MAI-26.
+  3. Schema + migration + domain types.
+  4. Resolver + linker (deterministic) + fail-closed conflict paths.
+  5. Pipeline integration for as_of historical vs current.
+  6. Focused tests + frozen temporal suite + regressions.
+  7. Evidence + ledger update only if gates genuinely pass.
+  8. Rollback plan: deactivate new relationship/rate release; restore prior
+     knowledge release pointer; keep historical rows immutable.
+
+----------------------------------------------------------------------
+6. SUCCESS CRITERIA (SUMMARY)
+----------------------------------------------------------------------
+
+See PROPOSED_ACCEPTANCE_GATES.txt. Minimum roadmap gate:
+  frozen old/current cases resolve correctly;
+  conflicting/unknown effective dates block definitive output;
+  historical versions remain accessible.
+
+END OF PROPOSED IMPLEMENTATION PACKET

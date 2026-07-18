@@ -30,14 +30,16 @@ const TAB_META: Record<TabKey, { label: string; vt: VoucherType }> = {
   "purchase-return": { label: "Purchase returns", vt: VoucherType.PURCHASE_RETURN },
 };
 
-const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const th =
+  "px-3 py-2.5 text-left text-[12px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide";
+const td =
+  "px-3 py-2.5 text-[12px] text-[var(--ds-text-default)] border-b border-[var(--ds-border-subtle)]";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-surface)] border border-[var(--ds-border-default)] text-[var(--ds-text-default)] text-[12px] font-medium rounded-md hover:bg-[var(--ds-surface-muted)] inline-flex items-center gap-1.5";
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
 const paymentBadge = (status: string) => {
   if (status === PaymentStatus.PAID) return "bg-green-100 text-green-700";
@@ -53,7 +55,7 @@ const statusBadge = (status: string) => {
 };
 
 const BillingInvoice: React.FC = () => {
-  const { invoices, accounts, parties, companySettings, currentPage, setCurrentPage } = useStore();
+  const { invoices, accounts, parties, companySettings, currentPage } = useStore();
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const pendingInvoiceOpen = useSutraAiStore((s) => s.pendingInvoiceOpen);
   const clearPendingInvoiceOpen = useSutraAiStore((s) => s.clearPendingInvoiceOpen);
@@ -101,9 +103,7 @@ const BillingInvoice: React.FC = () => {
   const handleTabChange = (k: TabKey) => {
     setTab(k);
     setSearchTerm("");
-    if (k === "sales") setCurrentPage("sales-invoice");
-    else if (k === "purchase") setCurrentPage("purchase-invoice");
-    else setCurrentPage(k);
+    // Stay on the current billing route — tab state is local (shell title covers the page).
   };
 
   const filtered = useMemo(() => {
@@ -203,34 +203,26 @@ const BillingInvoice: React.FC = () => {
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--ds-surface-muted)]">
       <div className="p-4 pb-0 shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Sales invoice</h1>
-            <p className="text-[12px] text-gray-500 mt-0.5">
-              Manage sales and purchase invoices and returns
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {branchOptions.length > 0 && (
-              <select
-                value={branchFilter}
-                onChange={(e) => setBranchFilter(e.target.value)}
-                className={`${inputCls}`}
-                aria-label="Branch"
-              >
-                <option value="all">All branches</option>
-                {branchOptions.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name || b.code || b.id}
-                  </option>
-                ))}
-              </select>
-            )}
-            <button type="button" className={btnPrimary} onClick={openNew}>
-              <Plus className="h-3.5 w-3.5" />
-              New {meta.label.replace(/s$/, "")}
-            </button>
-          </div>
+        <div className="flex items-center justify-end gap-2 mb-3">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className={inputCls}
+              aria-label="Branch filter — All branches for list view"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button type="button" className={btnPrimary} onClick={openNew}>
+            <Plus className="h-3.5 w-3.5" />
+            New {meta.label.replace(/s$/, "")}
+          </button>
         </div>
 
         <div className="flex gap-1 mb-3 bg-white border border-gray-200 rounded-md p-1 w-fit flex-wrap">

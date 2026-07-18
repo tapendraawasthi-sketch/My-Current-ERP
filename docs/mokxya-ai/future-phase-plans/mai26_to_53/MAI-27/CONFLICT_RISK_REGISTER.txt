@@ -1,0 +1,40 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-27 — CONFLICT RISK REGISTER
+======================================================================
+
+Phase: MAI-27 — LEXICAL INDEX
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+CR-27-01 knowledge_sqlite.search_lexical / LexicalSearchStage
+  Codex may change during MAI-24..26. Avoidance: no Cursor edits pre-handoff.
+
+CR-27-02 knowledgebase/scripts/build_retrieval_indexes.py and indexes/*.sqlite
+  Large derived artifacts; Codex/KB pipeline ownership. Avoidance: read-only;
+  never regenerate indexes into repo from this lane.
+
+CR-27-03 erp_bot/src/nlu/np_kb_adapter.py
+  Shared retrieval assist; dirty-tree risk. Avoidance: plan coexistence; do not
+  patch for legal Track E until handoff ownership clear.
+
+CR-27-04 Dual index confusion (ONLI FTS vs Track E legal FTS)
+  Strategy: explicit release-scoped index selection; never treat ONLI as
+  current-law authority.
+
+CR-27-05 Premature BM25 schema before KnowledgeUnit final fields
+  Strategy: UNRESOLVED_PENDING_HANDOFF; design against roadmap fields only in
+  planning docs.
+
+CR-27-06 Git dirty tree / accidental commit of sqlite indexes
+  Strategy: owned writes only under future-phase-plans/mai26_to_53/
+
+Conflicts detected on owned paths: none
+
+Handoff tasks: lock analyzer version; migrate OIP lexical to FTS; wire
+  MAI-26 filters; seal evals/mai27.
+
+END OF REGISTER

@@ -1,0 +1,25 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-33 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 preview matches domain engine on fixtures; N-02 warnings/rule
+  versions present; N-03 edit bumps version and new preview_hash.
+
+FAILURE: F-01 UI-computed total used as post authority → fail; F-02 confirm
+  with stale preview_hash → reject (feeds MAI-34); F-03 missing snapshot → block.
+
+SECURITY/TENANT: S-01 preview scoped to company.
+
+PRIVACY: P-01 preview traces redacted.
+
+ROLLBACK: R-01 disable new preview service; documented prior card path.
+
+REGRESSION: G-01 accounting engine tests green; G-02 GAP-P2-002 reduced with
+  evidence; G-03 Orbix presentation tests updated deliberately.
+
+END OF GATES

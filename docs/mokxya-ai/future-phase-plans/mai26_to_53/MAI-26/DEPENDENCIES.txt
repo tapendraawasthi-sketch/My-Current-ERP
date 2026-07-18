@@ -1,0 +1,132 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-26 — DEPENDENCIES
+======================================================================
+
+Phase: MAI-26 — TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+Legend:
+  UNRESOLVED_PENDING_HANDOFF = depends on unfinished MAI-07..MAI-25 Codex work
+    or on contracts that must be proven at MAI-25 handoff.
+  PASSED_FOUNDATION = ledger PASSED; still revalidate after handoff for drift.
+
+----------------------------------------------------------------------
+1. HARD PHASE DEPENDENCIES
+----------------------------------------------------------------------
+
+MAI-25 — EXTRACTION, OCR, AND STRUCTURAL SEGMENTATION
+  Status in ledger: NOT_STARTED
+  Dependency class: UNRESOLVED_PENDING_HANDOFF
+  Why required:
+    KnowledgeUnit hierarchy, citation anchors, page/provision offsets, and
+    immutable source artifact hashes are inputs to amendment and cross-ref links.
+  Open questions:
+    Final KnowledgeUnit identity and offset_unit contract?
+    How low-confidence OCR units are marked for temporal linking eligibility?
+
+MAI-24 — KNOWLEDGE SOURCE AND DOCUMENT GOVERNANCE
+  Status in ledger: NOT_STARTED
+  Dependency class: UNRESOLVED_PENDING_HANDOFF
+  Why required:
+    SourceRecord, KnowledgeDocument, DocumentVersion, release_id, reviewer_status,
+    supersedes/superseded_by at document-version level, content_hash integrity.
+  Open questions:
+    Canonical schema paths and version numbers after MAI-24?
+    Authority_class enum and production-release eligibility rules?
+
+MAI-07 through MAI-23 (transitive chain)
+  Status: MAI-07 NEEDS_CORRECTIVE_WORK; MAI-08..MAI-23 NOT_STARTED
+  Dependency class: UNRESOLVED_PENDING_HANDOFF
+  Why recorded:
+    Roadmap sequence forbids treating later Track E work as implementable while
+    Codex owns MAI-07..MAI-25. Language/runtime foundations affect query framing
+    that will later call temporal resolution (especially MAI-05/06/07 language
+    spans and MAI-09 date/number roles).
+
+----------------------------------------------------------------------
+2. PASSED FOUNDATIONS (REVALIDATE AFTER HANDOFF)
+----------------------------------------------------------------------
+
+MAI-00..MAI-06
+  Dependency class: PASSED_FOUNDATION
+  Relevant carry-forward:
+    MAI-02 canonical contracts / request shapes
+    MAI-03 trace/redaction (temporal resolution events must not leak sensitive text)
+    MAI-04 evaluation harness patterns for frozen temporal suites
+    MAI-05/06 span + normalization (offsets for unit text; do not invent floats)
+
+----------------------------------------------------------------------
+3. CONTRACT / SCHEMA DEPENDENCIES
+----------------------------------------------------------------------
+
+DocumentVersion.effective_start / effective_end / repeal status
+  Source expected from MAI-24 — UNRESOLVED_PENDING_HANDOFF
+
+KnowledgeUnit.cross_references / amendment_links / content_hash
+  Source expected from MAI-24/25 — UNRESOLVED_PENDING_HANDOFF
+
+Citation anchors (page/range/offset, hierarchy_path, provision_number)
+  Source expected from MAI-25 — UNRESOLVED_PENDING_HANDOFF
+
+KnowledgeRelease / release_id activation and rollback targets
+  Source expected from MAI-24 — UNRESOLVED_PENDING_HANDOFF
+
+Existing pre-phase EffectiveDateRange in oip knowledge module
+  Path: erp_bot/src/oip/modules/knowledge/domain/value_objects.py
+  Class: UNRESOLVED_PENDING_HANDOFF (may be replaced/extended by MAI-24 schemas;
+    must not be treated as final MAI-26 contract)
+
+----------------------------------------------------------------------
+4. RUNTIME / RESOURCE / RELEASE DEPENDENCIES
+----------------------------------------------------------------------
+
+Active MAI-07 transliteration runtime/resource packs
+  Class: UNRESOLVED_PENDING_HANDOFF
+  Note: MAI-26 is Track E knowledge; must not consume or retune MAI-07 packs.
+  Only avoid conflicting edits to shared ingress/language paths.
+
+Evaluation harness (MAI-04 lineage)
+  Class: PASSED_FOUNDATION + UNRESOLVED_PENDING_HANDOFF for any MAI-24+ eval layout
+  Frozen temporal cases for MAI-26 must be new sealed packs after handoff;
+  do not invent dataset hashes now.
+
+----------------------------------------------------------------------
+5. UNRESOLVED QUESTIONS (MUST RESOLVE AT HANDOFF)
+----------------------------------------------------------------------
+
+UQ-26-01: Final table/module names — roadmap knowledge_* / legal_* vs existing
+  oip_knowledge_* SQLite schema?
+UQ-26-02: Calendar system for Nepal FY / BS-AD as_of queries — owned by MAI-09
+  vs MAI-26 resolver?
+UQ-26-03: Structured rates/thresholds: separate store vs KnowledgeUnit subtype?
+UQ-26-04: System-time definition — KnowledgeRelease.activation_time vs
+  DocumentVersion.acquired_at vs ingestion job time?
+UQ-26-05: Conflict policy UX payload shape for MAI-30 grounded answers?
+UQ-26-06: Whether TemporalFilterStage behavior (active-only) survives MAI-26
+  historical query requirements?
+UQ-26-07: Graph storage — SQLite edges table vs separate graph DB for
+  cross-references?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+----------------------------------------------------------------------
+6. DEPENDENCY SUMMARY FOR INDEX
+----------------------------------------------------------------------
+
+Blocking for implementation authorization:
+  MAI-25 PASSED + MAI_25_TO_MAI_26_HANDOFF_REPORT ACCEPTED + ledger next=MAI-26
+
+Blocking for grounded plan revalidation:
+  MAI-24 schemas locked
+  MAI-25 unit/anchor contracts locked
+  Codex ownership release of knowledge/legal paths listed in handoff
+
+Non-blocking for continued planning of MAI-27+:
+  Planning may proceed with UNRESOLVED_PENDING_HANDOFF markers; no implementation.
+
+END OF DEPENDENCIES

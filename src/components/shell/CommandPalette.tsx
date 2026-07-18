@@ -21,6 +21,8 @@ import { filterNavForRole, canNavigateToPage } from "./shellNavVisibility";
 export interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
+  /** When set, page list is scoped to this SHELL_NAV group id (Phase D). */
+  moduleId?: string;
 }
 
 type PaletteRow =
@@ -35,7 +37,7 @@ type PaletteRow =
     }
   | { kind: "result"; id: string; label: string; meta: string; run: () => void; icon: React.ReactNode };
 
-const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
+const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, moduleId }) => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const { setCurrentPage, currentUser } = useStore();
@@ -158,13 +160,18 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
       },
     ];
 
-    const pageRows: PaletteRow[] = filterNavForRole(role)
+    const navGroups = filterNavForRole(role).filter((g) =>
+      moduleId ? g.id === moduleId : true,
+    );
+
+    const pageRows: PaletteRow[] = navGroups
       .flatMap((g) =>
-        g.items.length
+        (g.items.length
           ? g.items
           : g.page
             ? [{ id: g.id, label: g.label, page: g.page, icon: g.icon, orbix: g.orbix }]
-            : [],
+            : []
+        ).map((i) => ({ ...i, moduleLabel: g.label })),
       )
       .filter((i) => i.page !== "orbix")
       .map((i) => {
@@ -173,19 +180,31 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
           kind: "command" as const,
           id: `nav-${i.id}`,
           label: i.label,
-          category: "Pages",
+          category: moduleId ? i.moduleLabel || "Pages" : "Pages",
           icon: <Icon className="h-4 w-4" />,
           run: go(i.page),
         };
       });
 
-    const merged = [...rows, ...pageRows];
+    // Module-scoped open: show that module's pages first; skip global Actions noise.
+    const merged = moduleId ? pageRows : [...rows, ...pageRows];
     const q = query.trim().toLowerCase();
-    if (!q) return merged.slice(0, 24);
+    if (!q) return merged.slice(0, moduleId ? 48 : 24);
     return merged.filter((r) => r.label.toLowerCase().includes(q));
-  }, [maximizeOrbix, onClose, openOrbix, query, role, setCurrentPage, setThemePreference, theme]);
+  }, [
+    maximizeOrbix,
+    moduleId,
+    onClose,
+    openOrbix,
+    query,
+    role,
+    setCurrentPage,
+    setThemePreference,
+    theme,
+  ]);
 
   const searchRows = useMemo<PaletteRow[]>(() => {
+    if (moduleId) return [];
     if (query.trim().length < 2) return [];
     const iconFor = (cat: string) => {
       if (cat === "parties") return <Users className="h-4 w-4" />;
@@ -251,7 +270,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
       });
     });
     return out;
-  }, [onClose, query, results, role, setCurrentPage]);
+  }, [moduleId, onClose, query, results, role, setCurrentPage]);
 
   const rows = useMemo(() => {
     const seen = new Set<string>();
@@ -328,10 +347,15 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search pages, actions, parties, accounts, items…"
+            placeholder={
+              moduleId
+                ? "Search menus in this module…"
+                : "Search pages, actions, parties, accounts, items…"
+            }
             className="ds-focus-ring h-10 w-full bg-transparent text-[14px] text-[var(--ds-text-default)] outline-none"
             aria-label="Command search"
             aria-controls="command-palette-results"
+            data-palette-module={moduleId || "all"}
           />
           <span className="sr-only" aria-live="polite">
             {rows.length} results

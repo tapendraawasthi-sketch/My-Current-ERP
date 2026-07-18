@@ -1,0 +1,22 @@
+{
+  "blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+  "packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c",
+  "role_packages": {
+    "ACCOUNTING_DOMAIN": {
+      "batch_manifest_sha256": "6b8958a3df13e15381a78da5ac6b3756bf5fa548ae299eab69013e56987390ed",
+      "zip_sha256": "efd37a5d4864a1b57271ddeb65d5710c76518820795d77b03fc3cd6dc93df0cd"
+    },
+    "NEPALI_FLUENT_A": {
+      "batch_manifest_sha256": "08dc22028be01074e509ef5787f7c24bf367d794d275d2f854332a22a90ef485",
+      "zip_sha256": "07fd139f5d70b177aa02e268d1b8b9a408849f2df6ebac56e62204addb2e983e"
+    },
+    "PRODUCT_POLICY": {
+      "batch_manifest_sha256": "6ced8c9eb7a8dbf6b60ba3952733c80131f232d1572bf182f84117af3a7c8cf2",
+      "zip_sha256": "97c13555b0bd19bdc06c279e50d33b1253eb929166c6854dfbcf0b178cb28555"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "batch_manifest_sha256": "ae51b2530d0e79cfbd9335eb62a7bd56fcebb232c3e60770c63124ecdbf7e708",
+      "zip_sha256": "1ffe85e818b901ea250ac36dc079d752f2d0d055c0df5f1a184bdc60719e625d"
+    }
+  }
+}

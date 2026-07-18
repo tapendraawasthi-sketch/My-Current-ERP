@@ -796,7 +796,7 @@ export async function buildHomeViewModel(input: HomeAdapterInput): Promise<HomeV
     } catch (err) {
       partialErrors.push(`${id}: ${err instanceof Error ? err.message : "failed"}`);
     }
-    if (metrics.length >= 6) break;
+    if (metrics.length >= 4) break;
   }
 
   let attention = buildAttention(input, sync, freshness, currency);
@@ -809,12 +809,15 @@ export async function buildHomeViewModel(input: HomeAdapterInput): Promise<HomeV
     if (a.permission === "partyMaster") return canViewScreen(profile, "partyMaster", isAdmin);
     return true;
   });
+  // Home Today: first viewport attention cap (full list still built above; UI may show more in More)
+  attention = attention.slice(0, 5);
 
-  // Auditor: no mutation quick actions beyond ask orbix / views
-  const actions = selectQuickActions(workspace.all, profile, isAdmin, { limit: 6 }).filter((a) => {
+  // Auditor: no mutation quick actions. Ask Orbix lives on PageHeader — omit from Do next.
+  const actions = selectQuickActions(workspace.all, profile, isAdmin, { limit: 5 }).filter((a) => {
+    if (a.orbix) return false;
     if (workspace.primary === "auditor" && a.requireCreate) return false;
     return true;
-  });
+  }).slice(0, 4);
 
   const charts: DashboardChartModel[] = [];
   if (

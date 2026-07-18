@@ -1,0 +1,17 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-35 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-35-01 eventSyncQueue / dual sync paths — high overlap with product sync work
+CR-35-02 Orbix sync badges UI — dirty frontend files; no Cursor edits now
+CR-35-03 Reversal accidentally implemented as delete/edit of posted rows —
+  forbidden by gate
+
+Conflicts on owned paths: none
+
+END OF REGISTER

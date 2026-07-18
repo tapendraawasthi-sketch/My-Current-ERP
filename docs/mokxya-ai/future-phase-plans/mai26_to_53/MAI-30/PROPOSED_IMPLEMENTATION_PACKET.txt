@@ -1,0 +1,27 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-30 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Natural answers whose material claims are supported by EvidenceBundle
+  units; zero fabricated citations on critical suite.
+
+WS-A AnswerPlan + claim graph types (claim_id, text span, required unit_ids)
+WS-B Composer using versioned prompts (MAI-23) over EvidenceBundle only
+WS-C Citation verifier: each material claim entailed by cited unit text;
+  reject unsupported/fabricated cites
+WS-D Conflict/no-answer response templates; disclose MAI-26 CONFLICT/UNKNOWN
+WS-E as-of / effective-date rendering on every legal/tax claim
+WS-F Block unreviewed/unreleased material from "approved truth" presentation
+
+OUT OF SCOPE: index/fusion implementation; accounting posting; MAI-36 UX framer
+  (may share types later)
+
+SUCCESS: Fabricated citation acceptance = 0 on critical suite; precision target;
+  conflicts disclosed; unreviewed not approved-truth.
+
+END OF PACKET

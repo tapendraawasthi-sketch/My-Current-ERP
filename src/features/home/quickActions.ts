@@ -175,7 +175,7 @@ export function selectQuickActions(
     if (seen.has(action.id)) continue;
     seen.add(action.id);
     out.push(action);
-    if (out.length >= (opts?.limit ?? 6)) break;
+    if (out.length >= (opts?.limit ?? 4)) break;
   }
   return out;
 }

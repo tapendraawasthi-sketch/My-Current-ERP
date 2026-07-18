@@ -1,0 +1,23 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-35 — DISCOVERY
+======================================================================
+
+Phase: MAI-35 — OFFLINE, SYNC, CONFLICT, AND REVERSAL UX
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+ROADMAP: state mapping; queued/online-only policy; conflict diff/regeneration;
+  receipt/sync rendering; reversal/correction links; two-device E2E.
+Gate: no queued item mislabeled synced; material conflict requires
+  reconfirmation; retry idempotent; posted history not silently edited.
+
+LEDGER: NOT_STARTED; deps MAI-34; evidence "eventSyncQueue + dual sync remains"
+
+AUTHORITY: eventSyncQueue present; dual sync risk; posted history must remain
+  immutable except governed reversal flows.
+
+END OF DISCOVERY

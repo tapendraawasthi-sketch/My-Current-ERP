@@ -1,0 +1,50 @@
+{
+  "note": "Secondary occurrence counts must never be reported as unique Tier-1 population counts.",
+  "phase": "MAI-07R3M-CLOSURE-TIER1-SET-RECONCILIATION",
+  "reasons": [
+    {
+      "counting_unit": {
+        "overlap_count": "all secondary rows are overlaps by definition",
+        "primary_reason_case_count": 0,
+        "secondary_reason_occurrence_count": "distinct cases with this secondary reason",
+        "union_case_count": "|T|",
+        "unique_case_count": "same as secondary for this table"
+      },
+      "overlap_count": 3,
+      "primary_reason_case_count": 0,
+      "reason_code": "FALSE_FORCED_DEVANAGARI_TOP1",
+      "secondary_case_ids": [
+        "V3SRC-acc-71d32eb0ce59",
+        "V3SRC-rom-0b290042a4a5",
+        "V3SRC-rom-250208cca70e"
+      ],
+      "secondary_reason_occurrence_count": 3,
+      "union_case_count": 8,
+      "unique_case_count": 3
+    },
+    {
+      "counting_unit": {
+        "overlap_count": "all secondary rows are overlaps by definition",
+        "primary_reason_case_count": 0,
+        "secondary_reason_occurrence_count": "distinct cases with this secondary reason",
+        "union_case_count": "|T|",
+        "unique_case_count": "same as secondary for this table"
+      },
+      "overlap_count": 5,
+      "primary_reason_case_count": 0,
+      "reason_code": "IDENTITY_NOT_TOP1",
+      "secondary_case_ids": [
+        "V3SRC-eng-255b77066823",
+        "V3SRC-eng-629c6c8ce9c3",
+        "V3SRC-eng-64452c05715a",
+        "V3SRC-eng-c0b2bb23040a",
+        "V3SRC-eng-f8b0028f66a2"
+      ],
+      "secondary_reason_occurrence_count": 5,
+      "union_case_count": 8,
+      "unique_case_count": 5
+    }
+  ],
+  "schema_version": "mai07_r3m_tier1_closure_v1",
+  "table_kind": "SECONDARY_OCCURRENCE_ONLY"
+}

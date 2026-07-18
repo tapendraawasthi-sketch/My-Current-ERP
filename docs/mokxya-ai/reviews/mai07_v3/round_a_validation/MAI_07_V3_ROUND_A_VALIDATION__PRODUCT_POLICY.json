@@ -1,0 +1,26 @@
+{
+  "corrections": [
+    "Place completed workbook `MokXya_MAI07_V3__product_policy.xlsx` into `docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/`.",
+    "Do not submit the blank packet template from reviewers/ without completing Round A.",
+    "Complete REVIEWER_DECLARATION (signed) and all Round A disposition+confidence cells."
+  ],
+  "declaration_ok": false,
+  "duplicate_ids": [],
+  "errors": [
+    "NO_RETURNED_WORKBOOK_IN_INBOX"
+  ],
+  "formula_injection_hits": 0,
+  "hidden_mapping_exposure": false,
+  "invalid_enums": [],
+  "missing_ids_sample": [],
+  "ok": false,
+  "path": null,
+  "product_counted_as_linguist": false,
+  "professional_qualification_ok": false,
+  "role_id": "PRODUCT_POLICY",
+  "rows_completed": 0,
+  "rows_expected": 1111,
+  "rows_missing_disposition": 1111,
+  "satisfies_linguist_approval": false,
+  "unknown_ids": []
+}

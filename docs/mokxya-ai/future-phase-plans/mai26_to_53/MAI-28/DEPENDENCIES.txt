@@ -1,0 +1,26 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-28 — DEPENDENCIES
+======================================================================
+
+MAI-27 lexical index + manifests — UNRESOLVED_PENDING_HANDOFF
+MAI-26 temporal filters — UNRESOLVED_PENDING_HANDOFF
+MAI-24/25 unit+release schemas — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-23 — UNRESOLVED_PENDING_HANDOFF (Codex lane)
+MAI-00..MAI-06 — PASSED_FOUNDATION (revalidate)
+
+GAP-P2-001 Chroma/Ollama vs production — must be addressed in design
+  (provider-independent retrieval for prod)
+
+UQ-28-01: Embedding model family (local vs API) allowed in production Render?
+UQ-28-02: Vector store (sqlite/chroma/other) under KnowledgeRelease?
+UQ-28-03: Whether HashEmbeddingProviderAdapter remains as test-only stub?
+UQ-28-04: Multilingual model license terms and data residency?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

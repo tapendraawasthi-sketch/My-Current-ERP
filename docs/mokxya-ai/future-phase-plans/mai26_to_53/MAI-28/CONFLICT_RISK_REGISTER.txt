@@ -1,0 +1,25 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-28 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-28-01 embedding_provider_adapter.py / HashEmbeddingProviderAdapter
+  Active OIP code; Codex may touch via knowledge work. No Cursor edits now.
+CR-28-02 knowledgebase semantic chroma / Ollama scripts
+  Optional local path; prod mismatch GAP-P2-001. Do not run generators that
+  write outside owned planning dir.
+CR-28-03 Calling hash similarity "semantic" in product UX
+  Strategy: rename/quarantine stub; MAI-28 gate forbids pseudo-embed.
+CR-28-04 Provider/API secrets in repo
+  Strategy: config ports only; never commit keys.
+CR-28-05 Overlap with MAI-22 provider port
+  Strategy: embeddings may reuse provider runtime later; do not invent
+  conflicting cascade before MAI-22 lands — UNRESOLVED_PENDING_HANDOFF.
+
+Conflicts on owned paths: none
+
+END OF REGISTER

@@ -1,0 +1,21 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-33 — DEPENDENCIES
+======================================================================
+
+MAI-32 DraftAggregate — UNRESOLVED_PENDING_HANDOFF
+MAI-31 domain ports — UNRESOLVED_PENDING_HANDOFF
+MAI-11 language/register for cards — UNRESOLVED_PENDING_HANDOFF
+GAP-P2-002 UI totals — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-25 — UNRESOLVED_PENDING_HANDOFF
+
+UQ-33-01: Preview computed in Dexie engine vs server preview service?
+UQ-33-02: Snapshot contents required for MAI-34 revalidation?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

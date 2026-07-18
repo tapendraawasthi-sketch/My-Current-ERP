@@ -1,0 +1,29 @@
+﻿STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-44 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE:
+  Prove isolation, authorization, confirmation, prompt/tool, document safety.
+
+PROPOSED SCOPE (POST-HANDOFF ONLY):
+  Threat model; adversarial suite; dependency/container/secret scans; remediation register; pen review.
+
+CONSTRAINTS:
+  Implementation_authorized remains false until MAI-25 handoff gate satisfied
+  and sequential dependencies through MAI-43 have passed (or handoff proves otherwise).
+  Do not invent interfaces that conflict with unfinished MAI-07..MAI-25 work.
+  Do not set QUALITY_GATES_PASSED / LINGUIST_APPROVED / PRODUCTION_APPROVED here.
+
+OUT OF SCOPE:
+  Any parallel implementation of other MAI IDs in the same change.
+  Modifications outside governed phase ownership after handoff.
+
+SUCCESS (ROADMAP GATE SUMMARY):
+  Zero critical isolation/auth findings; confirmation attacks blocked; injection cannot broaden capability; residual risks owner-accepted.
+
+END OF PACKET

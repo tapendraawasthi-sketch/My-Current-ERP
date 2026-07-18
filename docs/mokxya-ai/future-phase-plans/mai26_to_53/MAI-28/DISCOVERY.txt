@@ -1,0 +1,34 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-28 — DISCOVERY
+======================================================================
+
+Phase: MAI-28 — MULTILINGUAL VECTOR INDEX
+Discovery date: 2026-07-18
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+ROADMAP: Real embeddings for cross-lingual/paraphrase retrieval; embedding port/
+  model benchmark; batch/index pipeline; model/release manifest; Romanized/
+  Devanagari/English eval; latency. Gate: improve over lexical-only; NO SHA/hash
+  pseudo-embedding; licensing recorded; index/source release compatibility.
+
+LEDGER: NOT_STARTED; deps MAI-27; evidence "optional semantic chroma — partial"
+
+REUSABLE / CURRENT STATE:
+  erp_bot/.../embedding_provider_adapter.py — HashEmbeddingProviderAdapter /
+    hash_embed SHA-256 pseudo-vectors — EXPLICITLY FORBIDDEN as MAI-28 production
+    semantic search by roadmap gate.
+  knowledge_sqlite.search_semantic uses hash_embed today.
+  knowledgebase/scripts/build_semantic_index.py — optional Ollama+Chroma; skips
+    when unavailable; not required for lexical; GAP-P2-001 prod Groq vs Ollama.
+  np_kb_adapter semantic filler path exists for ONLI.
+
+CONCLUSION: Packet must replace hash pseudo-embeddings with real embedding port,
+  versioned manifests, and prod-viable licensing/deployment — pending MAI-27 and
+  handoff contracts (UNRESOLVED_PENDING_HANDOFF).
+
+END OF DISCOVERY

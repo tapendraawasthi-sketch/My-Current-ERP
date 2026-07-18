@@ -1,0 +1,26 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-29 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Combine lexical+vector (+optional graph) into small citation-ready
+  EvidenceBundles with fail-closed no-answer.
+
+WS-A Controlled query variant generator (original/normalized/Devanagari/
+  English synonym/official term) — meaning-preserving
+WS-B Rank fusion over filtered candidate sets (authority/time first)
+WS-C Multilingual reranker port + versioned release
+WS-D Diversity + version policy (no duplicate superseded pairs as "agreement")
+WS-E Relevance threshold → NO_ANSWER disposition
+WS-F EvidenceBundle builder: unit IDs, hashes, scores, blocked IDs, as_of
+
+OUT OF SCOPE: answer prose/claim verify (MAI-30); index builds (27/28)
+
+SUCCESS: Reviewed Recall@k; filters precede evidence; hard negatives/no-answer
+  pass; latency budget recorded.
+
+END OF PACKET

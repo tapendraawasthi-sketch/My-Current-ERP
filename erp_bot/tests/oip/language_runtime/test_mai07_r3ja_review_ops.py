@@ -15,6 +15,7 @@ from src.oip.modules.language_runtime.transliteration.application.mai07_r3ja_rev
     ROUND_A_ROLES,
     _safe_filename,
     advance_workflow,
+    detect_returned_batches,
     deterministic_batches,
     initialize_packages,
     load_status,
@@ -169,6 +170,21 @@ def test_macro_and_path_traversal_rejection():
         _safe_filename("../secret.xlsx")
     with pytest.raises(ValueError, match="PATH_TRAVERSAL|FORBIDDEN"):
         _safe_filename("..\\secret.xlsx")
+
+
+def test_ai_assisted_drafts_rejected_from_official_inbox(tmp_path, monkeypatch):
+    role = "PRODUCT_POLICY"
+    fake_ops = tmp_path / "review_operations"
+    inbox = fake_ops / "round_a_inbox" / role
+    inbox.mkdir(parents=True)
+    banned = inbox / "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_01_of_10__AI_ASSISTED_DRAFT.xlsx"
+    banned.write_bytes(b"PK\x03\x04fake")
+    monkeypatch.setattr(
+        "src.oip.modules.language_runtime.transliteration.application.mai07_r3ja_review_ops.OPS",
+        fake_ops,
+    )
+    with pytest.raises(ValueError, match="AI_ASSISTED_ARTIFACT_FORBIDDEN_IN_OFFICIAL_INBOX"):
+        detect_returned_batches(role)
 
 
 def test_no_runtime_model_imports_in_ops():

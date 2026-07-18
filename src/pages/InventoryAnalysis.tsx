@@ -568,7 +568,7 @@ const InventoryAnalysis: React.FC = () => {
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Inventory Analysis Hub</h1>
+            <h1 className="text-[15px] font-semibold text-gray-800">Inventory analysis index</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Comprehensive insights into stock and movement
             </p>

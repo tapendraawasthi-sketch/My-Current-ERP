@@ -1,0 +1,116 @@
+{
+  "all_review_ids_unique": true,
+  "all_rows_complete": true,
+  "files": [
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_01_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18314,
+      "verified_sha256": "5f2315273cf262ac96f6b1b87190832b2bb6aca431b46bb629d7b47fe683c5b7"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_02_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18376,
+      "verified_sha256": "4ae80e7e8dd68eb1e45b28154c95bc23c18776455badd3a6a48c4ad030fa3c66"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_03_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18378,
+      "verified_sha256": "e16216b7ab6a5c7ccbea51d319f130c39e9311735e5752e9e80fec8f840d4c98"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_04_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18464,
+      "verified_sha256": "6427d29b6e98094c52714bd04f62b5bb948e161abd89f8f65b5f36982beb9b23"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_05_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18573,
+      "verified_sha256": "ca6400f51d1b4e4100047fa9442bf9385828e1929b4837b061ecd3fae6ae4c63"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_06_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18369,
+      "verified_sha256": "7f69f86f1dbacfc020a6dc6ef2796e8e78234c6db278300d412814cc2292f3b1"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_07_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18470,
+      "verified_sha256": "3ff9d11f95b21e578c1c816205ab2622c0ba9e82f8dae2b6e77a927d8c0d5f01"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_08_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18531,
+      "verified_sha256": "5df63d82e6dd404241264d8911b9df01d3c86d49f0f048d9144c19f196302f37"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_09_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18504,
+      "verified_sha256": "b1440e7b15c440619a5f0695766e313d24a95e7e9c48243beb7ca99617a3d16e"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_10_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 31,
+      "size_bytes": 12344,
+      "verified_sha256": "851f04dceb7e582f6e7f2a03e3ebf928915decb546263e66bf09e5c497d69387"
+    }
+  ],
+  "generated_date": "2026-07-17",
+  "provenance": {
+    "ai_autofill_used": true,
+    "declaration_completed": false,
+    "declaration_no_ai_autofill": false,
+    "eligible_for_frozen_quality_gold": false,
+    "engineering_import_ready": true,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "professional_linguist_b_is_ai_role_simulation": true,
+    "prohibited_for_training": true,
+    "review_method": "AI_ASSISTED_HUMAN_VERIFIED",
+    "role_id": "NEPALI_FLUENT_A",
+    "round_b_authorized": false,
+    "row_by_row_independent_review_performed": false,
+    "row_count": 1111,
+    "schema_version": "mai07-ai-assisted-review-provenance-v1",
+    "scope": "MAI-07_V3_NEPALI_FLUENT_A_ROUND_A",
+    "status": "AI_ASSISTED_HUMAN_VERIFIED",
+    "user_accepted": true,
+    "user_confirmation": "USER_ACCEPTED_AI_SUGGESTIONS_WITHOUT_CHANGES",
+    "user_confirmation_date": "2026-07-17",
+    "workbook_count": 10
+  },
+  "role_id": "NEPALI_FLUENT_A",
+  "schema_version": "mai07-ai-assisted-human-verified-manifest-v1"
+}

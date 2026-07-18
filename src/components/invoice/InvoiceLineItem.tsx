@@ -5,6 +5,11 @@
  * Single row of the Sales/Purchase Invoice line-items table.
  * Computes taxable / VAT / total per-line and exposes Tab/Enter
  * navigation between cells.
+ *
+ * Column tiers (Phase C progressive disclosure):
+ *   Essential — # Item Qty Unit Rate Total
+ *   Optional  — Disc% Taxable VAT% VAT Amt
+ *   Rare      — HSN Description Tax? Warehouse
  */
 
 import React, { useCallback, useMemo } from "react";
@@ -39,6 +44,10 @@ interface InvoiceLineItemProps {
   onDelete: () => void;
   onTabNext?: () => void;
   showWarehouse?: boolean;
+  /** Disc% · Taxable · VAT% · VAT Amt */
+  showOptionalCols?: boolean;
+  /** HSN · Description · Tax? · Warehouse */
+  showRareCols?: boolean;
   type: "sales" | "purchase";
   readOnly?: boolean;
 }
@@ -52,7 +61,18 @@ const cellNumInput =
   "w-full h-8 px-2 text-[12px] font-mono bg-transparent border-0 border-b border-[var(--ds-border-default)] text-right outline-none focus:border-[var(--ds-action-primary)] text-[var(--ds-text-default)]";
 
 const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
-  ({ line, lineNo, onUpdate, onDelete, onTabNext, showWarehouse, type, readOnly }) => {
+  ({
+    line,
+    lineNo,
+    onUpdate,
+    onDelete,
+    onTabNext,
+    showWarehouse,
+    showOptionalCols = false,
+    showRareCols = false,
+    type,
+    readOnly,
+  }) => {
     const { items, warehouses } = useStore();
     const itemList = useMemo(() => items.filter((i) => i.isActive), [items]);
 
@@ -143,25 +163,29 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           </select>
         </td>
 
-        <td className="px-1 py-1.5 w-20 hidden">
-          <input
-            className={cellInput}
-            value={line.hsnCode || ""}
-            onChange={(e) => onUpdate({ hsnCode: e.target.value })}
-            disabled={readOnly}
-            placeholder="—"
-          />
-        </td>
+        {showRareCols ? (
+          <td className="px-1 py-1.5 w-20">
+            <input
+              className={cellInput}
+              value={line.hsnCode || ""}
+              onChange={(e) => onUpdate({ hsnCode: e.target.value })}
+              disabled={readOnly}
+              placeholder="—"
+            />
+          </td>
+        ) : null}
 
-        <td className="px-1 py-1.5 min-w-[140px] hidden">
-          <input
-            className={cellInput}
-            value={line.description || ""}
-            onChange={(e) => onUpdate({ description: e.target.value })}
-            disabled={readOnly}
-            placeholder="—"
-          />
-        </td>
+        {showRareCols ? (
+          <td className="px-1 py-1.5 min-w-[140px]">
+            <input
+              className={cellInput}
+              value={line.description || ""}
+              onChange={(e) => onUpdate({ description: e.target.value })}
+              disabled={readOnly}
+              placeholder="—"
+            />
+          </td>
+        ) : null}
 
         <td className="px-1 py-1.5 w-20">
           <input
@@ -198,60 +222,70 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        <td className="px-1 py-1.5 w-20">
-          <input
-            type="number"
-            className={cellInput}
-            value={line.discountPercent || ""}
-            onChange={(e) =>
-              onUpdate({ discountPercent: Math.min(100, Math.max(0, Number(e.target.value) || 0)) })
-            }
-            disabled={readOnly}
-            placeholder="0"
-            min={0}
-            max={100}
-            step="0.01"
-          />
-        </td>
+        {showOptionalCols ? (
+          <td className="px-1 py-1.5 w-20">
+            <input
+              type="number"
+              className={cellInput}
+              value={line.discountPercent || ""}
+              onChange={(e) =>
+                onUpdate({ discountPercent: Math.min(100, Math.max(0, Number(e.target.value) || 0)) })
+              }
+              disabled={readOnly}
+              placeholder="0"
+              min={0}
+              max={100}
+              step="0.01"
+            />
+          </td>
+        ) : null}
 
-        <td className="px-2 py-1.5 text-right w-24">{amountCell(taxable)}</td>
+        {showOptionalCols ? (
+          <td className="px-2 py-1.5 text-right w-24">{amountCell(taxable)}</td>
+        ) : null}
 
-        <td className="px-1 py-1.5 text-center w-14">
-          <input
-            type="checkbox"
-            className="h-3.5 w-3.5 accent-[var(--ds-action-primary)]"
-            checked={!!line.isTaxable}
-            onChange={(e) =>
-              onUpdate({
-                isTaxable: e.target.checked,
-                vatRate: e.target.checked ? line.vatRate || 13 : 0,
-              })
-            }
-            disabled={readOnly}
-          />
-        </td>
+        {showRareCols ? (
+          <td className="px-1 py-1.5 text-center w-14">
+            <input
+              type="checkbox"
+              className="h-3.5 w-3.5 accent-[var(--ds-action-primary)]"
+              checked={!!line.isTaxable}
+              onChange={(e) =>
+                onUpdate({
+                  isTaxable: e.target.checked,
+                  vatRate: e.target.checked ? line.vatRate || 13 : 0,
+                })
+              }
+              disabled={readOnly}
+            />
+          </td>
+        ) : null}
 
-        <td className="px-1 py-1.5 w-16">
-          <input
-            type="number"
-            className={cellInput}
-            value={line.vatRate || ""}
-            onChange={(e) => onUpdate({ vatRate: Number(e.target.value) || 0 })}
-            disabled={readOnly || !line.isTaxable}
-            placeholder="13"
-            min={0}
-            max={100}
-            step="0.01"
-          />
-        </td>
+        {showOptionalCols ? (
+          <td className="px-1 py-1.5 w-16">
+            <input
+              type="number"
+              className={cellInput}
+              value={line.vatRate || ""}
+              onChange={(e) => onUpdate({ vatRate: Number(e.target.value) || 0 })}
+              disabled={readOnly || !line.isTaxable}
+              placeholder="13"
+              min={0}
+              max={100}
+              step="0.01"
+            />
+          </td>
+        ) : null}
 
-        <td className="px-2 py-1.5 text-right w-24">{amountCell(vatAmt)}</td>
+        {showOptionalCols ? (
+          <td className="px-2 py-1.5 text-right w-24">{amountCell(vatAmt)}</td>
+        ) : null}
 
         <td className="px-3 py-1.5 text-right text-[12px] font-medium font-mono text-[var(--ds-text-default)] w-24 bg-[var(--ds-surface-muted)]">
           {formatNumber(total)}
         </td>
 
-        {showWarehouse && (
+        {showRareCols && showWarehouse ? (
           <td className="px-1 py-1.5 w-32">
             <select
               className={cellInput}
@@ -269,7 +303,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
                 ))}
             </select>
           </td>
-        )}
+        ) : null}
 
         <td className="px-1 py-1.5 w-10 text-center">
           <button

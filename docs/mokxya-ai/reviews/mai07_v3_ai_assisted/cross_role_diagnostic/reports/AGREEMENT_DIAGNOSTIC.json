@@ -1,0 +1,124 @@
+{
+  "abstention_containing_count": 43,
+  "agreement_by_confidence": {
+    "cases_all_roles_same_confidence": 1111,
+    "n": 1111,
+    "rate": 1.0
+  },
+  "agreement_by_decision_source_bucket": {
+    "ACCOUNTING_MAP_INHERITED_NO_HEURISTIC": {
+      "n": 611,
+      "three_role_exact_agree": 611
+    },
+    "HEURISTIC_V1_PRESENT": {
+      "n": 500,
+      "three_role_exact_agree": 500
+    }
+  },
+  "agreement_by_disposition": {
+    "ABSTAIN_CANNOT_DECIDE": {
+      "cases_any_role": 43,
+      "cases_unanimous_this_disposition": 43
+    },
+    "ACRONYM_OR_IDENTIFIER": {
+      "cases_any_role": 72,
+      "cases_unanimous_this_disposition": 72
+    },
+    "CONTEXT_DEPENDENT": {
+      "cases_any_role": 16,
+      "cases_unanimous_this_disposition": 16
+    },
+    "DEVANAGARI_TRANSLITERATION_REQUIRED": {
+      "cases_any_role": 324,
+      "cases_unanimous_this_disposition": 324
+    },
+    "ENGLISH_IDENTITY_REQUIRED": {
+      "cases_any_role": 244,
+      "cases_unanimous_this_disposition": 244
+    },
+    "IDENTITY_FIRST_REVIEW_REQUIRED": {
+      "cases_any_role": 218,
+      "cases_unanimous_this_disposition": 218
+    },
+    "NAME_OR_ENTITY": {
+      "cases_any_role": 0,
+      "cases_unanimous_this_disposition": 0
+    },
+    "NO_TRANSLITERATION_ALLOWED": {
+      "cases_any_role": 0,
+      "cases_unanimous_this_disposition": 0
+    },
+    "PROTECTED": {
+      "cases_any_role": 150,
+      "cases_unanimous_this_disposition": 150
+    },
+    "TRANSLITERATION_OPTIONAL": {
+      "cases_any_role": 44,
+      "cases_unanimous_this_disposition": 44
+    }
+  },
+  "ai_output_similarity_metrics_non_independent": {
+    "four_role_percent_agreement": 1.0,
+    "label": "NON_INDEPENDENT_AI_OUTPUT_SIMILARITY_ONLY",
+    "not_human_inter_rater_reliability": true,
+    "note": "Percent agreement among AI-assisted role simulations; not Cohen kappa / Krippendorff alpha as human IRR.",
+    "three_role_percent_agreement": 1.0
+  },
+  "all_different_count": 0,
+  "conflict_taxonomy_counts": {
+    "ABSTAIN_PRESENT": 43,
+    "HEURISTIC_V1_SAFETY_SENSITIVE": 500
+  },
+  "four_role_exact_disposition_agree_count": 611,
+  "four_role_exact_disposition_agreement_rate": 1.0,
+  "four_role_n": 611,
+  "majority_count": 0,
+  "natural_context_ok_agreement": {
+    "cases_all_roles_same": 1111,
+    "n": 1111,
+    "rate": 1.0
+  },
+  "pairwise_role_disposition_agreement": {
+    "NEPALI_FLUENT_A__ACCOUNTING_DOMAIN": {
+      "exact_disposition_agree": 611,
+      "n": 611,
+      "rate": 1.0
+    },
+    "NEPALI_FLUENT_A__PROFESSIONAL_LINGUIST_B": {
+      "exact_disposition_agree": 1111,
+      "n": 1111,
+      "rate": 1.0
+    },
+    "PRODUCT_POLICY__ACCOUNTING_DOMAIN": {
+      "exact_disposition_agree": 611,
+      "n": 611,
+      "rate": 1.0
+    },
+    "PRODUCT_POLICY__NEPALI_FLUENT_A": {
+      "exact_disposition_agree": 1111,
+      "n": 1111,
+      "rate": 1.0
+    },
+    "PRODUCT_POLICY__PROFESSIONAL_LINGUIST_B": {
+      "exact_disposition_agree": 1111,
+      "n": 1111,
+      "rate": 1.0
+    },
+    "PROFESSIONAL_LINGUIST_B__ACCOUNTING_DOMAIN": {
+      "exact_disposition_agree": 611,
+      "n": 611,
+      "rate": 1.0
+    }
+  },
+  "review_vs_required_conflict_count": 0,
+  "split_no_majority_count": 0,
+  "suspected_ambiguity_agreement": {
+    "cases_all_roles_same": 1111,
+    "n": 1111,
+    "rate": 1.0
+  },
+  "three_role_exact_disposition_agree_count": 1111,
+  "three_role_exact_disposition_agreement_rate": 1.0,
+  "three_role_n": 1111,
+  "unanimous_count": 1111
+}

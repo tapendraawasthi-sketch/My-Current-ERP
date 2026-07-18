@@ -1,0 +1,25 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-35 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 offline queue then sync shows correct states; N-02 two-device
+  conflict surfaces diff; N-03 reversal creates governed correction artifact.
+
+FAILURE: F-01 queued labeled synced → fail; F-02 silent overwrite of posted
+  history → fail; F-03 retry creates duplicate post → fail; F-04 material
+  conflict auto-posts without reconfirm → fail.
+
+SECURITY/TENANT: S-01 sync cannot cross companies.
+
+DETERMINISM: D-01 idempotency keys stable across retry.
+
+ROLLBACK: R-01 disable offline queue for mutation classes.
+
+REGRESSION: G-01 MAI-34 confirm suites; G-02 sync/outbox existing tests.
+
+END OF GATES

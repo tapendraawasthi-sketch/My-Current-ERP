@@ -1,0 +1,121 @@
+{
+  "note": "Do not present occurrence unique_case_count as a partition of Tier-1. Only primary_reason_case_count partitions |T|=8.",
+  "phase": "MAI-07R3M-CLOSURE-TIER1-SET-RECONCILIATION",
+  "primary_partition_sum": 8,
+  "reasons": [
+    {
+      "counting_unit": {
+        "overlap_count": "distinct source_item_id where this reason co-occurs with another",
+        "primary_reason_case_count": "distinct source_item_id with this as primary",
+        "secondary_reason_occurrence_count": "distinct source_item_id with this as secondary",
+        "union_case_count": "Tier-1 unique population |T|",
+        "unique_case_count": "distinct source_item_id carrying this reason (any role)"
+      },
+      "overlap_count": 8,
+      "primary_case_ids": [
+        "V3SRC-eng-255b77066823",
+        "V3SRC-eng-629c6c8ce9c3",
+        "V3SRC-eng-64452c05715a",
+        "V3SRC-eng-c0b2bb23040a",
+        "V3SRC-eng-f8b0028f66a2"
+      ],
+      "primary_reason_case_count": 5,
+      "reason_code": "FALSE_FORCED_DEVANAGARI_TOP1",
+      "secondary_case_ids": [
+        "V3SRC-acc-71d32eb0ce59",
+        "V3SRC-rom-0b290042a4a5",
+        "V3SRC-rom-250208cca70e"
+      ],
+      "secondary_reason_occurrence_count": 3,
+      "union_case_count": 8,
+      "unique_case_count": 8,
+      "unique_case_ids": [
+        "V3SRC-acc-71d32eb0ce59",
+        "V3SRC-eng-255b77066823",
+        "V3SRC-eng-629c6c8ce9c3",
+        "V3SRC-eng-64452c05715a",
+        "V3SRC-eng-c0b2bb23040a",
+        "V3SRC-eng-f8b0028f66a2",
+        "V3SRC-rom-0b290042a4a5",
+        "V3SRC-rom-250208cca70e"
+      ]
+    },
+    {
+      "counting_unit": {
+        "overlap_count": "distinct source_item_id where this reason co-occurs with another",
+        "primary_reason_case_count": "distinct source_item_id with this as primary",
+        "secondary_reason_occurrence_count": "distinct source_item_id with this as secondary",
+        "union_case_count": "Tier-1 unique population |T|",
+        "unique_case_count": "distinct source_item_id carrying this reason (any role)"
+      },
+      "overlap_count": 3,
+      "primary_case_ids": [
+        "V3SRC-acc-71d32eb0ce59",
+        "V3SRC-rom-0b290042a4a5",
+        "V3SRC-rom-250208cca70e"
+      ],
+      "primary_reason_case_count": 3,
+      "reason_code": "ABSTAIN_FORCE_TRANSLITERATED",
+      "secondary_case_ids": [],
+      "secondary_reason_occurrence_count": 0,
+      "union_case_count": 8,
+      "unique_case_count": 3,
+      "unique_case_ids": [
+        "V3SRC-acc-71d32eb0ce59",
+        "V3SRC-rom-0b290042a4a5",
+        "V3SRC-rom-250208cca70e"
+      ]
+    },
+    {
+      "counting_unit": {
+        "overlap_count": "distinct source_item_id where this reason co-occurs with another",
+        "primary_reason_case_count": "distinct source_item_id with this as primary",
+        "secondary_reason_occurrence_count": "distinct source_item_id with this as secondary",
+        "union_case_count": "Tier-1 unique population |T|",
+        "unique_case_count": "distinct source_item_id carrying this reason (any role)"
+      },
+      "overlap_count": 5,
+      "primary_case_ids": [],
+      "primary_reason_case_count": 0,
+      "reason_code": "IDENTITY_NOT_TOP1",
+      "secondary_case_ids": [
+        "V3SRC-eng-255b77066823",
+        "V3SRC-eng-629c6c8ce9c3",
+        "V3SRC-eng-64452c05715a",
+        "V3SRC-eng-c0b2bb23040a",
+        "V3SRC-eng-f8b0028f66a2"
+      ],
+      "secondary_reason_occurrence_count": 5,
+      "union_case_count": 8,
+      "unique_case_count": 5,
+      "unique_case_ids": [
+        "V3SRC-eng-255b77066823",
+        "V3SRC-eng-629c6c8ce9c3",
+        "V3SRC-eng-64452c05715a",
+        "V3SRC-eng-c0b2bb23040a",
+        "V3SRC-eng-f8b0028f66a2"
+      ]
+    },
+    {
+      "counting_unit": {
+        "overlap_count": "distinct source_item_id where this reason co-occurs with another",
+        "primary_reason_case_count": "distinct source_item_id with this as primary",
+        "secondary_reason_occurrence_count": "distinct source_item_id with this as secondary",
+        "union_case_count": "Tier-1 unique population |T|",
+        "unique_case_count": "distinct source_item_id carrying this reason (any role)"
+      },
+      "overlap_count": 0,
+      "primary_case_ids": [],
+      "primary_reason_case_count": 0,
+      "reason_code": "ACRONYM_OR_IDENTIFIER_CORRUPTION",
+      "secondary_case_ids": [],
+      "secondary_reason_occurrence_count": 0,
+      "union_case_count": 8,
+      "unique_case_count": 0,
+      "unique_case_ids": []
+    }
+  ],
+  "schema_version": "mai07_r3m_tier1_closure_v1",
+  "table_kind": "PRIMARY_AND_OCCURRENCE",
+  "union_case_count": 8
+}

@@ -1,0 +1,174 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-26 — DISCOVERY
+======================================================================
+
+Phase: MAI-26 — TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+Lane: CURSOR_MAI26_TO_53_PLANNING
+Discovery date: 2026-07-18
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+----------------------------------------------------------------------
+1. ROADMAP AUTHORITY (NON-FINAL FOR IMPLEMENTATION)
+----------------------------------------------------------------------
+
+Source: MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt
+
+Objective (roadmap):
+  Answer current and historical questions without overwriting law.
+
+Deliverables (roadmap):
+  valid/system time;
+  amendment/supersession/repeal/commencement links;
+  structured rates/thresholds;
+  cross-reference graph;
+  temporal query tests.
+
+Gate (roadmap):
+  frozen old/current provision cases resolve correctly;
+  conflicting/unknown effective dates block definitive output;
+  historical versions remain accessible.
+
+Related architecture sections inspected:
+  13.2 SourceRecord
+  13.3 KnowledgeDocument / DocumentVersion / KnowledgeUnit
+  13.4 Bitemporal and legal time
+  13.5 Ingestion pipeline (amendment/cross-reference linking step)
+  13.10 Retrieval filters (valid/effective date)
+  13.11 No-answer and conflict policy
+  13.12 Citation contract (effective period required)
+  13.13 Knowledge releases
+  Target module tree: knowledge_runtime/ and legal_runtime/
+    (legal_runtime/domain/amendment.py, temporal_rule.py;
+     legal_runtime/application/temporal_resolver.py)
+  Knowledge table sketch: knowledge_document_versions, knowledge_units,
+    knowledge_relationships, legal_instruments, legal_provisions,
+    legal_amendments, structured_rates_thresholds
+
+Direct dependency: MAI-25
+Upstream Track E prerequisites: MAI-24, MAI-25
+Downstream consumers: MAI-27..MAI-30 (filters/evidence), MAI-36+ (legal research)
+
+----------------------------------------------------------------------
+2. LEDGER STATUS (READ-ONLY SNAPSHOT)
+----------------------------------------------------------------------
+
+docs/mokxya-ai/MAI_PHASE_LEDGER.json:
+  MAI-26 status: NOT_STARTED
+  production_approved: false
+  gate_evidence: []
+  implementation_evidence note: "partial — Nepal law effective dates not proven"
+  dependencies: ["MAI-25"]
+  recommended_order: 26
+
+Upstream incomplete (all UNRESOLVED_PENDING_HANDOFF for this packet):
+  MAI-07 NEEDS_CORRECTIVE_WORK (Codex lane; next recommended R3N5)
+  MAI-08..MAI-25 NOT_STARTED
+
+Handoff gate not satisfied:
+  docs/mokxya-ai/MAI_25_TO_MAI_26_HANDOFF_REPORT.txt — absent
+  MAI-25 not PASSED in ledger
+
+----------------------------------------------------------------------
+3. EXISTING REUSABLE COMPONENTS (PARTIAL / PRE-MAI-24)
+----------------------------------------------------------------------
+
+These are discovery notes only. They are NOT authority that MAI-26 may treat
+MAI-24/25 contracts as final. Paths and shapes may change under Codex-owned
+MAI-07..MAI-25 work.
+
+A. OIP knowledge module (pre-Track-E sketch)
+  erp_bot/src/oip/modules/knowledge/domain/entities.py
+    KnowledgeDocument with effective_range; RetrievalExecution.as_of;
+    KnowledgeSnapshot.as_of
+  erp_bot/src/oip/modules/knowledge/domain/value_objects.py
+    EffectiveDateRange(effective_from, effective_to, supersedes, superseded_by,
+      revision)
+    DocumentStatus includes SUPERSEDED / EXPIRED
+  erp_bot/src/oip/modules/knowledge/infrastructure/persistence/migrations/013_oip_knowledge.sql
+    oip_knowledge_documents columns: effective_from, effective_to, supersedes,
+      superseded_by; index on (tenant_id, effective_from, effective_to)
+    oip_retrievals / oip_knowledge_snapshots store as_of
+  erp_bot/src/oip/modules/knowledge/application/pipeline/stages.py
+    TemporalFilterStage — lists docs by jurisdiction/as_of, keeps status=active
+  erp_bot/src/oip/modules/knowledge/infrastructure/persistence/knowledge_sqlite.py
+    SQL filters effective_from/effective_to against as_of
+  erp_bot/src/oip/modules/knowledge/infrastructure/adapters/hybrid_ranking_adapter.py
+    freshness uses effective_from vs as_of
+
+Gaps vs MAI-26 roadmap intent (observed, not claimed complete):
+  No distinct valid-time vs system-time (bitemporal) model — only effective range
+    + created_at/updated_at.
+  No amendment / repeal / commencement typed relationship graph.
+  No structured rates/thresholds entity.
+  No KnowledgeUnit-level cross_references / amendment_links as in roadmap §13.3.
+  No legal_runtime module present (glob found zero legal* under oip/modules).
+  TemporalFilterStage drops non-active docs; historical access not proven.
+  Conflicting/unknown effective dates do not appear to fail closed.
+
+B. ONLI / knowledgebase package (language KB; not legal bitemporal store)
+  knowledgebase/schemas/kb_record.schema.json
+  knowledgebase/schemas/kb_record_v1.md
+  Provenance/hash fields exist; no DocumentVersion / amendment graph contract.
+  Manifest mentions temporal_* record counts (language/temporal roles), not
+    legal effective-date authority.
+
+C. Authority / gap register pointers
+  docs/mokxya-ai/MAI_00_AUTHORITY_MAP.md — knowledge retrieval via knowledgebase/
+    and np_kb_adapter (ACTIVE_SUPPORTING)
+  docs/mokxya-ai/MAI_00_GAP_REGISTER.md
+    GAP-P2-008 knowledge/no-answer & citation honesty → MAI-24+
+    GAP-P2-001 Chroma/Ollama vs prod → MAI-27–30
+    GAP-P2-005 large source zips / prebuilt indexes
+
+D. Roadmap target modules not yet present as MAI-governed deliverables
+  erp_bot/src/oip/modules/.../knowledge_runtime/ (roadmap target tree)
+  erp_bot/src/oip/modules/.../legal_runtime/ (roadmap target tree)
+  Current repo uses erp_bot/src/oip/modules/knowledge/ — naming/layout may be
+    reconciled by MAI-24/25; treat final paths as UNRESOLVED_PENDING_HANDOFF.
+
+----------------------------------------------------------------------
+4. INTENDED MAI-26 CONCEPTUAL SURFACE (PROPOSED ONLY)
+----------------------------------------------------------------------
+
+Proposed concept objects (names provisional until MAI-24/25 lock):
+  ValidTimeInterval — when rule applied in the world
+  SystemTimeInterval — when MokXya acquired/released the version
+  LegalRelationship — amendment | supersession | repeal | commencement |
+    cross_reference | incorporates | schedules
+  StructuredRateThreshold — rate/threshold with valid time + unit provenance
+  TemporalQuery — as_of_valid_time, as_of_system_time, jurisdiction, instrument
+  TemporalResolutionResult — resolved unit(s) | CONFLICT | UNKNOWN_EFFECTIVE |
+    HISTORICAL_ONLY | CURRENT
+
+Must preserve:
+  Never overwrite historical provisions; append version + explicit relationship.
+  Fail closed on conflicting or unknown effective dates for definitive answers.
+  Keep historical versions queryable after supersession/repeal.
+
+----------------------------------------------------------------------
+5. FILES EXPLICITLY NOT OPENED
+----------------------------------------------------------------------
+
+Per AGENTS.md dead files (not opened):
+  src/components/StockItems.tsx
+  src/components/invoice/PurchaseInvoiceForm.tsx
+  src/components/invoice/ReturnInvoiceForm.tsx
+
+Prohibited trees not accessed:
+  node_modules/, dist/, .git/, .workspace/, .tanstack/
+
+----------------------------------------------------------------------
+6. DISCOVERY CONCLUSION
+----------------------------------------------------------------------
+
+Enough repository and roadmap evidence exists to draft a non-authoritative
+MAI-26 implementation packet and acceptance gates. Final schemas, unit IDs,
+citation anchors, and release manifests from MAI-24/MAI-25 remain
+UNRESOLVED_PENDING_HANDOFF and must be revalidated after the MAI-25 handoff gate.
+
+END OF DISCOVERY

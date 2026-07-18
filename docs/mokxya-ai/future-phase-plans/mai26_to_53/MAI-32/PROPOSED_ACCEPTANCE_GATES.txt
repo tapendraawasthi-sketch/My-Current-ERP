@@ -1,0 +1,25 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-32 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 draft reload after refresh; N-02 version history retained;
+  N-03 expiry enforced.
+
+FAILURE: F-01 stale version write → conflict; F-02 cross-company read/write
+  denied; F-03 production path using ad-hoc local JSON authority → fail gate.
+
+SECURITY/TENANT: S-01 tenant isolation adversarial cases.
+
+DETERMINISM: D-01 concurrent writers → one winner + conflict for loser.
+
+ROLLBACK: R-01 prior draft store flag with documented degraded mode.
+
+REGRESSION: G-01 MAI-31 mappings still build drafts; G-02 existing draft tests
+  updated with explicit baselines.
+
+END OF GATES

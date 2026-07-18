@@ -1,0 +1,58 @@
+{
+  "active_resource_hash_expected": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "active_semantic_hash_expected": "b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849",
+  "conflict_count": 49,
+  "control_actual": {
+    "ambiguous_optional": 20,
+    "english_identity_required": 30,
+    "name_like": 20,
+    "romanized_target_required": 30
+  },
+  "control_targets": {
+    "ambiguous_optional": 20,
+    "english_identity_required": 30,
+    "name_like": 20,
+    "romanized_target_required": 30
+  },
+  "exclusions": [],
+  "manifest_id": "MAI_07R3_CONTROL_SAMPLE_MANIFEST",
+  "parent_frozen_dataset_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+  "presentation_order_seed": 20260722,
+  "privacy_scan": "SENSITIVE_PATTERN regex applied; excluded listed",
+  "seed": 20260715,
+  "taxonomy_aggregate": {
+    "both_eng_and_name": 0,
+    "by_english_identity_reason": {
+      "ENGLISH_IDENTITY_RESOURCE": 31
+    },
+    "by_language_form": {
+      "ENGLISH": 11,
+      "SHARED_OR_AMBIGUOUS_LATIN": 13,
+      "TECHNICAL_ACCOUNTING_ENGLISH": 25
+    },
+    "by_name_like_reason": {
+      "NAME_LIKE_RESOURCE_OR_SPAN_FLAG": 18
+    },
+    "by_suite": {
+      "domain_terms_v1": 22,
+      "names_entities_v1": 9,
+      "romanized_common_v1": 9,
+      "romanized_core_v1": 9
+    },
+    "by_target_span_position": {
+      "only": 49
+    },
+    "by_top_nonid_kind": {
+      "LEXICAL": 49
+    },
+    "code_mix": 0,
+    "conflict_count": 49,
+    "english_only": 31,
+    "expected_count": 49,
+    "matches_expected": true,
+    "multi_token": 0,
+    "name_only": 18,
+    "single_token": 49
+  },
+  "total_review_items": 149
+}

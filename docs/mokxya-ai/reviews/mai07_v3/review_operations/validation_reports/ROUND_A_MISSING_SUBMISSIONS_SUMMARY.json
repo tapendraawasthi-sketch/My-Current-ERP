@@ -1,0 +1,140 @@
+{
+  "human_answers_altered": false,
+  "human_answers_generated": false,
+  "roles": {
+    "ACCOUNTING_DOMAIN": {
+      "correction_requirements": [
+        "Return every listed batch using its exact filename.",
+        "Complete the signed reviewer declaration.",
+        "Complete every assigned disposition and confidence cell using allowed enums.",
+        "Do not rename sheets, headers, or review IDs.",
+        "Save as .xlsx without formulas or macros."
+      ],
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "expected_batch_count": 6,
+      "expected_row_count": 611,
+      "human_answers_altered": false,
+      "human_answers_generated": false,
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/ACCOUNTING_DOMAIN",
+      "missing_batch_count": 6,
+      "missing_files": [
+        "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_01_of_06.xlsx",
+        "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_02_of_06.xlsx",
+        "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_03_of_06.xlsx",
+        "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_04_of_06.xlsx",
+        "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_05_of_06.xlsx",
+        "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_06_of_06.xlsx"
+      ],
+      "missing_row_count": 611,
+      "returned_batch_count": 0,
+      "role_id": "ACCOUNTING_DOMAIN",
+      "state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+      "unexpected_files": []
+    },
+    "NEPALI_FLUENT_A": {
+      "correction_requirements": [
+        "Return every listed batch using its exact filename.",
+        "Complete the signed reviewer declaration.",
+        "Complete every assigned disposition and confidence cell using allowed enums.",
+        "Do not rename sheets, headers, or review IDs.",
+        "Save as .xlsx without formulas or macros."
+      ],
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "expected_batch_count": 10,
+      "expected_row_count": 1111,
+      "human_answers_altered": false,
+      "human_answers_generated": false,
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/NEPALI_FLUENT_A",
+      "missing_batch_count": 10,
+      "missing_files": [
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_01_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_02_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_03_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_04_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_05_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_06_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_07_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_08_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_09_of_10.xlsx",
+        "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_10_of_10.xlsx"
+      ],
+      "missing_row_count": 1111,
+      "returned_batch_count": 0,
+      "role_id": "NEPALI_FLUENT_A",
+      "state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+      "unexpected_files": []
+    },
+    "PRODUCT_POLICY": {
+      "correction_requirements": [
+        "Return every listed batch using its exact filename.",
+        "Complete the signed reviewer declaration.",
+        "Complete every assigned disposition and confidence cell using allowed enums.",
+        "Do not rename sheets, headers, or review IDs.",
+        "Save as .xlsx without formulas or macros."
+      ],
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "expected_batch_count": 10,
+      "expected_row_count": 1111,
+      "human_answers_altered": false,
+      "human_answers_generated": false,
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/PRODUCT_POLICY",
+      "missing_batch_count": 10,
+      "missing_files": [
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_01_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_02_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_03_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_04_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_05_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_06_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_07_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_08_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_09_of_10.xlsx",
+        "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_10_of_10.xlsx"
+      ],
+      "missing_row_count": 1111,
+      "returned_batch_count": 0,
+      "role_id": "PRODUCT_POLICY",
+      "state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+      "unexpected_files": []
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "correction_requirements": [
+        "Return every listed batch using its exact filename.",
+        "Complete the signed reviewer declaration.",
+        "Complete every assigned disposition and confidence cell using allowed enums.",
+        "Do not rename sheets, headers, or review IDs.",
+        "Save as .xlsx without formulas or macros.",
+        "Declare professional-linguist qualifications; manual credential verification remains required."
+      ],
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "expected_batch_count": 10,
+      "expected_row_count": 1111,
+      "human_answers_altered": false,
+      "human_answers_generated": false,
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/PROFESSIONAL_LINGUIST_B",
+      "missing_batch_count": 10,
+      "missing_files": [
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_01_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_02_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_03_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_04_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_05_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_06_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_07_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_08_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_09_of_10.xlsx",
+        "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_10_of_10.xlsx"
+      ],
+      "missing_row_count": 1111,
+      "returned_batch_count": 0,
+      "role_id": "PROFESSIONAL_LINGUIST_B",
+      "state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+      "unexpected_files": []
+    }
+  },
+  "status": "WAITING_FOR_ROUND_A_SUBMISSIONS"
+}

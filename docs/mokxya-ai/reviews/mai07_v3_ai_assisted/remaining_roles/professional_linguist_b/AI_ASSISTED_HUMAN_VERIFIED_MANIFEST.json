@@ -1,0 +1,117 @@
+{
+  "all_review_ids_unique": true,
+  "all_rows_complete": true,
+  "files": [
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_01_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18350,
+      "verified_sha256": "4cf9de5547339cfa05b4308108fef3d287b2b3ad73e8699cb6e2c52395c9873d"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_02_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18594,
+      "verified_sha256": "85f1e74a971b21b14e7ff552feb7bcecd5e761b2cfc9b02b9cb68e170b6d6675"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_03_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18419,
+      "verified_sha256": "f557f27f479ffea9499e8696bef03404d0b2e908f5e5c70bdc51cb2b4fdd3f3e"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_04_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18749,
+      "verified_sha256": "deb3d838688baa97ae6a95a9813cce46761b06c09054504c82d7e4f8b77ce904"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_05_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18302,
+      "verified_sha256": "4a56b511c7c3c19091c60ce2c8ed63436fcd25d3484bb1069d29776311112766"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_06_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18313,
+      "verified_sha256": "a5eb1f29eeebf03745de110bd23ff0eea45c9111c4c26966485eb86830c1a11f"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_07_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18612,
+      "verified_sha256": "229827f2d9a71b91e7834fedec5339a8700fffda9ad36322aeaffe80af052f39"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_08_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18398,
+      "verified_sha256": "408c0f11f9ea9ed19daef29d6e768ef5990c9b26efb4a973614d5cbb3d0d9816"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_09_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 120,
+      "size_bytes": 18585,
+      "verified_sha256": "f2c6b26ae76a2bd55b27a36e592e12471a7b2832144ad39dd4d9cad54f51214e"
+    },
+    {
+      "declaration_blank": true,
+      "filename": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_10_of_10__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "round_b_not_completed": true,
+      "rows": 31,
+      "size_bytes": 12416,
+      "verified_sha256": "51c795fce8f5ba5cfe55b6ed233e9e40f907e59ef153fbfaafe13fb874d9e97d"
+    }
+  ],
+  "generated_date": "2026-07-17",
+  "provenance": {
+    "ai_autofill_used": true,
+    "declaration_completed": false,
+    "declaration_no_ai_autofill": false,
+    "eligible_for_frozen_quality_gold": false,
+    "engineering_import_ready": true,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "note": "PROFESSIONAL_LINGUIST_B labels are an AI role simulation only; not professional-linguist adjudication.",
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "professional_linguist_b_is_ai_role_simulation": true,
+    "prohibited_for_training": true,
+    "review_method": "AI_ASSISTED_HUMAN_VERIFIED",
+    "role_id": "PROFESSIONAL_LINGUIST_B",
+    "round_b_authorized": false,
+    "row_by_row_independent_review_performed": false,
+    "row_count": 1111,
+    "schema_version": "mai07-ai-assisted-review-provenance-v1",
+    "scope": "MAI-07_V3_PROFESSIONAL_LINGUIST_B_ROUND_A",
+    "status": "AI_ASSISTED_HUMAN_VERIFIED",
+    "user_accepted": true,
+    "user_confirmation": "USER_ACCEPTED_AI_SUGGESTIONS_WITHOUT_CHANGES",
+    "user_confirmation_date": "2026-07-17",
+    "workbook_count": 10
+  },
+  "role_id": "PROFESSIONAL_LINGUIST_B",
+  "schema_version": "mai07-ai-assisted-human-verified-manifest-v1"
+}

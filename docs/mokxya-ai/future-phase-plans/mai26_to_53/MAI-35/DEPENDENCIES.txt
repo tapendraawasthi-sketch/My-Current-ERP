@@ -1,0 +1,21 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-35 — DEPENDENCIES
+======================================================================
+
+MAI-34 confirm/idempotency/receipt — UNRESOLVED_PENDING_HANDOFF
+MAI-32 draft concurrency — UNRESOLVED_PENDING_HANDOFF
+Sync/outbox existing eventSyncQueue — UNRESOLVED_PENDING_HANDOFF (shape may
+  change under Codex)
+MAI-07..MAI-25 — UNRESOLVED_PENDING_HANDOFF
+
+UQ-35-01: Which mutations are online-only vs queueable?
+UQ-35-02: Reversal via domain credit notes vs void — product policy?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

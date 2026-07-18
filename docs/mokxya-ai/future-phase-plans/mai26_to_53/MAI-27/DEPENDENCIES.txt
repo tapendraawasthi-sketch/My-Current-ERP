@@ -1,0 +1,41 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-27 — DEPENDENCIES
+======================================================================
+
+Phase: MAI-27 — LEXICAL INDEX
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+MAI-26 temporal/amendment/cross-ref model
+  UNRESOLVED_PENDING_HANDOFF — time filters and version identity
+
+MAI-25 extraction / KnowledgeUnit anchors
+  UNRESOLVED_PENDING_HANDOFF — indexed fields (provision_number, heading, text)
+
+MAI-24 source/document/version/release governance
+  UNRESOLVED_PENDING_HANDOFF — release_id binding for rebuild manifests
+
+MAI-07..MAI-23 transitive chain
+  UNRESOLVED_PENDING_HANDOFF — Codex ownership through MAI-25
+
+MAI-00..MAI-06
+  PASSED_FOUNDATION — revalidate; MAI-04 eval patterns for retrieval suites
+
+Existing NP KB FTS (np_kb_adapter / build_retrieval_indexes)
+  Reference only — UNRESOLVED_PENDING_HANDOFF whether Track E indexes replace,
+  wrap, or coexist with ONLI language indexes
+
+Unresolved questions:
+  UQ-27-01: Single lexical store vs separate language-KB and legal-KB indexes?
+  UQ-27-02: Analyzer — custom Nepali tokenizer vs unicode61 FTS tokenizer +
+    external normalizer from MAI-06?
+  UQ-27-03: Manifest hash algorithm and staleness detection contract?
+  UQ-27-04: Field schema for FTS columns after MAI-25 unit model lands?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

@@ -1,0 +1,33 @@
+{
+  "code_corrective_count": 9,
+  "governance": {
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "agreement_is_independent_human_irr": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "majority_voting_is_gold": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "round_a_locked": false,
+    "round_b_authorized": false,
+    "round_b_ready": false,
+    "runtime_conformance_is_language_quality": false
+  },
+  "human_review_count": 28,
+  "linguist_review_count": 160,
+  "phase": "MAI-07R3M-AI-ASSISTED-POLICY-MISMATCH-TRIAGE",
+  "prohibited_for_training": true,
+  "rationale_codes": [
+    "CODE_QUEUE_NONEMPTY",
+    "RESOURCE_QUEUE_EMPTY"
+  ],
+  "recommended_phase": "MAI-07R3N-NON-FROZEN-POLICY-CONFORMANCE-CORRECTIVE",
+  "resource_corrective_count": 0,
+  "schema_version": "mai07_r3m_policy_mismatch_triage_v1",
+  "selection_rule_applied": "non_empty_supported_code_or_resource_queue"
+}

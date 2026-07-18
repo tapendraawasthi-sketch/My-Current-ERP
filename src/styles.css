@@ -378,14 +378,14 @@ a:hover {
   border-bottom: 1px solid #000000 !important;
 }
 .form-section-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: #000000 !important;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ds-text-strong, #14212b) !important;
   margin-bottom: 10px;
   padding-bottom: 6px;
-  border-bottom: 1px solid #000000 !important;
+  border-bottom: 1px solid var(--ds-border-default, #d5dce3) !important;
 }
 .form-footer {
   padding: 10px 16px;

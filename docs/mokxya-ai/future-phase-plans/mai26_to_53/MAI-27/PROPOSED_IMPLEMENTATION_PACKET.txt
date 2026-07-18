@@ -1,0 +1,76 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-27 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+Phase: MAI-27 — LEXICAL INDEX
+Authorization: false until MAI-25 handoff + MAI-26 passed (or handoff proves
+  MAI-26 dependency satisfied)
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+----------------------------------------------------------------------
+1. OBJECTIVE
+----------------------------------------------------------------------
+
+Replace substring/toy lexical scoring in OIP knowledge retrieval with a
+governed BM25/FTS adapter over citation-ready KnowledgeUnits, with Nepali-aware
+analysis, authority/time filters, rebuild manifests, and evaluation — without
+treating any derived index as canonical source.
+
+----------------------------------------------------------------------
+2. WORKSTREAMS (POST-HANDOFF)
+----------------------------------------------------------------------
+
+WS-A LexicalIndexPort + FTS/BM25 adapter
+  Implement real FTS5 (or approved BM25 engine) over unit fields:
+    provision_number, heading, exact_text, normalized_search_text, identifiers
+  Score via bm25() or equivalent; retire token-substring scorer for production
+    path (knowledge_sqlite.search_lexical current behavior).
+
+WS-B Nepali-aware analyzer benchmark
+  Benchmark tokenizer/normalizer choices on Devanagari, Romanized, mixed,
+    section numbers, Act titles; record results; pick versioned analyzer.
+
+WS-C Filters
+  Apply tenant, jurisdiction, authority_class, review/release status, and
+  MAI-26 valid/effective as_of before or during ranking.
+
+WS-D Rebuild manifest
+  index_manifest tied to KnowledgeRelease: source unit hashes, analyzer
+  version, build time, content hash of index; detect corrupt/stale vs release.
+
+WS-E Evaluation
+  Exact/legal lexical recall suite (citations, rare terms, IDs); filter
+  correctness cases; stale-index detection tests.
+
+WS-F Boundary with NP KB
+  Document coexistence: ONLI language FTS may remain for language assist;
+  Track E legal/current-rate retrieval must use governed KnowledgeRelease index.
+  Do not silently merge unreviewed ONLI rows into legal authority answers.
+
+Out of scope: embeddings (MAI-28), fusion/rerank (MAI-29), answer claims (MAI-30)
+
+----------------------------------------------------------------------
+3. PROVISIONAL TOUCH SET
+----------------------------------------------------------------------
+
+  knowledge_runtime ports/infrastructure indexes (final path UNRESOLVED)
+  erp_bot/src/oip/modules/knowledge/infrastructure/persistence/knowledge_sqlite.py
+    (search_lexical replacement — high conflict until handoff)
+  New evals/mai27/**
+  Possibly knowledgebase/scripts patterns as reference only
+
+Do not edit these before handoff.
+
+----------------------------------------------------------------------
+4. SUCCESS SUMMARY
+----------------------------------------------------------------------
+
+Target lexical recall on frozen exact/legal benchmark; filters correct;
+corrupt/stale index detected; derived index never treated as source.
+
+END OF PACKET

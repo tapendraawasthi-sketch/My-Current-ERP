@@ -1,0 +1,50 @@
+{
+  "acceptance_gates": {
+    "candidate_index_mismatch": 0,
+    "cohen_kappa_min": 0.7,
+    "domain_review_completion_technical": 1.0,
+    "duplicate_consistency": 0.9,
+    "exact_disposition_agreement": 0.85,
+    "formula_injection_failures": 0,
+    "invalid_enum_or_duplicate_id": 0,
+    "professional_linguist_completion": 1.0,
+    "prohibited_for_training_flag_rate": 1.0,
+    "round_a_completion": 1.0,
+    "round_b_completion_eligible": 1.0,
+    "source_provenance_completeness": 1.0,
+    "unresolved_disagreement_after_adjudication_frozen": 0
+  },
+  "confidence": [
+    "HIGH",
+    "MEDIUM",
+    "LOW"
+  ],
+  "notes": [
+    "Round B cannot overwrite Round A",
+    "CANNOT_DECIDE remains unresolved until adjudication",
+    "Automatic bulk mapping rejected",
+    "Product owner cannot satisfy linguist approval alone"
+  ],
+  "phase": "MAI-07R3J-A-INDEPENDENT-V3-GOVERNANCE-AND-REVIEW-PACKET",
+  "prohibited_for_training": true,
+  "round_a_dispositions": [
+    "ENGLISH_IDENTITY_REQUIRED",
+    "DEVANAGARI_TRANSLITERATION_REQUIRED",
+    "CONTEXT_DEPENDENT",
+    "IDENTITY_FIRST_REVIEW_REQUIRED",
+    "TRANSLITERATION_OPTIONAL",
+    "NO_TRANSLITERATION_ALLOWED",
+    "NAME_OR_ENTITY",
+    "ACRONYM_OR_IDENTIFIER",
+    "PROTECTED",
+    "ABSTAIN_CANNOT_DECIDE"
+  ],
+  "round_b_acceptability": [
+    "ACCEPTABLE_PREFERRED",
+    "ACCEPTABLE_ALTERNATIVE",
+    "UNNATURAL_BUT_POSSIBLE",
+    "INCORRECT",
+    "CANNOT_DECIDE"
+  ],
+  "schema_version": "mai07_v3_review.1.0.0"
+}

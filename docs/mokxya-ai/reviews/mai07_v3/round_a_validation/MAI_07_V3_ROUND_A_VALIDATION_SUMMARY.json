@@ -1,0 +1,123 @@
+{
+  "LINGUIST_APPROVED": false,
+  "MAI_08": "NOT_STARTED",
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "ROUND_A_LOCKED": false,
+  "ROUND_B_READY": false,
+  "agreement": {
+    "status": "NOT_COMPUTED_ROUND_A_NOT_LOCKED"
+  },
+  "created_utc": "2026-07-18T09:30:09.992839+00:00",
+  "files_received": {
+    "ACCOUNTING_DOMAIN": null,
+    "NEPALI_FLUENT_A": null,
+    "PRODUCT_POLICY": null,
+    "PROFESSIONAL_LINGUIST_B": null
+  },
+  "human_answers_altered": false,
+  "human_answers_generated": false,
+  "identical_response_pattern": {
+    "flagged": [],
+    "ok": true,
+    "pairs": []
+  },
+  "inbox": "C:\\Users\\Acer\\AppData\\Local\\Temp\\pytest-of-Acer\\pytest-189\\test_empty_inbox_blocks_round_0\\inbox",
+  "model_evaluation_performed": false,
+  "next_human_action": "Return corrected Round A workbooks to docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/ then re-run MAI-07R3J-A-ROUND-A-LOCK-AND-VALIDATION. Do not begin Round B.",
+  "phase": "MAI-07R3J-A-ROUND-A-LOCK-AND-VALIDATION",
+  "reviewer_reports": [
+    {
+      "corrections": [
+        "Place completed workbook `MokXya_MAI07_V3__product_policy.xlsx` into `docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/`.",
+        "Do not submit the blank packet template from reviewers/ without completing Round A.",
+        "Complete REVIEWER_DECLARATION (signed) and all Round A disposition+confidence cells."
+      ],
+      "declaration_ok": false,
+      "error_count": 1,
+      "errors": [
+        "NO_RETURNED_WORKBOOK_IN_INBOX"
+      ],
+      "ok": false,
+      "product_counted_as_linguist": false,
+      "professional_qualification_ok": false,
+      "role_id": "PRODUCT_POLICY",
+      "rows_completed": 0,
+      "rows_expected": 1111,
+      "rows_missing_disposition": 1111,
+      "satisfies_linguist_approval": false
+    },
+    {
+      "corrections": [
+        "Place completed workbook `MokXya_MAI07_V3__nepali_fluent_a.xlsx` into `docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/`.",
+        "Do not submit the blank packet template from reviewers/ without completing Round A.",
+        "Complete REVIEWER_DECLARATION (signed) and all Round A disposition+confidence cells."
+      ],
+      "declaration_ok": false,
+      "error_count": 1,
+      "errors": [
+        "NO_RETURNED_WORKBOOK_IN_INBOX"
+      ],
+      "ok": false,
+      "product_counted_as_linguist": false,
+      "professional_qualification_ok": false,
+      "role_id": "NEPALI_FLUENT_A",
+      "rows_completed": 0,
+      "rows_expected": 1111,
+      "rows_missing_disposition": 1111,
+      "satisfies_linguist_approval": false
+    },
+    {
+      "corrections": [
+        "Place completed workbook `MokXya_MAI07_V3__professional_linguist_b.xlsx` into `docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/`.",
+        "Do not submit the blank packet template from reviewers/ without completing Round A.",
+        "Complete REVIEWER_DECLARATION (signed) and all Round A disposition+confidence cells."
+      ],
+      "declaration_ok": false,
+      "error_count": 1,
+      "errors": [
+        "NO_RETURNED_WORKBOOK_IN_INBOX"
+      ],
+      "ok": false,
+      "product_counted_as_linguist": false,
+      "professional_qualification_ok": false,
+      "role_id": "PROFESSIONAL_LINGUIST_B",
+      "rows_completed": 0,
+      "rows_expected": 1111,
+      "rows_missing_disposition": 1111,
+      "satisfies_linguist_approval": false
+    },
+    {
+      "corrections": [
+        "Place completed workbook `MokXya_MAI07_V3__accounting_domain.xlsx` into `docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/`.",
+        "Do not submit the blank packet template from reviewers/ without completing Round A.",
+        "Complete REVIEWER_DECLARATION (signed) and all Round A disposition+confidence cells."
+      ],
+      "declaration_ok": false,
+      "error_count": 1,
+      "errors": [
+        "NO_RETURNED_WORKBOOK_IN_INBOX"
+      ],
+      "ok": false,
+      "product_counted_as_linguist": false,
+      "professional_qualification_ok": false,
+      "role_id": "ACCOUNTING_DOMAIN",
+      "rows_completed": 0,
+      "rows_expected": 611,
+      "rows_missing_disposition": 611,
+      "satisfies_linguist_approval": false
+    }
+  ],
+  "round_b_released": false,
+  "runtime_modified": false,
+  "sealed": {
+    "blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+    "errors": [],
+    "expected_blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+    "expected_packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c",
+    "ok": true,
+    "packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c"
+  },
+  "status": "BLOCKED_ROUND_A_CORRECTION_REQUIRED",
+  "v2_governance": "HISTORICAL_BENCHMARK_EXHAUSTED_FOR_MODEL_SELECTION"
+}

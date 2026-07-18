@@ -49,6 +49,7 @@ import toast from "@/lib/appToast";
 import { postReceiptTransaction } from "@/domains/settlement/postReceiptTransaction";
 import { getOrCreateDocumentSettlementState } from "@/domains/settlement/settlementState";
 import { getDB, generateId } from "@/lib/db";
+import { usePersistedToggle } from "@/hooks/usePersistedToggle";
 
 interface ReceiptVoucherFormProps {
   voucherId?: string;
@@ -105,6 +106,13 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
   const enableCostCenter = !!companySettings?.enableCostCenter;
   const enableBillWise = !!companySettings?.enableBillWiseTracking;
   const symbol = companySettings?.currencySymbol || "Rs.";
+  const [showOptionalCols, setShowOptionalCols] = usePersistedToggle(
+    "orbix_txn_receipt_optional",
+    false,
+  );
+  const showCostCenterCol = enableCostCenter && showOptionalCols;
+  const showBillRefCol = enableBillWise && showOptionalCols;
+  const [allocOpen, setAllocOpen] = useState(false);
 
   // Cash & bank ledgers + special accounts
   const cashAccount = useMemo(
@@ -193,7 +201,14 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
   useEffect(() => {
     setSelectedInvoiceIds([]);
     setInvoiceAllocations({});
+    setAllocOpen(false);
   }, [partyId]);
+
+  useEffect(() => {
+    if (partyId && outstandingInvoices.length > 0) {
+      setAllocOpen(true);
+    }
+  }, [partyId, outstandingInvoices.length]);
 
   const dueOf = (inv: any) => round2((inv.grandTotal || 0) - (inv.paidAmount || 0));
 
@@ -682,38 +697,39 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
-        <div className="flex items-center gap-3">
+      {/* Compact doc toolbar — title lives on TransactionWorkspace */}
+      <div className="flex items-center justify-between py-2 px-3 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleCancel}
             className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
             title="Back"
+            aria-label="Back"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <div>
-            <h1 className="text-[13px] font-semibold text-[var(--ds-text-default)]">Receive money</h1>
-            {isEdit && <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">{voucherNoPreview}</p>}
-          </div>
+          <span className="font-mono text-[12px] font-medium text-[var(--ds-text-default)]">
+            {voucherNoPreview}
+          </span>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="success" size="sm">
-            RECEIPT
-          </Badge>
-          <Badge
-            variant={
-              existing?.status === VoucherStatus.POSTED
-                ? "success"
-                : existing?.status === VoucherStatus.CANCELLED
-                  ? "danger"
-                  : "default"
-            }
-            size="sm"
-          >
-            {(existing?.status || "NEW").toUpperCase()}
-          </Badge>
-        </div>
+        <Badge
+          variant={
+            existing?.status === VoucherStatus.POSTED
+              ? "success"
+              : existing?.status === VoucherStatus.CANCELLED
+                ? "danger"
+                : "default"
+          }
+          size="sm"
+        >
+          {existing?.status === VoucherStatus.POSTED
+            ? "Posted"
+            : existing?.status === VoucherStatus.CANCELLED
+              ? "Cancelled"
+              : existing?.status === VoucherStatus.DRAFT
+                ? "Draft"
+                : "New"}
+        </Badge>
       </div>
 
       {/* Top: voucher meta + receipt details */}
@@ -907,110 +923,148 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         </div>
       </Card>
 
-      {/* Outstanding invoice settlement */}
+      {/* Outstanding invoice settlement — collapsed chrome until party has bills */}
       {!readOnly && partyId && outstandingInvoices.length > 0 && (
-        <Card title={`Outstanding Invoices — ${party?.name || ""}`} padding="none">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left border-collapse">
-              <thead className="bg-amber-50 border-y border-amber-200 text-amber-700 uppercase tracking-wider font-bold">
-                <tr>
-                  <th className="px-3 py-2.5 w-10 text-center">✓</th>
-                  <th className="px-3 py-2.5">Invoice No</th>
-                  <th className="px-3 py-2.5">Date (BS)</th>
-                  <th className="px-3 py-2.5 text-right">Grand Total</th>
-                  <th className="px-3 py-2.5 text-right">Already Paid</th>
-                  <th className="px-3 py-2.5 text-right">Balance Due</th>
-                  <th className="px-3 py-2.5 text-right w-32">Allocate Now</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-150">
-                {outstandingInvoices.map((inv) => {
-                  const checked = selectedInvoiceIds.includes(inv.id);
-                  return (
-                    <tr
-                      key={inv.id}
-                      className={`cursor-pointer hover:bg-amber-50/40 ${checked ? "bg-amber-50/60" : ""}`}
-                      onClick={() => toggleInvoice(inv)}
-                    >
-                      <td className="px-3 py-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleInvoice(inv)}
-                          onClick={(e) => e.stopPropagation()}
-                          className="h-4 w-4 accent-green-600"
-                        />
-                      </td>
-                      <td className="px-3 py-2 font-mono font-bold text-[var(--ds-text-default)]">
-                        <FileText className="h-3.5 w-3.5 inline mr-1 text-[var(--ds-text-default)]" />
-                        {inv.invoiceNo}
-                      </td>
-                      <td className="px-3 py-2">{inv.dateNepali || inv.date}</td>
-                      <td className="px-3 py-2 text-right font-mono">
-                        {symbol} {formatNumber(inv.grandTotal || 0)}
-                      </td>
-                      <td className="px-3 py-2 text-right font-mono text-[var(--ds-text-default)]">
-                        {symbol} {formatNumber(inv.paidAmount || 0)}
-                      </td>
-                      <td className="px-3 py-2 text-right font-mono font-bold text-amber-700">
-                        {symbol} {formatNumber(inv.balance)}
-                      </td>
-                      <td className="px-3 py-2 text-right">
-                        {checked ? (
-                          <input
-                            type="number"
-                            value={invoiceAllocations[inv.id] || 0}
-                            onChange={(e) =>
-                              updateAllocation(inv.id, parseFloat(e.target.value) || 0)
-                            }
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-full h-8 px-2 text-right font-mono border border-amber-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 bg-amber-50"
-                            max={inv.balance}
-                            min={0}
-                            step="0.01"
-                          />
-                        ) : (
-                          <span className="text-[var(--ds-text-default)]">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex items-center justify-between p-3 border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]/50">
-            <span className="text-[12px] text-[var(--ds-text-default)] font-semibold">
-              Tick invoices and enter allocation amount. Total allocations must equal receipt
-              amount.
+        <div
+          className="rounded-[var(--ds-radius-md)] border border-amber-200 bg-[var(--ds-surface)]"
+          data-testid="receipt-bill-allocation"
+        >
+          <button
+            type="button"
+            className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-amber-50/50"
+            aria-expanded={allocOpen}
+            onClick={() => setAllocOpen(!allocOpen)}
+          >
+            <span>
+              <span className="text-[13px] font-semibold text-[var(--ds-text-default)]">
+                Bill allocation — {party?.name || "party"}
+              </span>
+              <span className="mt-0.5 block text-[12px] text-amber-800">
+                {outstandingInvoices.length} outstanding invoice
+                {outstandingInvoices.length === 1 ? "" : "s"}
+              </span>
             </span>
-            <div className="flex items-center gap-4">
-              <span className="font-mono font-bold text-amber-700">
-                Total Allocated: {symbol} {formatNumber(selectedInvoiceTotal)}
-              </span>
-              <span className="font-mono font-bold text-green-700">
-                Receipt: {symbol} {formatNumber(totals.gross)}
-              </span>
-              {Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? (
-                <CheckCircle2 className="h-4 w-4 text-[var(--ds-status-success)]" />
-              ) : (
-                <X className="h-4 w-4 text-red-600" />
-              )}
-            </div>
-          </div>
-        </Card>
+            <span className="text-[12px] font-medium text-[var(--ds-action-primary)]">
+              {allocOpen ? "Hide" : "Show"}
+            </span>
+          </button>
+          {allocOpen ? (
+            <>
+              <div className="overflow-x-auto border-t border-amber-200">
+                <table className="w-full text-xs text-left border-collapse">
+                  <thead className="bg-amber-50 border-b border-amber-200 text-amber-700 uppercase tracking-wider font-bold">
+                    <tr>
+                      <th className="px-3 py-2.5 w-10 text-center">✓</th>
+                      <th className="px-3 py-2.5">Invoice No</th>
+                      <th className="px-3 py-2.5">Date (BS)</th>
+                      <th className="px-3 py-2.5 text-right">Grand Total</th>
+                      <th className="px-3 py-2.5 text-right">Already Paid</th>
+                      <th className="px-3 py-2.5 text-right">Balance Due</th>
+                      <th className="px-3 py-2.5 text-right w-32">Allocate Now</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-150">
+                    {outstandingInvoices.map((inv) => {
+                      const checked = selectedInvoiceIds.includes(inv.id);
+                      return (
+                        <tr
+                          key={inv.id}
+                          className={`cursor-pointer hover:bg-amber-50/40 ${checked ? "bg-amber-50/60" : ""}`}
+                          onClick={() => toggleInvoice(inv)}
+                        >
+                          <td className="px-3 py-2 text-center">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggleInvoice(inv)}
+                              onClick={(e) => e.stopPropagation()}
+                              className="h-4 w-4 accent-green-600"
+                            />
+                          </td>
+                          <td className="px-3 py-2 font-mono font-bold text-[var(--ds-text-default)]">
+                            <FileText className="h-3.5 w-3.5 inline mr-1 text-[var(--ds-text-default)]" />
+                            {inv.invoiceNo}
+                          </td>
+                          <td className="px-3 py-2">{inv.dateNepali || inv.date}</td>
+                          <td className="px-3 py-2 text-right font-mono">
+                            {symbol} {formatNumber(inv.grandTotal || 0)}
+                          </td>
+                          <td className="px-3 py-2 text-right font-mono text-[var(--ds-text-default)]">
+                            {symbol} {formatNumber(inv.paidAmount || 0)}
+                          </td>
+                          <td className="px-3 py-2 text-right font-mono font-bold text-amber-700">
+                            {symbol} {formatNumber(inv.balance)}
+                          </td>
+                          <td className="px-3 py-2 text-right">
+                            {checked ? (
+                              <input
+                                type="number"
+                                value={invoiceAllocations[inv.id] || 0}
+                                onChange={(e) =>
+                                  updateAllocation(inv.id, parseFloat(e.target.value) || 0)
+                                }
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-full h-8 px-2 text-right font-mono border border-amber-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 bg-amber-50"
+                                max={inv.balance}
+                                min={0}
+                                step="0.01"
+                              />
+                            ) : (
+                              <span className="text-[var(--ds-text-default)]">—</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex items-center justify-between p-3 border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]/50">
+                <span className="text-[12px] text-[var(--ds-text-default)] font-semibold">
+                  Tick invoices and enter allocation amount. Total allocations must equal receipt
+                  amount.
+                </span>
+                <div className="flex items-center gap-4">
+                  <span className="font-mono font-bold text-amber-700">
+                    Total Allocated: {symbol} {formatNumber(selectedInvoiceTotal)}
+                  </span>
+                  <span className="font-mono font-bold text-green-700">
+                    Receipt: {symbol} {formatNumber(totals.gross)}
+                  </span>
+                  {Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? (
+                    <CheckCircle2 className="h-4 w-4 text-[var(--ds-status-success)]" />
+                  ) : (
+                    <X className="h-4 w-4 text-red-600" />
+                  )}
+                </div>
+              </div>
+            </>
+          ) : null}
+        </div>
       )}
 
       {/* Receipt lines */}
       <Card title="Received Into (Credit Accounts)" padding="none">
+        {(enableCostCenter || enableBillWise) && (
+          <div className="flex items-center justify-end gap-2 border-b border-[var(--ds-border-default)] px-3 py-2">
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => setShowOptionalCols(!showOptionalCols)}
+              aria-pressed={showOptionalCols}
+            >
+              {showOptionalCols ? "Hide optional columns" : "Optional columns"}
+            </Button>
+          </div>
+        )}
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[var(--ds-text-default)] uppercase tracking-wider font-bold">
               <tr>
                 <th className="px-2 py-2.5 w-10 text-center">#</th>
                 <th className="px-2 py-2.5 min-w-[240px]">Account</th>
-                {enableCostCenter && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
-                {enableBillWise && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
+                {showCostCenterCol && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
+                {showBillRefCol && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
                 <th className="px-2 py-2.5 min-w-[160px]">Narration</th>
                 <th className="px-2 py-2.5 w-36 text-right">Amount</th>
                 <th className="px-2 py-2.5 w-10"></th>
@@ -1029,7 +1083,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                       disabled={readOnly}
                     />
                   </td>
-                  {enableCostCenter && (
+                  {showCostCenterCol && (
                     <td className="px-2 py-2">
                       <Select
                         options={costCenterOptions}
@@ -1041,7 +1095,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                       />
                     </td>
                   )}
-                  {enableBillWise && (
+                  {showBillRefCol && (
                     <td className="px-2 py-2">
                       <Input
                         value={line.billRefNo}

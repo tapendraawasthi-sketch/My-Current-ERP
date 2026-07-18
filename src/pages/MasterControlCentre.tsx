@@ -264,7 +264,7 @@ const MasterControlCentre: React.FC = () => {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             aria-label="Branch filter"
           >
             <option value="all">All branches</option>
@@ -281,26 +281,26 @@ const MasterControlCentre: React.FC = () => {
         {/* Stats Summary Bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white border-l-4 border-blue-500 rounded-md p-4 shadow-sm">
-            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
-              Total Ledgers
+            <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
+              Total ledgers
             </div>
-            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{totalLedgers}</div>
+            <div className="text-[20px] font-semibold mt-1 text-[var(--ds-text-default)]">{totalLedgers}</div>
           </div>
           <div className="bg-white border-l-4 border-green-500 rounded-md p-4 shadow-sm">
-            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
-              Stock Items
+            <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
+              Stock items
             </div>
-            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(items || []).length}</div>
+            <div className="text-[20px] font-semibold mt-1 text-[var(--ds-text-default)]">{(items || []).length}</div>
           </div>
           <div className="bg-white border-l-4 border-amber-500 rounded-md p-4 shadow-sm">
-            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
-              Total Employees
+            <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
+              Total employees
             </div>
-            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(employees || []).length}</div>
+            <div className="text-[20px] font-semibold mt-1 text-[var(--ds-text-default)]">{(employees || []).length}</div>
           </div>
           <div className="bg-white border-l-4 border-[var(--ds-status-info)] rounded-md p-4 shadow-sm">
-            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
-              Pay Heads
+            <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
+              Pay heads
             </div>
             <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(payHeads || []).length}</div>
           </div>

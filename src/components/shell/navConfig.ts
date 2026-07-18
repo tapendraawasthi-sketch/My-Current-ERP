@@ -165,7 +165,7 @@ export const SHELL_NAV: ShellNavGroup[] = [
     roles: ["accountant", "owner", "manager", "auditor", "admin"],
     items: [
       { id: "journal", label: "Journal", page: "journal", icon: FileText, roles: ["accountant", "owner", "manager", "admin"], favouriteEligible: true },
-      { id: "voucher-entry", label: "Voucher Hub", page: "voucher-entry", icon: ClipboardList, roles: ["accountant", "owner", "manager", "admin"] },
+      { id: "voucher-entry", label: "Voucher index", page: "voucher-entry", icon: ClipboardList, roles: ["accountant", "owner", "manager", "admin"] },
       { id: "debit-note", label: "Debit Note", page: "debit-note", icon: FileText, roles: ["accountant", "owner", "manager", "admin"] },
       { id: "credit-note", label: "Credit Note", page: "credit-note", icon: FileText, roles: ["accountant", "owner", "manager", "admin"] },
       { id: "accounts", label: "Chart of Accounts", page: "accounts", icon: BookOpen, roles: ["accountant", "owner", "manager", "auditor", "admin"], favouriteEligible: true },
@@ -225,7 +225,7 @@ export const SHELL_NAV: ShellNavGroup[] = [
       { id: "users", label: "Users", page: "users", icon: Users, roles: ["admin", "owner"] },
       { id: "branch-master", label: "Branches", page: "branch-master", icon: Building2, roles: ["admin", "owner", "manager"] },
       { id: "print-settings", label: "Print settings", page: "print-settings", icon: Printer, roles: ["admin", "owner", "manager"] },
-      { id: "configuration-hub", label: "Configuration Hub", page: "configuration-hub", icon: Settings, roles: ["admin", "owner", "manager"] },
+      { id: "configuration-hub", label: "Configuration index", page: "configuration-hub", icon: Settings, roles: ["admin", "owner", "manager"] },
       { id: "accounts-configuration", label: "Accounts Config", page: "accounts-configuration", icon: Settings, roles: ["admin", "owner", "manager"] },
       { id: "inventory-config", label: "Inventory Config", page: "inventory-config", icon: Settings, roles: ["admin", "owner", "manager"] },
       { id: "backup-restore", label: "Backup & restore", page: "backup-restore", icon: HardDrive, roles: ["admin", "owner"] },

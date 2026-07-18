@@ -1,0 +1,20 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-32 — DEPENDENCIES
+======================================================================
+
+MAI-31 AccountingDomainPort — UNRESOLVED_PENDING_HANDOFF
+MAI-13 conversation/object store — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-25 — UNRESOLVED_PENDING_HANDOFF
+MAI-00..MAI-06 — PASSED_FOUNDATION
+
+UQ-32-01: Storage backend (server sqlite/PG vs Dexie) for DraftAggregate?
+UQ-32-02: Expiry policy vs confirmation token lifetime (MAI-34)?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

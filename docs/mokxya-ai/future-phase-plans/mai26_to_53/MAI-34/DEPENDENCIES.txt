@@ -1,0 +1,21 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-34 — DEPENDENCIES
+======================================================================
+
+MAI-33 preview/revalidation snapshot — UNRESOLVED_PENDING_HANDOFF
+MAI-32 draft versions — UNRESOLVED_PENDING_HANDOFF
+MAI-01 constitution / khataConfirmAuth — PASSED_FOUNDATION (revalidate)
+GAP-P0-001 OEC vs Dexie writers — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-25 — UNRESOLVED_PENDING_HANDOFF
+
+UQ-34-01: Product path becomes OEC-only or OEC+Dexie with single idempotency?
+UQ-34-02: Token binding fields (user, company, preview_hash, draft_version)?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

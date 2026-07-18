@@ -1,0 +1,11 @@
+{
+  "adjudication": [],
+  "linguist_approved": false,
+  "production_approved": false,
+  "prohibited_for_training": true,
+  "reviewer_declaration_required": true,
+  "round_a": [],
+  "round_b": [],
+  "schema": "mai07_v3_review_import_v1",
+  "status": "TEMPLATE_ONLY_NO_HUMAN_DECISIONS"
+}

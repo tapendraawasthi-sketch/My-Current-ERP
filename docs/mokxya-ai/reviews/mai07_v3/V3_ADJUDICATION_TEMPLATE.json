@@ -1,0 +1,14 @@
+{
+  "fields": [
+    "review_id",
+    "original_labels",
+    "adjudicated_disposition",
+    "rationale_category",
+    "candidate_roles",
+    "human_review_remains_required",
+    "inclusion_decision"
+  ],
+  "rows": [],
+  "schema_version": "1.0.0",
+  "status": "TEMPLATE_AWAITING_DISAGREEMENTS"
+}

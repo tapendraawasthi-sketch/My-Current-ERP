@@ -1,0 +1,70 @@
+{
+  "LINGUIST_APPROVED": false,
+  "MAI_07R3J_A_REVIEW_OPS": "PASSED_AUTOMATION",
+  "MAI_08": "NOT_STARTED",
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "ROUND_A_LOCKED": false,
+  "ROUND_B_LOCKED": false,
+  "ROUND_B_READY": false,
+  "adjudicator_package_ready": false,
+  "blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+  "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+  "human_answers_generated": false,
+  "human_blocker": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+  "model_evaluation_performed": false,
+  "next_human_action": "No Round A submissions in inbox yet. Send ZIPs to reviewers; place completed batches under round_a_inbox/<ROLE>/.",
+  "package_hash_manifest_sha256": "de047bbce5d7b94346735decafc48eb3b658c61fd5f798242e6117be35de87b0",
+  "packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c",
+  "phase": "MAI-07R3J-A-AUTOMATED-REVIEW-OPERATIONS",
+  "prior_states": [
+    "PACKET_VERIFIED",
+    "ROUND_A_PACKAGES_READY",
+    "WAITING_FOR_ROUND_A_SUBMISSIONS"
+  ],
+  "roles": {
+    "ACCOUNTING_DOMAIN": {
+      "batch_count": 6,
+      "batches_returned": 0,
+      "completion_pct": "0%",
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/ACCOUNTING_DOMAIN",
+      "row_total": 611,
+      "zip_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/MokXya_MAI07_V3_ROUND_A_PACKAGE__ACCOUNTING_DOMAIN.zip"
+    },
+    "NEPALI_FLUENT_A": {
+      "batch_count": 10,
+      "batches_returned": 0,
+      "completion_pct": "0%",
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/NEPALI_FLUENT_A",
+      "row_total": 1111,
+      "zip_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/MokXya_MAI07_V3_ROUND_A_PACKAGE__NEPALI_FLUENT_A.zip"
+    },
+    "PRODUCT_POLICY": {
+      "batch_count": 10,
+      "batches_returned": 0,
+      "completion_pct": "0%",
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/PRODUCT_POLICY",
+      "row_total": 1111,
+      "zip_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/MokXya_MAI07_V3_ROUND_A_PACKAGE__PRODUCT_POLICY.zip"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "batch_count": 10,
+      "batches_returned": 0,
+      "completion_pct": "0%",
+      "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+      "declaration_status": "pending_submission",
+      "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/PROFESSIONAL_LINGUIST_B",
+      "row_total": 1111,
+      "zip_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/MokXya_MAI07_V3_ROUND_A_PACKAGE__PROFESSIONAL_LINGUIST_B.zip"
+    }
+  },
+  "schema_version": "1.0.0",
+  "state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+  "updated_utc": "2026-07-18T09:30:09.723361+00:00"
+}

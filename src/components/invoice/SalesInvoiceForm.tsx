@@ -50,6 +50,7 @@ import toast from "@/lib/appToast";
 import { consumeAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
 import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
 import AttachmentUploader from "../ui/AttachmentUploader";
+import { usePersistedToggle } from "@/hooks/usePersistedToggle";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -314,6 +315,35 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [billSundries, setBillSundries] = useState<
     Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>
   >(existing?.billSundries || []);
+
+  /** Phase C — progressive disclosure (persisted). */
+  const [moreColumns, setMoreColumns] = usePersistedToggle("orbix_txn_invoice_more_cols", false);
+  const [rareColumns, setRareColumns] = usePersistedToggle("orbix_txn_invoice_rare_cols", false);
+  const [optionalOpen, setOptionalOpen] = usePersistedToggle(
+    "orbix_txn_invoice_optional",
+    !!(existing?.billSundries?.length || existing?.tdsAmount),
+  );
+  const [rareOpen, setRareOpen] = usePersistedToggle(
+    "orbix_txn_invoice_rare",
+    !!(existing?.attachments?.length || existing?.narrationNe),
+  );
+
+  useEffect(() => {
+    if (party?.subjectToTds || tdsEnabled || billSundries.length > 0) {
+      setOptionalOpen(true);
+    }
+  }, [partyId]); // eslint-disable-line react-hooks/exhaustive-deps — seed on party change only
+
+  useEffect(() => {
+    const needsOptionalCols = lines.some(
+      (l) => Number(l.discountPercent) > 0 || (l.isTaxable && Number(l.vatRate) !== 13),
+    );
+    if (needsOptionalCols) setMoreColumns(true);
+    const needsRareCols = lines.some(
+      (l) => !!l.hsnCode || !!l.description || !!l.warehouseId || l.isTaxable === false,
+    );
+    if (needsRareCols) setRareColumns(true);
+  }, [invoiceId]); // eslint-disable-line react-hooks/exhaustive-deps — seed once per document
 
   const markDirty = () => setDirty(true);
 
@@ -981,7 +1011,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const showWarehouse =
     warehouses.filter((w) => w.isActive).length > 0 && (type === "sales" || type === "purchase");
 
-  const colspan = 13 + (showWarehouse ? 1 : 0);
+  // Essential 7 + optional 4 + rare (HSN+Desc+Tax?) 3 + warehouse 1
+  const colspan =
+    7 +
+    (moreColumns ? 4 : 0) +
+    (rareColumns ? 3 : 0) +
+    (rareColumns && showWarehouse ? 1 : 0);
 
   return (
     <div className="bg-[var(--ds-canvas)] p-3">
@@ -995,9 +1030,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </div>
           )}
 
-          {/* Header */}
-          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
-            <div className="flex items-center gap-3">
+          {/* Compact doc toolbar — title lives on TransactionWorkspace */}
+          <div className="flex items-center justify-between py-2 px-3 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleBack}
                 className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
@@ -1006,15 +1041,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
-              <div>
-                <h1 className="text-[13px] font-semibold text-[var(--ds-text-default)]">{meta.label}</h1>
-                {isEdit && <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">{invoiceNoPreview}</p>}
-              </div>
+              <span className="font-mono text-[12px] font-medium text-[var(--ds-text-default)]">
+                {invoiceNoPreview}
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant={meta.color as any} size="sm">
-                {meta.label}
-              </Badge>
+            <div className="flex items-center gap-1.5">
               <Badge
                 variant={
                   existing?.status === VoucherStatus.POSTED
@@ -1025,13 +1056,14 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 }
                 size="sm"
               >
-                {(existing?.status || "NEW").toUpperCase()}
+                {existing?.status === VoucherStatus.POSTED
+                  ? "Posted"
+                  : existing?.status === VoucherStatus.CANCELLED
+                    ? "Cancelled"
+                    : existing?.status === VoucherStatus.DRAFT
+                      ? "Draft"
+                      : "New"}
               </Badge>
-              {currentFiscalYear && (
-                <Badge variant="default" size="sm">
-                  FY {currentFiscalYear.name}
-                </Badge>
-              )}
               {companySettings?.cbmsEnabled && (
                 <Badge
                   variant={
@@ -1044,10 +1076,10 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   size="sm"
                 >
                   {existing?.cbmsSubmitted === true
-                    ? "CBMS Synced"
+                    ? "CBMS synced"
                     : existing?.cbmsSubmitted === false
-                      ? "CBMS Failed"
-                      : "CBMS Pending"}
+                      ? "CBMS failed"
+                      : "CBMS pending"}
                 </Badge>
               )}
             </div>
@@ -1157,17 +1189,35 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
           {/* Line items */}
           <div className="form-section mb-3">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
               <div className="form-section-title mb-0 pb-0 border-0">Line Items</div>
-              <Button
-                variant="outline"
-                size="xs"
-                onClick={addLine}
-                disabled={readOnly}
-                icon={<Plus className="h-3 w-3" />}
-              >
-                Add Line
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="xs"
+                  onClick={() => setMoreColumns(!moreColumns)}
+                  aria-pressed={moreColumns}
+                >
+                  {moreColumns ? "Fewer columns" : "More columns"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="xs"
+                  onClick={() => setRareColumns(!rareColumns)}
+                  aria-pressed={rareColumns}
+                >
+                  {rareColumns ? "Hide details" : "Line details"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="xs"
+                  onClick={addLine}
+                  disabled={readOnly}
+                  icon={<Plus className="h-3 w-3" />}
+                >
+                  Add Line
+                </Button>
+              </div>
             </div>
             <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
               <table className="line-table">
@@ -1175,18 +1225,20 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   <tr>
                     <th className="px-2 py-2 text-center">#</th>
                     <th className="px-2 py-2 text-left">Item</th>
-                    <th className="px-2 py-2 text-left hidden">HSN</th>
-                    <th className="px-2 py-2 text-left hidden">Description</th>
+                    {rareColumns ? <th className="px-2 py-2 text-left">HSN</th> : null}
+                    {rareColumns ? <th className="px-2 py-2 text-left">Description</th> : null}
                     <th className="px-2 py-2 text-right">Qty</th>
                     <th className="px-2 py-2 text-left">Unit</th>
                     <th className="px-2 py-2 text-right">Rate</th>
-                    <th className="px-2 py-2 text-right">Disc%</th>
-                    <th className="px-2 py-2 text-right">Taxable</th>
-                    <th className="px-2 py-2 text-center">Tax?</th>
-                    <th className="px-2 py-2 text-right">VAT%</th>
-                    <th className="px-2 py-2 text-right">VAT Amt</th>
+                    {moreColumns ? <th className="px-2 py-2 text-right">Disc%</th> : null}
+                    {moreColumns ? <th className="px-2 py-2 text-right">Taxable</th> : null}
+                    {rareColumns ? <th className="px-2 py-2 text-center">Tax?</th> : null}
+                    {moreColumns ? <th className="px-2 py-2 text-right">VAT%</th> : null}
+                    {moreColumns ? <th className="px-2 py-2 text-right">VAT Amt</th> : null}
                     <th className="px-2 py-2 text-right">Total</th>
-                    {showWarehouse && <th className="px-2 py-2 text-left">Warehouse</th>}
+                    {rareColumns && showWarehouse ? (
+                      <th className="px-2 py-2 text-left">Warehouse</th>
+                    ) : null}
                     <th className="px-2 py-2"></th>
                   </tr>
                 </thead>
@@ -1202,6 +1254,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                         if (idx === lines.length - 1) addLine();
                       }}
                       showWarehouse={showWarehouse}
+                      showOptionalCols={moreColumns}
+                      showRareCols={rareColumns}
                       type={meta.isSales ? "sales" : "purchase"}
                       readOnly={readOnly}
                     />
@@ -1218,113 +1272,139 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </div>
           </div>
 
-          {/* Bill Sundries */}
-          <Card border padding="md">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[12px] font-bold text-[var(--ds-text-default)] uppercase tracking-wider">
-                Bill Sundries
-              </h3>
-              <Button
-                variant="outline"
-                size="xs"
-                onClick={() => {
-                  setBillSundries((p) => [
-                    ...p,
-                    { id: uid(), name: "", type: "additive", amount: 0 },
-                  ]);
-                  markDirty();
-                }}
-                disabled={readOnly}
-                icon={<Plus className="h-3 w-3" />}
-              >
-                Add Sundry
-              </Button>
-            </div>
-            {billSundries.length > 0 && (
-              <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
-                <table className="w-full text-xs">
-                  <thead className="bg-[var(--ds-surface-muted)] text-[10px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide border-b border-[var(--ds-border-default)]">
-                    <tr>
-                      <th className="px-2 py-2 text-left">Sundry Name</th>
-                      <th className="px-2 py-2 text-center w-32">Type</th>
-                      <th className="px-2 py-2 text-right w-32">Amount</th>
-                      <th className="px-2 py-2 w-10"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {billSundries.map((sundry, idx) => (
-                      <tr
-                        key={sundry.id}
-                        className="border-b border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]/50"
-                      >
-                        <td className="px-2 py-1">
-                          <input
-                            className="w-full h-8 px-2 text-[12px] font-mono bg-transparent border border-transparent focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] rounded-md outline-none"
-                            value={sundry.name}
-                            onChange={(e) => {
-                              const n = [...billSundries];
-                              n[idx].name = e.target.value;
-                              setBillSundries(n);
-                              markDirty();
-                            }}
-                            disabled={readOnly}
-                            placeholder="e.g. Shipping / Discount"
-                          />
-                        </td>
-                        <td className="px-2 py-1 text-center">
-                          <select
-                            aria-label="Bill sundry type"
-                            className="w-full h-8 px-2 text-[12px] font-mono bg-transparent border border-transparent focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] rounded-md outline-none"
-                            value={sundry.type}
-                            onChange={(e) => {
-                              const n = [...billSundries];
-                              n[idx].type = e.target.value as any;
-                              setBillSundries(n);
-                              markDirty();
-                            }}
-                            disabled={readOnly}
+          {/* Optional: Bill Sundries */}
+          <div
+            className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)]"
+            data-testid="invoice-optional-sundries"
+          >
+            <button
+              type="button"
+              className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-[var(--ds-surface-muted)]"
+              aria-expanded={optionalOpen}
+              onClick={() => setOptionalOpen(!optionalOpen)}
+            >
+              <span>
+                <span className="text-[13px] font-semibold text-[var(--ds-text-default)]">
+                  Bill sundries
+                </span>
+                <span className="mt-0.5 block text-[12px] text-[var(--ds-text-muted)]">
+                  {billSundries.length > 0
+                    ? `${billSundries.length} charge${billSundries.length === 1 ? "" : "s"}`
+                    : "Shipping, freight, bill-level discounts"}
+                </span>
+              </span>
+              <span className="text-[12px] font-medium text-[var(--ds-action-primary)]">
+                {optionalOpen ? "Hide" : "Show"}
+              </span>
+            </button>
+            {optionalOpen ? (
+              <div className="border-t border-[var(--ds-border-default)] p-4">
+                <div className="flex items-center justify-end mb-3">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={() => {
+                      setBillSundries((p) => [
+                        ...p,
+                        { id: uid(), name: "", type: "additive", amount: 0 },
+                      ]);
+                      markDirty();
+                    }}
+                    disabled={readOnly}
+                    icon={<Plus className="h-3 w-3" />}
+                  >
+                    Add Sundry
+                  </Button>
+                </div>
+                {billSundries.length > 0 ? (
+                  <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
+                    <table className="w-full text-xs">
+                      <thead className="bg-[var(--ds-surface-muted)] text-[10px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide border-b border-[var(--ds-border-default)]">
+                        <tr>
+                          <th className="px-2 py-2 text-left">Sundry Name</th>
+                          <th className="px-2 py-2 text-center w-32">Type</th>
+                          <th className="px-2 py-2 text-right w-32">Amount</th>
+                          <th className="px-2 py-2 w-10"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {billSundries.map((sundry, idx) => (
+                          <tr
+                            key={sundry.id}
+                            className="border-b border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]/50"
                           >
-                            <option value="additive">Additive (+)</option>
-                            <option value="subtractive">Subtractive (-)</option>
-                          </select>
-                        </td>
-                        <td className="px-2 py-1 text-right">
-                          <input
-                            type="number"
-                            className="w-full h-7 px-2 text-[12px] border-0 border-b border-[var(--ds-border-default)] bg-transparent text-right focus:outline-none focus:border-[var(--ds-action-primary)]"
-                            value={sundry.amount || ""}
-                            onChange={(e) => {
-                              const n = [...billSundries];
-                              n[idx].amount = Number(e.target.value) || 0;
-                              setBillSundries(n);
-                              markDirty();
-                            }}
-                            disabled={readOnly}
-                            placeholder="0.00"
-                            min={0}
-                            step="0.01"
-                          />
-                        </td>
-                        <td className="px-2 py-1 text-center">
-                          {!readOnly && (
-                            <button
-                              onClick={() => {
-                                setBillSundries((p) => p.filter((s) => s.id !== sundry.id));
-                                markDirty();
-                              }}
-                              className="p-1 text-[var(--ds-text-default)] hover:text-red-500 rounded"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                            <td className="px-2 py-1">
+                              <input
+                                className="w-full h-8 px-2 text-[12px] font-mono bg-transparent border border-transparent focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] rounded-md outline-none"
+                                value={sundry.name}
+                                onChange={(e) => {
+                                  const n = [...billSundries];
+                                  n[idx].name = e.target.value;
+                                  setBillSundries(n);
+                                  markDirty();
+                                }}
+                                disabled={readOnly}
+                                placeholder="e.g. Shipping / Discount"
+                              />
+                            </td>
+                            <td className="px-2 py-1 text-center">
+                              <select
+                                aria-label="Bill sundry type"
+                                className="w-full h-8 px-2 text-[12px] font-mono bg-transparent border border-transparent focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] rounded-md outline-none"
+                                value={sundry.type}
+                                onChange={(e) => {
+                                  const n = [...billSundries];
+                                  n[idx].type = e.target.value as any;
+                                  setBillSundries(n);
+                                  markDirty();
+                                }}
+                                disabled={readOnly}
+                              >
+                                <option value="additive">Additive (+)</option>
+                                <option value="subtractive">Subtractive (-)</option>
+                              </select>
+                            </td>
+                            <td className="px-2 py-1 text-right">
+                              <input
+                                type="number"
+                                className="w-full h-7 px-2 text-[12px] border-0 border-b border-[var(--ds-border-default)] bg-transparent text-right focus:outline-none focus:border-[var(--ds-action-primary)]"
+                                value={sundry.amount || ""}
+                                onChange={(e) => {
+                                  const n = [...billSundries];
+                                  n[idx].amount = Number(e.target.value) || 0;
+                                  setBillSundries(n);
+                                  markDirty();
+                                }}
+                                disabled={readOnly}
+                                placeholder="0.00"
+                                min={0}
+                                step="0.01"
+                              />
+                            </td>
+                            <td className="px-2 py-1 text-center">
+                              {!readOnly && (
+                                <button
+                                  onClick={() => {
+                                    setBillSundries((p) => p.filter((s) => s.id !== sundry.id));
+                                    markDirty();
+                                  }}
+                                  className="p-1 text-[var(--ds-text-default)] hover:text-red-500 rounded"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-[12px] text-[var(--ds-text-muted)]">No bill sundries yet.</p>
+                )}
               </div>
-            )}
-          </Card>
+            ) : null}
+          </div>
 
           {/* Payment + Totals */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 items-start">
@@ -1425,7 +1505,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 </div>
               )}
 
-              {party?.subjectToTds && (
+              {party?.subjectToTds && optionalOpen ? (
                 <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
                   <div className="flex items-center gap-2 mb-3">
                     <input
@@ -1476,7 +1556,19 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     </div>
                   )}
                 </div>
-              )}
+              ) : null}
+
+              {party?.subjectToTds && !optionalOpen ? (
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    className="text-[12px] font-medium text-[var(--ds-action-primary)]"
+                    onClick={() => setOptionalOpen(true)}
+                  >
+                    Show TDS options
+                  </button>
+                </div>
+              ) : null}
 
               <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
                 <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
@@ -1497,39 +1589,65 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 </div>
               </div>
 
-              <div className="mt-2">
-                <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
-                  Narration (Nepali){" "}
-                  <span className="text-[var(--ds-text-default)] font-normal ml-1">Optional</span>
-                </label>
-                <textarea
-                  className="w-full h-16 p-2 text-[12px] border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
-                  value={narrationNe}
-                  onChange={(e) => {
-                    setNarrationNe(e.target.value.substring(0, 200));
-                    markDirty();
-                  }}
-                  placeholder="नेपालीमा कैफियत..."
-                  disabled={readOnly}
-                />
-                <div className="text-right text-[12px] text-[var(--ds-text-default)] mt-0.5">
-                  {narrationNe.length}/200
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
-                <label className="text-xs font-medium text-[var(--ds-text-default)] mb-1 block">Attachments</label>
-                <AttachmentUploader
-                  attachments={attachments}
-                  onAdd={(b64) => {
-                    setAttachments((p) => [...p, b64]);
-                    markDirty();
-                  }}
-                  onRemove={(idx) => {
-                    setAttachments((p) => p.filter((_, i) => i !== idx));
-                    markDirty();
-                  }}
-                />
+              <div
+                className="mt-3 rounded-md border border-[var(--ds-border-default)]"
+                data-testid="invoice-rare-fields"
+              >
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-between px-3 py-2.5 text-left hover:bg-[var(--ds-surface-muted)]"
+                  aria-expanded={rareOpen}
+                  onClick={() => setRareOpen(!rareOpen)}
+                >
+                  <span className="text-[12px] font-semibold text-[var(--ds-text-default)]">
+                    More fields
+                    <span className="ml-1.5 font-normal text-[var(--ds-text-muted)]">
+                      Nepali narration · Attachments
+                      {attachments.length > 0 ? ` (${attachments.length})` : ""}
+                    </span>
+                  </span>
+                  <span className="text-[12px] font-medium text-[var(--ds-action-primary)]">
+                    {rareOpen ? "Hide" : "Show"}
+                  </span>
+                </button>
+                {rareOpen ? (
+                  <div className="space-y-3 border-t border-[var(--ds-border-default)] px-3 py-3">
+                    <div>
+                      <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
+                        Narration (Nepali)
+                      </label>
+                      <textarea
+                        className="w-full h-16 p-2 text-[12px] border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
+                        value={narrationNe}
+                        onChange={(e) => {
+                          setNarrationNe(e.target.value.substring(0, 200));
+                          markDirty();
+                        }}
+                        placeholder="नेपालीमा कैफियत..."
+                        disabled={readOnly}
+                      />
+                      <div className="text-right text-[12px] text-[var(--ds-text-default)] mt-0.5">
+                        {narrationNe.length}/200
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-[var(--ds-text-default)] mb-1 block">
+                        Attachments
+                      </label>
+                      <AttachmentUploader
+                        attachments={attachments}
+                        onAdd={(b64) => {
+                          setAttachments((p) => [...p, b64]);
+                          markDirty();
+                        }}
+                        onRemove={(idx) => {
+                          setAttachments((p) => p.filter((_, i) => i !== idx));
+                          markDirty();
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </Card>
 

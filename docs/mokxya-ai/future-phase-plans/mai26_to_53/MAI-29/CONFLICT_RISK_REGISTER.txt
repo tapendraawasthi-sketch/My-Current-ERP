@@ -1,0 +1,21 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-29 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-29-01 hybrid_ranking_adapter.py / HybridRankStage / EvidenceBundle entities
+  Shared with Codex knowledge path — no edits pre-handoff.
+CR-29-02 np_kb hybrid merge heuristics vs Track E EvidenceBundle
+  Keep separate; do not dual-authority citations.
+CR-29-03 Query variants mutating MAI-07 transliteration resources
+  Forbidden; variants are query-time only.
+CR-29-04 Inventing MAI-30 claim schema early
+  Stop at EvidenceBundle; leave AnswerPlan to MAI-30.
+
+Conflicts on owned paths: none
+
+END OF REGISTER

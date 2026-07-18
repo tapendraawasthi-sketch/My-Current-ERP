@@ -1,0 +1,23 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-31 — DEPENDENCIES
+======================================================================
+
+MAI-30 grounded answers (non-mutation) — UNRESOLVED_PENDING_HANDOFF
+MAI-18/19 EventSpecification + EventFrame — UNRESOLVED_PENDING_HANDOFF
+MAI-17 router/OOD — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-25 Codex chain — UNRESOLVED_PENDING_HANDOFF
+GAP-P0-001 dual writers — UNRESOLVED_PENDING_HANDOFF (must not worsen)
+MAI-00..MAI-06 — PASSED_FOUNDATION
+
+UQ-31-01: Port surface for purchase/sales/returns/settlements/banking only?
+UQ-31-02: How EventFrame maps to existing start_or_merge_* draft APIs?
+UQ-31-03: Master lookup via Dexie vs Node — single read authority?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

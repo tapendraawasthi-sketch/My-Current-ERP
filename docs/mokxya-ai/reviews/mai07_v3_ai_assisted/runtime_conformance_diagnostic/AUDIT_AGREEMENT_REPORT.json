@@ -1,0 +1,8 @@
+{
+  "mismatch_count": 0,
+  "mismatches": [],
+  "ok": true,
+  "phase": "MAI-07R3L-AI-ASSISTED-RUNTIME-CONFORMANCE-DIAGNOSTIC",
+  "prohibited_for_training": true,
+  "schema_version": "mai07_r3l_runtime_conformance_diagnostic_v1"
+}

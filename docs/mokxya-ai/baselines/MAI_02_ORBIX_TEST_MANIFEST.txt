@@ -1,0 +1,178 @@
+MAI-02 Orbix / MAI-01 security test manifest
+generated_at_utc: 2026-07-14T12:32:01.905517+00:00
+
+COMMAND_A: npm run test:orbix-contract
+  equivalent: npx vitest run src/__tests__/orbix/
+  numTotalTests: 140
+  numPassedTests: 140
+  numFailedTests: 0
+  numPendingTests: 0
+  numTodoTests: 0
+
+COMMAND_B: npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+  numTotalTests: 8
+  numPassedTests: 8
+
+RECONCILIATION:
+  MAI-01 reported "vitest orbix + khataConfirmAuth: 141 passed".
+  That combined run was NOT identical to npm run test:orbix-contract alone.
+  npm run test:orbix-contract only includes src/__tests__/orbix/.
+  vitest.config.ts include also lists khataConfirmAuth.test.ts for bare vitest.
+  Current orbix-only passed=140 (includes 7 mai02CanonicalContracts tests).
+  Current khataConfirmAuth passed=8.
+  Combined active equivalent=148.
+  Pre-MAI-02 orbix-only implied = 140 - 7 = 133; 133 + 8 khata = 141 (matches MAI-01 combined).
+  No .skip/.only/.todo found under src/__tests__/orbix/ or khataConfirmAuth.
+  No deleted orbix test files; include pattern for test:orbix-contract unchanged.
+
+=== ACTIVE ORBIX TESTS ===
+ACTIVE	deviceRegistration.test.ts	deviceRegistration auto-activates device in test mode and authorizes push	passed	npm run test:orbix-contract
+ACTIVE	deviceRegistration.test.ts	deviceRegistration rejects unknown device	passed	npm run test:orbix-contract
+ACTIVE	deviceRegistration.test.ts	deviceRegistration isolates devices by company	passed	npm run test:orbix-contract
+ACTIVE	mai01PresentationPolicy.test.ts	MAI-01 orbix presentation policy cues mode_restriction never allows confirm	passed	npm run test:orbix-contract
+ACTIVE	mai01PresentationPolicy.test.ts	MAI-01 orbix presentation policy cues permission_denied never allows confirm	passed	npm run test:orbix-contract
+ACTIVE	mai01PresentationPolicy.test.ts	MAI-01 orbix presentation policy cues confirmation_required allowsConfirm for UI but posting still gated by executeOrbixConfirm	passed	npm run test:orbix-contract
+ACTIVE	mai01PresentationPolicy.test.ts	MAI-01 orbix presentation policy cues mayShowConfirmControl denies Ask Mode	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) rejects float money	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) rejects client trusted identity	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) rejects unsupported schema major	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) rejects response/payload mismatch	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) maps unknown orbix response_type to unsupported_response	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) rejects unsupported wire schema major as unsupported_response	passed	npm run test:orbix-contract
+ACTIVE	mai02CanonicalContracts.test.ts	MAI-02 canonical contracts (TS) validates shared Python fixtures where schemas overlap	passed	npm run test:orbix-contract
+ACTIVE	noDoubleSync.test.ts	Phase 6 no double-sync blocks legacy accounting entity types	passed	npm run test:orbix-contract
+ACTIVE	noDoubleSync.test.ts	Phase 6 no double-sync one purchase → one canonical event, no syncOutbox invoice	passed	npm run test:orbix-contract
+ACTIVE	noDoubleSync.test.ts	Phase 6 no double-sync one sale → one canonical sales_posted event, no syncOutbox invoice	passed	npm run test:orbix-contract
+ACTIVE	orbixPostingService.test.ts	executeOrbixConfirm gates rejects Ask mode without posting	passed	npm run test:orbix-contract
+ACTIVE	orbixPostingService.test.ts	executeOrbixConfirm gates rejects unauthorized role	passed	npm run test:orbix-contract
+ACTIVE	orbixPostingService.test.ts	executeOrbixConfirm gates rejects stale preview hash mismatch	passed	npm run test:orbix-contract
+ACTIVE	orbixPostingService.test.ts	executeOrbixConfirm gates supports injected failure after validation	passed	npm run test:orbix-contract
+ACTIVE	orbixPostingService.test.ts	executeOrbixConfirm gates builds stable idempotency keys	passed	npm run test:orbix-contract
+ACTIVE	orbixPostingService.test.ts	executeOrbixConfirm gates requires inventory classification for purchase without seeded item	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse parses normal_answer	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse parses mode_restriction from error.type	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse parses clarification_required with draft_id	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse parses confirmation_required with journal lines	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse parses report_result from report_spec	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse parses provider_offline	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse handles malformed payload without enabling confirm	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse supports Nepali unicode in display text	passed	npm run test:orbix-contract
+ACTIVE	orbixResponseAdapter.test.ts	parseOrbixResponse unknown response_type falls through safely	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain CSV import + duplicate rejection	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain exact amount/date match suggestion	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain confirm match + overmatch rejection	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain unmatch	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain bank charge adjustment via Phase 9	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain cheque clear transition	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain invalid cheque transition rejection	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain close with difference rejection	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain close when balanced	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain treasury position distinguishes book vs available	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain idempotent match replay	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain stale line version conflict	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain legacy reconciled flag cannot contradict Phase 10 unmatched line	passed	npm run test:orbix-contract
+ACTIVE	phase10Treasury.test.ts	Phase 10 treasury domain partial overmatch conflict	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 payload hashing stableStringify sorts object keys	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 payload hashing payload hash is stable for same content	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 payload hashing payload hash changes when content changes	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 payload hashing event chain hash depends on previous hash	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 accounting event contract builds purchase_posted event with integrity	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 accounting event contract rejects tampered payload hash	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 retry / failure classification classifies network as retryable	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 retry / failure classification classifies auth and schema as permanent	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 retry / failure classification classifies integrity as conflict	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 retry / failure classification computes increasing backoff timestamps	passed	npm run test:orbix-contract
+ACTIVE	phase5-sync-contract.test.ts	Phase 5 company sync policy normalizes and gates outbox requirement	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain partial customer receipt + allocation rebuilds paid projection	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain rejects over-allocation	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain customer advance creates unapplied balance	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain supplier payment partial	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain cash_to_bank contra	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain balanced journal posts	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain unbalanced journal rejection	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain idempotent replay returns same voucher	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain rollback on injectFailure before_sync leaves no voucher	passed	npm run test:orbix-contract
+ACTIVE	phase9Settlement.test.ts	Phase 9 settlement domain stale settlement version conflict	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction full inventory return posts and leaves original immutable	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction rejects over-return quantity	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction financial supplier debit note posts without stock movement	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction idempotent replay returns same adjustment invoice	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction preserves historical tax_rule_version from original purchase	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction rejects stale expectedAdjustmentVersion (concurrent conflict)	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction clean purchase return and debit note pass local reconciliation	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseAdjustmentTransaction.test.ts	postPurchaseAdjustmentTransaction reconciliation detects a purchase invoice with a missing journal	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction posts invoice, journal, stock, audit, sync, and receipt atomically	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction replays identical confirmation without duplicating records	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction rejects restricted role without writing	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction rejects Ask mode for orbix source	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction rolls back on injected failure before stock	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction rejects zero quantity	passed	npm run test:orbix-contract
+ACTIVE	postPurchaseTransaction.test.ts	postPurchaseTransaction resetOrbixE2ECompany reseeds bike item	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction full inventory return posts and leaves original immutable	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction rejects over-return quantity	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction financial credit note posts without stock movement	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction idempotent replay returns same adjustment invoice	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction preserves historical tax_rule_version from original sale	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction rejects stale expectedAdjustmentVersion (concurrent conflict)	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction clean inventory return and credit note pass sales reconciliation	passed	npm run test:orbix-contract
+ACTIVE	postSalesAdjustmentTransaction.test.ts	postSalesAdjustmentTransaction reconciliation detects deliberate financial CN stock mismatch	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction posts cash sale invoice, journal, stock-out, audit, event, receipt	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction posts credit sale with customer	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction posts bank sale	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction rejects insufficient stock	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction rejects credit without customer	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction rejects Ask Mode	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction rejects restricted role	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction idempotent replay returns same invoice	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction rolls back on injected failure	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction reset restores opening stock	passed	npm run test:orbix-contract
+ACTIVE	postSalesTransaction.test.ts	postSalesTransaction perpetual cash sale creates COGS journal and cost allocation	passed	npm run test:orbix-contract
+ACTIVE	purchaseReturnRemoteApplyNoRecalc.test.ts	purchase return remote apply — no recalculation Device B applies event cost even when local item cost differs	passed	npm run test:orbix-contract
+ACTIVE	purchaseReturnRemoteApplyNoRecalc.test.ts	purchase return remote apply — no recalculation Device B debit note apply preserves originalInvoiceId and skips stock	passed	npm run test:orbix-contract
+ACTIVE	salesRemoteApplyNoRecalc.test.ts	sales remote apply — no recalculation Device B applies event cost X even when local item cost is Y	passed	npm run test:orbix-contract
+ACTIVE	salesReturnRemoteApplyNoRecalc.test.ts	sales return remote apply — no recalculation Device B applies event VAT/cost even when local item cost and tax settings differ	passed	npm run test:orbix-contract
+ACTIVE	salesReturnRemoteApplyNoRecalc.test.ts	sales return remote apply — no recalculation Device B credit note apply preserves originalInvoiceId and skips stock/COGS	passed	npm run test:orbix-contract
+ACTIVE	salesVatAndCost.test.ts	salesVatEngine computes exclusive VAT deterministically	passed	npm run test:orbix-contract
+ACTIVE	salesVatAndCost.test.ts	salesVatEngine derives base from inclusive price	passed	npm run test:orbix-contract
+ACTIVE	salesVatAndCost.test.ts	salesVatEngine treats exempt lines without VAT	passed	npm run test:orbix-contract
+ACTIVE	salesVatAndCost.test.ts	costAllocation MWA uses moving weighted average from stock movements	passed	npm run test:orbix-contract
+ACTIVE	ui3SyncPresentation.test.ts	UI-3 sync-state presentation contract pending is not labelled synced	passed	npm run test:orbix-contract
+ACTIVE	ui3SyncPresentation.test.ts	UI-3 sync-state presentation contract conflict is distinct from failure and retry	passed	npm run test:orbix-contract
+ACTIVE	ui3SyncPresentation.test.ts	UI-3 sync-state presentation contract offline preserves pending wording separately	passed	npm run test:orbix-contract
+ACTIVE	ui3SyncPresentation.test.ts	UI-3 sync-state presentation contract local-only is not synced	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps owner	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps accountant	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps cashier	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps banking	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps inventory	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps auditor	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps admin to administrator	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps viewer / unknown to restricted	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	resolveWorkspaces maps combined multi-hint roles	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	selectQuickActions cashier gets sale and receipt when create is allowed	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	selectQuickActions auditor defaults yield no requireCreate actions; ask_orbix present	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	selectQuickActions ask_orbix present for owner defaults	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	WORKSPACE_METRICS permissions (cashier) cashier metric list does not include net_result	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	formatHomeAmount null / undefined / NaN → em dash	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	formatHomeAmount negative uses parentheses	passed	npm run test:orbix-contract
+ACTIVE	ui5HomeWorkspace.test.ts	QUICK_ACTION_REGISTRY navigation-only contract every action has a page navigation target and no mutation flags	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	syncStatusPresentation never invents synced for unknown	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	syncStatusPresentation maps authoritative statuses	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	getPresentationMeta Ask Mode restriction cannot confirm or mutate	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	getPresentationMeta clarification cannot post	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	getPresentationMeta posting_completed trust follows sync_status	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	confirmButtonLabel uses operation-specific labels	passed	npm run test:orbix-contract
+ACTIVE	ui6OrbixPresentation.test.ts	confirmButtonLabel does not use generic yes	passed	npm run test:orbix-contract
+ACTIVE	ui7TransactionWorkspace.test.ts	UI-7 transaction status never invents synced from unknown	passed	npm run test:orbix-contract
+ACTIVE	ui7TransactionWorkspace.test.ts	UI-7 transaction status maps sync statuses distinctly	passed	npm run test:orbix-contract
+ACTIVE	ui7TransactionWorkspace.test.ts	UI-7 transaction status uses operation-specific post labels	passed	npm run test:orbix-contract
+
+=== KHATA CONFIRM AUTH TESTS ===
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth denies unauthenticated confirm	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth denies invalid token	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth denies authenticated but unauthorized role	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth denies tenant spoofing via body	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth denies company spoofing via body	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth allows matching accountant and overwrites body identity from JWT	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth role matrix	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts
+ACTIVE	src/middleware/khataConfirmAuth.test.ts	khataConfirmAuth production rejects insecure secret	passed	npx vitest run packages/backend/src/middleware/khataConfirmAuth.test.ts

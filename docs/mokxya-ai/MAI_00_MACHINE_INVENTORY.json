@@ -1,0 +1,826 @@
+{
+  "schema_version": "1.0.0",
+  "repository": {
+    "root": ".",
+    "branch": "main",
+    "commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
+    "remote_tracking": "origin/main",
+    "is_git_checkout": true,
+    "approx_file_count_excluding_git_node_modules_dist": 25535,
+    "completeness": "APPEARS_COMPLETE",
+    "submodules": "none observed",
+    "dirty_worktree": true,
+    "untracked_highlights": [
+      "Knowledge source/",
+      "MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt",
+      "data/*.sqlite3",
+      "data/oip/",
+      "scripts/_*.py"
+    ],
+    "evidence": [
+      "git rev-parse",
+      "git status",
+      "Get-ChildItem file count"
+    ]
+  },
+  "instructions": [
+    {
+      "path": "AGENTS.md",
+      "scope": "global UI/design + Lovable git rules",
+      "conflict_with_mai00": "Only-edit-named-files / do-not-search conflicts with MAI-00 full audit; MAI-00 wins; edits limited to docs/mokxya-ai",
+      "status": "READ"
+    },
+    {
+      "path": "README.md",
+      "scope": "root minimal",
+      "status": "READ",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    {
+      "path": "DEPLOYMENT.md",
+      "scope": "Render production",
+      "status": "READ",
+      "evidence": [
+        "DEPLOYMENT.md"
+      ]
+    },
+    {
+      "path": "MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt",
+      "scope": "governing MAI roadmap at repo root",
+      "status": "READ",
+      "evidence": [
+        "repo root file; docs/mokxya-ai path missing at start"
+      ]
+    },
+    {
+      "path": "package.json",
+      "scope": "frontend scripts",
+      "status": "READ",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "path": "render.yaml",
+      "scope": "production services",
+      "status": "READ",
+      "evidence": [
+        "render.yaml"
+      ]
+    },
+    {
+      "path": "docker-compose.yml",
+      "scope": "dev postgres/redis/node",
+      "status": "READ",
+      "evidence": [
+        "docker-compose.yml"
+      ]
+    },
+    {
+      "path": "pytest.ini",
+      "scope": "python tests",
+      "status": "READ",
+      "evidence": [
+        "pytest.ini"
+      ]
+    },
+    {
+      "path": "knowledgebase/config.json",
+      "scope": "NP KB pipeline",
+      "status": "READ",
+      "evidence": [
+        "knowledgebase/config.json"
+      ]
+    },
+    {
+      "path": "docs/typescript-baseline.md",
+      "scope": "historical tsc debt",
+      "status": "READ",
+      "evidence": [
+        "docs/typescript-baseline.md"
+      ]
+    }
+  ],
+  "runtimes": [
+    {
+      "id": "spa-vite",
+      "kind": "frontend",
+      "path": "src/main.tsx",
+      "start": "npm run dev / npm start",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "package.json",
+        "vite.config.ts",
+        "serve.mjs"
+      ]
+    },
+    {
+      "id": "erp-bot-fastapi",
+      "kind": "python-ai",
+      "path": "erp_bot/src/api/server.py",
+      "start": "python erp_bot/scripts/start_render.py",
+      "port": "PORT/8765",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "render.yaml",
+        "DEPLOYMENT.md"
+      ]
+    },
+    {
+      "id": "packages-backend-express",
+      "kind": "node-api",
+      "path": "packages/backend/src/server.ts",
+      "start": "npm run dev (packages/backend)",
+      "port": 3000,
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "docker-compose.yml",
+        "server.ts"
+      ]
+    },
+    {
+      "id": "khata-app",
+      "kind": "mobile-web",
+      "path": "khata-app/",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "khata-app/package.json"
+      ]
+    },
+    {
+      "id": "knowledgebase-pipeline",
+      "kind": "offline-tooling",
+      "path": "knowledgebase/scripts/",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "package.json kb:*",
+        "knowledgebase/config.json"
+      ]
+    }
+  ],
+  "entrypoints": [
+    {
+      "name": "Orbix SSE chat",
+      "route": "POST /orbix/chat/stream",
+      "handler": "oip_chat_ingress",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "server.py",
+        "oip_chat_ingress.py",
+        "orbixQwenClient.ts"
+      ]
+    },
+    {
+      "name": "OIP v1 API",
+      "route": "/oip/v1/*",
+      "handler": "oip.api.router",
+      "status": "LEGACY_UNREACHABLE",
+      "evidence": [
+        "ModuleNotFoundError src.oip.modules.application"
+      ]
+    },
+    {
+      "name": "Orbix draft mark-posted",
+      "route": "POST /orbix/drafts/{id}/mark-posted",
+      "handler": "mark_draft_posted",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "orbix_drafts.py"
+      ]
+    },
+    {
+      "name": "Khata confirm",
+      "route": "POST /api/khata/confirm",
+      "handler": "executeKhataConfirm",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "risk": "unauthenticated",
+      "evidence": [
+        "packages/backend/src/routes/khata.ts"
+      ]
+    },
+    {
+      "name": "Event sync",
+      "route": "/api/sync/events/*",
+      "handler": "syncEvents",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "packages/backend/src/routes/syncEvents.ts"
+      ]
+    },
+    {
+      "name": "NIOS",
+      "route": "/nios/v1/*",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "server.py mount"
+      ]
+    },
+    {
+      "name": "Orbix v2",
+      "route": "/orbix/v2/*",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "server.py"
+      ]
+    },
+    {
+      "name": "SPA pages",
+      "route": "zustand currentPage",
+      "handler": "App.renderPage",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "src/App.tsx"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/orbix/chat/stream",
+      "auth": "OIP_AUTH_REQUIRED default false",
+      "mutates": false,
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "oip_chat_ingress.py",
+        "render.yaml"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/orbix/drafts/{id}/mark-posted",
+      "auth": "none observed",
+      "mutates": true,
+      "mutation_class": "OFFLINE_QUEUE_ONLY",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "orbix_drafts.py"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/khata/confirm",
+      "auth": "NONE",
+      "mutates": true,
+      "mutation_class": "CONFIRMED_BYPASS",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "khata.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/sync/push",
+      "auth": "authMiddleware",
+      "mutates": true,
+      "mutation_class": "LEGACY",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "sync.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/sync/events/push",
+      "auth": "eventSyncAuth",
+      "mutates": true,
+      "mutation_class": "AUTHORIZED_DOMAIN_LOCAL",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "syncEvents.ts"
+      ]
+    }
+  ],
+  "ai_subsystems": [
+    {
+      "name": "OIP IntelligenceKernelFacade",
+      "path": "erp_bot/src/oip/kernel/facade.py",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "oip_chat_ingress.submit_chat"
+      ]
+    },
+    {
+      "name": "OIP Orchestrator",
+      "path": "erp_bot/src/oip/modules/orchestrator/",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "module_stages.py"
+      ]
+    },
+    {
+      "name": "ERP preprocess / mode_aware",
+      "path": "erp_bot/src/oip/integration/",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "khata_preprocess.py",
+        "mode_aware_erp.py"
+      ]
+    },
+    {
+      "name": "Provider Runtime",
+      "path": "erp_bot/src/oip/modules/provider_runtime/",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "GroqProviderAdapter",
+        "render.yaml"
+      ]
+    },
+    {
+      "name": "Action Runtime",
+      "path": "erp_bot/src/oip/modules/action_runtime/",
+      "status": "PARTIAL",
+      "evidence": [
+        "ERPCommandPort"
+      ]
+    },
+    {
+      "name": "OEC Runtime",
+      "path": "erp_bot/src/oip/modules/oec_runtime/",
+      "status": "PARTIAL",
+      "evidence": [
+        "dispatch_envelope"
+      ]
+    },
+    {
+      "name": "NP KB adapter",
+      "path": "erp_bot/src/nlu/np_kb_adapter.py",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "kb_lexical.sqlite",
+        "ORBIX_NP_KB_*"
+      ]
+    },
+    {
+      "name": "Khata drafts",
+      "path": "erp_bot/src/khata/",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "start_or_merge_*"
+      ]
+    },
+    {
+      "name": "Orbix v2 agent",
+      "path": "erp_bot/src/orbix/",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "/orbix/v2"
+      ]
+    },
+    {
+      "name": "NIOS / Cognitive OS",
+      "path": "erp_bot/src/nios/",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "/nios/v1"
+      ]
+    },
+    {
+      "name": "Falcon client",
+      "path": "src/lib/falcon/",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "FalconPanel"
+      ]
+    },
+    {
+      "name": "OIP HTTP routers aggregate",
+      "path": "erp_bot/src/oip/api/router.py",
+      "status": "LEGACY_UNREACHABLE",
+      "evidence": [
+        "planner import bug"
+      ]
+    }
+  ],
+  "providers": [
+    {
+      "id": "groq",
+      "adapter": "GroqProviderAdapter",
+      "env_keys": [
+        "OIP_GROQ_API_KEY",
+        "OIP_GROQ_BASE_URL"
+      ],
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "render.yaml"
+      ]
+    },
+    {
+      "id": "ollama",
+      "adapter": "OllamaProviderAdapter",
+      "env_keys": [
+        "OIP_OLLAMA_BASE_URL",
+        "OLLAMA_BASE_URL"
+      ],
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "provider_runtime",
+        "start.py"
+      ]
+    },
+    {
+      "id": "stub",
+      "adapter": "offline/mock",
+      "env_keys": [
+        "OIP_FORCE_STUB_PROVIDERS",
+        "OIP_PROVIDER_OFFLINE_MODE"
+      ],
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "settings.py"
+      ]
+    }
+  ],
+  "models": [
+    {
+      "role": "prod_default",
+      "provider": "groq",
+      "model_id": "llama-3.3-70b-versatile",
+      "config": "OIP_DEFAULT_MODEL",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "render.yaml"
+      ]
+    },
+    {
+      "role": "local_conversational",
+      "provider": "ollama",
+      "model_id": "qwen3:32b-default",
+      "config": "CONVERSATIONAL_MODEL",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "erp_bot/src/config.py"
+      ]
+    },
+    {
+      "role": "local_fast",
+      "provider": "ollama",
+      "model_id": "qwen3:4b-default",
+      "config": "FAST_MODEL_NAME",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "erp_bot/src/config.py"
+      ]
+    }
+  ],
+  "prompts": [
+    {
+      "name": "prompt_grounding",
+      "path": "erp_bot/src/nlu/prompt_grounding.py",
+      "versioned": false,
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "build_prompt_grounding"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "ERP preprocess",
+      "path": "erp_bot/src/oip/integration/",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "preprocess_erp_message"
+      ]
+    },
+    {
+      "name": "OEC connectors",
+      "path": "erp_bot/src/oip/modules/oec_runtime/",
+      "status": "PARTIAL",
+      "evidence": [
+        "production_drivers.py"
+      ]
+    }
+  ],
+  "knowledge_stores": [
+    {
+      "name": "NP language KB indexes",
+      "path": "knowledgebase/indexes/",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "kb_lexical.sqlite"
+      ]
+    },
+    {
+      "name": "Knowledge source zips",
+      "path": "Knowledge source/",
+      "status": "DOCUMENTATION_ONLY",
+      "evidence": [
+        "config.json source_dir",
+        "offline only"
+      ]
+    },
+    {
+      "name": "Chroma",
+      "path": "CHROMA_PATH/data/chroma_db",
+      "status": "PARTIAL",
+      "evidence": [
+        "vectorstore",
+        "Render skip"
+      ]
+    },
+    {
+      "name": "OIP knowledge sqlite",
+      "path": "data/oip/oip.db",
+      "status": "PARTIAL",
+      "evidence": [
+        "OIP_DATABASE_URL"
+      ]
+    }
+  ],
+  "indexes": [
+    {
+      "type": "lexical_fts",
+      "path": "knowledgebase/indexes/lexical/kb_lexical.sqlite",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "file exists",
+        "np_kb_adapter"
+      ]
+    }
+  ],
+  "persistence_stores": [
+    {
+      "name": "Dexie SutraERPDatabase",
+      "path": "src/lib/db.ts",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "posting engines"
+      ]
+    },
+    {
+      "name": "Postgres",
+      "path": "packages/backend",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "khata confirm",
+        "sync"
+      ]
+    },
+    {
+      "name": "OIP sqlite",
+      "path": "data/oip/oip.db",
+      "status": "PARTIAL",
+      "evidence": [
+        "OIP_DATABASE_URL"
+      ]
+    }
+  ],
+  "mutation_paths": [
+    {
+      "symbol": "executeOrbixConfirm",
+      "path": "src/lib/ekhata/orbixPostingService.ts",
+      "class": "AUTHORIZED_DOMAIN_LOCAL",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "Model B",
+        "post*Transaction"
+      ]
+    },
+    {
+      "symbol": "addVoucher",
+      "path": "src/store/slices/voucherSlice.ts",
+      "class": "LEGACY",
+      "status": "LEGACY_REACHABLE",
+      "evidence": [
+        "pages call addVoucher"
+      ]
+    },
+    {
+      "symbol": "executeKhataConfirm",
+      "path": "packages/backend/src/routes/khata.ts",
+      "class": "CONFIRMED_BYPASS",
+      "status": "ACTIVE_AUTHORITATIVE",
+      "evidence": [
+        "no authMiddleware"
+      ]
+    },
+    {
+      "symbol": "mark_draft_posted",
+      "path": "erp_bot/src/api/orbix_drafts.py",
+      "class": "OFFLINE_QUEUE_ONLY",
+      "status": "ACTIVE_SUPPORTING",
+      "evidence": [
+        "Model B ack"
+      ]
+    },
+    {
+      "symbol": "ErpCommandAdapter\u2192OecRuntimeService.dispatch_envelope",
+      "path": "action_runtime + oec_runtime",
+      "class": "AUTHORITATIVE_OEC",
+      "status": "PARTIAL",
+      "evidence": [
+        "erp_command_adapter.py"
+      ]
+    }
+  ],
+  "test_suites": [
+    {
+      "name": "vitest-orbix",
+      "command": "npm run test:orbix-contract",
+      "result_this_audit": "129 passed",
+      "exit_code": 0,
+      "status": "ACTIVE",
+      "evidence": [
+        "audit run"
+      ]
+    },
+    {
+      "name": "vitest-accounting",
+      "command": "npm run test:accounting",
+      "result_this_audit": "17 passed, 3 failed",
+      "exit_code": 1,
+      "status": "ACTIVE",
+      "evidence": [
+        "audit run"
+      ]
+    },
+    {
+      "name": "tsc",
+      "command": "npx tsc --noEmit",
+      "result_this_audit": "2 errors InvoicePrint.tsx",
+      "exit_code": 2,
+      "status": "ACTIVE",
+      "evidence": [
+        "artifacts/mai00_tsc_baseline.txt"
+      ]
+    },
+    {
+      "name": "pytest-erp_bot",
+      "command": "python -m pytest erp_bot/tests",
+      "result_this_audit": "collection ERROR 39",
+      "exit_code": 2,
+      "status": "ENVIRONMENT_BLOCKED",
+      "evidence": [
+        "audit collect"
+      ]
+    },
+    {
+      "name": "kb-status",
+      "command": "npm run kb:status",
+      "result_this_audit": "phases 0-8 reported",
+      "exit_code": 0,
+      "status": "ACTIVE",
+      "evidence": [
+        "audit run"
+      ]
+    }
+  ],
+  "diagnostic_baselines": [
+    {
+      "name": "tsc-full",
+      "before_mai00": "docs/typescript-baseline.md 127-156 historical",
+      "after_mai00_docs": "2 syntax errors InvoicePrint.tsx",
+      "debt_introduced_by_mai00": false,
+      "status": "RECORDED",
+      "evidence": [
+        "tsc run"
+      ]
+    },
+    {
+      "name": "vitest-orbix",
+      "before_mai00": "unknown",
+      "after_mai00_docs": "129/129",
+      "debt_introduced_by_mai00": false,
+      "status": "RECORDED",
+      "evidence": [
+        "vitest run"
+      ]
+    }
+  ],
+  "legacy_names": [
+    {
+      "name": "Orbix",
+      "usage": "primary AI UX",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "OIP",
+      "usage": "intelligence platform",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "e-Khata/Khata",
+      "usage": "drafts/mobile",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "Falcon",
+      "usage": "legacy NLP",
+      "status": "LEGACY"
+    },
+    {
+      "name": "NIOS",
+      "usage": "parallel gateway",
+      "status": "LEGACY"
+    },
+    {
+      "name": "Sutra",
+      "usage": "ERP package name",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "BUSY ERP",
+      "usage": "README label",
+      "status": "LEGACY"
+    }
+  ],
+  "duplicates": [
+    {
+      "capability": "chat ingress",
+      "paths": [
+        "/orbix/chat/stream",
+        "/orbix/v2",
+        "/nios/v1",
+        "/v2/chat"
+      ],
+      "status": "DUPLICATED",
+      "evidence": [
+        "server.py"
+      ]
+    },
+    {
+      "capability": "ledger mutation",
+      "paths": [
+        "Dexie engines",
+        "addVoucher",
+        "khata confirm",
+        "OEC"
+      ],
+      "status": "DUPLICATED",
+      "evidence": [
+        "orbixPostingService",
+        "khata.ts",
+        "oec_runtime"
+      ]
+    },
+    {
+      "capability": "sync",
+      "paths": [
+        "eventSyncQueue",
+        "syncOutbox"
+      ],
+      "status": "DUPLICATED",
+      "evidence": [
+        "syncCoordinator",
+        "syncEngine"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-P0-001",
+      "severity": "P0",
+      "title": "OEC not sole mutation authority",
+      "status": "OPEN",
+      "evidence": [
+        "MAI_00_GAP_REGISTER.md"
+      ]
+    },
+    {
+      "id": "GAP-P0-002",
+      "severity": "P0",
+      "title": "Unauthenticated khata confirm",
+      "status": "OPEN",
+      "evidence": [
+        "khata.ts"
+      ]
+    },
+    {
+      "id": "GAP-P0-003",
+      "severity": "P0",
+      "title": "Weak OIP auth / default tenants",
+      "status": "OPEN",
+      "evidence": [
+        "render.yaml",
+        "oip_chat_ingress.py"
+      ]
+    },
+    {
+      "id": "GAP-P0-004",
+      "severity": "P0",
+      "title": "OIP /oip/v1 import broken",
+      "status": "OPEN",
+      "evidence": [
+        "planner/api/router.py"
+      ]
+    }
+  ],
+  "mai_phase_evidence": [
+    {
+      "phase": "MAI-00",
+      "status": "PASSED",
+      "evidence": [
+        "docs/mokxya-ai deliverables"
+      ]
+    },
+    {
+      "phase": "MAI-01+",
+      "status": "NOT_STARTED",
+      "evidence": [
+        "ledger gate_evidence empty"
+      ]
+    }
+  ]
+}

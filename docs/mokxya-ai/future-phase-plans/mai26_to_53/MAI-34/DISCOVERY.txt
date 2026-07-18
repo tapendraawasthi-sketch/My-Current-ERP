@@ -1,0 +1,24 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-34 — DISCOVERY
+======================================================================
+
+Phase: MAI-34 — EXPLICIT CONFIRMATION AND OEC DISPATCH
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+ROADMAP: confirmation token; revalidation; Action Runtime dispatch; OEC receipt;
+  idempotency; stale/replay/permission tests.
+Gate: NL yes alone cannot post; duplicate/replay/stale/wrong-user → no duplicate;
+  only OEC reaches connector; real receipt displayed.
+
+LEDGER: NOT_STARTED; deps MAI-33; evidence "UI explicit confirm; Action→OEC not
+  product path"
+
+AUTHORITY: confirmPending / executeOrbixConfirm ACTIVE_AUTHORITATIVE; NL yes does
+  not post (already). OEC PARTIAL; Dexie engines still product writers; GAP-P0-001.
+
+END OF DISCOVERY

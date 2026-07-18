@@ -1,0 +1,150 @@
+review_id,input_text,highlighted_span,span_class,preferred_rank_policy,devanagari_retention,confidence,reasoning
+R3A-39CE6CDF4E01,by,by,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,It is English word
+R3A-D928292459B8,foobar,foobar,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it"
+R3A-5F1F96BF1D8A,namaste,namaste,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-E4A4DA896D92,debit,debit,ENGLISH_TERM,BOTH_EQUAL_REVIEW_REQUIRED,REQUIRED,HIGH,"In nepali also it can be romanized word with same meaning, it can  also be name of any human"
+R3A-E5A7E27F52DC,is,is,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-08D2D9E18C3E,foobar,foobar,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-347C5BF89E23,dhanyabad,dhanyabad,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-2D51C4838C53,of,of,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-70E44521539E,qwerty,qwerty,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-3E876C1291B7,qwerty,qwerty,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-39EB0539DAC9,purchase,purchase,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-A5F31D8C84CB,jaanu,jaanu,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-CC3C5545DFF2,sale,sale,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-CDED5E4068C3,advance,advance,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-FD1643D2A572,xyzzy,xyzzy,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-CBCF674A4003,report,report,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-D81C5B5C3197,due,due,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-2CAD17A31352,total,total,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-C55159DEA9B4,balance,balance,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-6D65C017CF24,lekh,lekh,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-433EDC9F6C5E,dherai,dherai,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-79B012C03064,sabai,sabai,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-589DC1F8F577,voucher,voucher,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-249ADDBC500F,amount,amount,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-C7D45E4B6625,znxg,znxg,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-1ECE91757DA9,blorp,blorp,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-1E521567ADDA,mary,mary,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-F3D8DE0BFE22,xyzzy,xyzzy,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-BA4616E7C135,owner,owner,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-52B1B116547F,anita,anita,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-DEC366606C62,ram,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a jeants
+R3A-E835A1D01157,gita,gita,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-F16AFA9E4AC3,kineko,kineko,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-2573D516AAC5,sunnu,sunnu,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-11C576A29373,loss,loss,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-458970948EDF,unit,unit,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-B4C60C073F8C,supplier,supplier,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-CFE4B5AA9EC9,aja,aja,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-8C7D6F3ED27B,preeti,preeti,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-DD00E9658A07,garidim,garidim,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-19BD164EF09F,ledger,ledger,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-746D07D2BE40,dekhau,dekhau,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-2DC856D4D6FF,xu,xu,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-1C07AF58CC39,ram dai aayo,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-0A1601A427F9,znxg,znxg,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-9DD5A68A1E47,thana,thana,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,it means station like police thana means police station
+R3A-87A3E123EEB2,hari,hari,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-3D948BB91CB2,commission,commission,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-0F7FBD8EB910,party,party,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-4B43CD1650FC,ghata,ghata,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-473762AA5C8F,bholi,bholi,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-91E0F15B74E7,receipt,receipt,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-81E39CBCED53,ok,ok,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-D741A2C87671,plan,plan,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-AB46E3F8600E,net,net,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-7874572285AD,discount,discount,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-825BB747601C,please,please,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-D41A31C71C46,stock,stock,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-A547FA55FAA3,kine,kine,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-59A86236B8E1,rajeev,rajeev,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-D7ABD644B593,ram dai aayo,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-CBAC4A22C534,ram dai aayo,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,"In nepali context it refeerse to name of a male, it may mean computer hardware component in english"
+R3A-BD31D1068C43,pcs,pcs,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-C79C78C6A996,lai,lai,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-F5CF1B72BF07,blorp,blorp,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-0179AF09253F,qwerty,qwerty,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-35D8AB1646F4,cash,cash,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-9F9619436CA3,credit,credit,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-6A1AF337B21B,opening,opening,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-1788E7D5D0A1,report,report,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-4F0FB37A553F,rakhnu,rakhnu,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-910CA16A8201,voucher,voucher,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-BB51DD6E9ED0,susan,susan,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady or Jeants as well
+R3A-DB48C68438C8,shyam,shyam,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-E466FA9B2BF3,gross,gross,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-66F68104288C,xyzzy,xyzzy,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-229898769D5B,customer,customer,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-710A7D0167DC,dokaan,dokaan,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-1955993A8F69,malai,malai,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-81797ACEEE9A,due,due,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-81D90B95625F,bill,bill,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-A22962BC478A,ram dai aayo,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-F4643880A9BC,bank,bank,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-DBE3D2111C87,customer,customer,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-49A02088DC63,pokhara,pokhara,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,it is a place of nepal
+R3A-6001D63FAD3E,sita,sita,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-309B3CEE3117,qwerty,qwerty,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,HIGH,I do not know it
+R3A-3D44EBBA4A60,tijori,tijori,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,it means vault
+R3A-19AF235F1D07,xaina,xaina,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,"for example I do not have keys, ma sanga chabi xaina"
+R3A-48A9DED65168,anita,anita,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a female
+R3A-46B32A27444A,profit,profit,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-A2E3A7DCE3D0,rajeev,rajeev,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-DEBF4EE37F6D,today,today,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-46CD1830FE9D,closing,closing,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-03590AA81D78,closing,closing,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-44D26D6634B0,sales,sales,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-E6C27DD9EB4E,krishna,krishna,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-89B7DB4A1A4A,for,for,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-52168F6474CC,on,on,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-5F4340339B0A,preeti,preeti,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-844DB568325C,paani,paani,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,it represents water for english language
+R3A-61C16981C721,thulo,thulo,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,"it represents something big, it means big"
+R3A-1FCB214AAFF8,was,was,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-9ED02F13AB81,bank,bank,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-B21EA865A670,usko,usko,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-2777FD563D44,xyzzy,xyzzy,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-92AFC696170A,gita,gita,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-88C773037682,chaina,chaina,PROPER_NAME_OR_ENTITY,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,it is Name of a country
+R3A-02AB46A9C72F,stock,stock,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-57E415379DE6,purchase,purchase,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-96D266DDD445,in,in,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-EB0C046F2CA3,krishna,krishna,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-C632964AAC91,john,john,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In foreign country context it refeerse to name of a male
+R3A-1B5DC8515B6B,byapar,byapar,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-3C51844C067F,hajar,hajar,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-8C4F698FCD49,haru,haru,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-AC9E3AA78D9B,nepal,nepal,PROPER_NAME_OR_ENTITY,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,it is Name of a country
+R3A-7F4E9C760597,usle,usle,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-A3337AE882EF,bikriyat,bikriyat,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-473E29CACC82,party,party,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-CD170900DCD2,my,my,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-DDB46BE83E59,aaja,aaja,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-6E81B0F59A7C,rupiya,rupiya,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,Nepali term written in Romanized
+R3A-E11303FC4AF9,yes,yes,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-A86B407317B4,ram dai aayo,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-69A9687F4AF6,jabaj,jabaj,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,It means Couragious or Strong personality in nepali
+R3A-F1423F7ECCBC,net,net,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-91DE04624709,you,you,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-ACB9FB792070,sita,sita,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-626435F340E3,znxg,znxg,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-85EA52AECC70,opening,opening,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-ABF06A06C71E,hari,hari,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-FA58072CA297,xyzzy,xyzzy,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-1A54988625B4,bill,bill,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-FBD090E9B85F,foobar,foobar,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-EAE133036C15,cheque,cheque,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-9ECEADADD41F,ram,ram,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-6B5C3F4B79C1,nau,nau,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,MEDIUM,"nau is Romanized Nepali but its exact Devanagari form can depend on context, so a Devanagari candidate should be retained."
+R3A-A5AB853CA40E,to,to,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-8BA19C672CD8,blorp,blorp,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-3A26ACACC361,were,were,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-D93DC8E227F5,tax,tax,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-ECF297173878,shyam,shyam,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a male
+R3A-6F62469204B0,saya,saya,ROMANIZED_NEPALI,DEVANAGARI_TARGET_REQUIRED,REQUIRED,HIGH,In nepali context it refeerse to name of a Lady
+R3A-BF4FDB7BF4E3,payment,payment,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-AD5C57F911FF,qwerty,qwerty,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"
+R3A-9FB89CF5EB2E,sale,sale,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-5AB19BC3D6C1,tomorrow,tomorrow,ENGLISH_TERM,LATIN_IDENTITY_REQUIRED,OPTIONAL,HIGH,English but can also come in connection with other words in Romanized english
+R3A-A2958A737E24,xyzzy,xyzzy,INVALID_OR_UNCLEAR,CANNOT_DECIDE,CANNOT_DECIDE,MEDIUM,"I do not know whether it is in english or nepali, which language is it, in any context it may have any meaning"

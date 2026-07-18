@@ -1,0 +1,28 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-30 — DEPENDENCIES
+======================================================================
+
+MAI-29 EvidenceBundle — UNRESOLVED_PENDING_HANDOFF
+MAI-26 temporal CONFLICT/UNKNOWN_EFFECTIVE dispositions —
+  UNRESOLVED_PENDING_HANDOFF
+MAI-24 review/release eligibility — UNRESOLVED_PENDING_HANDOFF
+MAI-23 prompt registry (composer prompts) — UNRESOLVED_PENDING_HANDOFF
+MAI-22 provider port — UNRESOLVED_PENDING_HANDOFF
+MAI-11 register/language policy for answers — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-21 — UNRESOLVED_PENDING_HANDOFF
+MAI-04 fake citation / no-answer suites — PASSED_FOUNDATION harness;
+  product closure still OPEN (GAP-P2-008)
+MAI-02/03 contracts+trace — PASSED_FOUNDATION
+
+UQ-30-01: Verifier algorithm (NLI model vs deterministic span entailment)?
+UQ-30-02: UI rendering ownership (Orbix cards) vs backend-only verification?
+UQ-30-03: Thresholds for citation precision after baseline?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

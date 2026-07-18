@@ -1,0 +1,43 @@
+{
+  "notes": "Round B must not overwrite Round A product-ranking decisions automatically.",
+  "round_a_enums": {
+    "confidence": [
+      "HIGH",
+      "MEDIUM",
+      "LOW"
+    ],
+    "devanagari_retention": [
+      "REQUIRED",
+      "OPTIONAL",
+      "PROHIBITED",
+      "CANNOT_DECIDE"
+    ],
+    "preferred_rank_policy": [
+      "DEVANAGARI_TARGET_REQUIRED",
+      "LATIN_IDENTITY_REQUIRED",
+      "LATIN_IDENTITY_PREFERRED_TARGET_OPTIONAL",
+      "BOTH_EQUAL_REVIEW_REQUIRED",
+      "NO_TRANSLITERATION_ALLOWED",
+      "CANNOT_DECIDE"
+    ],
+    "span_class": [
+      "ROMANIZED_NEPALI",
+      "ENGLISH_TERM",
+      "NEPALI_LOANWORD_WRITTEN_IN_LATIN",
+      "PROPER_NAME_OR_ENTITY",
+      "ACRONYM_OR_IDENTIFIER",
+      "AMBIGUOUS_CODE_MIX",
+      "INVALID_OR_UNCLEAR"
+    ]
+  },
+  "round_b_enums": {
+    "acceptability": [
+      "ACCEPTABLE_PREFERRED",
+      "ACCEPTABLE_ALTERNATIVE",
+      "UNNATURAL_BUT_POSSIBLE",
+      "INCORRECT",
+      "CANNOT_DECIDE"
+    ]
+  },
+  "schema_version": "1.0.0"
+}

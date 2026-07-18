@@ -1,0 +1,25 @@
+﻿STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-50 — CONFLICT RISK REGISTER
+======================================================================
+
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+PRIMARY CONFLICT NOTE:
+  Must compose with MAI-33/34; no voice-only post.
+
+SHARED RISKS:
+  CR-MAI-50-01 Codex owns MAI-07..MAI-25 code/tests/ledger until handoff — no Cursor edits.
+  CR-MAI-50-02 Dirty working tree must be preserved; never stage/commit/stash Codex files.
+  CR-MAI-50-03 Do not write authoritative ADRs/gap/ledger from this lane.
+  CR-MAI-50-04 Dead files StockItems.tsx / PurchaseInvoiceForm.tsx / ReturnInvoiceForm.tsx — never open.
+
+Conflicts detected on owned planning paths: none
+
+Handoff-time: revalidate this packet; resolve UNRESOLVED_PENDING_HANDOFF; then implement only MAI-50.
+
+END OF REGISTER

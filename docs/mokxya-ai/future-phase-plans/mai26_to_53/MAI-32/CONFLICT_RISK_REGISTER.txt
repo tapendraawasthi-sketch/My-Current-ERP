@@ -1,0 +1,17 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-32 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-32-01 khata *_draft.py / orbix_drafts.py — Codex/dirty; no Cursor edits now.
+CR-32-02 Dual draft authorities (server vs Dexie) — pick one production path
+  at handoff; avoid third store.
+CR-32-03 Session-only drafts in UI — plan migration; do not silently fork.
+
+Conflicts on owned paths: none
+
+END OF REGISTER

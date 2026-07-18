@@ -1,0 +1,29 @@
+{
+  "firewall": {
+    "forbidden_imports_checked": [
+      "openai",
+      "anthropic",
+      "httpx",
+      "requests",
+      "eval_mai07_r3e",
+      "eval_mai07_r3g",
+      "eval_mai07_r3i",
+      "build_mai07r3c_dataset_v2",
+      "posting",
+      "oec",
+      "sync_outbox",
+      "transliteration_service",
+      "deterministic_generator",
+      "deterministic_ranker"
+    ],
+    "no_frozen_v2_mining": true,
+    "no_llm_network": true,
+    "ok": true,
+    "reads_only_r3l_r3k_ai_assisted": true
+  },
+  "leakage": {
+    "csv_sha256": "f03198b6b554bcfb74764616ad93583898b031df1010da2e9428eb0311f8d06d",
+    "leaks": [],
+    "ok": true
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "formulas": {
+    "cohen_kappa": "(po-pe)/(1-pe)",
+    "duplicate_consistency": "identical_duplicate_pairs/pairs",
+    "exact_agreement": "agree/n"
+  },
+  "gates": {
+    "candidate_index_mismatch": 0,
+    "cohen_kappa_min": 0.7,
+    "domain_review_completion_technical": 1.0,
+    "duplicate_consistency": 0.9,
+    "exact_disposition_agreement": 0.85,
+    "formula_injection_failures": 0,
+    "invalid_enum_or_duplicate_id": 0,
+    "professional_linguist_completion": 1.0,
+    "prohibited_for_training_flag_rate": 1.0,
+    "round_a_completion": 1.0,
+    "round_b_completion_eligible": 1.0,
+    "source_provenance_completeness": 1.0,
+    "unresolved_disagreement_after_adjudication_frozen": 0
+  },
+  "schema_version": "1.0.0",
+  "status": "TEMPLATE_PRE_REVIEW"
+}

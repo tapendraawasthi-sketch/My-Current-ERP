@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "decision_id": "MAI_07R3_BULK_SCHEMA_MAPPING_DECISION",
+  "decided_on": "2026-07-15",
+  "authority": {
+    "reviewer": "Tapendra Awasthi",
+    "role": "PRODUCT_OWNER_AND_NEPALI_FLUENT_REVIEWER",
+    "professional_linguist": false
+  },
+  "source_round_b_status": "LOCKED",
+  "source_round_b_sha256": "79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61",
+  "mapping": {
+    "ACCEPTABLE": "ACCEPTABLE_PREFERRED",
+    "UNACCEPTABLE": "UNNATURAL_BUT_POSSIBLE",
+    "CANNOT_DECIDE": "CANNOT_DECIDE"
+  },
+  "instructions": {
+    "preserve_cannot_decide": true,
+    "do_not_infer_candidate_specific_preference": true,
+    "do_not_overwrite_round_a_product_ranking": true
+  },
+  "provenance": "EXPLICIT_USER_AUTHORIZED_BULK_SCHEMA_MAPPING",
+  "row_by_row_five_label_review_performed": false,
+  "professional_linguist_adjudication": false,
+  "frozen_quality_run_authorized": false,
+  "mai08_authorized": false
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "MAI_07R3_EVALUATION_SEMANTICS_V2_DRAFT",
+  "status": "DRAFT_FOR_CURSOR_IMPLEMENTATION_AND_TESTING",
+  "product_policy": "OPTION_A_CONSERVATIVE_IDENTITY_POLICY",
+  "frozen_v1_immutable": true,
+  "population_rules": {
+    "TRANSLITERATION_REQUIRED": "Round A DEVANAGARI_TARGET_REQUIRED; score reviewed Devanagari targets only.",
+    "IDENTITY_REQUIRED": "Round A LATIN_IDENTITY_REQUIRED or NO_TRANSLITERATION_ALLOWED; identity safety is authoritative.",
+    "TRANSLITERATION_OPTIONAL": "Round A LATIN_IDENTITY_PREFERRED_TARGET_OPTIONAL; report separately and do not count optional Devanagari as required-target top-1.",
+    "HUMAN_REVIEW_REQUIRED": "Round A BOTH_EQUAL_REVIEW_REQUIRED or CANNOT_DECIDE; exclude from automatic quality pass or report as human-review-required."
+  },
+  "candidate_label_rules": {
+    "ACCEPTABLE_PREFERRED": "Eligible for role-compatible top-1 only when the Round A policy allows it and the role-compatible preferred candidate is unique.",
+    "ACCEPTABLE_ALTERNATIVE": "Eligible for recall@k only; not top-1 gold without a separate ranking decision.",
+    "UNNATURAL_BUT_POSSIBLE": "Do not use as top-1 gold; retain as reviewed possibility for diagnostics.",
+    "INCORRECT": "Exclude from acceptable targets.",
+    "CANNOT_DECIDE": "Human review required; do not infer correctness."
+  },
+  "safeguards": [
+    "Round B must not overwrite Round A product-ranking decisions automatically.",
+    "Bulk-mapped multiple ACCEPTABLE_PREFERRED candidates do not create unique top-1 gold.",
+    "Do not mutate MAI-07 frozen V1; create any derived V2 as a new version with lineage and hashes.",
+    "Do not tune the runtime or ranker against frozen V1 text.",
+    "Do not claim linguist or production approval."
+  ]
+}

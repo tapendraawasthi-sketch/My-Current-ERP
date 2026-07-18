@@ -1,0 +1,16 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-33 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-33-01 OrbixWorkspace / OrbixResponseRenderer / presentation.ts (dirty)
+CR-33-02 invoice UI calc paths / voucherSlice — GAP-P2-002; careful ownership
+CR-33-03 Do not edit dead PurchaseInvoiceForm/ReturnInvoiceForm
+
+Conflicts on owned paths: none
+
+END OF REGISTER

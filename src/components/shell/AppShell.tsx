@@ -41,7 +41,18 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
   });
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [paletteModuleId, setPaletteModuleId] = useState<string | undefined>();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const openPalette = (opts?: { moduleId?: string }) => {
+    setPaletteModuleId(opts?.moduleId);
+    setPaletteOpen(true);
+  };
+
+  const closePalette = () => {
+    setPaletteOpen(false);
+    setPaletteModuleId(undefined);
+  };
   const [density, setDensity] = useState<Density>(() => {
     try {
       const d = localStorage.getItem(DENSITY_KEY);
@@ -88,16 +99,19 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         (e.target as HTMLElement)?.isContentEditable;
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        setPaletteModuleId(undefined);
         setPaletteOpen(true);
         return;
       }
       if ((e.ctrlKey || e.metaKey) && e.key === "/") {
         e.preventDefault();
+        setPaletteModuleId(undefined);
         setPaletteOpen(true);
         return;
       }
       if (!typing && e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault();
+        setPaletteModuleId(undefined);
         setPaletteOpen(true);
       }
     };
@@ -128,7 +142,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         Skip to main content
       </a>
       <TopCommandBar
-        onOpenPalette={() => setPaletteOpen(true)}
+        onOpenPalette={() => openPalette()}
         onToggleNav={() => setMobileNavOpen(true)}
         onOpenNotifications={() => setNotificationsOpen(true)}
         density={density}
@@ -143,6 +157,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
             onCollapsedChange={setNavCollapsed}
             mobileOpen={mobileNavOpen}
             onMobileClose={() => setMobileNavOpen(false)}
+            onOpenPalette={openPalette}
           />
         ) : null}
         <main
@@ -166,7 +181,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
       {isMobile && !isPosPage ? (
         <MobileBottomNav onOpenNotifications={() => setNotificationsOpen(true)} />
       ) : null}
-      <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      <CommandPalette isOpen={paletteOpen} onClose={closePalette} moduleId={paletteModuleId} />
       <NotificationCentre open={notificationsOpen} onOpenChange={setNotificationsOpen} />
       {/* Orbix is the sole user-facing assistant; FalconProvider only remaps shortcuts */}
       {!isOrbixPage && !isPosPage ? <FalconProvider /> : null}

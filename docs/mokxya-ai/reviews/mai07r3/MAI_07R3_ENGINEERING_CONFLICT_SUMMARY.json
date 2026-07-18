@@ -1,0 +1,50 @@
+{
+  "artifact_hashes": {
+    "control_manifest": "a88d51f92a5ec26589c473f8335e4e3d7f5b35e3cd60541288a39d99cce7344b",
+    "import_template": "4b9c1154b90f315194d46eb6906b17bf334c15bf3015fcac5dc303f85250b7c5",
+    "instructions": "7aba97023567194573597a9f3cba8b162de84e9d21c6a7db7366f95eba72b820",
+    "mapping": "b6888bfd207d0dd225ecf2c9d403dad9a5c761eede1ddcfba4cd97d1701bcfd6",
+    "policy_options": "b7590b99df136cb82832e4eb785c76fb55cbaa5329287bf1cfd5bb290eb7e091",
+    "readme": "b3a3bdf3cb6638c8f8ed817c23b78901cd7d646ccaa9e6d65328b0ea02df663c",
+    "round_a": "9a656ce45b1e6bfdc14e1bc25299e7ec7cb9bc15e290406bf41d4339ba10c197",
+    "round_b": "bb1d2b1929def4d1fc05b021bd7dcdc4238cad4fbeb23106fb1ef5d224b8b221",
+    "schema": "e802be835e61c555ba7699b1bbed65ae597322b1d5c8cb075341e4d23e66e48a"
+  },
+  "conflict_count": 49,
+  "review_item_count": 149,
+  "seed": 20260715,
+  "taxonomy": {
+    "both_eng_and_name": 0,
+    "by_english_identity_reason": {
+      "ENGLISH_IDENTITY_RESOURCE": 31
+    },
+    "by_language_form": {
+      "ENGLISH": 11,
+      "SHARED_OR_AMBIGUOUS_LATIN": 13,
+      "TECHNICAL_ACCOUNTING_ENGLISH": 25
+    },
+    "by_name_like_reason": {
+      "NAME_LIKE_RESOURCE_OR_SPAN_FLAG": 18
+    },
+    "by_suite": {
+      "domain_terms_v1": 22,
+      "names_entities_v1": 9,
+      "romanized_common_v1": 9,
+      "romanized_core_v1": 9
+    },
+    "by_target_span_position": {
+      "only": 49
+    },
+    "by_top_nonid_kind": {
+      "LEXICAL": 49
+    },
+    "code_mix": 0,
+    "conflict_count": 49,
+    "english_only": 31,
+    "expected_count": 49,
+    "matches_expected": true,
+    "multi_token": 0,
+    "name_only": 18,
+    "single_token": 49
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "status": "LOCKED_SCHEMA_MAPPED",
+  "reviewer": "Tapendra Awasthi",
+  "review_date": "2026-07-15",
+  "source_locked_file": "MAI_07R3_ROUND_B_RESPONSES_LOCKED.csv",
+  "source_locked_sha256": "79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61",
+  "official_file": "MAI_07R3_ROUND_B_OFFICIAL_RESPONSES_LOCKED.csv",
+  "official_sha256": "642bc6f39d6eb2797974e704cd32034f520abf0c5df43cb8aa9dcb06a8438021",
+  "mapping_decision_file": "MAI_07R3_BULK_SCHEMA_MAPPING_DECISION.json",
+  "mapping_decision_sha256": "4567504dc10443893f87b69fa46718722c747ee33c0384a2fac007f29362380d",
+  "candidate_judgment_count": 263,
+  "unique_review_id_count": 149,
+  "official_decision_counts": {
+    "ACCEPTABLE_PREFERRED": 223,
+    "CANNOT_DECIDE": 4,
+    "UNNATURAL_BUT_POSSIBLE": 36
+  },
+  "user_authorized_bulk_mapping": true,
+  "row_by_row_five_label_review_performed": false,
+  "professional_linguist": false,
+  "linguist_approved": false,
+  "production_approved": false,
+  "frozen_quality_run_authorized": false,
+  "mai08_authorized": false,
+  "next_action": "CURSOR_IMPORT_AND_R3B_POLICY_IMPLEMENTATION"
+}

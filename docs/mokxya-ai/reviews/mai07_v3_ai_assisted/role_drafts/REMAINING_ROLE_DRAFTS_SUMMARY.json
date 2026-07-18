@@ -1,0 +1,116 @@
+{
+  "generated_at_utc": "2026-07-17T14:41:19Z",
+  "governance": {
+    "LINGUIST_APPROVED": false,
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "PRODUCTION_APPROVED": false,
+    "QUALITY_GATES_PASSED": false,
+    "ROUND_A_LOCKED": false,
+    "ROUND_B_READY": false,
+    "official_round_a_inbox_used": false
+  },
+  "ok": true,
+  "phase": "MAI-07R3J-AI-ASSISTED-REMAINING-ROLE-DRAFTS",
+  "provenance": {
+    "ai_autofill_used": true,
+    "declaration_completed": false,
+    "eligible_for_frozen_quality_gold": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "review_method": "AI_ASSISTED_DRAFT",
+    "round_b_authorized": false,
+    "row_by_row_independent_review_performed": false,
+    "status": "AI_ASSISTED_DRAFT_FOR_HUMAN_REVIEW",
+    "submission_ready_under_current_protocol": false,
+    "user_accepted": false
+  },
+  "role_zip_sha256": {
+    "NEPALI_FLUENT_A": "aba76f2046f1ee0a87a160dc74c4a11b1d963acc8a3332ff94b5bc7143960cfc",
+    "PRODUCT_POLICY": "ca07bb98ca2af4b8623d9e68a09348cf05c943b03f46624f8e30aac68b502721",
+    "PROFESSIONAL_LINGUIST_B": "39eef1718669fa5809167d4a96c83f3d860708ebab1f82130e26488c9191d8fc"
+  },
+  "roles": [
+    {
+      "audit_sha256": "b282276c5fe4674c3e497f01d0f27804dd451078eb4d81ea713deaf1b9300d8a",
+      "decision_source_counts": {
+        "ACCOUNTING_VERIFIED_CONTENT_MAP": 611,
+        "HEURISTIC_V1": 500
+      },
+      "disposition_counts": {
+        "ABSTAIN_CANNOT_DECIDE": 43,
+        "ACRONYM_OR_IDENTIFIER": 72,
+        "CONTEXT_DEPENDENT": 16,
+        "DEVANAGARI_TRANSLITERATION_REQUIRED": 324,
+        "ENGLISH_IDENTITY_REQUIRED": 244,
+        "IDENTITY_FIRST_REVIEW_REQUIRED": 218,
+        "PROTECTED": 150,
+        "TRANSLITERATION_OPTIONAL": 44
+      },
+      "draft_dir": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\docs\\mokxya-ai\\reviews\\mai07_v3_ai_assisted\\role_drafts\\product_policy\\round_a_drafts",
+      "role_id": "PRODUCT_POLICY",
+      "row_count": 1111,
+      "unique_review_ids": 1111,
+      "workbook_count": 10,
+      "zip_path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\docs\\mokxya-ai\\reviews\\mai07_v3_ai_assisted\\role_drafts\\MokXya_MAI07_V3_PRODUCT_POLICY_ROUND_A_AI_ASSISTED_DRAFTS.zip",
+      "zip_sha256": "ca07bb98ca2af4b8623d9e68a09348cf05c943b03f46624f8e30aac68b502721"
+    },
+    {
+      "audit_sha256": "ae1e052f67d77c4961a628b1d4edb59a787c6c9180a1d80a01b24ed21b8927ed",
+      "decision_source_counts": {
+        "ACCOUNTING_VERIFIED_CONTENT_MAP": 611,
+        "HEURISTIC_V1": 500
+      },
+      "disposition_counts": {
+        "ABSTAIN_CANNOT_DECIDE": 43,
+        "ACRONYM_OR_IDENTIFIER": 72,
+        "CONTEXT_DEPENDENT": 16,
+        "DEVANAGARI_TRANSLITERATION_REQUIRED": 324,
+        "ENGLISH_IDENTITY_REQUIRED": 244,
+        "IDENTITY_FIRST_REVIEW_REQUIRED": 218,
+        "PROTECTED": 150,
+        "TRANSLITERATION_OPTIONAL": 44
+      },
+      "draft_dir": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\docs\\mokxya-ai\\reviews\\mai07_v3_ai_assisted\\role_drafts\\nepali_fluent_a\\round_a_drafts",
+      "role_id": "NEPALI_FLUENT_A",
+      "row_count": 1111,
+      "unique_review_ids": 1111,
+      "workbook_count": 10,
+      "zip_path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\docs\\mokxya-ai\\reviews\\mai07_v3_ai_assisted\\role_drafts\\MokXya_MAI07_V3_NEPALI_FLUENT_A_ROUND_A_AI_ASSISTED_DRAFTS.zip",
+      "zip_sha256": "aba76f2046f1ee0a87a160dc74c4a11b1d963acc8a3332ff94b5bc7143960cfc"
+    },
+    {
+      "audit_sha256": "41c6d6db25020349c2497823010200c00e1e3061ca978a7bf9a71851f58a38ca",
+      "decision_source_counts": {
+        "ACCOUNTING_VERIFIED_CONTENT_MAP": 611,
+        "HEURISTIC_V1": 500
+      },
+      "disposition_counts": {
+        "ABSTAIN_CANNOT_DECIDE": 43,
+        "ACRONYM_OR_IDENTIFIER": 72,
+        "CONTEXT_DEPENDENT": 16,
+        "DEVANAGARI_TRANSLITERATION_REQUIRED": 324,
+        "ENGLISH_IDENTITY_REQUIRED": 244,
+        "IDENTITY_FIRST_REVIEW_REQUIRED": 218,
+        "PROTECTED": 150,
+        "TRANSLITERATION_OPTIONAL": 44
+      },
+      "draft_dir": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\docs\\mokxya-ai\\reviews\\mai07_v3_ai_assisted\\role_drafts\\professional_linguist_b\\round_a_drafts",
+      "role_id": "PROFESSIONAL_LINGUIST_B",
+      "row_count": 1111,
+      "unique_review_ids": 1111,
+      "workbook_count": 10,
+      "zip_path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\docs\\mokxya-ai\\reviews\\mai07_v3_ai_assisted\\role_drafts\\MokXya_MAI07_V3_PROFESSIONAL_LINGUIST_B_ROUND_A_AI_ASSISTED_DRAFTS.zip",
+      "zip_sha256": "39eef1718669fa5809167d4a96c83f3d860708ebab1f82130e26488c9191d8fc"
+    }
+  ],
+  "schema": "mai07_v3_ai_assisted_role_draft_v1",
+  "semantic_hash": "fd10bd0f501d9a25534db18e98254c3e1dec1cbc4acc971f76c42012279a929a",
+  "total_rows": 3333,
+  "total_workbooks": 30
+}

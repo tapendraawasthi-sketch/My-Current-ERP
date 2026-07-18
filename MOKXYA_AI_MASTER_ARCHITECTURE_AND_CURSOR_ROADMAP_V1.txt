@@ -1,0 +1,5358 @@
+MOKXYA AI
+MASTER LANGUAGE, CONTEXT, KNOWLEDGE, ACCOUNTING, LEGAL-INTELLIGENCE
+ARCHITECTURE AND CURSOR IMPLEMENTATION ROADMAP
+
+Version: 1.0
+Date: 2026-07-14
+Product family: MokXya / MokXya Hisab / MokXya ERP / Ask MokXya
+Primary launch domain: Nepal accounting and business management
+Future domain: Nepal legal, tax, regulatory, financial-reporting, audit, and
+business research assistance
+Supported interaction languages:
+  1. English
+  2. Nepali in Devanagari
+  3. Romanized Nepali
+  4. Natural code-mixing among the above three
+Primary implementation operator: Repository owner using Cursor with a strong
+coding model
+Document type: Long-lived governing architecture and prompt-generation guide
+
+TABLE OF CONTENTS
+
+0.  Purpose of This Document
+1.  Executive Verdict
+2.  Product Identity, Scope, and Existing Context
+3.  Non-Negotiable Product Constitution
+4.  Architectural Principles
+5.  Target End-to-End Intelligence Pipeline
+6.  Canonical Data Contracts
+7.  Language Intelligence Architecture
+8.  Language Data and Learning Program
+9.  Conversation Context and Memory
+10. Intent, Event, Routing, and Planning
+11. Model Provider and Inference Runtime
+12. Prompt Architecture
+13. Knowledge Platform and RAG
+14. Nepal Legal, Tax, Regulatory, and Business Intelligence
+15. Accounting Language to Deterministic Execution
+16. Deterministic Domain Engines
+17. NFRS/NAS and Automatic Financial Reporting
+18. Tool, Connector, and OEC Architecture
+19. Persistence and Data Model
+20. Offline-First, Sync, and Distributed Reliability
+21. Security, Privacy, and Abuse Resistance
+22. Quality Verification
+23. Observability and Operations
+24. Evaluation Program and Production Gates
+25. Target Code Structure
+26. Key Ports and Interfaces
+27. API and Streaming Contract
+28. Delivery and Repository Engineering Rules
+29. Master Implementation Roadmap (MAI-00 through MAI-53)
+30. Protocol for Generating Future Cursor Prompts
+31. Progress Ledger
+32. Capability and Release Matrix
+33. Risk Register
+34. Forbidden Anti-Patterns
+35. Human Roles and Governance
+36. Definition of Done
+37. Immediate Recommended Next Action
+38. Instructions to Future ChatGPT / AI Assistant
+39. Compact Architecture Reference
+40. Final Architectural Statement
+
+======================================================================
+0. PURPOSE OF THIS DOCUMENT
+======================================================================
+
+This document defines the architecture MokXya must gradually develop if it is to
+feel close to a high-quality general AI assistant within a controlled Nepal
+accounting, financial-reporting, legal, tax, and business domain.
+
+It has four purposes:
+
+1. Preserve the product vision and all non-negotiable safety boundaries.
+2. Define the target code architecture, data contracts, knowledge architecture,
+   language-learning program, evaluation system, and production controls.
+3. Give future ChatGPT conversations a stable source from which to generate one
+   exact Cursor implementation prompt at a time.
+4. Prevent Cursor, or any other coding AI, from creating another disconnected
+   prototype beside systems already present in the repository.
+
+This file is not a single “implement everything” Cursor prompt. It is the master
+specification from which small, auditable, test-driven prompts must be produced.
+
+This file complements the existing repository-specific document:
+
+  MOKXYA_HISAB_MASTERPIECE_AI_LAUNCH_DIRECTION_V1.txt
+
+If the two documents differ because the repository changed, Cursor must first
+inspect the current code and produce evidence. Safety, accounting authority,
+tenant isolation, explicit confirmation, truthful evidence, and deterministic
+posting rules always take precedence.
+
+HOW TO USE THIS FILE IN FUTURE CHATGPT CONVERSATIONS
+
+1. Upload or reference this file together with the latest repository or latest
+   Cursor phase-completion report.
+2. Tell ChatGPT which phase was last proven complete.
+3. ChatGPT must inspect the evidence and select only the earliest safe incomplete
+   phase.
+4. ChatGPT then generates one repository-aware Cursor prompt for that phase.
+5. Cursor must inspect before editing, add failing tests first, implement the
+   smallest coherent change, run all specified gates, and return evidence.
+6. ChatGPT reviews the evidence. It must not accept “done” merely because Cursor
+   says so or because compilation succeeds.
+7. Only after the gate is proven should the next phase be generated.
+
+======================================================================
+1. EXECUTIVE VERDICT: WHAT IS AND IS NOT ACHIEVABLE
+======================================================================
+
+MokXya cannot reproduce ChatGPT’s universal capability by collecting vocabulary
+files, writing a long system prompt, using RAG alone, or placing a 32B/37B model
+behind a chat box. General ChatGPT-level breadth requires enormous pretraining,
+post-training, infrastructure, evaluation, and continuous research.
+
+The realistic and valuable target is different:
+
+  MokXya can become ChatGPT-like in conversation quality and better than a
+  general assistant in supported Nepal accounting workflows, company-specific
+  answers, Nepal legal research, evidence tracking, deterministic calculations,
+  and safe ERP execution.
+
+This requires a composed intelligence system:
+
+  capable multilingual foundation model
+  + Nepali/Romanized language runtime
+  + structured conversation state and memory
+  + intent/event understanding
+  + planner and typed tool use
+  + verified company-data retrieval
+  + authoritative legal/business RAG
+  + deterministic accounting/tax/reporting engines
+  + answer and action verification
+  + security, audit, observability, and evaluation
+
+EXPECTED ACHIEVABLE OUTCOMES
+
+1. Natural English, Devanagari Nepali, Romanized Nepali, and mixed-language
+   conversation for the supported domain.
+2. Correct resolution of follow-up messages, corrections, pronouns, omitted
+   subjects, and references to active drafts in controlled workflows.
+3. High-quality answers grounded in authorized company data or reviewed sources.
+4. Correct structured accounting previews from informal shopkeeper language.
+5. Safer and more reliable entries than a general chat model because calculations
+   and posting are deterministic.
+6. Evidence-based Nepal law and tax research with version, effective date,
+   authority, citations, and uncertainty.
+7. Automatic financial-reporting workflows where rules and mappings are explicitly
+   implemented and professionally validated.
+
+NOT HONESTLY ACHIEVABLE
+
+1. Perfect understanding of every dialect, spelling, or unseen expression.
+2. Guaranteed correct legal/tax conclusions without authoritative current sources
+   and qualified human review.
+3. An AI that safely invents missing accounting facts.
+4. Autonomous posting merely because the model is confident.
+5. Permanent legal freshness without a governed update and review process.
+6. ChatGPT-level universal world knowledge from a small domain dataset.
+7. Reliable production quality from prompt engineering without tests and metrics.
+
+======================================================================
+2. PRODUCT IDENTITY, SCOPE, AND EXISTING CONTEXT
+======================================================================
+
+PUBLIC PRODUCT LANGUAGE
+
+Use:
+  MokXya
+  MokXya Hisab
+  MokXya ERP
+  Ask MokXya
+
+Legacy/internal names such as Orbix, OIP, e-Khata, Khata, Falcon, NIOS, and Sutra
+may exist in code. Do not perform a blind mass rename. Maintain a migration map,
+preserve compatibility where necessary, and avoid adding new public dependencies
+on legacy names.
+
+CURRENT PRODUCT DIRECTION
+
+MokXya Hisab is a Nepal-first AI-assisted accounting and business-management
+product initially aimed at small retail, trading, wholesale, and distribution
+businesses, while remaining extensible for accountants, CA firms, finance teams,
+auditors, consultants, and larger enterprises.
+
+CORE USER EXPERIENCE
+
+  User types or speaks in English, Nepali, Romanized Nepali, or a mixture.
+  MokXya understands the request in context.
+  It retrieves necessary authorized facts.
+  It answers, asks a precise clarification, or prepares a structured preview.
+  The user reviews and edits the preview.
+  Nothing is recorded until explicit scoped confirmation.
+  Deterministic services validate and execute the command.
+  The system returns a real receipt and honest sync state.
+
+KNOWN ARCHITECTURAL ASSETS TO PRESERVE AND AUDIT
+
+The repository has previously reported:
+
+1. A React/TypeScript frontend with offline-first IndexedDB/Dexie behavior.
+2. Node and Python backend services.
+3. Qwen fast/router and larger reasoning-model paths.
+4. Hybrid RAG and knowledge-base work.
+5. Repository Knowledge Graph, Cognitive Kernel, Multi-Agent OS, AI Execution
+   Runtime, Natural Language Accounting Engine, and OIP modules.
+6. OEC Runtime as the sole mutation route through:
+
+     Action Runtime -> ERPCommandPort -> OEC -> Connector -> ERP
+
+7. A 12-stage OEC execution pipeline and registries for connectors, capabilities,
+   retry, health, transaction, compensation, and snapshots.
+8. Deterministic purchase, sales, returns, settlements, bank reconciliation,
+   inventory, posting receipt, outbox, sync, and idempotency work.
+9. Structured streaming response contracts and UI phase gates.
+10. A large Nepali and Romanized Nepali language knowledge package.
+
+These are reported assets, not permission to assume every path is production-ready.
+Every Cursor phase begins with repository discovery and compatibility mapping.
+
+======================================================================
+3. NON-NEGOTIABLE PRODUCT CONSTITUTION
+======================================================================
+
+These constraints must be enforced in domain code, APIs, database rules,
+authorization, and tests. A prompt is not an adequate enforcement boundary.
+
+3.1 LANGUAGE MODEL AUTHORITY
+
+The model may:
+  understand language;
+  classify intent and dialogue acts;
+  propose structured interpretations;
+  identify ambiguity and missing information;
+  plan permitted reads and tools;
+  summarize retrieved evidence;
+  draft explanations;
+  propose a typed action draft.
+
+The model may not:
+  become the accounting ledger authority;
+  calculate authoritative tax or journal results without deterministic validation;
+  invent a party, item, amount, date, account, tax treatment, document, citation,
+  legal provision, rate, threshold, or company fact;
+  directly write to ERP databases;
+  bypass permissions, preview, confirmation, validation, or OEC;
+  claim an action succeeded without a connector receipt;
+  expose hidden reasoning or provider think blocks.
+
+3.2 ASK MODE
+
+Ask Mode is read-only. It can explain, search, calculate through approved read-only
+tools, query authorized reports, and show clearly labeled simulations. It cannot
+create or confirm a mutation, even if the user uses imperative language.
+
+3.3 ACCOUNTANT MODE
+
+Accountant Mode can prepare supported typed drafts. Every mutation requires:
+
+1. authenticated tenant/company/user context;
+2. permission and capability checks;
+3. a versioned structured draft;
+4. deterministic validation and preview;
+5. an explicit short-lived, single-use confirmation token;
+6. OEC execution with idempotency;
+7. immutable audit and lineage;
+8. a real receipt and honest sync state.
+
+A natural-language “yes”, “ok”, “huncha”, or “thik cha” must not alone serve as
+posting authority.
+
+3.4 ACCOUNTING AUTHORITY
+
+Do not alter established posting commands, VAT/TDS calculations, inventory
+valuation, period locks, permissions, voucher numbering, sync semantics, or audit
+rules from a language/UI phase. The UI and LLM do not calculate authoritative facts
+or create parallel posting paths.
+
+3.5 TRUTH AND EVIDENCE
+
+Every material answer must identify its evidence class:
+
+  live ERP fact;
+  deterministic calculation;
+  reviewed external authority;
+  product documentation;
+  general explanation;
+  unresolved interpretation.
+
+Current legal, tax, regulatory, or reporting claims require:
+
+  jurisdiction;
+  authoritative source;
+  document/version identity;
+  effective date or period;
+  as-of date;
+  precise cited provision where available;
+  review status;
+  conflict or uncertainty disclosure.
+
+3.6 TENANT AND PRIVACY ISOLATION
+
+Tenant, company, fiscal year, branch, user, role, and permissions come from trusted
+authenticated context. They must scope every message, memory, cache, retrieval,
+draft, preview, command, event, audit record, trace, and metric. Development default
+identities are forbidden in production paths.
+
+3.7 SAFE FAILURE
+
+When a dependency is unavailable, MokXya must degrade honestly:
+
+  no ERP evidence -> no claim about live company facts;
+  no current reviewed law -> no definitive current-law answer;
+  no posting service -> no fabricated voucher;
+  ambiguous event -> focused clarification;
+  unsupported event -> safe explanation/escalation;
+  model outage -> explicitly limited deterministic/read-only functions;
+  failed import/migration/security gate -> production readiness fails.
+
+3.8 RESPONSE LANGUAGE
+
+Default to the language and register of the user’s latest meaningful message while
+preserving technical clarity. A mixed Romanized Nepali query may receive natural
+Romanized Nepali with important official terms also shown in Nepali or English when
+useful. Never mechanically translate stable names, account IDs, invoice numbers,
+citations, code, PAN/VAT numbers, or legal references.
+
+======================================================================
+4. ARCHITECTURAL PRINCIPLES
+======================================================================
+
+1. One authoritative intelligence pipeline, not several chat systems competing.
+2. Modular monolith first unless measured scaling requires service separation.
+3. Domain boundaries and typed ports before provider-specific integrations.
+4. Structured contracts between probabilistic and deterministic components.
+5. Original user text is immutable; normalization produces annotations and views.
+6. Language form is detected before intent classification.
+7. Script is not the same as language.
+8. Evidence spans accompany extracted values.
+9. Ambiguity is represented, not silently removed.
+10. Model confidence is not accounting or legal confidence.
+11. Retrieval is not proof; a verifier must connect claims to evidence.
+12. Law, rates, and accounting policies are time/version dependent.
+13. Every derived index is rebuildable from immutable validated sources.
+14. Every mutation is previewed, explicitly confirmed, idempotent, and audited.
+15. No switch-statement jungle for providers, tools, intents, or connectors; use
+    registries and declared capabilities.
+16. No global mutable conversation state.
+17. No raw chain-of-thought storage or exposure.
+18. No fine-tuning until the architecture and baseline evaluations are trustworthy.
+19. Every phase is reversible and has an acceptance gate.
+20. Optimize measured bottlenecks; do not trade away safety for superficial speed.
+
+======================================================================
+5. TARGET END-TO-END INTELLIGENCE PIPELINE
+======================================================================
+
+CANONICAL READ/ANSWER FLOW
+
+  API Gateway
+    -> Authentication and Tenant Context
+    -> Request Validation and Rate/Size Control
+    -> Conversation State Load
+    -> Language Form and Protected-Span Analysis
+    -> Lossless Normalization and Candidate Transliteration
+    -> Turn-Relation and Dialogue-Act Classification
+    -> Intent/Event Candidate Generation
+    -> Context and Reference Resolution
+    -> Capability/Mode Policy
+    -> Planner
+    -> Typed ERP/Knowledge/Calculation Tool Reads
+    -> Evidence Bundle
+    -> Structured Interpretation or Answer Plan
+    -> Model Composition
+    -> Claim, Citation, Language, and Safety Verification
+    -> Typed Response Envelope
+    -> SSE/UI Rendering
+    -> Redacted Trace and Evaluation Hooks
+
+CANONICAL ACTION FLOW
+
+  User Turn
+    -> same understanding pipeline
+    -> EventFrame with evidence and uncertainties
+    -> Required-Field and Ambiguity Policy
+    -> Focused Clarification OR Draft Builder
+    -> Deterministic Domain Validation
+    -> Versioned Preview
+    -> User Review/Edit
+    -> Explicit Confirmation Token
+    -> Permission/Snapshot/Revalidation
+    -> Action Runtime
+    -> ERPCommandPort
+    -> OEC
+    -> Connector
+    -> ERP Authority
+    -> Receipt, Audit, Outbox, Sync State
+    -> User-visible Result
+
+The LLM never jumps from raw text directly to the connector.
+
+======================================================================
+6. CANONICAL DATA CONTRACTS
+======================================================================
+
+The exact language can be Python/Pydantic on the backend and generated TypeScript
+types on the frontend. The logical contract must remain stable and versioned.
+
+6.1 AI REQUEST
+
+AIRequest
+  schema_version
+  request_id
+  correlation_id
+  conversation_id
+  message_id
+  authenticated_principal_ref
+  tenant_id
+  company_id
+  branch_id_optional
+  fiscal_context
+  mode: ASK | ACCOUNTANT
+  raw_text
+  input_channel: TEXT | VOICE | OCR | IMPORT
+  locale_hint_optional
+  timezone
+  client_capabilities
+  active_ui_context_optional
+  active_draft_ref_optional
+  idempotency_key_optional
+  created_at
+
+Trusted identity fields are server-generated. A request body may carry hints but
+cannot choose another tenant/company/user.
+
+6.2 LANGUAGE ANALYSIS
+
+LanguageFrame
+  raw_text
+  unicode_normalized_view
+  span_annotations[]
+  language_distribution
+  dominant_response_language
+  register
+  code_mix_pattern
+  transliteration_candidates[]
+  normalization_edits[]
+  protected_spans[]
+  number_candidates[]
+  date_candidates[]
+  entity_surface_candidates[]
+  ambiguity_flags[]
+  analyzer_versions
+
+SpanAnnotation
+  start_offset
+  end_offset
+  original_text
+  script
+  language_form
+  normalized_candidates[]
+  confidence
+  protected_reason_optional
+
+Normalization must never overwrite raw_text.
+
+6.3 TURN RELATION AND DIALOGUE ACT
+
+TurnRelation
+  relation:
+    NEW_TOPIC
+    CONTINUE_EXPLICIT_DRAFT
+    CONTINUE_ACTIVE_DRAFT
+    ANSWER_CLARIFICATION
+    CORRECT_ACTIVE_DRAFT
+    CANCEL_ACTIVE_DRAFT
+    CONFIRMATION_INTENT
+    REFER_TO_PRIOR_ANSWER
+    COMPARE_PRIOR_RESULTS
+    UNKNOWN
+  referenced_object_ids[]
+  evidence_spans[]
+  alternatives[]
+  confidence
+
+DialogueAct
+  QUESTION
+  REQUEST_EXPLANATION
+  REQUEST_REPORT
+  PROPOSE_TRANSACTION
+  PROVIDE_INFORMATION
+  CORRECTION
+  CONFIRMATION_INTENT
+  REJECTION
+  GREETING
+  FEEDBACK
+  RESEARCH_REQUEST
+  UNKNOWN
+
+Turn relation must be determined before merging a message into a pending draft.
+
+6.4 INTENT AND EVENT FRAME
+
+IntentCandidate
+  intent_id
+  domain
+  score
+  required_capability
+  evidence_spans[]
+  missing_context[]
+  out_of_distribution_score
+
+EventFrame
+  frame_id
+  frame_version
+  event_type
+  lifecycle_state:
+    PLANNED | OCCURRED | PARTIALLY_SETTLED | SETTLED | REVERSED | UNKNOWN
+  parties[]
+  items[]
+  quantities[]
+  amounts[]
+  number_roles[]
+  dates_and_periods[]
+  locations[]
+  payment_terms[]
+  tax_clues[]
+  document_refs[]
+  source_evidence[]
+  inherited_context[]
+  explicit_values[]
+  inferred_candidates[]
+  missing_required_fields[]
+  ambiguous_fields[]
+  prohibited_assumptions[]
+  confidence_by_field
+  ontology_version
+
+Each extracted value contains:
+  normalized value;
+  original surface form;
+  exact source span;
+  source turn;
+  whether explicit, resolved, retrieved, calculated, or inferred;
+  confidence;
+  alternative candidates.
+
+6.5 PLAN AND TOOL CALL
+
+Plan
+  plan_id
+  objective
+  mode
+  ordered_steps[]
+  allowed_tools[]
+  prohibited_tools[]
+  required_evidence[]
+  stop_conditions[]
+  max_steps
+  plan_version
+
+ToolCall
+  tool_call_id
+  tool_name
+  tool_schema_version
+  typed_arguments
+  tenant_scope
+  permission_decision
+  timeout
+  retry_policy
+  read_or_mutation
+
+ToolObservation
+  tool_call_id
+  success
+  typed_result
+  source_refs[]
+  snapshot_revision
+  observed_at
+  error_code_optional
+  safe_user_message_optional
+
+6.6 EVIDENCE AND CLAIMS
+
+EvidenceItem
+  evidence_id
+  evidence_class
+  source_id
+  document_version_or_snapshot
+  exact_location
+  extracted_text_or_fact
+  authority_level
+  jurisdiction
+  effective_period
+  acquired_at
+  reviewed_status
+  content_hash
+  allowed_uses
+
+Claim
+  claim_id
+  claim_type
+  canonical_proposition
+  evidence_ids[]
+  derivation_ref_optional
+  confidence
+  materiality
+  temporal_scope
+  verification_status
+
+6.7 RESPONSE
+
+AIResponse
+  schema_version
+  response_id
+  request_id
+  conversation_id
+  response_type:
+    ANSWER
+    CLARIFICATION
+    CHOICE
+    REPORT
+    DRAFT
+    PREVIEW
+    ACTION_PROGRESS
+    RECEIPT
+    CONFLICT
+    SAFE_REFUSAL
+    DEGRADED
+    ERROR
+  status
+  language
+  user_visible_text
+  structured_payload_optional
+  citations[]
+  warnings[]
+  uncertainty[]
+  suggested_safe_actions[]
+  draft_ref_optional
+  report_spec_optional
+  verification_summary
+  trace_ref
+  created_at
+
+Do not include raw chain of thought, hidden prompts, secrets, stack traces, or
+provider-internal reasoning.
+
+======================================================================
+7. LANGUAGE INTELLIGENCE ARCHITECTURE
+======================================================================
+
+MokXya does not need to manually store every possible word. It needs a strong
+multilingual base model plus a controlled language runtime, domain ontology,
+training examples, retrieval, and evaluation.
+
+7.1 REQUIRED LANGUAGE FORMS
+
+Support and label:
+
+1. Formal Nepali in Devanagari.
+2. Informal conversational Nepali in Devanagari.
+3. Formal English.
+4. Nepal-business English.
+5. Romanized Nepali with common variants.
+6. English-Nepali code-mix.
+7. Devanagari-Romanized code-mix.
+8. Three-way English-Devanagari-Romanized input.
+9. Abbreviations and accounting shorthand.
+10. Typographical errors, missing spaces, repeated characters, and mobile typing.
+11. Nepali and English numerals.
+12. BS and AD dates and fiscal-year expressions.
+13. Locally common Hindi-influenced forms only where observed, without expanding
+    product scope to a separate Hindi assistant.
+
+7.2 SCRIPT AND LANGUAGE-FORM DETECTION
+
+Detection operates at token/span level, not only whole-message level. It must
+identify:
+
+  Unicode script;
+  likely language form;
+  Romanized Nepali likelihood;
+  English likelihood;
+  named entity;
+  identifier/code;
+  number/date/money;
+  URL/email/phone;
+  legal citation;
+  account or invoice reference;
+  protected text that must not be transliterated.
+
+Examples:
+
+  “Ram lai 50000 udharo sales गरियो”
+
+must not be classified as merely English or merely Nepali. “Ram” may be a party
+name, “50000” an amount candidate, “udharo” Romanized Nepali, “sales” English, and
+“गरियो” Devanagari Nepali.
+
+7.3 LOSSLESS NORMALIZATION
+
+Normalization is layered and reversible:
+
+  Layer 0: preserve original bytes/text.
+  Layer 1: safe Unicode normalization.
+  Layer 2: whitespace and punctuation annotation.
+  Layer 3: spelling/abbreviation candidate expansion.
+  Layer 4: Romanized Nepali canonical candidates.
+  Layer 5: domain synonym mapping.
+  Layer 6: entity/master matching candidates.
+
+Never silently replace a person, item, account, number, invoice, PAN/VAT number,
+legal section, or user-defined label.
+
+Every edit records:
+  original span;
+  candidate;
+  rule/model version;
+  confidence;
+  whether safe for retrieval only or safe for semantic interpretation.
+
+7.4 ROMANIZED NEPALI
+
+Romanized Nepali has no single spelling standard. The language runtime must accept
+many-to-many mappings such as:
+
+  cha / chha / xa -> छ
+  bhayo / vayo / vo -> भयो
+  udharo / udaro / udhaar -> उधारो
+  kine / kinyo / kineko -> खरिद-related candidate depending on context
+  beche / bechye / bikri gare -> sale-related candidate depending on context
+
+Do not force one transliteration before understanding. Generate n-best candidates
+and use context, domain ontology, company masters, and the model to rank them.
+
+Maintain:
+  phoneme/grapheme mappings;
+  common spelling variants;
+  morphology-aware suffix handling;
+  word-boundary variants;
+  common mobile-keyboard errors;
+  regional/informal variants with provenance;
+  protected-entity policy;
+  bidirectional transliteration evaluation.
+
+7.5 CODE-MIX HANDLING
+
+Code-mixing is normal, not an error. The system must preserve technical English
+terms when users naturally use them:
+
+  “Kiran ko ledger dekhaau”
+  “yo invoice ko VAT milaena”
+  “cash ma purchase gareko ho”
+  “गत महिनाको sales report चाहियो”
+
+Intent and slot models must be trained and tested on mixed spans, not only fully
+translated sentences.
+
+7.6 NUMBERS, MONEY, QUANTITY, DURATION, AND IDENTIFIERS
+
+A number is not automatically money. Required number roles include:
+
+  amount;
+  quantity;
+  unit price;
+  rate;
+  percentage;
+  discount;
+  tax;
+  duration;
+  date part;
+  fiscal year;
+  invoice/reference number;
+  account/PAN/VAT/phone identifier;
+  installment count;
+  age/tenure;
+  unknown.
+
+Example:
+
+  “ghar bhada tirnu xa 5 maina ko”
+
+means duration = five months and amount = unknown. It must never become Rs 5,000.
+
+Number understanding must support:
+  50000, 50,000, ५००००;
+  50k where product policy allows;
+  pachas hajar, पचास हजार;
+  lakh/crore and लाख/करोड;
+  decimals and percentages;
+  Nepali currency expressions;
+  relative dates and periods;
+  BS/AD conversion through a verified deterministic date service.
+
+7.7 DOMAIN LEXICON AND ONTOLOGY
+
+The lexicon is supporting data, not the entire intelligence system. It must link
+surface forms to stable concepts:
+
+  surface form -> lemma/concept -> domain -> possible roles -> examples
+  -> ambiguity notes -> language/register -> source -> version
+
+Domains initially include:
+  sales, purchase, return, receipt, payment, journal, contra, cash, bank, credit,
+  discount, bad debt, provision, theft/loss, expense, income, inventory, VAT, TDS,
+  payroll, fixed assets, depreciation, reconciliation, reporting, company setup.
+
+Future domains include:
+  Income Tax, VAT, Excise, Customs, Companies, Labour, Social Security, NFRS/NAS,
+  auditing, NRB, banking, insurance, securities, cooperatives, insolvency, contracts,
+  consumer protection, local taxes, licensing, sector regulation, court decisions,
+  and administrative procedures.
+
+7.8 RESPONSE GENERATION
+
+The model should compose natural language from a verified answer plan. Response
+quality rules include:
+
+1. Match user language and form.
+2. Be concise for simple actions and sufficiently detailed for research.
+3. Use familiar language first, technical term second where helpful.
+4. Preserve official titles and citations accurately.
+5. Do not translate identifiers.
+6. Ask one high-information-gain clarification at a time when possible.
+7. State what was understood before asking when ambiguity is material.
+8. Do not repeat already known facts.
+9. Distinguish “I need information” from “the event is unsupported.”
+10. Never expose hidden reasoning.
+
+======================================================================
+8. LANGUAGE DATA AND LEARNING PROGRAM
+======================================================================
+
+8.1 DATA TYPES REQUIRED
+
+1. Raw consented/anonymized Nepal business utterances.
+2. English, Devanagari Nepali, Romanized Nepali, and mixed paraphrases.
+3. Multi-turn conversations rather than isolated sentences only.
+4. Corrections, cancellations, topic changes, references, and incomplete replies.
+5. Domain intent and event examples.
+6. Entity/slot annotations with exact evidence spans.
+7. Number-role annotations.
+8. Ambiguity and required-clarification annotations.
+9. Safe answer and unsafe-answer contrasts.
+10. Tool-selection and typed-argument examples.
+11. Knowledge question/evidence/citation examples.
+12. Out-of-domain, adversarial, and no-answer examples.
+13. Voice transcription errors and OCR noise when those channels launch.
+14. Realistic dialect/register coverage with documented provenance.
+
+8.2 ANNOTATION SCHEMA
+
+Every critical conversation should label:
+
+  language form by span;
+  dialogue act;
+  turn relation;
+  primary and alternative intent;
+  event lifecycle;
+  entities and source spans;
+  number roles;
+  explicit versus inferred values;
+  reference/coreference links;
+  required company-data reads;
+  required knowledge reads;
+  missing and ambiguous fields;
+  expected clarification;
+  allowed capability;
+  forbidden assumptions;
+  expected structured result;
+  expected user-facing answer style.
+
+Critical accounting/legal cases require double annotation and adjudication. Record
+reviewer role, annotation-guideline version, and disagreement.
+
+8.3 DATA QUALITY
+
+Reject or quarantine:
+  duplicate templates spread across train and test;
+  fabricated legal citations presented as truth;
+  examples containing real sensitive identifiers without consent and sanitization;
+  inconsistent intent labels;
+  answers that assume missing facts;
+  synthetically generated examples without review;
+  obsolete law/rates mixed with current truth without effective dates;
+  translations that erase natural Romanized/code-mixed forms.
+
+8.4 TRAIN/VALIDATION/TEST SPLITS
+
+Split by underlying scenario and conversation, not by individual sentence. All
+paraphrases and transliteration variants of one seed remain in the same split.
+
+Maintain:
+  development training set;
+  validation set;
+  frozen gold test;
+  adversarial safety set;
+  current-law temporal set;
+  post-launch shadow set;
+  regional/register challenge set.
+
+The frozen test set must not be fed into prompt development or fine-tuning.
+
+8.5 SYNTHETIC DATA
+
+Synthetic data is useful for coverage expansion, but must be generated from a
+controlled scenario matrix, validated against schemas, deduplicated, sampled for
+human review, and kept traceable to its seed and generator version.
+
+Generate variations across:
+  language form;
+  spelling;
+  code mix;
+  word order;
+  politeness/register;
+  omitted fields;
+  correction patterns;
+  ambiguous numbers;
+  multiple parties/items;
+  date expressions;
+  dialect and typing noise.
+
+Do not let synthetic data define legal truth or accounting rules.
+
+8.6 FINE-TUNING POLICY
+
+Do not fine-tune first. Establish a strong evaluated baseline after routing,
+context, tools, retrieval, and verifiers work correctly.
+
+Use supervised fine-tuning or LoRA later for:
+  language/style adaptation;
+  Romanized Nepali robustness;
+  structured extraction;
+  dialogue-act/turn-relation classification;
+  tool selection;
+  clarification behavior;
+  consistent schema output.
+
+Do not use model weights as the primary store for:
+  current laws;
+  changing tax rates and deadlines;
+  company balances;
+  permissions;
+  chart-of-account mappings;
+  posting logic;
+  effective-date rules.
+
+Preference training may improve answer helpfulness and safe clarification only after
+high-quality preference pairs and an evaluation gate exist.
+
+8.7 MODEL AND TOKENIZER EVALUATION
+
+Benchmark every candidate base model on:
+  Nepali script token efficiency;
+  Romanized Nepali understanding;
+  code-mix;
+  structured JSON reliability;
+  long-context faithfulness;
+  tool use;
+  hallucination/no-answer behavior;
+  accounting reasoning;
+  deployment memory and latency;
+  license and commercial-use conditions.
+
+A larger parameter count does not automatically mean better Nepali performance.
+
+======================================================================
+9. CONVERSATION CONTEXT AND MEMORY
+======================================================================
+
+Most “weak context” failures are application-state failures, not merely model-size
+failures.
+
+9.1 CONTEXT TYPES
+
+Maintain separate stores for:
+
+1. Current turn: immutable raw input and analysis.
+2. Working context: facts needed for the present answer.
+3. Conversation context: recent turns and typed references.
+4. Task/draft state: fields, versions, status, outstanding clarification.
+5. Company context: authorized company, fiscal year, branch, configuration.
+6. Business memory: approved durable preferences and mappings.
+7. User preference memory: language/style, where allowed.
+8. Knowledge evidence: retrieved sources for the current answer.
+9. Audit history: immutable action/decision trace.
+10. Compressed summaries: derived, versioned, replaceable aids.
+
+Do not merge these into a single unstructured chat-history string.
+
+9.2 CONTEXT ASSEMBLY
+
+Build a ContextBundle with explicit budgets and priority:
+
+  system constitution;
+  capability/mode policy;
+  authenticated scope;
+  active task/draft;
+  unresolved clarification;
+  relevant recent turns;
+  resolved entity references;
+  authorized company facts;
+  retrieved external evidence;
+  relevant durable preferences;
+  response contract.
+
+Every included item records provenance and freshness. Exclude unrelated ledger data,
+old drafts, and unnecessary personal/business details.
+
+9.3 TURN RELATION BEFORE DRAFT MERGE
+
+Never treat every message after a clarification as an answer to that clarification.
+Classify whether it:
+
+  answers the question;
+  corrects a prior field;
+  starts a new event;
+  refers to another draft;
+  cancels;
+  asks an explanation;
+  confirms intent but not authority;
+  is unrelated.
+
+A stale purchase draft must never capture a new theft, sale, greeting, or legal
+question.
+
+9.4 REFERENCE AND COREFERENCE
+
+Resolve expressions such as:
+  “tesko”, “tyo”, “usle”, “paila ko”, “yo entry”, “same party”, “tesmai 500 thap”,
+  “last month ko”, “agiko invoice”, “that one”, “make it 450”.
+
+Resolution candidates come from typed recent objects, not only text similarity.
+If two candidates remain materially plausible, present choices.
+
+9.5 CORRECTION SEMANTICS
+
+Corrections create a new draft version and preserve history:
+
+  original value;
+  corrected value;
+  source turn;
+  user who corrected;
+  timestamp;
+  reason/field;
+  resulting preview hash.
+
+Previously issued confirmation tokens become invalid after any material edit.
+
+9.6 SUMMARIZATION
+
+Summaries are derived aids, not authority. They must:
+  preserve unresolved decisions;
+  preserve stable object IDs;
+  distinguish user statements from tool facts;
+  exclude chain of thought;
+  be regenerated when source turns change;
+  be invalidated when a correction contradicts them;
+  never replace financial records or citations.
+
+9.7 MEMORY WRITE POLICY
+
+Do not automatically turn every conversation statement into durable memory.
+Memory writes require:
+  allowed memory type;
+  relevance and expected reuse;
+  tenant/user scope;
+  sensitivity classification;
+  retention/expiry;
+  provenance;
+  correction/deletion support.
+
+Company facts should normally be queried from authoritative ERP records rather than
+memorized in model conversation memory.
+
+======================================================================
+10. INTENT, EVENT, ROUTING, AND PLANNING
+======================================================================
+
+10.1 HIERARCHICAL ROUTING
+
+Use a hierarchy:
+
+  Domain
+    conversation
+    product_help
+    accounting
+    inventory
+    banking
+    payroll
+    reporting
+    tax
+    legal
+    audit
+    business_research
+    administration
+    unsupported
+
+  Operation type
+    answer
+    explain
+    query_company_data
+    calculate
+    prepare_draft
+    continue_draft
+    correct_draft
+    cancel_draft
+    research
+    compare
+    export
+
+  Specific intent/event
+    registry-defined and versioned
+
+Use deterministic high-precision rules for obvious protected cases, trained/model
+classification for linguistic variation, and explicit UNKNOWN/OOD outcomes.
+
+10.2 EVENT ONTOLOGY
+
+Every event specification declares:
+
+  stable event ID;
+  descriptions and examples across all supported language forms;
+  lifecycle possibilities;
+  required, optional, and conditionally required fields;
+  ambiguity rules;
+  allowed modes;
+  required permissions;
+  read tools;
+  deterministic draft builder;
+  preview type;
+  command type;
+  confirmation policy;
+  reversal/correction policy;
+  risk level;
+  tests.
+
+No event defaults to purchase merely because classification fails.
+
+10.3 PLANNER
+
+The planner produces typed, bounded plans. It does not write free-form steps that
+arbitrary code executes.
+
+Planner policies:
+  prefer direct deterministic handlers for simple requests;
+  retrieve only required facts;
+  parallelize independent read-only tools when safe;
+  limit steps and retries;
+  stop when required evidence is missing;
+  never convert Ask Mode into a mutation plan;
+  never call an undeclared tool;
+  validate every tool argument;
+  prevent recursive unbounded agent loops;
+  record plan and tool versions.
+
+10.4 MULTI-AGENT USE
+
+Do not create “agents” merely as marketing labels. Use specialized workers only
+where decomposition and verification provide measured value, for example:
+
+  research source collector;
+  legal temporal resolver;
+  accounting explanation composer;
+  claim verifier;
+  document ingestion/OCR worker.
+
+All workers operate under one orchestrator, shared typed contracts, capability
+limits, evidence lineage, time/step budgets, and final verification. No worker may
+mutate ERP except through the same authorized action path.
+
+======================================================================
+11. MODEL PROVIDER AND INFERENCE RUNTIME
+======================================================================
+
+11.1 PROVIDER-INDEPENDENT PORT
+
+Define a ModelProviderPort that accepts a versioned ModelRequest and returns a
+ModelResult. Business modules must not import Ollama-, Groq-, or vendor-specific
+clients directly.
+
+ModelRequest
+  request_id
+  task_type
+  messages_or_structured_context
+  required_output_schema
+  allowed_tools
+  temperature/top-p policy
+  token budget
+  timeout
+  privacy_class
+  model_policy
+  trace_context
+
+ModelResult
+  provider
+  model
+  model_revision
+  finish_reason
+  structured_output
+  raw_text_private_and_ephemeral
+  usage/resource metrics
+  latency
+  schema_validation
+  safety_flags
+  error
+
+Provider adapters implement:
+  capability declaration;
+  health;
+  timeout and cancellation;
+  retry policy;
+  streaming translation;
+  structured-output enforcement;
+  safe error mapping;
+  privacy/retention metadata;
+  output sanitization.
+
+11.2 MODEL CASCADE
+
+The previously chosen Qwen fast model and larger reasoning model can remain a
+starting cascade, but selection must be benchmark-driven.
+
+Suggested logical roles:
+
+  deterministic/no-model path:
+    exact commands, simple navigation, known report retrieval, validation
+
+  fast model:
+    language classification, rewriting candidates, simple answers, routing,
+    low-risk schema extraction
+
+  capable model:
+    ambiguous multi-turn interpretation, research synthesis, complex explanation,
+    difficult structured extraction
+
+  embedding model:
+    multilingual semantic retrieval
+
+  reranker:
+    multilingual query-document relevance
+
+  optional specialist classifier:
+    small fine-tuned model for language form, turn relation, or intent if it
+    materially beats the generative model on cost/latency/accuracy
+
+Escalation considers:
+  ambiguity;
+  task risk;
+  context length;
+  first-pass schema/verification failure;
+  retrieval complexity;
+  latency budget;
+  provider availability.
+
+Do not route high-risk tasks to a weak model merely because it is fast. Do not route
+every greeting or simple query to the most expensive model.
+
+11.3 MODEL ROUTING POLICY
+
+Model choice must be a declared policy with reasons and metrics. It should not rely
+on brittle keyword regexes alone.
+
+Possible policy inputs:
+  task type;
+  language mix;
+  OOD score;
+  number of candidate interpretations;
+  legal/accounting risk;
+  expected output schema complexity;
+  retrieval evidence count;
+  prior model failure;
+  latency SLO;
+  deployment resource state.
+
+11.4 CONTEXT WINDOW MANAGEMENT
+
+Never send the whole database, whole knowledge base, or entire conversation by
+default. Allocate explicit budgets:
+
+  constitution and output schema;
+  active task;
+  recent relevant turns;
+  selected company facts;
+  selected external evidence;
+  response instructions.
+
+Use retrieval, structured summaries, and typed object references. Measure truncation
+and “lost in the middle” behavior. Put critical constraints in stable high-priority
+positions and repeat only where tests prove necessary.
+
+11.5 STRUCTURED OUTPUT
+
+Use JSON Schema/Pydantic validation and bounded repair:
+
+1. Model returns structured candidate.
+2. Parser rejects unknown/invalid fields according to contract policy.
+3. A repair attempt may be made with validation errors and no new authority.
+4. If still invalid, escalate model or return a safe fallback.
+5. Never interpret arbitrary prose as a successful action command.
+
+11.6 THINKING AND OUTPUT SANITIZATION
+
+The backend must strip or reject:
+  think tags;
+  internal analysis channels;
+  system/developer prompts;
+  provider traces;
+  secrets;
+  stack traces;
+  tool credentials.
+
+Sanitization is defense in depth. The provider configuration and response contract
+should avoid requesting exposed chain of thought. Store concise decision summaries
+and verifier codes instead.
+
+11.7 FALLBACK AND DEGRADED MODE
+
+Fallbacks must be capability-aware:
+
+  model unavailable -> deterministic/product-help features only;
+  embedding unavailable -> benchmarked lexical retrieval;
+  reranker unavailable -> fused retrieval with stricter threshold;
+  knowledge unavailable -> disclose inability to verify current information;
+  ERP connector unavailable -> no live-company claim or posting receipt.
+
+Never silently switch to a provider with different privacy terms or a model that
+does not meet the task’s minimum capability.
+
+======================================================================
+12. PROMPT ARCHITECTURE
+======================================================================
+
+12.1 DO NOT USE ONE GIANT PROMPT
+
+Prompts should be small, layered, versioned, testable assets:
+
+  product constitution;
+  task-specific instruction;
+  language/response policy;
+  capability/tool policy;
+  retrieved evidence;
+  output schema;
+  few-shot examples selected for the task.
+
+Business rules, rates, permissions, and posting logic must not live only in prompts.
+
+12.2 PROMPT REGISTRY
+
+PromptDefinition
+  prompt_id
+  task_type
+  semantic_version
+  compatible_schema_versions
+  supported_models
+  template
+  required_context_fields
+  allowed_tools
+  prohibited_content
+  evaluation_suite
+  owner
+  review_status
+  created_at
+  supersedes
+  content_hash
+
+Prompts are released through tested versions, not edited silently in production.
+
+12.3 PROMPT INJECTION BOUNDARY
+
+User input, company master text, voucher narration, uploaded files, OCR text,
+retrieved web pages, emails, and knowledge documents are untrusted data. Wrap and
+label them as data. Instructions inside evidence cannot:
+
+  alter system policy;
+  request secrets;
+  expand tools;
+  change tenant/company;
+  authorize posting;
+  suppress citations;
+  mark themselves as authoritative;
+  bypass verification.
+
+12.4 FEW-SHOT EXAMPLES
+
+Examples must be:
+  relevant to the task and language form;
+  free of real sensitive data;
+  consistent with current schema;
+  explicit about ambiguity;
+  versioned and evaluated;
+  excluded when they crowd out required evidence.
+
+Do not paste thousands of dictionary entries into every inference request. Retrieve
+only relevant language/ontology examples.
+
+12.5 RESPONSE PLAN BEFORE PROSE
+
+For non-trivial responses, first produce a private structured AnswerPlan:
+
+  user goal;
+  answer type;
+  claims and evidence;
+  calculations;
+  uncertainty;
+  required warnings;
+  citations;
+  target language/register;
+  prohibited claims.
+
+The composer turns this into natural text, and the verifier compares the final text
+against the AnswerPlan and evidence.
+
+======================================================================
+13. KNOWLEDGE PLATFORM AND RAG
+======================================================================
+
+13.1 SEPARATE KNOWLEDGE PLANES
+
+Plane A: Live company ERP data
+  balances, vouchers, stock, parties, items, periods, configurations, reports.
+  Access only through typed authorized tools and snapshot/revision metadata.
+
+Plane B: Authoritative Nepal external knowledge
+  Acts, Rules, Regulations, Gazette notices, directives, circulars, standards,
+  official procedures, forms, decisions, and regulator material.
+
+Plane C: Professional explanatory knowledge
+  reviewed commentaries, implementation guides, examples, and internal research.
+  Never silently rank above primary authority.
+
+Plane D: Product documentation
+  MokXya features, help, schemas, workflows, and version-specific behavior.
+
+Plane E: Language and training data
+  examples, variants, lexicons, annotations. Not authority for law/accounting facts.
+
+Plane F: User/private documents
+  client contracts, policies, reports, working papers, uploaded evidence. Strictly
+  tenant scoped and never mixed into a public/global index.
+
+Plane G: Draft/internal research
+  unapproved notes and candidate interpretations. Clearly non-authoritative.
+
+Every retrieval result preserves its plane.
+
+13.2 SOURCE REGISTRY
+
+SourceRecord
+  source_id
+  publisher
+  official_domain_or_origin
+  jurisdiction
+  authority_class
+  document_families
+  acquisition_method
+  update_frequency
+  license/usage_status
+  authentication_requirement
+  expected_languages
+  trust_policy
+  reviewer_requirement
+  active/inactive
+
+Only approved sources may enter production legal/current-rate releases.
+
+13.3 DOCUMENT AND VERSION MODEL
+
+KnowledgeDocument
+  document_id
+  canonical_title
+  aliases
+  document_type
+  publisher
+  jurisdiction
+  authority_class
+  language
+  source_id
+
+DocumentVersion
+  document_version_id
+  document_id
+  official_identifier
+  publication_date
+  effective_start
+  effective_end
+  repeal/withdrawal/status
+  acquired_at
+  source_url_or_artifact_ref
+  content_hash
+  file_integrity
+  extraction_method
+  OCR_engine_and_version
+  OCR_confidence
+  reviewer_status
+  reviewer_identity/role
+  review_date
+  supersedes/superseded_by
+  release_id
+
+KnowledgeUnit
+  unit_id
+  document_version_id
+  hierarchy_path
+  unit_type
+  provision_number
+  heading
+  exact_text
+  normalized_search_text
+  language
+  page/range/offset
+  cross_references
+  amendment_links
+  content_hash
+
+The knowledge unit is the canonical atomic citation object. It should normally align
+with a section, rule, paragraph, clause, table row, schedule item, standard
+paragraph, decision holding, or procedure step—not an arbitrary token window.
+
+13.4 BITEMPORAL AND LEGAL TIME
+
+Store both:
+  valid time: when the rule applied in the real world;
+  system time: when MokXya learned/released that version.
+
+This allows answers such as:
+  What applied in FY 2080/81?
+  What is active as of today?
+  What did the repository believe on an earlier date?
+
+Never overwrite historical rates or provisions. Add a new version and explicit
+relationship.
+
+13.5 INGESTION PIPELINE
+
+  Source discovery/registry
+    -> fetch or controlled upload
+    -> malware/file validation
+    -> immutable raw artifact
+    -> hash and deduplication
+    -> metadata extraction
+    -> text extraction/OCR
+    -> language/script detection
+    -> layout and hierarchy recovery
+    -> provision/table segmentation
+    -> citation anchor creation
+    -> amendment/cross-reference linking
+    -> human review
+    -> release manifest
+    -> lexical/vector/graph indexes
+    -> retrieval evaluation
+    -> production activation
+
+Derived indexes are never the canonical source and must be rebuildable.
+
+13.6 OCR AND DOCUMENT QUALITY
+
+Nepal legal/business material may be scanned, bilingual, table-heavy, or contain
+poor fonts. Track quality per page and knowledge unit. Low-confidence OCR cannot be
+silently used for high-risk conclusions.
+
+Required capabilities:
+  Devanagari and English OCR;
+  layout/column detection;
+  table extraction;
+  headers/footers/page-number removal without losing citations;
+  annex/schedule handling;
+  image-based seal/signature metadata where relevant;
+  manual correction workflow;
+  comparison against a second official copy when available.
+
+13.7 RETRIEVAL PIPELINE
+
+  Query understanding
+    -> language-aware variants
+    -> jurisdiction/domain/time classification
+    -> authority and permission filters
+    -> lexical search
+    -> multilingual vector search
+    -> graph/citation expansion where useful
+    -> rank fusion
+    -> multilingual reranking
+    -> diversity and version checks
+    -> evidence-bundle construction
+    -> answer/claim generation
+    -> citation and temporal verification
+
+13.8 HYBRID RETRIEVAL
+
+Lexical search is critical for:
+  section numbers;
+  Act/Rule names;
+  PAN/VAT terms;
+  exact forms;
+  citations;
+  rare legal phrases;
+  names and identifiers.
+
+Vector search is useful for:
+  paraphrases;
+  Nepali-English cross-lingual questions;
+  Romanized queries;
+  concept retrieval;
+  natural-language descriptions.
+
+Use benchmarked rank fusion and reranking. A hash is not an embedding. Do not call
+SHA-based similarity semantic search.
+
+13.9 QUERY EXPANSION
+
+Generate controlled variants:
+  original query;
+  normalized Romanized query;
+  Devanagari candidate;
+  English technical synonym;
+  official document terminology;
+  relevant acronym expansion.
+
+Preserve original meaning and avoid broadening into a different legal question.
+
+13.10 RETRIEVAL FILTERS
+
+Apply before or during ranking:
+  tenant/private scope;
+  jurisdiction;
+  authority class;
+  active/historical status;
+  valid/effective date;
+  document type;
+  language;
+  review/release status;
+  user permission;
+  allowed use.
+
+13.11 NO-ANSWER AND CONFLICT POLICY
+
+If evidence is insufficient:
+  say what could not be verified;
+  show the missing source/time/jurisdiction;
+  avoid plausible fabrication;
+  optionally provide a clearly labeled general explanation.
+
+If sources conflict:
+  identify each source and authority;
+  distinguish version/effective-date differences;
+  do not silently choose;
+  route high-risk unresolved conflicts for professional review.
+
+13.12 CITATION CONTRACT
+
+A citation must resolve to:
+  source/document/version;
+  exact provision or unit;
+  page/paragraph/section where available;
+  stable content hash;
+  effective period;
+  accessible user-facing source reference when permitted.
+
+The cited text must entail the claim. Citation presence alone is not correctness.
+
+13.13 KNOWLEDGE RELEASES
+
+Production indexes point to an immutable KnowledgeRelease:
+
+  release_id
+  manifest
+  document versions
+  index versions
+  embedding/reranker versions
+  reviewer approvals
+  evaluation results
+  known limitations
+  activation time
+  rollback target
+
+An emergency withdrawal can deactivate a bad source/version without deleting audit
+history.
+
+======================================================================
+14. NEPAL LEGAL, TAX, REGULATORY, AND BUSINESS INTELLIGENCE
+======================================================================
+
+14.1 FUTURE CAPABILITY LAYERS
+
+Layer 1: Primary legislation
+  Constitution where relevant, Acts, ordinances, authentic amendments, repeal and
+  commencement history.
+
+Layer 2: Delegated legislation
+  Rules, regulations, bylaws, orders, schedules, and notified procedures.
+
+Layer 3: Gazette and official notices
+  commencement notices, rate changes, exemptions, appointments, forms, deadlines.
+
+Layer 4: Regulator instruments
+  directives, circulars, unified directives, guidelines, standards, FAQs, decisions.
+
+Layer 5: Administrative procedures
+  registration, filing, payment, renewal, licensing, appeals, forms, portals, fees,
+  documents, service timelines.
+
+Layer 6: Accounting and professional standards
+  NFRS/NAS, NAS for SMEs if applicable, auditing standards, ethics, implementation
+  guidance, regulator/professional notices.
+
+Layer 7: Judicial and quasi-judicial interpretation
+  Supreme Court and relevant tribunal/administrative decisions, holdings, issues,
+  procedural posture, status, subsequent treatment.
+
+Layer 8: Time-dependent structured facts
+  rates, thresholds, slabs, deadlines, penalties, forms, codes, classifications.
+
+Layer 9: Professional explanatory material
+  reviewed examples, decision trees, checklists, and comparison tables.
+
+14.2 INITIAL DOMAIN ORDER
+
+Recommended expansion order:
+
+1. Income Tax, VAT, TDS, Excise, and related IRD procedures.
+2. Companies Act/Rules, OCR/company administration, beneficial ownership where
+   applicable, filings, governance, and liquidation basics.
+3. NFRS/NAS and financial statement presentation/disclosure.
+4. Auditing standards and CA-firm workflow assistance.
+5. Labour, Social Security, payroll, and employment compliance.
+6. Customs/import-export and sector licensing.
+7. NRB/banking/foreign exchange and payment regulation.
+8. Securities/SEBON, insurance, cooperatives, and specialized finance.
+9. Contract, insolvency, consumer, privacy/cyber, competition, and commercial law.
+10. Provincial/local business taxes, registrations, and procedures.
+11. Court and tribunal interpretation.
+12. Sector-specific packs: retail, manufacturing, service, construction, education,
+    health, tourism, NGOs/INGOs, agriculture, fintech, e-commerce, and others.
+
+Each domain is separately released and evaluated. Do not label the entire system a
+Nepal legal expert because one tax collection is indexed.
+
+14.3 LEGAL QUESTION FRAME
+
+LegalQuestionFrame
+  question_id
+  user_goal
+  jurisdiction
+  subject_area
+  entity/person type
+  transaction/event
+  relevant dates/fiscal year
+  procedural stage
+  requested output:
+    explanation | checklist | comparison | calculation | draft | research memo
+  stakes/risk level
+  known facts with evidence
+  missing material facts
+  candidate legal instruments
+  current/historical requirement
+
+14.4 RESEARCH WORKFLOW
+
+  Frame question and material facts
+    -> identify jurisdiction/time
+    -> search primary authority
+    -> retrieve relevant provisions
+    -> follow amendments and cross-references
+    -> identify regulator/procedure material
+    -> search relevant decisions where in scope
+    -> distinguish binding/persuasive/explanatory sources
+    -> build issue-rule-application-uncertainty structure
+    -> verify claims and citations
+    -> state as-of date and limitations
+    -> professional escalation where required
+
+14.5 HIGH-RISK LEGAL/TAX POLICY
+
+MokXya may assist research and preparation. It must not falsely guarantee outcomes
+or represent itself as the government, court, regulator, auditor, or the user’s
+appointed professional.
+
+Require qualified review before:
+  filing high-risk returns based on novel interpretations;
+  changing statutory financial statements;
+  material tax positions;
+  legal notices, appeals, or litigation documents;
+  decisions involving penalties, limitation dates, or major rights;
+  regulated-sector compliance decisions;
+  advice where authoritative sources conflict.
+
+14.6 CHANGE INTELLIGENCE
+
+Build a governed monitor:
+  source polling/manual intake;
+  new artifact detection;
+  hash comparison;
+  document classification;
+  amendment/rate/deadline extraction;
+  impact analysis;
+  reviewer queue;
+  regression generation;
+  release approval;
+  affected-answer/cache invalidation;
+  user notification where appropriate.
+
+No detected change becomes production legal truth without validation and required
+review.
+
+14.7 CA-FIRM AND MULTI-CLIENT WORKSPACE
+
+A CA firm may serve many legally separate clients. Extend scope beyond
+tenant/company only when needed:
+
+  firm;
+  client entity;
+  engagement/matter;
+  fiscal/reporting period;
+  assigned team;
+  reviewer/partner;
+  independence/conflict status;
+  workpaper/evidence set;
+  deliverable;
+  approval and archive.
+
+No client conversation, memory, document, retrieval result, workpaper, or company
+fact may leak into another client merely because the same staff member accessed both.
+Cross-client templates may be shared; cross-client data may not.
+
+Future CA-firm capabilities:
+  engagement intake and checklist;
+  client-request list;
+  evidence/workpaper indexing;
+  audit/tax query research;
+  review notes and sign-off;
+  issue and adjustment tracking;
+  financial-statement/tax-return preparation assistance;
+  deliverable versioning;
+  complete access and review audit.
+
+MokXya must distinguish internal draft, client representation, verified evidence,
+professional conclusion, and filed/final deliverable.
+
+14.8 COMPLIANCE OBLIGATION AND CALENDAR ENGINE
+
+Do not ask the model to remember every deadline. Build a deterministic, time-aware
+obligation engine:
+
+  entity/profile facts
+    + jurisdiction
+    + registrations/licenses
+    + industry
+    + transaction/employee thresholds
+    + effective legal rule
+    -> applicable obligation
+    -> period/deadline
+    -> required form/evidence
+    -> responsible role
+    -> status
+    -> reminder/escalation
+
+Every obligation cites its rule version. Profile uncertainty creates a question, not
+a silently assumed obligation. Deadline calculations use verified calendar/date
+services and account for only officially supported extensions/holidays.
+
+14.9 BUSINESS RESEARCH AND DECISION SUPPORT
+
+Business research may combine:
+  reviewed law/regulation;
+  authorized company financial data;
+  deterministic ratios/scenarios;
+  user-provided market facts;
+  clearly identified external research.
+
+Keep fact, assumption, scenario, forecast, recommendation, and professional/legal
+conclusion distinct. Forecasts must expose material assumptions and must not be
+presented as guaranteed outcomes.
+
+======================================================================
+15. ACCOUNTING LANGUAGE TO DETERMINISTIC EXECUTION
+======================================================================
+
+15.1 RESPONSIBILITY SPLIT
+
+Language runtime:
+  understands words, references, event candidates, values, and ambiguity.
+
+Accounting semantic layer:
+  maps a validated EventFrame to a supported domain operation and identifies
+  required facts.
+
+Deterministic engines:
+  calculate and validate accounts, amounts, tax, stock, periods, journal effects,
+  rounding, and policy.
+
+Action/OEC runtime:
+  authorizes and executes the typed command exactly once.
+
+15.2 REQUIRED ACTION STATE MACHINE
+
+  UNDERSTANDING
+    -> NEEDS_CLARIFICATION
+    -> READY_FOR_DRAFT
+    -> DRAFTED
+    -> VALIDATING
+    -> PREVIEW_READY
+    -> USER_EDITED (new version, then validating)
+    -> CONFIRMATION_ISSUED
+    -> CONFIRMED
+    -> EXECUTING
+    -> ACCEPTED/POSTED/QUEUED according to real authority
+    -> SYNC_PENDING
+    -> SYNCED
+
+Alternative terminal/intermediate states:
+  CANCELLED
+  EXPIRED
+  BLOCKED
+  CONFLICT
+  RETRYABLE_FAILURE
+  PERMANENT_FAILURE
+  REVERSED
+
+15.3 DRAFT AGGREGATE
+
+DraftAggregate
+  draft_id
+  version
+  event_type
+  tenant/company/branch
+  owner user
+  conversation
+  source turn IDs
+  values with provenance
+  unresolved fields
+  validation findings
+  risk level
+  status
+  created/expires
+  prior version
+  preview hash
+
+Drafts require durable concurrency control and expiry. Local JSON files are not a
+production authority.
+
+15.4 CLARIFICATION POLICY
+
+Ask the smallest question that most reduces consequential uncertainty.
+
+Prioritize:
+  new event versus old draft;
+  occurred versus planned;
+  sale versus settlement;
+  amount versus quantity/duration/reference;
+  business versus personal;
+  gross versus net;
+  discount versus remaining receivable;
+  tax inclusive/exclusive where required;
+  party/item ambiguity;
+  date/period;
+  payment method only when relevant.
+
+Do not ask for fields already known from trustworthy context. Do not ask irrelevant
+purchase fields for theft, sale, legal research, or a greeting.
+
+15.5 PREVIEW
+
+Preview is generated by domain services and includes:
+  human-readable event summary;
+  accounts and debit/credit effects;
+  inventory effects;
+  tax effects;
+  party/document links;
+  date and period;
+  totals and derivations;
+  warnings;
+  source facts;
+  rule versions;
+  permissions/approval needs;
+  snapshot revision;
+  draft/version/hash;
+  expiry.
+
+15.6 CONFIRMATION
+
+Confirmation token binds:
+  user;
+  tenant/company/branch;
+  draft ID/version;
+  preview hash;
+  command type;
+  permissions;
+  snapshot/rule versions;
+  issue and expiry time;
+  single-use nonce.
+
+Reject after any material state change. The user must see what is being confirmed.
+
+15.7 POSTING
+
+The posting command uses stable IDs and Decimal values. Revalidate:
+  authorization;
+  period;
+  account and master state;
+  stock snapshot where relevant;
+  tax/rule versions;
+  balanced journal;
+  duplicate/idempotency;
+  confirmation.
+
+Only a connector/ERP receipt establishes success.
+
+15.8 CORRECTION AND REVERSAL
+
+Posted records are corrected through supported reversal/adjustment flows, preserving
+original record, links, reason, authorization, audit, and resulting reports. Never
+silently edit posted history.
+
+======================================================================
+16. DETERMINISTIC DOMAIN ENGINES
+======================================================================
+
+The following engines should expose typed, versioned ports and property/table tests.
+Reuse existing authoritative implementations; do not duplicate them in AI modules.
+
+16.1 CORE ACCOUNTING ENGINE
+
+  chart-of-accounts resolution;
+  journal construction;
+  debit/credit validation;
+  voucher numbering;
+  period/fiscal-year validation;
+  rounding and precision;
+  currency and exchange-rate policy;
+  accrual/prepayment;
+  adjustment/reversal;
+  opening/closing;
+  audit lineage.
+
+16.2 SALES AND RECEIVABLES
+
+  cash/bank/credit sales;
+  invoice and line discounts;
+  taxes;
+  receipts and allocations;
+  partial settlement;
+  sales returns/credit notes;
+  ageing;
+  provision/write-off workflows;
+  revenue recognition integration where applicable.
+
+16.3 PURCHASES AND PAYABLES
+
+  cash/bank/credit purchase;
+  landed cost where supported;
+  purchase returns/debit notes;
+  supplier settlement and advances;
+  withholding/TDS;
+  accruals and unmatched documents.
+
+16.4 INVENTORY
+
+  item/unit/warehouse;
+  stock ledger;
+  valuation method;
+  cost layers/average/FIFO as product supports;
+  transfers;
+  adjustments;
+  damage, expiry, theft/loss;
+  negative-stock policy;
+  physical count;
+  immutable stock movements linked to accounting.
+
+16.5 BANKING AND TREASURY
+
+  bank statement import;
+  matching and reconciliation;
+  bank charges/interest;
+  cheque lifecycle;
+  transfers/contra;
+  unreconciled-item controls;
+  duplicate statement detection;
+  snapshot and close.
+
+16.6 TAX
+
+  VAT configuration and reports;
+  TDS/withholding;
+  Income Tax computations only as explicitly supported;
+  effective-date rates and thresholds;
+  tax-inclusive/exclusive calculations;
+  exemptions and evidence;
+  filing/export schemas;
+  reconciliation;
+  professional review flags.
+
+16.7 FIXED ASSETS
+
+  recognition;
+  useful life/residual value;
+  depreciation methods;
+  componentization where supported;
+  additions/disposals/transfers;
+  impairment/revaluation only when explicitly implemented;
+  tax versus accounting base separation.
+
+16.8 PAYROLL
+
+  employee/pay component;
+  attendance/leave integration;
+  gross-to-net;
+  tax/social-security rules;
+  accrual/payment;
+  effective-date configuration;
+  privacy and restricted access.
+
+16.9 REPORTING
+
+  Day Book;
+  General Ledger;
+  Trial Balance;
+  Profit or Loss;
+  Balance Sheet/Statement of Financial Position;
+  Cash Flow;
+  receivable/payable ageing;
+  stock reports;
+  tax reports;
+  period comparisons;
+  drill-down lineage;
+  export and presentation controls.
+
+16.10 FINANCIAL CALCULATION TOOLS
+
+Where product scope includes them:
+  NPV, IRR, amortization, effective interest, ratios, CAPM, portfolio, DCF, scenario
+  and Monte Carlo calculations.
+
+Calculators must be deterministic, testable, unit-aware, precision-aware, and
+separate from free-form model arithmetic.
+
+======================================================================
+17. NFRS/NAS AND AUTOMATIC FINANCIAL REPORTING
+======================================================================
+
+17.1 REALISTIC AUTOMATION LEVELS
+
+Level 1: Presentation automation
+  map validated ledger balances to statement lines and notes.
+
+Level 2: Rule-based diagnostics
+  identify missing mappings, imbalance, classification conflicts, and disclosure
+  requirements.
+
+Level 3: Evidence-assisted adjustments
+  propose adjustment drafts based on documented facts and policies.
+
+Level 4: Complex estimates/judgments
+  impairment, provisions, fair value, revenue judgments, leases, financial
+  instruments, going concern. These require evidence and qualified review.
+
+Do not market Level 4 judgments as fully automatic merely because an LLM can draft
+an explanation.
+
+17.2 REPORTING POLICY MODEL
+
+ReportingPolicy
+  company
+  framework and version
+  effective period
+  chart mapping
+  accounting policies
+  materiality
+  presentation choices
+  currency
+  consolidation scope
+  approval/reviewer
+  version history
+
+17.3 MAPPING ENGINE
+
+Use stable mapping rules:
+  account/group -> reporting concept -> statement line/note -> sign/presentation
+  -> aggregation -> elimination/adjustment policy -> effective period
+
+Every reported amount must drill down to ledger balances, adjustments, mappings, and
+rule versions.
+
+17.4 DISCLOSURE CHECKLIST ENGINE
+
+Represent requirements as versioned rules with:
+  framework;
+  paragraph citation;
+  applicability condition;
+  required evidence;
+  data source;
+  generated value/text candidate;
+  reviewer status;
+  exception.
+
+The AI can help gather and draft; it cannot fabricate disclosures.
+
+17.5 FINANCIAL-REPORTING CLOSE
+
+  data integrity
+    -> reconciliations
+    -> period cut-off
+    -> account mapping
+    -> adjustment proposals
+    -> tax/accounting differences
+    -> reporting rules
+    -> statement generation
+    -> disclosure checklist
+    -> analytical review
+    -> reviewer approval
+    -> locked release and audit package
+
+17.6 XBRL/STRUCTURED REPORTING
+
+Keep taxonomy mapping extensible, but implement only when a real reporting
+requirement and validated taxonomy exist. Do not invent tags or assume Nepal filing
+formats.
+
+======================================================================
+18. TOOL, CONNECTOR, AND OEC ARCHITECTURE
+======================================================================
+
+18.1 TOOL REGISTRY
+
+ToolDefinition
+  tool_name
+  version
+  domain
+  description
+  input_schema
+  output_schema
+  read_or_mutation
+  required_permissions
+  allowed_modes
+  risk_level
+  timeout
+  retry/idempotency policy
+  tenant-scope behavior
+  evidence behavior
+  owner
+  health
+
+Never expose tools with empty or misleading argument schemas.
+
+18.2 TOOL CATEGORIES
+
+Read-only:
+  company/master lookup;
+  ledger/report query;
+  inventory/bank status;
+  knowledge retrieval;
+  citation lookup;
+  deterministic calculator;
+  product help;
+  permitted external research.
+
+Draft/preview:
+  typed draft builders and deterministic preview services. These do not post.
+
+Mutation:
+  accessible only after explicit confirmation and through Action Runtime/OEC.
+
+Administrative:
+  knowledge release, configuration, user/role, model/prompt operations. Restricted
+  and never exposed as ordinary conversational tools.
+
+18.3 TOOL EXECUTION LOOP
+
+  Model/planner proposes typed call
+    -> schema validation
+    -> capability and permission check
+    -> tenant/resource scoping
+    -> rate/timeout policy
+    -> tool execution
+    -> typed observation
+    -> evidence registration
+    -> planner decides stop/next
+    -> final answer verification
+
+The model cannot declare its imagined tool result to be an observation.
+
+18.4 OEC AS SOLE MUTATION PATH
+
+Preserve the reported authority:
+
+  Workflow/Orchestrator
+    -> Action Runtime
+    -> ERPCommandPort
+    -> OEC Runtime
+    -> selected Connector
+    -> authoritative ERP result
+
+No language, RAG, UI, planner, agent, or plugin module may write directly to ERP
+tables or invent an alternative connector path.
+
+18.5 CONNECTOR CONTRACT
+
+Connector drivers declare:
+  supported commands/queries;
+  transactional guarantees;
+  idempotency support;
+  consistency model;
+  health;
+  timeout/retry behavior;
+  compensation/reversal support;
+  snapshot semantics;
+  receipt format.
+
+Use the existing registry architecture where present. Do not add provider/connector
+switch cascades.
+
+18.6 PLUGINS
+
+Plugins may package domain capability but cannot weaken the constitution. A plugin
+manifest declares:
+  ID/version;
+  capabilities;
+  tools;
+  schemas;
+  knowledge requirements;
+  permissions;
+  migrations;
+  tests;
+  compatibility;
+  owner;
+  signature/integrity where required.
+
+Potential plugins:
+  accounting-erp;
+  tax;
+  legal;
+  financial-reporting;
+  audit;
+  payroll;
+  investment;
+  OCR/document;
+  research.
+
+======================================================================
+19. PERSISTENCE AND DATA MODEL
+======================================================================
+
+19.1 AUTHORITY MAP
+
+Before implementation, create a table naming the authoritative owner/store for:
+  identity;
+  company/fiscal configuration;
+  masters;
+  vouchers;
+  stock;
+  reports;
+  conversation;
+  task/draft;
+  preview;
+  confirmation;
+  memory;
+  knowledge document/version/unit;
+  prompt/model configuration;
+  evaluation dataset/run;
+  audit;
+  outbox/sync.
+
+No entity may have two undocumented final authorities.
+
+19.2 LOGICAL TABLES
+
+Reuse and migrate existing tables where possible. Suggested logical tables:
+
+Identity and policy
+  tenants
+  companies
+  branches
+  users
+  roles
+  permissions
+  user_role_bindings
+  service_principals
+
+Conversation
+  ai_conversations
+  ai_messages
+  ai_message_parts
+  ai_turn_analyses
+  ai_context_snapshots
+  ai_object_references
+  ai_conversation_summaries
+
+Draft/action
+  ai_drafts
+  ai_draft_versions
+  ai_draft_fields
+  ai_clarifications
+  ai_previews
+  ai_confirmation_tokens
+  ai_action_requests
+  ai_action_receipts
+  ai_conflicts
+
+Memory
+  ai_memories
+  ai_memory_versions
+  ai_memory_links
+  ai_memory_tombstones
+
+Knowledge
+  knowledge_sources
+  knowledge_documents
+  knowledge_document_versions
+  knowledge_units
+  knowledge_citations
+  knowledge_relationships
+  legal_instruments
+  legal_provisions
+  legal_amendments
+  structured_rates_thresholds
+  knowledge_reviews
+  knowledge_releases
+  knowledge_release_items
+  ingestion_jobs
+  extraction_findings
+  index_manifests
+
+Professional engagements
+  professional_firms
+  client_entities
+  engagements
+  engagement_team_bindings
+  engagement_conflict_checks
+  workpapers
+  workpaper_versions
+  evidence_requests
+  review_notes
+  review_signoffs
+  deliverable_releases
+
+Model/prompt/tool
+  model_providers
+  model_deployments
+  model_policies
+  prompt_definitions
+  prompt_releases
+  tool_definitions
+  tool_executions
+  model_executions
+
+Evaluation/operations
+  eval_datasets
+  eval_cases
+  eval_runs
+  eval_results
+  human_reviews
+  user_feedback
+  ai_traces
+  ai_quality_findings
+  security_events
+
+Do not copy existing accounting tables into this AI schema. Reference stable IDs and
+query through domain ports.
+
+19.3 DATABASE REQUIREMENTS
+
+  migrations with forward and safe rollback/roll-forward strategy;
+  foreign keys and check constraints;
+  Decimal-safe numeric types;
+  optimistic concurrency/version columns;
+  tenant/company indexes;
+  immutable/audited records where required;
+  TTL/expiry indexes for transient objects;
+  encrypted sensitive data;
+  backup/PITR appropriate to deployment;
+  tested restore;
+  retention and deletion policy;
+  no secrets in database fields intended for logs.
+
+19.4 CACHE
+
+Cache keys include tenant/company, principal/permission context, query, source
+release, fiscal/date context, model/prompt/schema version as relevant. Never serve
+cross-tenant data or current-law answers from an old release after invalidation.
+
+======================================================================
+20. OFFLINE-FIRST, SYNC, AND DISTRIBUTED RELIABILITY
+======================================================================
+
+20.1 OFFLINE POLICY
+
+Explicitly classify operations:
+
+  safe offline draft only;
+  safe offline deterministic preview with a declared local snapshot;
+  queueable mutation subject to server revalidation;
+  online-only because current authority/stock/permission is required;
+  prohibited offline.
+
+The UI must show honest states, not a generic success.
+
+20.2 REQUIRED STATES
+
+Use established project terms where already implemented, preserving distinctions:
+  local_draft;
+  previewed;
+  queued_offline;
+  sending;
+  server_accepted;
+  posted_local where legitimately applicable;
+  sync_pending;
+  synced;
+  conflict;
+  rejected;
+  retryable_failure;
+  permanent_failure.
+
+20.3 OUTBOX
+
+Domain transaction and outbox event commit atomically. Workers use:
+  leases;
+  bounded retries;
+  exponential backoff/jitter;
+  idempotency;
+  dead-letter;
+  metrics;
+  replay tooling;
+  safe shutdown.
+
+20.4 CONFLICTS
+
+Detect using stable entity IDs, revisions, snapshots, draft versions, and preview
+hashes. Material changes require regeneration and reconfirmation:
+
+  period closed;
+  permission revoked;
+  stock changed;
+  master/account changed;
+  tax/rule version changed;
+  draft posted elsewhere;
+  voucher sequence conflict;
+  source document withdrawn.
+
+Never last-write-wins a posted accounting record.
+
+20.5 RESILIENCE
+
+Use timeouts, cancellation, circuit breakers, bulkheads, health probes, bounded
+queues, and correlation IDs for model providers, retrieval, databases, connectors,
+OCR, ingestion, and sync. Do not blindly retry non-idempotent actions.
+
+======================================================================
+21. SECURITY, PRIVACY, AND ABUSE RESISTANCE
+======================================================================
+
+21.1 AUTHENTICATION
+
+  mandatory production authentication;
+  no default production user;
+  validated issuer/audience/algorithm;
+  short-lived access and secure refresh/revocation;
+  scoped service-to-service identity;
+  session ownership checks;
+  stronger authentication/approval for sensitive functions where required.
+
+21.2 AUTHORIZATION
+
+Deny by default. Separate permissions for:
+  read conversation;
+  read financial data;
+  query reports;
+  create draft;
+  preview;
+  confirm;
+  post;
+  approve high-risk command;
+  reverse;
+  manage masters;
+  manage users;
+  manage knowledge;
+  activate knowledge release;
+  view debug traces;
+  export sensitive data.
+
+Validate authorization in backend/domain boundaries, not only UI.
+
+21.3 API SECURITY
+
+  HTTPS and secure headers;
+  explicit CORS;
+  trusted proxy settings;
+  CSRF controls where cookies are used;
+  body/file/token limits;
+  rate and concurrency limits;
+  SSE limits and cancellation;
+  safe content types;
+  validation against injection;
+  no raw errors;
+  replay-resistant confirmation;
+  idempotency;
+  dependency/container scanning.
+
+21.4 DATA PROTECTION
+
+  classify data;
+  minimize fields sent to models;
+  encrypt in transit and at rest;
+  managed secrets;
+  redact logs/traces;
+  restrict operational access;
+  document retention;
+  support correction/deletion where legally and operationally appropriate;
+  encrypted backups and restore tests;
+  separate global knowledge from private tenant data.
+
+21.5 MODEL PRIVACY
+
+Record which provider/model receives which data class, retention terms, location and
+commercial/privacy conditions. Never silently send full ledgers, payroll, tax IDs,
+or client files when a minimal fact is sufficient. Never silently fall back to a
+provider with a different data policy.
+
+21.6 PROMPT AND TOOL ATTACKS
+
+Test:
+  direct prompt injection;
+  indirect instructions in invoices, masters, uploads, and legal documents;
+  tool argument injection;
+  fake citation/source authority;
+  data exfiltration attempts;
+  cross-tenant object IDs;
+  draft/confirmation token guessing;
+  confirmation replay;
+  forged receipts;
+  path traversal;
+  malicious files;
+  oversized input and denial of service.
+
+21.7 AUDIT
+
+Audit high-impact reads and all mutations with:
+  principal;
+  tenant/company;
+  action;
+  object;
+  before/after or linked version;
+  reason;
+  source request;
+  model/prompt/tool/rule versions;
+  permission decision;
+  confirmation;
+  receipt;
+  timestamp;
+  integrity/hash chain where established.
+
+======================================================================
+22. QUALITY VERIFICATION
+======================================================================
+
+22.1 ANSWER VERIFIER
+
+Inputs:
+  request;
+  context;
+  AnswerPlan;
+  evidence;
+  final response;
+  capability policy.
+
+Checks:
+  response schema;
+  requested language/register;
+  material claim coverage;
+  ERP-fact support;
+  legal citation entailment;
+  temporal/jurisdiction correctness;
+  calculation trace;
+  contradiction;
+  unsupported certainty;
+  accidental mutation claims;
+  privacy leakage;
+  prompt injection;
+  internal reasoning leakage.
+
+Outcomes:
+  PASS;
+  PASS_WITH_WARNING;
+  ASK;
+  DEGRADE;
+  BLOCK.
+
+22.2 ACTION VERIFIER
+
+Checks:
+  supported event;
+  complete/unambiguous fields;
+  stable IDs;
+  source provenance;
+  permission;
+  open period;
+  master/account validity;
+  stock snapshot;
+  active rule version;
+  deterministic totals;
+  balanced journal;
+  approval;
+  duplicate risk;
+  preview hash;
+  confirmation token;
+  idempotency.
+
+Any failure blocks execution.
+
+22.3 LEGAL/KNOWLEDGE VERIFIER
+
+Checks:
+  primary authority priority;
+  active/historical distinction;
+  provision/version identity;
+  effective date;
+  as-of date;
+  citation entails claim;
+  no withdrawn/unreviewed release;
+  conflicts disclosed;
+  risk/escalation policy.
+
+22.4 LANGUAGE VERIFIER
+
+Checks:
+  no identifier/entity corruption;
+  no mistranslated official reference;
+  amount/quantity/duration roles preserved;
+  response matches user form;
+  clarification refers to actual ambiguity;
+  no spurious purchase/default card;
+  no hidden think content.
+
+22.5 VERIFIER INDEPENDENCE
+
+Critical checks must be deterministic or use independently derived evidence. Do not
+merely trust confidence flags produced by the same model whose answer is checked.
+
+======================================================================
+23. OBSERVABILITY AND OPERATIONS
+======================================================================
+
+23.1 TRACE
+
+Trace each turn through:
+  gateway;
+  auth/scope;
+  context load;
+  language analysis;
+  turn relation;
+  intent/event;
+  plan;
+  tools;
+  evidence;
+  model;
+  verifier;
+  draft/preview;
+  confirmation;
+  OEC/connector;
+  outbox/sync;
+  response.
+
+Record versions, decision codes, timings, and redacted summaries. Full raw business
+text is not default telemetry.
+
+23.2 OPERATIONAL METRICS
+
+  availability and errors;
+  p50/p95/p99 latency by stage;
+  provider/model failure;
+  context size and truncation;
+  schema-repair/escalation rate;
+  tool error/timeout;
+  retrieval zero-result;
+  database/queue health;
+  sync lag/conflicts/DLQ;
+  resource/token use;
+  cache hit/staleness.
+
+23.3 QUALITY METRICS
+
+  language-form accuracy;
+  turn-relation F1;
+  intent/event macro-F1;
+  OOD coverage-risk;
+  slot/span/value F1;
+  number-role accuracy;
+  reference resolution;
+  clarification resolution/turns;
+  wrong-draft merge rate;
+  tool choice/argument accuracy;
+  retrieval Recall@k and ranking;
+  claim/citation correctness;
+  answer faithfulness;
+  journal/preview exactness;
+  user correction/rejection rate;
+  task completion;
+  human language rating.
+
+23.4 SAFETY METRICS
+
+  cross-tenant denials/incidents;
+  unauthorized mutation;
+  duplicate posting prevention;
+  stale confirmation rejection;
+  unbalanced command blocked;
+  current-law answer without valid citation;
+  prompt-injection block;
+  sensitive data redaction;
+  high-risk escalation.
+
+23.5 ALERTS
+
+Immediate alerts for:
+  any cross-tenant exposure;
+  unauthorized or duplicate posting;
+  unbalanced command reaching connector;
+  forged/fabricated receipt;
+  current-law response without approved evidence;
+  knowledge manifest/index mismatch;
+  backup/restore failure;
+  sharp wrong-draft or tool-error regression;
+  DLQ growth;
+  security anomaly.
+
+23.6 USER FEEDBACK
+
+Feedback labels:
+  misunderstood language;
+  wrong context;
+  wrong transaction;
+  wrong amount/party/item;
+  wrong or outdated source;
+  answer not useful;
+  too slow;
+  other.
+
+Feedback is linked to response/trace, privacy-filtered, triaged, annotated, converted
+into regression tests, reviewed, and only then used for training.
+
+======================================================================
+24. EVALUATION PROGRAM AND PRODUCTION GATES
+======================================================================
+
+24.1 EVALUATION LAYERS
+
+Layer 1: Unicode, script, language-form, normalization, protected spans.
+Layer 2: Romanized transliteration candidate recall.
+Layer 3: number/date/money/identifier roles.
+Layer 4: dialogue act and turn relation.
+Layer 5: intent/event and OOD.
+Layer 6: entity/slot extraction with evidence spans.
+Layer 7: context/coreference/correction.
+Layer 8: planner and typed tool calls.
+Layer 9: lexical/vector/reranking retrieval.
+Layer 10: evidence-grounded response and citations.
+Layer 11: deterministic draft/preview/accounting.
+Layer 12: confirmation/OEC/idempotency.
+Layer 13: offline/sync/conflict.
+Layer 14: security/tenant/prompt injection.
+Layer 15: multi-turn UI/API end-to-end.
+Layer 16: latency/load/failover/resource.
+Layer 17: human professional review.
+
+24.2 REQUIRED TEST FAMILIES
+
+  unit;
+  contract/schema;
+  property-based accounting;
+  metamorphic language;
+  golden conversation;
+  retrieval benchmark;
+  temporal legal;
+  integration;
+  end-to-end;
+  concurrency/idempotency;
+  migration;
+  security/adversarial;
+  load/soak;
+  disaster restore;
+  accessibility/UI where relevant;
+  human linguistic/professional review.
+
+24.3 METAMORPHIC LANGUAGE TESTS
+
+Meaning should remain stable when safely varying:
+  Devanagari/Romanized form;
+  common Romanized spelling;
+  English/Nepali code mix;
+  punctuation/spacing;
+  politeness;
+  numeral script;
+  word order that preserves meaning.
+
+Identifiers, amounts, lifecycle, and evidence spans must not change.
+
+24.4 CRITICAL REGRESSION SCENARIOS
+
+Include:
+  active purchase draft followed by a new sale;
+  active draft followed by theft/loss;
+  “5 maina ko” as duration, not money;
+  gross 500, cash 450, discount versus receivable ambiguity;
+  debtor went abroad: no automatic write-off;
+  correction “make it 450” with one and with multiple candidates;
+  “yes” with no preview;
+  “yes” after expiry;
+  wrong user/company confirmation;
+  period closes after preview;
+  stock/master/rule changes after preview;
+  duplicate network retry;
+  two devices post same draft;
+  no relevant knowledge result;
+  old versus current tax rule;
+  conflicting official sources;
+  malicious instruction inside an uploaded official-looking PDF;
+  provider outage mid-tool loop;
+  mixed-script long names and BS/AD dates.
+
+24.5 SUGGESTED RELEASE THRESHOLDS
+
+Thresholds must be refined from baseline and risk, but critical invariants are
+absolute:
+
+  zero cross-tenant leakage in the full adversarial suite;
+  zero unauthorized postings;
+  zero duplicate postings in retry/concurrency suite;
+  zero accepted stale/altered preview confirmations;
+  zero unbalanced journals reaching the connector;
+  zero fabricated execution receipts;
+  zero known wrong-draft merges in frozen critical cases;
+  zero fabricated citations accepted by verifier.
+
+High-quality target ranges before broad release:
+  >= 0.95 macro-F1 for supported core event classes, with no critical class hidden;
+  >= 0.98 number-role accuracy on critical accounting numbers;
+  >= 0.98 exact required-field extraction for supported narrow commands after
+    clarification;
+  >= 0.95 retrieval Recall@10 on reviewed benchmark;
+  >= 0.98 citation precision on material legal/tax claims;
+  100% temporal correctness on the frozen rate/effective-date critical suite;
+  >= 95% human-rated acceptable language helpfulness in target pilot cohorts.
+
+Do not treat these approximate targets as proof by themselves. Review per class,
+severity, abstention behavior, and real-world pilot evidence.
+
+24.6 SHADOW AND PILOT RELEASE
+
+Stages:
+  offline evaluation;
+  developer-only;
+  shadow mode with no user-visible execution;
+  internal accounting review;
+  limited pilot companies;
+  restricted mutation capabilities;
+  monitored expansion;
+  general release per capability.
+
+Use feature flags and capability manifests. Roll back prompt/model/knowledge/code
+releases independently.
+
+======================================================================
+25. TARGET CODE STRUCTURE
+======================================================================
+
+25.1 IMPORTANT INTEGRATION RULE
+
+The repository already reports OIP and multiple AI subsystems. Cursor must first map
+the current tree. Do not create a second “mokxya_ai” framework if Conversation,
+Session, Planner, Router, Provider Runtime, Quality Runtime, Action Runtime,
+Streaming Runtime, Orchestrator, Knowledge Runtime, Memory Runtime, and OEC already
+provide the correct extension points.
+
+The structure below is logical. Reuse existing package names and dependency
+injection. Rename/move only in a dedicated migration phase with compatibility tests.
+
+25.2 BACKEND LOGICAL TREE
+
+erp_bot/
+  pyproject.toml or requirements lock
+  migrations/
+  src/
+    oip/
+      api/
+        auth_context.py
+        chat_routes.py
+        stream_routes.py
+        draft_routes.py
+        confirmation_routes.py
+        research_routes.py
+        knowledge_admin_routes.py
+        error_mapping.py
+
+      contracts/
+        ai_request.py
+        language_frame.py
+        turn_relation.py
+        intent_event.py
+        plan_tool.py
+        evidence_claim.py
+        draft_preview.py
+        ai_response.py
+        schemas/
+
+      application/
+        orchestrator_service.py
+        context_assembler.py
+        capability_policy.py
+        answer_service.py
+        draft_service.py
+        research_service.py
+        verification_service.py
+
+      modules/
+        conversation/
+          domain/
+          application/
+          infrastructure/
+          api/
+
+        session/
+          domain/
+          application/
+          infrastructure/
+
+        language_runtime/
+          domain/
+            entities.py
+            value_objects.py
+            taxonomies.py
+            protected_spans.py
+            number_roles.py
+          application/
+            language_analyzer.py
+            normalization_service.py
+            transliteration_service.py
+            code_mix_service.py
+            response_language_policy.py
+          ports/
+            language_model_port.py
+            lexicon_port.py
+            transliterator_port.py
+          infrastructure/
+            unicode_normalizer.py
+            lexicon_repository.py
+            model_adapters/
+          evaluation/
+
+        context_runtime/
+          domain/
+            context_bundle.py
+            object_reference.py
+            context_policy.py
+          application/
+            context_loader.py
+            relevance_selector.py
+            reference_resolver.py
+            summary_service.py
+          ports/
+          infrastructure/
+
+        relation_runtime/
+          domain/
+          application/
+            turn_relation_classifier.py
+            dialogue_act_classifier.py
+          evaluation/
+
+        router/
+          domain/
+            intent_registry.py
+            capability_registry.py
+          application/
+            hierarchical_router.py
+            ood_detector.py
+          infrastructure/
+
+        planner/
+          domain/
+            plan.py
+            plan_policy.py
+          application/
+            planner_service.py
+            plan_validator.py
+          infrastructure/
+
+        provider_runtime/
+          domain/
+            model_request.py
+            model_result.py
+            model_policy.py
+          application/
+            model_router.py
+            structured_output_service.py
+          ports/
+            model_provider_port.py
+            embedding_port.py
+            reranker_port.py
+          infrastructure/
+            ollama_adapter.py
+            groq_adapter_if_permitted.py
+            local_embedding_adapter.py
+            local_reranker_adapter.py
+          sanitization/
+
+        prompt_runtime/
+          domain/
+            prompt_definition.py
+            prompt_release.py
+          application/
+            prompt_registry.py
+            prompt_assembler.py
+          infrastructure/
+            prompt_repository.py
+
+        knowledge_runtime/
+          domain/
+            source.py
+            document.py
+            document_version.py
+            knowledge_unit.py
+            knowledge_release.py
+            evidence.py
+          application/
+            ingestion_service.py
+            segmentation_service.py
+            release_service.py
+            retrieval_service.py
+            evidence_bundle_service.py
+          ports/
+            artifact_store_port.py
+            lexical_index_port.py
+            vector_index_port.py
+            reranker_port.py
+            ocr_port.py
+          infrastructure/
+            repositories/
+            extractors/
+            indexes/
+            ocr/
+
+        legal_runtime/
+          domain/
+            legal_question.py
+            instrument.py
+            provision.py
+            amendment.py
+            legal_relationship.py
+            temporal_rule.py
+          application/
+            legal_query_framer.py
+            temporal_resolver.py
+            authority_resolver.py
+            legal_research_service.py
+            change_impact_service.py
+            obligation_service.py
+            compliance_calendar_service.py
+          verification/
+
+        accounting_interpreter/
+          domain/
+            event_specification.py
+            event_frame.py
+            field_requirement.py
+          application/
+            event_mapper.py
+            ambiguity_policy.py
+            clarification_service.py
+            draft_builder_router.py
+          ports/
+            accounting_domain_port.py
+            master_query_port.py
+
+        financial_reporting_runtime/
+          domain/
+            reporting_policy.py
+            concept_mapping.py
+            disclosure_requirement.py
+            reporting_release.py
+          application/
+            mapping_service.py
+            close_diagnostics.py
+            statement_builder.py
+            disclosure_checklist.py
+          verification/
+
+        engagement_runtime/
+          domain/
+            engagement.py
+            client_scope.py
+            workpaper.py
+            review_signoff.py
+          application/
+            engagement_service.py
+            evidence_request_service.py
+            workpaper_index_service.py
+            review_workflow.py
+          infrastructure/
+
+        memory_runtime/
+          domain/
+            memory.py
+            memory_policy.py
+          application/
+            memory_reader.py
+            memory_writer.py
+            memory_compactor.py
+          infrastructure/
+
+        tool_runtime/
+          domain/
+            tool_definition.py
+            tool_call.py
+            tool_observation.py
+          application/
+            tool_registry.py
+            tool_executor.py
+            permission_guard.py
+          adapters/
+            erp_read_tools/
+            knowledge_tools/
+            calculation_tools/
+
+        quality_runtime/
+          domain/
+            verification_finding.py
+            quality_decision.py
+          application/
+            answer_verifier.py
+            action_verifier.py
+            citation_verifier.py
+            language_verifier.py
+            privacy_verifier.py
+
+        action_runtime/
+          existing authoritative action orchestration
+
+        oec_runtime/
+          existing sole connector/mutation runtime
+
+        streaming_runtime/
+          event contracts
+          redaction
+          cancellation/backpressure
+
+        observability/
+          trace_service.py
+          metrics.py
+          redaction.py
+          audit.py
+
+        evaluation/
+          runner.py
+          datasets.py
+          scorers/
+          reporters/
+          release_gate.py
+
+      infrastructure/
+        db/
+        repositories/
+        event_bus/
+        outbox/
+        cache/
+        security/
+        config/
+
+      bootstrap/
+        container.py
+        capability_manifest.py
+        startup_checks.py
+
+The exact current package layering should follow existing DDD/CQRS/ports-and-adapters
+conventions. Each module must expose ports; infrastructure imports domain/application,
+not the reverse.
+
+25.3 DOMAIN ENGINES
+
+Keep authoritative accounting implementations in their established domain packages.
+The AI layer should depend on ports such as:
+
+  AccountingQueryPort
+  AccountingDraftPort
+  InventoryQueryPort
+  TaxCalculationPort
+  ReportingPort
+  ERPCommandPort
+
+Do not copy journal logic into accounting_interpreter or prompt templates.
+
+25.4 KNOWLEDGEBASE TREE
+
+knowledgebase/
+  README.md
+  governance/
+    source_policy/
+    review_policy/
+    release_policy/
+    licensing/
+    privacy/
+
+  language/
+    ne-NP/
+      manifests/
+      taxonomies/
+      lexicons/
+      normalization/
+      transliteration/
+      morphology/
+      code_mix/
+      accounting_ontology/
+      legal_ontology/
+      datasets/
+        train/
+        validation/
+        gold_private/
+        adversarial_private/
+      annotation_guidelines/
+      evaluation/
+
+  authoritative/
+    nepal/
+      source_registry/
+      raw/
+        immutable artifacts organized by source/document/version
+      canonical/
+        document metadata
+        provision units
+        tables/rates
+        relationships
+      reviews/
+      releases/
+
+  professional/
+    accounting/
+    tax/
+    legal/
+    audit/
+    financial_reporting/
+    business/
+
+  product_help/
+    versioned/
+
+  schemas/
+    source.schema.json
+    document.schema.json
+    document_version.schema.json
+    knowledge_unit.schema.json
+    citation.schema.json
+    release.schema.json
+    language_example.schema.json
+    eval_case.schema.json
+
+  indexes/
+    lexical/
+    vector/
+    graph/
+    manifests/
+
+  scripts/
+    validate_sources
+    extract
+    segment
+    build_indexes
+    evaluate_retrieval
+    create_release
+
+Rules:
+  raw artifacts are immutable;
+  canonical files are versioned;
+  indexes are derived/rebuildable;
+  private gold tests are access-controlled;
+  real tenant/user data is not stored in the repository;
+  every dataset has a manifest, provenance, license, and hash;
+  each atomic knowledge unit has one canonical identity.
+
+25.5 FRONTEND LOGICAL TREE
+
+Cursor must locate actual frontend paths before editing. Logical features:
+
+frontend/src/
+  features/
+    mokxya/
+      api/
+        client.ts
+        streamClient.ts
+        contracts.ts
+      state/
+        conversationStore.ts
+        draftStore.ts
+        syncStore.ts
+      components/
+        ConversationWorkspace
+        MessageComposer
+        LanguageAwareMessage
+        ClarificationCard
+        ChoiceCard
+        DraftCard
+        AccountingPreview
+        ConfirmationControl
+        PostingProgress
+        ReceiptCard
+        CitationPanel
+        ResearchAnswer
+        ConflictRecovery
+        DegradedModeBanner
+      hooks/
+      accessibility/
+      tests/
+
+Rules:
+  render by response_type;
+  do not parse prose to decide accounting actions;
+  never calculate authoritative totals in UI;
+  confirmation is an explicit API/UI operation;
+  display company and fiscal context;
+  show citations/effective date for legal answers;
+  show offline/sync/conflict honestly;
+  support English/Nepali/Romanized long text and keyboard input;
+  preserve existing design-system and accessibility gates.
+
+25.6 CONTRACT GENERATION
+
+Maintain one canonical schema source where practical and generate:
+  Python models;
+  TypeScript types;
+  OpenAPI;
+  JSON Schema;
+  test fixtures.
+
+CI fails on unreviewed contract drift. Use explicit schema-version compatibility and
+consumer-driven contract tests.
+
+25.7 CONFIGURATION
+
+Configuration is typed and environment-specific:
+  provider/model deployments;
+  timeouts and context budgets;
+  embedding/reranker release;
+  knowledge release;
+  prompt release;
+  feature/capability flags;
+  privacy mode;
+  offline policy;
+  rate limits;
+  logging/redaction;
+  evaluation thresholds.
+
+Startup validates incompatible or missing required configuration.
+
+======================================================================
+26. KEY PORTS AND INTERFACES
+======================================================================
+
+The following pseudocode describes required boundaries; adapt to repository style.
+
+26.1 MODEL PROVIDER
+
+  class ModelProviderPort(Protocol):
+      async def complete(self, request: ModelRequest) -> ModelResult: ...
+      async def stream(self, request: ModelRequest) -> AsyncIterator[ModelEvent]: ...
+      async def health(self) -> ProviderHealth: ...
+      def capabilities(self) -> ModelCapabilities: ...
+
+26.2 LANGUAGE ANALYZER
+
+  class LanguageAnalyzer(Protocol):
+      async def analyze(
+          self,
+          raw_text: str,
+          locale_hint: str | None,
+          protected_context: ProtectedContext
+      ) -> LanguageFrame: ...
+
+26.3 RETRIEVER
+
+  class KnowledgeRetrieverPort(Protocol):
+      async def retrieve(
+          self,
+          query: KnowledgeQuery,
+          scope: RetrievalScope,
+          release_id: str
+      ) -> RetrievalResult: ...
+
+RetrievalScope includes tenant permission, jurisdiction, date/effective period,
+authority classes, languages, and allowed knowledge planes.
+
+26.4 ERP QUERY
+
+  class ERPQueryPort(Protocol):
+      async def execute(
+          self,
+          principal: Principal,
+          query: TypedERPQuery
+      ) -> ERPSnapshotResult: ...
+
+Every result includes scope, snapshot/revision, source IDs, and observation time.
+
+26.5 EVENT SPECIFICATION
+
+  class EventSpecification(Protocol):
+      event_type: str
+      schema_version: str
+      def field_requirements(self, frame: EventFrame) -> FieldRequirements: ...
+      def allowed_modes(self) -> set[Mode]: ...
+      def risk_policy(self) -> RiskPolicy: ...
+      async def build_draft(
+          self,
+          frame: EventFrame,
+          snapshots: EvidenceBundle
+      ) -> DraftResult: ...
+
+26.6 VERIFIER
+
+  class AnswerVerifier(Protocol):
+      async def verify(
+          self,
+          request: AIRequest,
+          plan: AnswerPlan,
+          evidence: EvidenceBundle,
+          response: AIResponseCandidate
+      ) -> VerificationDecision: ...
+
+26.7 COMMAND PORT
+
+  class ERPCommandPort(Protocol):
+      async def dispatch(
+          self,
+          principal: Principal,
+          confirmation: ConfirmedCommandEnvelope
+      ) -> CommandReceipt: ...
+
+Only Action Runtime calls this port; its adapter delegates to OEC.
+
+======================================================================
+27. API AND STREAMING CONTRACT
+======================================================================
+
+27.1 PRIMARY ENDPOINTS
+
+  POST /api/ai/conversations
+  GET  /api/ai/conversations/{id}
+  POST /api/ai/conversations/{id}/turns
+  POST /api/ai/conversations/{id}/turns/stream
+  GET  /api/ai/drafts/{id}
+  PATCH /api/ai/drafts/{id}
+  POST /api/ai/drafts/{id}/preview
+  POST /api/ai/drafts/{id}/confirmation-token
+  POST /api/ai/drafts/{id}/confirm
+  POST /api/ai/drafts/{id}/cancel
+  GET  /api/ai/actions/{id}
+  POST /api/ai/feedback
+
+Administrative routes are separately protected:
+  knowledge ingestion/review/release;
+  model/prompt release;
+  evaluation run/results;
+  trace access.
+
+Preserve existing routes during migration with versioned adapters where needed.
+
+27.2 STREAM EVENTS
+
+Suggested typed SSE events:
+  request_accepted
+  context_ready
+  understanding_status
+  clarification
+  route
+  tool_started
+  tool_completed
+  answer_delta
+  structured_response
+  draft_ready
+  preview_ready
+  action_status
+  receipt
+  conflict
+  complete
+  error
+
+Do not stream hidden chain of thought, raw prompts, sensitive tool payloads, secrets,
+or unverified claims as final facts. User-facing “thinking” indicators are generic
+status labels.
+
+27.3 ERROR CONTRACT
+
+ErrorEnvelope
+  error_code
+  user_message
+  retryable
+  safe_recovery_actions
+  correlation_id
+  field_errors_optional
+
+Internal stack/provider errors stay in protected logs.
+
+27.4 IDEMPOTENCY AND CONCURRENCY
+
+Turn submission, preview generation, confirmation, and action dispatch have clear
+idempotency/concurrency rules. PATCH uses draft version/ETag. A repeated confirm
+returns the original receipt or a safe already-used response, never a duplicate.
+
+======================================================================
+28. DELIVERY AND REPOSITORY ENGINEERING RULES
+======================================================================
+
+1. Inspect actual repository and AGENTS/instructions before every phase.
+2. Preserve user changes and existing green behavior.
+3. Do not mass-rewrite or mass-rename.
+4. Add failing tests before the fix where feasible.
+5. Make the smallest coherent architectural change.
+6. Reuse authoritative modules and ports.
+7. Database changes include migration and compatibility/rollback plan.
+8. Security and tenant impact are stated.
+9. Update schemas/docs/fixtures together.
+10. Run focused tests plus the required regression gate.
+11. Compare pre-existing TypeScript/lint/test baselines; do not hide new debt inside
+    an old red baseline.
+12. No production feature flag activation without the phase’s release gate.
+13. Never mark a phase complete because code compiles.
+14. Return exact changed files, commands, outputs, remaining failures, and rollback.
+15. Stop on an architecture conflict instead of silently choosing a new authority.
+
+======================================================================
+29. MASTER IMPLEMENTATION ROADMAP
+======================================================================
+
+Use phase IDs MAI-00 onward so they are not confused with earlier accounting/UI/OIP
+phase numbers. Cursor must map existing implementations to these requirements. If a
+phase already exists, the phase becomes an audit-and-close task: add missing tests,
+prove the gate, and record the evidence. Do not rebuild it.
+
+----------------------------------------------------------------------
+TRACK A: CONSTITUTION, INVENTORY, AND BASELINES
+----------------------------------------------------------------------
+
+MAI-00 — COMPLETE REPOSITORY AND AUTHORITY MAP
+
+Objective:
+  Establish what actually exists and which module/store owns each responsibility.
+
+Deliverables:
+  repository tree and runtime entrypoints;
+  legacy-name map;
+  AI subsystem dependency map;
+  data-authority map;
+  route/tool/provider/model inventory;
+  mutation-path proof;
+  current tests and diagnostics baseline;
+  duplicate/dead implementation register;
+  architecture decision records for retained authorities.
+
+Gate:
+  fresh checkout installs according to documented commands;
+  startup paths identified;
+  no assumed/missing file;
+  every mutation route enumerated;
+  baseline outputs saved;
+  no production code change except safe audit instrumentation.
+
+MAI-01 — PRODUCT CONSTITUTION AS EXECUTABLE POLICY
+
+Objective:
+  Convert Ask/Accountant, evidence, tenant, confirmation, and safe-failure rules into
+  code-level capability policies.
+
+Deliverables:
+  Mode and CapabilityPolicy contracts;
+  deny-by-default policy;
+  unit tests covering forbidden transitions;
+  startup capability manifest;
+  architecture documentation.
+
+Gate:
+  Ask Mode cannot reach a mutation tool;
+  unauthenticated production context is denied;
+  model output cannot override policy;
+  all existing authorized workflows remain green.
+
+MAI-02 — CANONICAL AI CONTRACTS
+
+Objective:
+  Define versioned AIRequest, LanguageFrame, TurnRelation, IntentCandidate,
+  EventFrame, Plan, ToolCall, Evidence, Claim, Draft/Preview, and AIResponse.
+
+Deliverables:
+  canonical backend models;
+  JSON Schemas/OpenAPI;
+  generated/validated frontend types;
+  compatibility policy;
+  contract fixtures and tests.
+
+Gate:
+  backend/frontend contract tests pass;
+  unknown/invalid action fields fail closed;
+  existing streaming responses have a migration adapter;
+  no prose parsing is introduced for action authority.
+
+MAI-03 — TRACE, CORRELATION, AND REDACTION FOUNDATION
+
+Objective:
+  Make each turn diagnosable without leaking sensitive content or reasoning.
+
+Deliverables:
+  correlation IDs;
+  stage events;
+  model/tool/prompt/schema version capture;
+  centralized redaction;
+  safe trace lookup permission;
+  baseline latency metrics.
+
+Gate:
+  one end-to-end turn is traceable;
+  secrets/think blocks/raw sensitive fields fail log tests;
+  tenant scope appears on all trace objects;
+  user response contains only safe correlation reference.
+
+MAI-04 — FROZEN EVALUATION HARNESS AND BASELINE
+
+Objective:
+  Measure current behavior before architectural changes.
+
+Deliverables:
+  dataset/eval schemas;
+  runner and scorers;
+  frozen critical cases from known failures;
+  English/Devanagari/Romanized/code-mix baseline;
+  reports by class and risk;
+  baseline model/provider/resource metrics.
+
+Gate:
+  deterministic reproducible run;
+  failures are visible, not normalized away;
+  dataset split leakage checks pass;
+  current scores and known limitations recorded.
+
+----------------------------------------------------------------------
+TRACK B: LANGUAGE INTELLIGENCE
+----------------------------------------------------------------------
+
+MAI-05 — SPAN-LEVEL SCRIPT/LANGUAGE-FORM AND PROTECTED SPANS
+
+Objective:
+  Detect language form before intent and protect identifiers/entities.
+
+Deliverables:
+  span taxonomy;
+  analyzer interface;
+  Unicode-script rules;
+  English/Romanized/Devanagari/code-mix candidates;
+  protected URL/email/phone/PAN/VAT/invoice/legal-citation/name spans;
+  tests from existing language KB.
+
+Gate:
+  mixed-span gold metrics meet agreed threshold;
+  protected spans remain byte/character faithful;
+  whole-message classification is not the sole signal;
+  no intent behavior change without explicit adapter tests.
+
+MAI-06 — LOSSLESS NORMALIZATION
+
+Objective:
+  Create reversible normalization views without corrupting input.
+
+Deliverables:
+  normalization pipeline;
+  edit/provenance records;
+  safe Unicode and punctuation handling;
+  retrieval-only versus semantic-safe transformations;
+  property/metamorphic tests.
+
+Gate:
+  raw input unchanged;
+  normalized views reproducible/versioned;
+  identifiers and numbers preserved;
+  round-trip/provenance tests pass.
+
+MAI-07 — ROMANIZED NEPALI CANDIDATE TRANSLITERATION
+
+Objective:
+  Generate and rank contextual n-best Romanized Nepali candidates.
+
+Deliverables:
+  transliterator port;
+  variant and morphology resources;
+  protected-span integration;
+  company-master/domain-aware reranking hooks;
+  candidate recall benchmark.
+
+Gate:
+  target candidate recall on frozen variants;
+  ambiguous forms remain candidates rather than false certainty;
+  names/IDs are not force-transliterated;
+  latency budget measured.
+
+MAI-08 — CODE-MIX AND TYPO ROBUSTNESS
+
+Objective:
+  Understand natural three-way mixing and mobile typing noise.
+
+Deliverables:
+  code-mix features;
+  common spelling/abbreviation handling;
+  controlled fuzzy matching;
+  code-mixed scenario dataset;
+  metamorphic tests.
+
+Gate:
+  meaning/slots remain stable across approved variants;
+  fuzzy matching cannot silently select high-risk master data;
+  OOD behavior remains measurable.
+
+MAI-09 — NUMBER, DATE, MONEY, QUANTITY, DURATION, AND ID ROLES
+
+Objective:
+  Stop treating the first number as money.
+
+Deliverables:
+  candidate parser;
+  number-role taxonomy;
+  Nepali/English numeral and lakh/crore support;
+  BS/AD/date-period port;
+  money/quantity/duration/reference tests;
+  evidence spans and ambiguity.
+
+Gate:
+  “5 maina ko” is duration;
+  invoice/PAN/phone IDs are protected;
+  critical number-role target met;
+  date conversions use deterministic verified service.
+
+MAI-10 — DOMAIN LEXICON AND CONCEPT ONTOLOGY
+
+Objective:
+  Connect language variants to stable accounting/business concepts.
+
+Deliverables:
+  schema and registry;
+  initial supported-domain concepts;
+  links to event specifications;
+  versioned loaders;
+  duplicate/conflict validator;
+  targeted retrieval instead of prompt dumping.
+
+Gate:
+  every entry has concept/provenance/version;
+  ambiguous surface forms allow multiple concepts;
+  lexicon cannot authorize accounting treatment;
+  indexes rebuild deterministically.
+
+MAI-11 — RESPONSE LANGUAGE AND REGISTER POLICY
+
+Objective:
+  Reply naturally in the user’s language form without damaging official terms.
+
+Deliverables:
+  response-language policy;
+  transliteration/technical-term style rules;
+  identifier/citation preservation;
+  multilingual response fixtures;
+  human review rubric.
+
+Gate:
+  English, Devanagari, Romanized, and mixed cases render correctly;
+  no hidden think content;
+  official references remain exact;
+  human linguistic pilot reaches agreed acceptance.
+
+MAI-12 — LANGUAGE DATA GOVERNANCE AND TRAINING PIPELINE
+
+Objective:
+  Turn language files into governed, usable data rather than passive text.
+
+Deliverables:
+  manifests/provenance/license;
+  annotation schemas/guidelines;
+  deduplication and split tooling;
+  synthetic-data lineage;
+  PII sanitization;
+  training/export format;
+  gold/private separation.
+
+Gate:
+  every used dataset is valid and traceable;
+  scenario-level split leakage test passes;
+  sensitive samples quarantined;
+  no production model training occurs without release approval.
+
+----------------------------------------------------------------------
+TRACK C: CONTEXT, MEMORY, AND MULTI-TURN UNDERSTANDING
+----------------------------------------------------------------------
+
+MAI-13 — CONVERSATION AND OBJECT-REFERENCE STORE
+
+Objective:
+  Persist typed conversation objects with tenant-safe ownership.
+
+Deliverables:
+  message/conversation/object-reference models;
+  durable repository;
+  revisions and retention;
+  ownership checks;
+  migrations;
+  concurrency tests.
+
+Gate:
+  same session ID in different companies cannot mix;
+  active objects resolve by stable ID;
+  no global mutable state;
+  migration and rollback/forward plan proven.
+
+MAI-14 — TURN RELATION BEFORE DRAFT MERGE
+
+Objective:
+  Decide whether a new turn belongs to an old draft before loading it as an answer.
+
+Deliverables:
+  TurnRelationClassifier;
+  candidate active-object selection;
+  UNKNOWN/new-topic policy;
+  replacement of hardcoded purchase clarification fallback;
+  known incident regressions.
+
+Gate:
+  stale purchase followed by sale/theft/greeting/legal question does not merge;
+  explicit correction and clarification replies still work;
+  frozen wrong-draft merge count is zero.
+
+MAI-15 — REFERENCE, COREFERENCE, AND CORRECTION
+
+Objective:
+  Resolve “it/that/tesko/agiko/make it 450” against typed context.
+
+Deliverables:
+  reference resolver;
+  candidate ranking and choice UI contract;
+  correction semantics;
+  draft version invalidation;
+  multi-turn gold tests.
+
+Gate:
+  one clear candidate resolves;
+  multiple material candidates trigger choice;
+  corrections preserve provenance;
+  old confirmation tokens fail.
+
+MAI-16 — CONTEXT ASSEMBLER AND MEMORY POLICY
+
+Objective:
+  Provide the model the smallest complete trusted context.
+
+Deliverables:
+  ContextBundle;
+  relevance and token budgets;
+  typed summaries;
+  memory read/write/expiry policy;
+  source/freshness labels;
+  context inspection tests.
+
+Gate:
+  active task and unresolved clarification survive refresh;
+  unrelated/company-crossing data excluded;
+  company facts come from ERP when appropriate;
+  summary contradiction/invalidation tests pass.
+
+----------------------------------------------------------------------
+TRACK D: INTENT, EVENT, PLANNING, AND MODEL RUNTIME
+----------------------------------------------------------------------
+
+MAI-17 — HIERARCHICAL ROUTER AND OOD
+
+Objective:
+  Route by domain, operation, and versioned intent with UNKNOWN support.
+
+Deliverables:
+  intent/capability registries;
+  hierarchical router;
+  deterministic high-precision rules;
+  model/classifier adapter;
+  OOD/abstention;
+  per-class evaluation.
+
+Gate:
+  no universal purchase fallback;
+  rare/unsupported cases do not disappear into overall accuracy;
+  Ask/Accountant capability policy is enforced after routing.
+
+MAI-18 — EVENT SPECIFICATION REGISTRY
+
+Objective:
+  Make every supported accounting event declarative and testable.
+
+Deliverables:
+  EventSpecification contract;
+  registries for launch events;
+  required/conditional fields;
+  lifecycle, risk, permission, tools, draft builder, preview, command, reversal;
+  schema validators.
+
+Gate:
+  every production event has one registered authority;
+  no switch/regex-only event jungle;
+  unsupported events fail safely;
+  existing domain commands are reused.
+
+MAI-19 — STRUCTURED EVENT EXTRACTION
+
+Objective:
+  Produce EventFrames with field-level evidence, alternatives, and confidence.
+
+Deliverables:
+  extraction prompt/model path;
+  deterministic candidate features;
+  schema repair/escalation;
+  entity/master candidate integration;
+  span/value scorer.
+
+Gate:
+  critical extraction target met after allowed clarification;
+  no value without provenance;
+  model prose cannot be accepted as a command;
+  number/lifecycle ambiguity remains visible.
+
+MAI-20 — INFORMATION-GAIN CLARIFICATION ENGINE
+
+Objective:
+  Ask focused, event-specific questions rather than generic forms.
+
+Deliverables:
+  missing versus ambiguous policy;
+  question priority;
+  response-language integration;
+  choice handling;
+  clarification state/re-entry;
+  evaluation of turns to resolution.
+
+Gate:
+  known incidents ask the correct next question;
+  already known values are not repeatedly requested;
+  irrelevant payment/item fields are not demanded;
+  abandonment and resolution metrics recorded.
+
+MAI-21 — TYPED PLANNER AND TOOL LOOP
+
+Objective:
+  Execute bounded, schema-validated read plans.
+
+Deliverables:
+  Plan/step contracts;
+  allowed tool/capability policy;
+  validator;
+  observe-and-continue loop;
+  time/step budgets;
+  cancellation;
+  independent-read parallelism where safe.
+
+Gate:
+  empty-schema tools rejected;
+  observations come only from actual execution;
+  Ask Mode cannot plan mutation;
+  tool injection tests pass;
+  loops terminate.
+
+MAI-22 — PROVIDER PORT AND MODEL CASCADE
+
+Objective:
+  Replace provider coupling with evaluated task-aware routing.
+
+Deliverables:
+  provider ports/adapters;
+  capabilities/health;
+  fast/capable escalation policy;
+  timeouts/fallback;
+  output sanitization;
+  model benchmark report.
+
+Gate:
+  provider failure degrades honestly;
+  privacy policy prevents silent provider change;
+  structured-output and think-leak tests pass;
+  model choice is traceable.
+
+MAI-23 — PROMPT REGISTRY AND STRUCTURED OUTPUT
+
+Objective:
+  Version task prompts and schemas instead of one giant prompt.
+
+Deliverables:
+  prompt definitions/releases;
+  assembler;
+  few-shot selection;
+  schema validation/repair;
+  prompt-injection boundary;
+  evaluation linkage.
+
+Gate:
+  production prompt has version/hash;
+  prompt change runs its suite;
+  business rules are not prompt-only;
+  invalid action output fails closed.
+
+----------------------------------------------------------------------
+TRACK E: KNOWLEDGE AND RAG
+----------------------------------------------------------------------
+
+MAI-24 — KNOWLEDGE SOURCE AND DOCUMENT GOVERNANCE
+
+Objective:
+  Establish canonical metadata, source authority, versions, licensing, and review.
+
+Deliverables:
+  source/document/version/unit/release schemas;
+  source registry;
+  authority classes;
+  review workflow;
+  raw artifact integrity;
+  one canonical atomic knowledge-unit identity.
+
+Gate:
+  incomplete/unapproved source cannot enter production release;
+  duplicate/version relationships validate;
+  every unit traces to immutable artifact.
+
+MAI-25 — EXTRACTION, OCR, AND STRUCTURAL SEGMENTATION
+
+Objective:
+  Convert official documents into citation-ready hierarchy with quality scores.
+
+Deliverables:
+  extractor/OCR ports;
+  page/layout/table handling;
+  section/rule/paragraph segmentation;
+  citation anchors;
+  confidence/review queue;
+  representative Nepali PDF tests.
+
+Gate:
+  text and page/provision anchors verified on gold documents;
+  low-confidence OCR is flagged;
+  source artifacts remain immutable;
+  derived output rebuilds.
+
+MAI-26 — TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+
+Objective:
+  Answer current and historical questions without overwriting law.
+
+Deliverables:
+  valid/system time;
+  amendment/supersession/repeal/commencement links;
+  structured rates/thresholds;
+  cross-reference graph;
+  temporal query tests.
+
+Gate:
+  frozen old/current provision cases resolve correctly;
+  conflicting/unknown effective dates block definitive output;
+  historical versions remain accessible.
+
+MAI-27 — LEXICAL INDEX
+
+Objective:
+  Deliver strong exact retrieval for citations, names, rare terms, and identifiers.
+
+Deliverables:
+  BM25/FTS adapter;
+  Nepali-aware analyzer benchmark;
+  field/authority/time filters;
+  rebuild manifest;
+  retrieval evaluation.
+
+Gate:
+  target lexical recall on exact/legal benchmark;
+  filter correctness;
+  corrupted/stale index detected;
+  no derived index treated as source.
+
+MAI-28 — MULTILINGUAL VECTOR INDEX
+
+Objective:
+  Retrieve cross-lingual and paraphrased evidence using real embeddings.
+
+Deliverables:
+  embedding port/model benchmark;
+  batch/index pipeline;
+  model/release manifest;
+  Romanized/Devanagari/English evaluation;
+  resource/latency measurements.
+
+Gate:
+  materially improves target retrieval over lexical-only on intended cases;
+  no SHA/hash pseudo-embedding;
+  licensing/deployment requirements recorded;
+  index/source release compatibility enforced.
+
+MAI-29 — HYBRID FUSION, RERANKING, AND EVIDENCE BUNDLES
+
+Objective:
+  Combine search signals into small, high-quality, citation-ready evidence.
+
+Deliverables:
+  query variants;
+  rank fusion;
+  multilingual reranker;
+  diversity/version policy;
+  relevance threshold/no-answer;
+  EvidenceBundle builder.
+
+Gate:
+  reviewed Recall@k/ranking targets;
+  authority/time filters precede final evidence;
+  hard negatives and no-answer cases pass;
+  latency budget measured.
+
+MAI-30 — GROUNDED ANSWER AND CLAIM-CITATION VERIFICATION
+
+Objective:
+  Generate natural answers whose material claims are supported.
+
+Deliverables:
+  AnswerPlan;
+  claim graph;
+  composer;
+  citation verifier;
+  conflict/no-answer response;
+  as-of/effective-date rendering.
+
+Gate:
+  fabricated citation acceptance is zero on critical suite;
+  citation precision target;
+  source conflicts disclosed;
+  unreviewed/current-law material cannot be presented as approved truth.
+
+----------------------------------------------------------------------
+TRACK F: ACCOUNTING ACTION INTEGRATION
+----------------------------------------------------------------------
+
+MAI-31 — EVENTFRAME TO EXISTING DOMAIN PORTS
+
+Objective:
+  Connect language understanding to current authoritative draft/transaction services.
+
+Deliverables:
+  AccountingDomainPort adapters;
+  stable entity/account/master lookup;
+  mapping tables;
+  no duplicate posting logic;
+  compatibility tests for existing purchases/sales/returns/settlements/banking.
+
+Gate:
+  all existing accounting phase gates remain green;
+  AI module contains no authoritative journal calculations;
+  unsupported mappings block safely.
+
+MAI-32 — DURABLE VERSIONED DRAFTS
+
+Objective:
+  Replace fragile transient draft behavior with isolated state and concurrency.
+
+Deliverables:
+  DraftAggregate repository;
+  versions/provenance/expiry;
+  tenant ownership;
+  optimistic concurrency;
+  refresh/multi-device tests.
+
+Gate:
+  draft survives refresh;
+  cross-company access denied;
+  stale update conflicts;
+  no local JSON production authority.
+
+MAI-33 — DETERMINISTIC PREVIEW AND EDIT LOOP
+
+Objective:
+  Show authoritative effects before confirmation.
+
+Deliverables:
+  preview contract/service;
+  domain calculation integration;
+  warnings/rule/snapshot versions;
+  edit -> new draft/preview version;
+  frontend response card.
+
+Gate:
+  UI does not calculate totals;
+  debit/credit/stock/tax effects trace to domain engines;
+  old preview invalid after edit;
+  accessibility/language rendering gates pass.
+
+MAI-34 — EXPLICIT CONFIRMATION AND OEC DISPATCH
+
+Objective:
+  Bind user review to a single safe command execution.
+
+Deliverables:
+  confirmation token;
+  revalidation;
+  Action Runtime dispatch;
+  OEC receipt;
+  idempotency;
+  stale/replay/permission tests.
+
+Gate:
+  natural-language yes alone cannot post;
+  duplicate/replay/stale/wrong-user tests produce no duplicate;
+  only OEC reaches connector;
+  real receipt displayed.
+
+MAI-35 — OFFLINE, SYNC, CONFLICT, AND REVERSAL UX
+
+Objective:
+  Make lifecycle honest across devices and failures.
+
+Deliverables:
+  state mapping;
+  queued/online-only policy;
+  conflict diff/regeneration;
+  receipt/sync rendering;
+  supported reversal/correction links;
+  two-device E2E.
+
+Gate:
+  no queued item mislabeled synced;
+  material conflict requires reconfirmation;
+  retry is idempotent;
+  posted history is not silently edited.
+
+----------------------------------------------------------------------
+TRACK G: LEGAL, TAX, RESEARCH, AND FINANCIAL REPORTING
+----------------------------------------------------------------------
+
+MAI-36 — LEGAL QUESTION FRAMER AND RESEARCH MODE
+
+Objective:
+  Separate legal research from accounting action and capture material context.
+
+Deliverables:
+  LegalQuestionFrame;
+  jurisdiction/time/risk classification;
+  research planner;
+  source-authority policy;
+  response types;
+  professional escalation.
+
+Gate:
+  missing time/jurisdiction triggers focused clarification;
+  no mutation tool in research mode;
+  no definitive current-law claim without approved evidence.
+
+MAI-37 — CORE NEPAL TAX KNOWLEDGE PILOT
+
+Objective:
+  Release a narrow, professionally reviewed first domain rather than a superficial
+  all-law index.
+
+Deliverables:
+  approved source registry;
+  Income Tax/VAT/TDS core documents and versions;
+  rates/threshold tables;
+  gold questions across time/language;
+  release manifest/review.
+
+Gate:
+  temporal and citation targets;
+  all active numerical facts trace to reviewed primary sources;
+  specialist sign-off;
+  documented unsupported topics.
+
+MAI-38 — TAX CALCULATOR/RULE INTEGRATION
+
+Objective:
+  Separate retrieved legal explanation from deterministic computations.
+
+Deliverables:
+  effective-date rule port;
+  typed inputs/outputs;
+  citations to rule versions;
+  calculation tests;
+  human-review flags.
+
+Gate:
+  model never performs final tax arithmetic when tool applies;
+  old/current rate tests pass;
+  missing facts block or produce labeled scenario outputs.
+
+MAI-39 — NFRS/NAS POLICY, MAPPING, AND DISCLOSURE PILOT
+
+Objective:
+  Produce traceable reporting assistance for a controlled company/framework scope.
+
+Deliverables:
+  ReportingPolicy;
+  chart-to-concept mapping;
+  statement-line engine;
+  disclosure checklist;
+  paragraph citations;
+  reviewer workflow.
+
+Gate:
+  every amount drills to ledger/mapping/adjustment;
+  missing mapping is visible;
+  disclosure text has evidence;
+  qualified accounting review passes.
+
+MAI-40 — FINANCIAL CLOSE AND ADJUSTMENT ASSISTANCE
+
+Objective:
+  Coordinate reconciliations, cut-off, mappings, proposed adjustments, statements,
+  disclosures, and review.
+
+Deliverables:
+  close workflow/DAG;
+  diagnostics;
+  adjustment drafts through normal confirmation;
+  review/lock/release;
+  audit package.
+
+Gate:
+  no auto-post without confirmation;
+  unresolved critical reconciliation blocks release;
+  released statements are immutable/versioned;
+  complete lineage.
+
+MAI-41 — BROADER NEPAL BUSINESS-LAW DOMAIN RELEASES
+
+Objective:
+  Expand one governed domain at a time.
+
+Deliverables per domain:
+  scope;
+  sources;
+  temporal model;
+  ingestion/review;
+  glossary/ontology;
+  gold benchmark;
+  prompt/retrieval configuration;
+  known limitations;
+  release approval.
+
+Gate:
+  domain-specific professional and retrieval/temporal/citation gates pass;
+  capability flag limits access to released scope;
+  product does not claim unsupported nationwide completeness.
+
+MAI-42 — JUDICIAL/DECISION INTELLIGENCE
+
+Objective:
+  Retrieve and explain decisions with holdings, issues, status, and subsequent
+  treatment.
+
+Deliverables:
+  case metadata;
+  paragraph anchors;
+  issue/holding model;
+  court/hierarchy/status;
+  citator-like relationships where data supports;
+  legal review.
+
+Gate:
+  no headnote/summary presented as full binding rule without source;
+  decision status and relevant paragraphs cited;
+  later treatment uncertainty disclosed.
+
+MAI-43 — CONTINUOUS CHANGE INTELLIGENCE
+
+Objective:
+  Detect, review, evaluate, and release legal/regulatory changes.
+
+Deliverables:
+  monitors/intake;
+  hash/diff;
+  impact analysis;
+  reviewer queue;
+  affected-test generation;
+  release/cache invalidation;
+  rollback.
+
+Gate:
+  unreviewed detection never becomes production truth;
+  changed rate/provision invalidates affected answer cache;
+  release and rollback drill pass.
+
+----------------------------------------------------------------------
+TRACK H: PRODUCTION HARDENING AND LEARNING LOOP
+----------------------------------------------------------------------
+
+MAI-44 — SECURITY AND TENANT RED TEAM
+
+Objective:
+  Prove isolation, authorization, confirmation, prompt/tool, and document safety.
+
+Deliverables:
+  threat model;
+  automated adversarial suite;
+  dependency/container/secret scans;
+  remediation register;
+  penetration review appropriate to launch.
+
+Gate:
+  zero critical isolation/authorization findings;
+  all confirmation attacks blocked;
+  prompt/document injection cannot broaden capability;
+  remaining risks explicitly accepted by authorized owner/reviewer.
+
+MAI-45 — LOAD, LATENCY, RESOURCE, AND FAILOVER
+
+Objective:
+  Meet practical Nepal deployment conditions and budget.
+
+Deliverables:
+  stage-level profile;
+  model cascade tuning;
+  index/resource benchmark;
+  concurrency/load/soak;
+  provider/DB/queue failure tests;
+  capacity and scaling plan.
+
+Gate:
+  SLOs defined and met for pilot load;
+  bounded degradation;
+  no safety bypass under timeout;
+  cost/resource per task measured.
+
+MAI-46 — BACKUP, RESTORE, DISASTER, AND DATA LIFECYCLE
+
+Objective:
+  Prove recoverability and lawful/controlled retention.
+
+Deliverables:
+  backup schedule;
+  encryption;
+  PITR/restore;
+  RPO/RTO;
+  retention/deletion;
+  knowledge/index rebuild;
+  disaster runbook.
+
+Gate:
+  restore drill succeeds and reconciliation checks pass;
+  derived indexes rebuild;
+  audit integrity preserved;
+  secrets not embedded in backups.
+
+MAI-47 — HUMAN REVIEW AND PILOT OPERATIONS
+
+Objective:
+  Validate real language, accounting, and professional usefulness.
+
+Deliverables:
+  pilot cohort;
+  consent/privacy;
+  reviewer console;
+  issue severity/triage;
+  correction/escalation workflow;
+  pilot metrics and exit criteria.
+
+Gate:
+  critical issues closed;
+  linguistic/accounting/professional acceptance targets;
+  no hidden severe class failure;
+  rollback/support process proven.
+
+MAI-48 — GOVERNED IMPROVEMENT AND OPTIONAL FINE-TUNING
+
+Objective:
+  Turn reviewed failures into regression data and, only when justified, training.
+
+Deliverables:
+  feedback -> privacy -> annotation -> adjudication -> regression pipeline;
+  baseline versus candidate model;
+  fine-tune data card;
+  model card;
+  offline/shadow evaluation;
+  rollback.
+
+Gate:
+  candidate improves target metrics without critical regression;
+  no test leakage;
+  data rights/privacy proven;
+  model release independently versioned.
+
+MAI-49 — PRODUCTION CAPABILITY RELEASE
+
+Objective:
+  Release only explicitly proven capabilities.
+
+Deliverables:
+  capability matrix;
+  code/model/prompt/knowledge/rule release IDs;
+  security and professional sign-offs;
+  monitoring/alerts;
+  support and incident plan;
+  user limitations and disclosures;
+  rollback.
+
+Gate:
+  all critical invariants zero-failure;
+  launch-scope E2E passes;
+  backup/restore and rollback proven;
+  no unresolved P0/P1 for enabled capability;
+  production_approved is an explicit reviewed decision, never inferred from tests.
+
+----------------------------------------------------------------------
+TRACK I: FUTURE CHANNELS AND PROFESSIONAL WORKSPACES
+----------------------------------------------------------------------
+
+MAI-50 — NEPALI/ENGLISH SPEECH CHANNEL
+
+Objective:
+  Add voice without allowing transcription uncertainty to create financial errors.
+
+Deliverables:
+  speech-to-text port and benchmark;
+  language/code-switch handling;
+  word/time confidence;
+  protected names/numbers;
+  audio consent/retention policy;
+  text preview/correction before action;
+  optional text-to-speech for safe responses.
+
+Gate:
+  target accuracy on real Nepal business audio;
+  critical names/numbers require confirmation when uncertain;
+  transcript remains editable and traceable to input;
+  voice alone does not bypass preview/confirmation;
+  privacy and resource limits pass.
+
+MAI-51 — PRIVATE USER-DOCUMENT INTELLIGENCE
+
+Objective:
+  Safely understand invoices, statements, contracts, working papers, and uploaded
+  legal/business documents within tenant scope.
+
+Deliverables:
+  secure upload and malware/size/type policy;
+  OCR/layout/table extraction;
+  per-document private index;
+  exact page/field citations;
+  typed extraction candidates;
+  prompt-injection isolation;
+  retention/deletion;
+  draft-only accounting import bridge.
+
+Gate:
+  cross-tenant retrieval is impossible in adversarial tests;
+  extracted amounts/dates/parties retain page/span evidence;
+  low-confidence fields require review;
+  document instructions cannot change system policy;
+  no upload directly posts.
+
+MAI-52 — CA-FIRM ENGAGEMENT AND WORKPAPER WORKSPACE
+
+Objective:
+  Support professional multi-client work without cross-client contamination.
+
+Deliverables:
+  firm/client/engagement scope;
+  team and reviewer permissions;
+  conflict/independence status;
+  evidence requests;
+  workpaper/version/review notes;
+  issue/adjustment tracking;
+  deliverable sign-off/archive;
+  engagement-scoped AI context and retrieval.
+
+Gate:
+  complete client and engagement isolation;
+  every conclusion traces to evidence/workpaper/reviewer;
+  unsigned drafts cannot appear final;
+  cross-client templates share no client data;
+  professional pilot review passes.
+
+MAI-53 — COMPLIANCE OBLIGATION AND CALENDAR AUTOMATION
+
+Objective:
+  Turn reviewed effective rules and entity profiles into reliable obligations and
+  reminders.
+
+Deliverables:
+  entity profile;
+  applicability rules;
+  obligation/deadline/form/evidence model;
+  deterministic Nepal calendar handling;
+  responsibility/status;
+  reminders/escalations;
+  rule citations and change invalidation.
+
+Gate:
+  every obligation/deadline cites an active reviewed rule;
+  uncertain profile facts trigger clarification;
+  extension/holiday handling is source-backed;
+  old rule release cannot produce current reminder;
+  notification permissions and audit pass.
+
+======================================================================
+30. PROTOCOL FOR GENERATING FUTURE CURSOR PROMPTS
+======================================================================
+
+30.1 FUTURE CHATGPT RESPONSIBILITY
+
+When this document is provided in a future conversation, ChatGPT must:
+
+1. Read the latest repository state or Cursor report.
+2. Preserve all current green phases and user changes.
+3. Find the earliest incomplete or unproven MAI phase.
+4. Determine whether it is already partly/fully implemented under another name.
+5. Generate exactly one implementation/audit prompt for that phase.
+6. Make the prompt repository-aware but require Cursor to verify paths.
+7. Include non-negotiable boundaries, tests, acceptance gate, and stop conditions.
+8. Review Cursor’s evidence before generating the next prompt.
+
+It must not:
+  restart architecture from scratch;
+  generate all roadmap prompts at once unless explicitly requested;
+  assume a feature is absent from a file listing alone;
+  accept Cursor’s narrative without test evidence;
+  allow a language/RAG/UI phase to change accounting authority;
+  let Cursor silently waive a gate due to environment problems.
+
+30.2 REQUIRED INPUTS BEFORE EACH PROMPT
+
+Use whatever is available:
+  this master file;
+  repository checkout/archive;
+  latest git diff/status;
+  latest phase report;
+  test outputs;
+  current architecture docs;
+  migrations/schema;
+  known environment limitations.
+
+If the repository is unavailable, ChatGPT may prepare a provisional prompt that
+begins with mandatory discovery and stops before editing on material mismatch.
+
+30.3 ONE-PHASE PROMPT STRUCTURE
+
+Every Cursor prompt must contain:
+
+A. Role
+  Senior architecture/domain/security/testing role appropriate to the phase.
+
+B. Phase identity and objective
+  Exact MAI ID and one coherent outcome.
+
+C. Current evidence
+  What is known complete, baseline diagnostics, current constraints.
+
+D. Read-first discovery
+  Files/symbols/searches Cursor must inspect before editing.
+
+E. Architecture invariants
+  Authority boundaries, tenant, Ask/Accountant, OEC, no duplicate systems.
+
+F. Scope
+  Exact deliverables and integration points.
+
+G. Explicit non-goals
+  Related work that must not be started.
+
+H. Tests first
+  Specific failing tests/cases to add or prove.
+
+I. Implementation requirements
+  Contracts, migrations, code behavior, compatibility, observability.
+
+J. Acceptance gate
+  Exact commands/metrics/invariants.
+
+K. Security/privacy/migration/rollback
+  Required impact analysis and recovery.
+
+L. Required response format
+  Discovery, changes, test evidence, diagnostics before/after, risks, rollback,
+  remaining items, explicit gate verdict.
+
+M. Stop conditions
+  Architecture conflict, incomplete archive, missing authority, baseline regression,
+  destructive migration, or need for professional decision.
+
+30.4 MASTER CURSOR PROMPT TEMPLATE
+
+Copy this template and replace bracketed fields. Do not leave vague placeholders in
+the final prompt sent to Cursor.
+
+----------------------------------------------------------------------
+CURSOR PROMPT START
+----------------------------------------------------------------------
+
+You are the senior [ROLE] working inside the complete MokXya repository.
+
+PHASE
+
+Implement/audit only [MAI-ID — PHASE NAME].
+
+OBJECTIVE
+
+[One exact outcome.]
+
+CURRENT VERIFIED BASELINE
+
+[List only evidence actually known: last green phase, test counts, diagnostic
+baseline, authoritative modules, relevant current behavior.]
+
+GOVERNING CONSTRAINTS
+
+1. Inspect before editing. Do not assume paths in the master guide exactly match the
+   repository.
+2. Reuse existing OIP/AI/domain modules. Do not create a parallel architecture.
+3. The model may interpret; deterministic services calculate and validate.
+4. Ask Mode is read-only.
+5. No mutation bypasses explicit preview/confirmation, Action Runtime,
+   ERPCommandPort, and OEC.
+6. Do not change authoritative accounting, VAT/TDS, inventory valuation, period,
+   permission, voucher, audit, or sync behavior unless this phase explicitly
+   requires and tests a domain change.
+7. Preserve tenant/company/user isolation.
+8. Preserve raw user text and value provenance.
+9. Never expose chain of thought, prompts, secrets, or raw internal errors.
+10. Preserve all unrelated user changes and existing green gates.
+
+READ FIRST — NO EDITS YET
+
+[Exact likely files, symbols, routes, tests, schemas, and rg searches.]
+
+Before editing, report:
+  actual relevant paths;
+  existing implementation and tests;
+  duplicate/legacy paths;
+  dependency direction;
+  persistence/migration implications;
+  any conflict with the master architecture.
+
+If a material architecture conflict exists, STOP after the discovery report. Do not
+choose a new authority silently.
+
+TESTS FIRST
+
+Add or identify failing tests for:
+  [specific cases];
+  [language variants];
+  [tenant/security cases];
+  [regression cases];
+  [failure/degraded cases].
+
+Confirm that the new tests fail for the intended reason before implementation, or
+prove with evidence that existing tests already cover the requirement.
+
+IMPLEMENTATION SCOPE
+
+1. [Deliverable.]
+2. [Deliverable.]
+3. [Contract/schema behavior.]
+4. [Integration with existing authoritative port/module.]
+5. [Observability/error behavior.]
+6. [Documentation/fixtures/migration.]
+
+NON-GOALS
+
+Do not:
+  [future phase];
+  [unrelated refactor];
+  [mass rename/restructure];
+  [production activation];
+  [fine-tuning/model change unless this is that phase].
+
+IMPLEMENTATION RULES
+
+  smallest coherent change;
+  typed/versioned contracts;
+  deterministic validation;
+  deny by default;
+  migrations safe and reversible/roll-forward documented;
+  no hardcoded production identity;
+  no arbitrary prose accepted as action success;
+  no empty tool schemas;
+  no duplicated business rules in prompts;
+  no weakening tests to obtain green.
+
+ACCEPTANCE GATE
+
+Run and show:
+  [focused unit/contract tests];
+  [integration tests];
+  [gold/evaluation cases];
+  [security/tenant tests];
+  [existing regression suite];
+  [TypeScript/lint/build baseline comparison where relevant].
+
+Required invariants:
+  [numeric target or exact zero-failure rule];
+  [compatibility rule];
+  [performance/resource budget if applicable].
+
+Do not call the phase complete if a required command was skipped. Mark it
+ENVIRONMENT-BLOCKED with exact reason, attempted command, and remaining proof.
+
+REQUIRED FINAL REPORT
+
+Return:
+1. Discovery summary and architecture decision.
+2. Tests added and their pre-fix failure.
+3. Exact files added/modified/deleted.
+4. Schema/API/migration changes.
+5. Security, privacy, tenant, accounting, and sync impact.
+6. Commands run with pass/fail/skip counts and key output.
+7. Before/after diagnostic baseline.
+8. Performance/resource evidence where required.
+9. Rollback or roll-forward instructions.
+10. Known limitations and work explicitly deferred.
+11. Gate verdict: PASSED, FAILED, or ENVIRONMENT-BLOCKED.
+12. Do not begin the next MAI phase.
+
+----------------------------------------------------------------------
+CURSOR PROMPT END
+----------------------------------------------------------------------
+
+30.5 CURSOR PHASE REPORT VALIDATION
+
+ChatGPT must check:
+
+  Did Cursor inspect before editing?
+  Did it reuse the authority?
+  Were tests shown failing first or proven pre-existing?
+  Are exact commands and counts present?
+  Did baseline diagnostics worsen?
+  Were skips honestly reported?
+  Did accounting/security/tenant boundaries remain intact?
+  Is there a migration and rollback/forward story?
+  Does the claimed gate match the phase?
+  Did Cursor start future work?
+
+If evidence is missing, generate a closure/verification prompt for the same phase,
+not the next implementation phase.
+
+30.6 ACCEPTABLE GATE VERDICTS
+
+PASSED
+  All required evidence and gates pass.
+
+FAILED
+  One or more requirements fail; same phase remains active.
+
+ENVIRONMENT-BLOCKED
+  Implementation may be present, but required proof cannot run. Record exact blocker
+  and do not treat it as production complete.
+
+PARTIAL is useful as progress language but is not a completion verdict.
+
+======================================================================
+31. PROGRESS LEDGER
+======================================================================
+
+Maintain a machine- and human-readable ledger in repository documentation.
+
+PhaseRecord
+  phase_id
+  title
+  status:
+    NOT_STARTED | IN_PROGRESS | FAILED | ENVIRONMENT_BLOCKED | PASSED |
+    PILOT_ONLY | PRODUCTION_APPROVED
+  started_at
+  completed_at_optional
+  commit_refs[]
+  changed_paths[]
+  schema_versions[]
+  migration_ids[]
+  model_release
+  prompt_release
+  knowledge_release
+  rule_release
+  test_commands[]
+  test_results[]
+  metric_results[]
+  known_limitations[]
+  blockers[]
+  rollback
+  reviewer_roles[]
+  approvals[]
+
+Example:
+
+  Phase: MAI-14
+  Status: PASSED
+  Evidence:
+    focused tests: 42/42
+    frozen wrong-draft cases: 18/18
+    broader AI regression: 333/333
+    TypeScript baseline: 151 before -> 151 after
+  Deferred:
+    MAI-15 reference resolver
+  Production approval:
+    false
+
+“Passed” means engineering gate passed. It does not automatically mean the capability
+is enabled in production.
+
+======================================================================
+32. CAPABILITY AND RELEASE MATRIX
+======================================================================
+
+Maintain a matrix such as:
+
+Capability
+  supported languages/forms
+  modes
+  deterministic engine
+  model minimum
+  knowledge release
+  permissions
+  offline policy
+  preview/confirmation
+  professional review
+  evaluation suite
+  release status
+
+Initial launch candidates:
+
+1. General product/accounting explanation — Ask Mode.
+2. Authorized company report questions — Ask Mode.
+3. Purchase/sales/returns — draft and confirmed Accountant Mode.
+4. Receipt/payment/contra/journal — controlled supported commands.
+5. Inventory/stock queries and supported movements.
+6. Bank import/reconciliation and treasury controls.
+7. Day Book/GL/TB/P&L/BS and VAT/TDS reports.
+8. Backup/restore/export, roles, audit, and sync status.
+
+Later gated capabilities:
+  payroll;
+  fixed assets;
+  advanced tax calculations;
+  NFRS adjustments/disclosures;
+  legal research domains;
+  court decisions;
+  broad business advisory;
+  investment analytics.
+
+Do not expose a UI command merely because an LLM can describe it.
+
+======================================================================
+33. RISK REGISTER
+======================================================================
+
+RISK-01: Weak base-model Nepali capability
+  Mitigation: benchmark models; language runtime; high-quality data; escalation;
+  narrow capability; fine-tune only after baseline.
+
+RISK-02: Romanized spelling explosion
+  Mitigation: candidate transliteration, context, ontology/master matching, OOD,
+  real-user tests; never rely on one canonical dictionary.
+
+RISK-03: Stale draft captures new topic
+  Mitigation: turn relation before merge; typed object references; critical tests.
+
+RISK-04: Number-role hallucination
+  Mitigation: explicit taxonomy, source spans, ambiguity, deterministic parsers,
+  critical duration/amount tests.
+
+RISK-05: RAG hallucination or irrelevant citation
+  Mitigation: authority/time filters, hybrid benchmark, claim-citation verifier,
+  no-answer, approved releases.
+
+RISK-06: Old law/rate treated as current
+  Mitigation: bitemporal versions, effective dates, release manifests, as-of output,
+  temporal tests and change intelligence.
+
+RISK-07: OCR corrupts legal provision
+  Mitigation: page/unit confidence, human review, immutable artifact, exact anchors,
+  low-confidence block.
+
+RISK-08: LLM directly or indirectly posts
+  Mitigation: capability policy, typed draft, explicit confirmation, OEC-only path,
+  authorization/idempotency tests.
+
+RISK-09: Duplicate or stale posting
+  Mitigation: idempotency, preview hash, revisions, token expiry, connector receipt,
+  concurrency tests.
+
+RISK-10: Cross-tenant data leak
+  Mitigation: trusted scope, scoped stores/cache/retrieval, deny default, adversarial
+  tests, redacted telemetry.
+
+RISK-11: Too many overlapping AI subsystems
+  Mitigation: MAI-00 authority map, strangler/adapter plan, no new parallel kernel.
+
+RISK-12: Giant prompt becomes hidden application
+  Mitigation: prompt registry, typed policies/tools, deterministic rules, evaluation.
+
+RISK-13: Fine-tuning learns defects/obsolete truth
+  Mitigation: architecture first, data governance, temporal facts in retrieval/rules,
+  frozen tests, candidate comparison.
+
+RISK-14: Synthetic dataset looks large but lacks realism
+  Mitigation: scenario matrix, provenance, human sample review, real pilot shadow set,
+  scenario-level deduplication.
+
+RISK-15: Professional overclaim
+  Mitigation: capability matrix, reviewed domain releases, uncertainty/escalation,
+  qualified reviewers, precise marketing limitations.
+
+RISK-16: Low-cost infrastructure harms reliability
+  Mitigation: measured cascade, lexical fallback, queues, resource limits, capacity
+  plan, honest degraded mode.
+
+RISK-17: Cloud/provider privacy mismatch
+  Mitigation: provider policy, data minimization, explicit local/cloud modes, no
+  silent fallback.
+
+RISK-18: Cursor creates superficial green tests
+  Mitigation: frozen independent suites, adversarial cases, evidence review, test
+  mutation/quality checks where needed.
+
+RISK-19: Existing TypeScript/test debt hides regressions
+  Mitigation: before/after baseline, scoped configs, no net-new diagnostics, debt
+  reduction phases separate from feature proof.
+
+RISK-20: Owner cannot continuously maintain legal data
+  Mitigation: source/update automation plus qualified review workflow, narrow
+  releases, explicit freshness, withdrawal/rollback.
+
+======================================================================
+34. FORBIDDEN ANTI-PATTERNS
+======================================================================
+
+1. One prompt containing all vocabulary, laws, tools, and business rules.
+2. Regex alone as the primary language/event architecture.
+3. First number equals amount.
+4. Any unknown event defaults to purchase.
+5. Pending draft automatically consumes the next message.
+6. Transliterate the entire message and discard the original.
+7. Fuzzy-match a party/account and silently act.
+8. Model-generated journal posted without deterministic validation.
+9. Natural-language “yes” used as the only confirmation.
+10. UI calculates ledger/tax/stock truth.
+11. RAG chunk presented without verifying claim support.
+12. Citation exists, therefore answer is correct.
+13. Latest file ingestion overwrites legal history.
+14. Unreviewed detected change goes directly to production.
+15. SHA/hash values called semantic embeddings.
+16. Empty tool schemas or imaginary tool results.
+17. Provider-specific calls scattered through domain code.
+18. Cross-tenant cache keys without tenant scope.
+19. Full ledger or private document sent to model unnecessarily.
+20. Raw chain of thought stored or streamed.
+21. Local JSON draft as production source of truth.
+22. Multiple modules independently mutate the ERP.
+23. “Tests passed” without command/count/skip evidence.
+24. Compilation treated as a production gate.
+25. Massive Cursor task spanning multiple roadmap phases.
+26. Fine-tuning before baseline and data governance.
+27. Marketing “fully automatic CA/lawyer” claims.
+28. Hiding an environment-blocked test as passed.
+29. Weakening assertions to make tests green.
+30. Blind mass rename of legacy systems.
+
+======================================================================
+35. HUMAN ROLES AND GOVERNANCE
+======================================================================
+
+Required roles may initially be performed by a small number of people, but decisions
+must still be separated and recorded:
+
+  product owner;
+  architecture owner;
+  accounting domain reviewer;
+  Nepal tax/legal reviewer;
+  NFRS/audit reviewer;
+  Nepali language reviewer;
+  security/privacy reviewer;
+  knowledge curator;
+  data annotator/adjudicator;
+  release approver;
+  incident owner.
+
+High-risk knowledge should not be marked production-approved solely by the same
+automated process that generated/extracted it.
+
+Governance artifacts:
+  architecture decisions;
+  source register;
+  data cards;
+  model cards;
+  prompt releases;
+  knowledge releases;
+  rule releases;
+  evaluation reports;
+  risk acceptances;
+  incident/postmortems;
+  rollback records.
+
+======================================================================
+36. DEFINITION OF DONE
+======================================================================
+
+A CODE UNIT IS DONE WHEN:
+  typed contract exists;
+  tests cover normal/failure/security cases;
+  documentation and observability exist;
+  no unauthorized dependency direction;
+  compatibility/migration handled;
+  focused and regression gates pass.
+
+A MODEL/PROMPT IS DONE WHEN:
+  versioned;
+  linked to task/schemas;
+  benchmarked across all target language forms;
+  safety/no-answer behavior evaluated;
+  resource/privacy/license recorded;
+  rollback available.
+
+A KNOWLEDGE DOMAIN IS DONE WHEN:
+  scope and sources approved;
+  versions/effective dates modeled;
+  artifacts verified;
+  units/citations reviewed;
+  retrieval/temporal/citation tests pass;
+  limitations documented;
+  release immutable and reversible.
+
+AN ACCOUNTING CAPABILITY IS DONE WHEN:
+  supported event specification exists;
+  language/context tests pass;
+  deterministic draft/preview exists;
+  permissions/confirmation/OEC enforced;
+  idempotency/concurrency/sync/reversal tested;
+  audit and receipt truthful;
+  pilot/release approval completed.
+
+A LEGAL/REPORTING CAPABILITY IS DONE WHEN:
+  material fact framing exists;
+  primary authority and effective dates are handled;
+  claims cite entailing units;
+  conflicts/no-answer work;
+  professional review completed;
+  product language accurately states limitations.
+
+THE PRODUCT IS NOT “DONE” ONCE. Each capability has a release lifecycle and must be
+re-evaluated when code, model, prompt, knowledge, rule, or regulatory context changes.
+
+======================================================================
+37. IMMEDIATE RECOMMENDED NEXT ACTION
+======================================================================
+
+Do not begin by fine-tuning or adding more vocabulary files.
+
+Run MAI-00 against the complete current Git repository, then MAI-04 to establish an
+independent baseline. Because multiple OIP/language/accounting components reportedly
+already exist, MAI-00 should reveal which roadmap phases are already partly or fully
+implemented and which are only documented or disconnected.
+
+The first Cursor prompt generated from this guide should therefore be:
+
+  MAI-00 — Complete Repository and Authority Map
+
+Its purpose is discovery and proof, not redesign.
+
+After MAI-00, fix the earliest critical architecture gap revealed by evidence. The
+likely early sequence is:
+
+  executable constitution and contracts
+  -> trace/evaluation baseline
+  -> turn relation before draft merge
+  -> number-role/language pipeline
+  -> context/reference resolution
+  -> typed routing/planning/tools
+  -> grounded knowledge
+  -> deterministic preview/confirmation/OEC integration
+
+However, actual repository evidence decides the sequence.
+
+======================================================================
+38. INSTRUCTIONS TO FUTURE CHATGPT / AI ASSISTANT
+======================================================================
+
+When the user provides this file and asks “next prompt”, “continue”, or gives a
+Cursor completion report:
+
+1. Treat this file as governing context.
+2. Treat the latest repository/test evidence as current state.
+3. Preserve MokXya naming and all safety constraints.
+4. Identify the active MAI phase.
+5. Audit the completion report against that phase’s gate.
+6. If incomplete, generate a closure prompt for the same phase.
+7. If complete, generate one detailed prompt for the next safe phase.
+8. Do not ask the user to say “go” repeatedly while actively completing analysis,
+   but do not send multiple implementation phases in a single Cursor prompt.
+9. Explain in simple language what the phase will achieve and what it will not.
+10. Never promise ChatGPT-equivalent universal intelligence or perfect legal advice.
+11. Optimize MokXya for exceptional Nepal accounting/business performance within
+    released scope.
+12. Keep model, language, knowledge, deterministic rules, execution, and verification
+    as separate authorities.
+13. Require professional validation for Nepal law, tax, NFRS, and high-risk outputs.
+14. Never allow a coding AI’s summary to substitute for gate evidence.
+
+======================================================================
+39. COMPACT ARCHITECTURE REFERENCE
+======================================================================
+
+INPUT
+  English + Devanagari Nepali + Romanized Nepali + code-mix
+
+UNDERSTANDING
+  protected spans -> lossless normalization -> transliteration candidates
+  -> number/date roles -> turn relation -> intent/event -> reference resolution
+
+CONTEXT
+  authenticated company/fiscal scope + typed conversation/task state
+  + relevant ERP facts + reviewed external evidence
+
+INTELLIGENCE
+  model cascade + prompt registry + typed planner + real tool observations
+
+TRUTH
+  ERP snapshots + deterministic calculations + approved knowledge releases
+
+ACTION
+  EventFrame -> clarification -> draft -> deterministic preview
+  -> explicit confirmation -> Action Runtime -> ERPCommandPort -> OEC -> receipt
+
+QUALITY
+  language verifier + claim/citation verifier + action verifier
+  + security policy + evaluation gates
+
+LEARNING
+  reviewed feedback -> annotation -> regression -> optional fine-tuning
+
+OPERATIONS
+  trace + metrics + audit + sync + backup/restore + controlled releases
+
+======================================================================
+40. FINAL ARCHITECTURAL STATEMENT
+======================================================================
+
+MokXya will not become excellent because it memorizes every Nepali word or because a
+single large model is asked to behave as an accountant, lawyer, researcher, database,
+and posting engine simultaneously.
+
+It will become excellent when:
+
+  language variation is understood without destroying the original meaning;
+  conversation state is typed and correctly scoped;
+  ambiguity is handled intelligently;
+  company facts come from authorized tools;
+  laws and standards come from reviewed, time-aware evidence;
+  calculations come from deterministic engines;
+  actions require preview and explicit authority;
+  execution travels through one idempotent audited path;
+  every answer and action is independently checked;
+  quality is measured on real English, Nepali, and Romanized Nepali cases;
+  each capability is released honestly and improved through reviewed evidence.
+
+That architecture can make MokXya feel close to a powerful conversational AI while
+making it safer, more accurate, and more useful than a general assistant for its
+chosen Nepal accounting, financial-reporting, legal, tax, and business domain.
+
+END OF DOCUMENT

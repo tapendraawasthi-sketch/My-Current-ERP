@@ -1,0 +1,59 @@
+{
+  "audit_agreement": true,
+  "case_count": 1111,
+  "governance": {
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "agreement_is_independent_human_irr": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "majority_voting_is_gold": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "review_method": "AI_ASSISTED_HUMAN_VERIFIED_POLICY_REFERENCE",
+    "round_a_locked": false,
+    "round_b_authorized": false,
+    "round_b_ready": false,
+    "runtime_conformance_is_language_quality": false
+  },
+  "ok": true,
+  "outcome_counts": {
+    "FAIL": 328,
+    "PASS": 769,
+    "SPAN_FAILURE": 14
+  },
+  "overlay_enabled": false,
+  "phase": "MAI-07R3L-AI-ASSISTED-RUNTIME-CONFORMANCE-DIAGNOSTIC",
+  "prohibited_for_training": true,
+  "residual_counts": {
+    "TIER_1_CRITICAL": 8,
+    "TIER_2_HIGH": 328,
+    "TIER_3_MEDIUM": 493
+  },
+  "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "runtime_conformance_is_language_quality": false,
+  "runtime_version": "mai-07.1.3-r3f-sealnew",
+  "safety": {
+    "accounting_mutation_attempts": 0,
+    "candidate_cap_compliance_denominator": 1111,
+    "candidate_cap_compliance_numerator": 1111,
+    "candidate_cap_compliance_rate": 1.0,
+    "completed": 1111,
+    "critical_diagnostic_finding": false,
+    "exceptions": 0,
+    "execution_authority_fields_present": false,
+    "identifier_acronym_mutation_count": 131,
+    "protected_span_mutation_count": 0,
+    "raw_text_mutation_count": 0,
+    "submitted": 1111,
+    "successful_mutations": 0
+  },
+  "schema_version": "mai07_r3l_runtime_conformance_diagnostic_v1",
+  "semantic_hash": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+  "targeted_packet_count": 65,
+  "verdict": "PASSED_ENGINEERING_DIAGNOSTIC"
+}

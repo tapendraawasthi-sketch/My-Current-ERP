@@ -1,0 +1,181 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-26 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+Phase: MAI-26 — TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+These gates are proposed test design only. They are not evidence of pass.
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+Roadmap gate reminder:
+  frozen old/current provision cases resolve correctly;
+  conflicting/unknown effective dates block definitive output;
+  historical versions remain accessible.
+
+Critical invariant from roadmap §24.5 (target):
+  100% temporal correctness on the frozen rate/effective-date critical suite.
+
+----------------------------------------------------------------------
+1. NORMAL / HAPPY-PATH TESTS
+----------------------------------------------------------------------
+
+N-01 Current provision as_of today
+  Given version A valid_from <= today < valid_to (or open end)
+  Expect RESOLVED → A; citation includes effective period.
+
+N-02 Historical provision as_of past FY
+  Given A superseded by B; as_of inside A's valid interval
+  Expect RESOLVED → A (not B); A still readable.
+
+N-03 Supersession chain
+  A → B → C; as_of in B's interval → B; trail shows A superseded_by B,
+  B superseded_by C.
+
+N-04 Amendment link (non-destructive)
+  Amendment instrument links to base unit; both versions retained;
+  query returns correct base text for as_of.
+
+N-05 Repeal + commencement
+  Repealed unit not returned as current; commencement of successor resolved
+  when as_of >= commencement; before commencement → NOT_IN_FORCE or prior law.
+
+N-06 Structured rate/threshold as_of
+  Rate r1 then r2; as_of selects correct numeric/threshold record with unit
+  provenance and content_hash.
+
+N-07 Cross-reference expansion (bounded)
+  Unit cites another unit; graph edge resolvable; expansion does not invent
+  units lacking provenance.
+
+N-08 System-time / release belief query
+  After new release activates, as_of_system_time before activation returns
+  prior release's resolved view (bitemporal).
+
+----------------------------------------------------------------------
+2. FAILURE / FAIL-CLOSED TESTS
+----------------------------------------------------------------------
+
+F-01 Unknown effective_start or effective_end on contested unit
+  Expect UNKNOWN_EFFECTIVE; no definitive current-law claim.
+
+F-02 Conflicting overlapping valid intervals for same provision identity
+  Expect CONFLICT; both sources disclosed; no silent winner.
+
+F-03 Missing relationship completeness (orphan supersedes pointer)
+  Expect fail-closed or review-required disposition; not silent ignore.
+
+F-04 Query without jurisdiction / as_of when required by policy
+  Expect rejection or safe no-answer per constitution/contracts
+  (final shape UNRESOLVED_PENDING_HANDOFF on MAI-02/24).
+
+F-05 Attempt to overwrite historical version row
+  Storage/API must reject in-place mutation of sealed version content;
+  only append new version + relationship.
+
+----------------------------------------------------------------------
+3. SECURITY TESTS
+----------------------------------------------------------------------
+
+S-01 Cross-tenant isolation
+  Tenant T1 relationships/rates invisible to T2; zero leakage in adversarial
+  suite pattern from roadmap.
+
+S-02 Private/company-scoped documents
+  Temporal resolver respects tenant/company and permission filters before
+  returning units.
+
+S-03 Unapproved / unreleased source
+  Units from incomplete/unapproved MAI-24 release cannot be returned as
+  production current law (ties to MAI-24 gate).
+
+----------------------------------------------------------------------
+4. PRIVACY / REDACTION TESTS
+----------------------------------------------------------------------
+
+P-01 Trace events for temporal resolution
+  Emit stage metadata without raw provision text / PII (MAI-03 policy).
+
+P-02 Error messages
+  Do not leak other tenants' instrument IDs or internal artifact paths.
+
+----------------------------------------------------------------------
+5. TENANT-ISOLATION TESTS
+----------------------------------------------------------------------
+
+T-01 Shared jurisdiction packs vs tenant overlays
+  Global Nepal law pack readable per policy; tenant overlay cannot alter
+  another tenant's overlay edges.
+
+T-02 Seed/demo data
+  No tenant-a contamination in production-like config (GAP-P2-003 awareness;
+  remediation may be earlier — verify still holds).
+
+----------------------------------------------------------------------
+6. DETERMINISM TESTS
+----------------------------------------------------------------------
+
+D-01 Same TemporalQueryV1 → identical TemporalResolutionV1 bytes/semantic hash
+  across two runs with fixed release.
+
+D-02 Relationship linker on fixed segmented inputs
+  Deterministic edge set; second run no diff (check-twice pattern).
+
+D-03 No float time math for offsets
+  Use discrete date/calendar types; no float interpolation for validity
+  (align MAI-06 integrity culture).
+
+----------------------------------------------------------------------
+7. ROLLBACK TESTS
+----------------------------------------------------------------------
+
+R-01 Deactivate bad relationship/rate release
+  Emergency withdrawal restores prior KnowledgeRelease pointer; historical
+  rows remain; audit retained.
+
+R-02 Migration rollback / forward-fix
+  New tables droppable or ignorable without corrupting MAI-24/25 artifacts.
+
+R-03 Pipeline flag
+  Feature flag disables MAI-26 resolver and falls back to pre-MAI-26 filter
+  only in non-production or explicitly documented degraded mode — never
+  silent wrong current law.
+
+----------------------------------------------------------------------
+8. REGRESSION TESTS
+----------------------------------------------------------------------
+
+G-01 MAI-04 knowledge_no_answer / fake citation cases still fail closed
+  (GAP-P2-008 not falsely closed by temporal layer alone).
+
+G-02 Existing oip knowledge retrieval tests / smoke remain green or have
+  explicit baseline updates documented in phase evidence.
+
+G-03 No MAI-07 language_runtime pack mutation; transliteration suites unchanged.
+
+G-04 Accounting domain engines untouched; no journal authority in MAI-26.
+
+----------------------------------------------------------------------
+9. PROPOSED COMMAND SKETCH (POST-HANDOFF; NOT TO RUN AS PASS CLAIM NOW)
+----------------------------------------------------------------------
+
+  python -m pytest erp_bot/tests/oip/.../test_mai26_temporal*.py -q
+  (plus frozen eval CLI once evals/mai26 exists)
+  Prior Track A/B focused regressions as required by handoff report
+
+Exact commands, exit codes, and counts: UNRESOLVED_PENDING_HANDOFF
+(must be copied from MAI-25 handoff and updated during MAI-26 execution).
+
+----------------------------------------------------------------------
+10. PASS CLAIM RULES
+----------------------------------------------------------------------
+
+Do not set QUALITY_GATES_PASSED, LINGUIST_APPROVED, or PRODUCTION_APPROVED
+from this planning packet.
+Do not mark MAI-26 PASSED in MAI_PHASE_LEDGER.json until authorized
+implementation proves the above gates with evidence.
+
+END OF PROPOSED ACCEPTANCE GATES

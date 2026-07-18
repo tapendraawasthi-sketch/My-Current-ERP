@@ -1,0 +1,57 @@
+{
+  "accounting_import_semantic_sha256": "b96bec29e30ddcdc6dce1a5ef09a2003ee9de003a336cd98b43341c6e55e363b",
+  "accounting_package_zip_raw_sha256": "f558fefdc186ba79bbe2a8757569204b88ce1aa1ed27400cda7705c1551cdb68",
+  "governance": {
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "agreement_is_independent_human_irr": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "majority_voting_is_gold": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "review_method": "AI_ASSISTED_HUMAN_VERIFIED_POLICY_REFERENCE",
+    "round_a_locked": false,
+    "round_b_authorized": false,
+    "round_b_ready": false,
+    "runtime_conformance_is_language_quality": false
+  },
+  "overlay_enabled": false,
+  "phase": "MAI-07R3L-AI-ASSISTED-RUNTIME-CONFORMANCE-DIAGNOSTIC",
+  "populations": {
+    "four_role_cases": 611,
+    "risk_queue_cases": 700,
+    "three_role_cases": 500,
+    "total_role_judgments": 3944,
+    "unique_source_item_ids": 1111
+  },
+  "preconditions": {
+    "checks": {
+      "acct_sem": true,
+      "auth_man": true,
+      "cases": true,
+      "four": true,
+      "judg": true,
+      "r3k_sem": true,
+      "rem_sem": true,
+      "risk": true,
+      "three": true,
+      "zip": true
+    },
+    "ok": true,
+    "overlay_enabled": false,
+    "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "runtime_version": "mai-07.1.3-r3f-sealnew"
+  },
+  "prohibited_for_training": true,
+  "r3k_authority_manifest_sha256": "65bfa6847a8d3d58af4e092f4217d65b3b6e5d51035c401e7304be1ed77fe2b8",
+  "r3k_semantic_sha256": "42d1a5ffc170d201f8a4bf92e4cef4f156dde57c07e847c960835e26080ddafc",
+  "remaining_roles_import_semantic_sha256": "1cc783d79cc3cc5f3f2daa288ae8b4721238fed584dbfb540597c8f883a8f4a1",
+  "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "runtime_version": "mai-07.1.3-r3f-sealnew",
+  "schema_version": "mai07_r3l_runtime_conformance_diagnostic_v1"
+}

@@ -1,0 +1,267 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+CURSOR PARALLEL PLANNING INDEX — MAI-26 THROUGH MAI-53
+======================================================================
+
+Lane: CURSOR_MAI26_TO_53_PLANNING
+Mode: NON_AUTHORITATIVE_PLANNING_ONLY
+Owned write root: docs/mokxya-ai/future-phase-plans/mai26_to_53/
+Authority (read-only): docs/mokxya-ai/MAI_PHASE_LEDGER.json
+Workflow: CURSOR_PARALLEL_WORKFLOW_MAI26_TO_53.txt
+Roadmap: MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt
+
+Repository commit observed (HEAD): ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+Branch observed: main
+Ledger recommended_next_phase (snapshot): MAI-07R3N5-FRESH-HOLDOUT-IDENTITY-ANCHOR-CORRECTIVE
+Ledger MAI-07 status: NEEDS_CORRECTIVE_WORK
+Ledger MAI-08..MAI-53 status: NOT_STARTED
+MAI-25 handoff report present: false
+Implementation authorized for MAI-26+: false
+
+Git status note (recorded, not modified):
+  Extensive modified/untracked Codex and prior MAI work exists outside this
+  directory. This lane must not stage, commit, stash, restore, discard, or
+  alter those paths.
+
+Planning status values (planning only; never roadmap completion):
+  NOT_REVIEWED | DISCOVERY_IN_PROGRESS | DRAFT_PACKET_READY |
+  NEEDS_REVALIDATION_AFTER_MAI25
+
+Required packet files per phase directory:
+  DISCOVERY.txt
+  DEPENDENCIES.txt
+  PROPOSED_IMPLEMENTATION_PACKET.txt
+  PROPOSED_ACCEPTANCE_GATES.txt
+  CONFLICT_RISK_REGISTER.txt
+
+----------------------------------------------------------------------
+PHASE PLANNING ROSTER
+----------------------------------------------------------------------
+
+Common unresolved upstream for ALL phases below:
+  MAI-07 (NEEDS_CORRECTIVE_WORK) + MAI-08..MAI-25 (NOT_STARTED) =
+  UNRESOLVED_PENDING_HANDOFF
+  Plus each phase's sequential predecessor once past MAI-26.
+
+MAI-26 | TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-25, MAI-24, MAI-07..MAI-23 (UNRESOLVED_PENDING_HANDOFF)
+  Files inspected: AGENTS.md; workflow; roadmap §13.2–13.13 + Track E;
+    MAI_PHASE_LEDGER.json; MAI_00_AUTHORITY_MAP.md; MAI_00_GAP_REGISTER.md;
+    knowledgebase/schemas/kb_record*; oip knowledge entities/value_objects/
+    013_oip_knowledge.sql/stages.py
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-27 | LEXICAL INDEX
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-26 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-27; np_kb_adapter.py FTS; build_retrieval_indexes.py;
+    retrieval_collections.json; knowledge_sqlite.search_lexical; lexical adapter
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-28 | MULTILINGUAL VECTOR INDEX
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-27 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: embedding_provider_adapter.py (hash_embed FORBIDDEN for prod
+    semantic); build_semantic_index.py; GAP-P2-001
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-29 | HYBRID FUSION, RERANKING, AND EVIDENCE BUNDLES
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-28 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: hybrid_ranking_adapter; EvidenceBundle entities; roadmap §13.7–13.11
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-30 | GROUNDED ANSWER AND CLAIM-CITATION VERIFICATION
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-29 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: GAP-P2-008; citation contract §13.12; NP KB citation notes
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-31 | EVENTFRAME TO EXISTING DOMAIN PORTS
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-30 + MAI-18/19 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: MAI_00_AUTHORITY_MAP (drafts/posting/OEC rows); roadmap Track F
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-32 | DURABLE VERSIONED DRAFTS
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-31 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-32; authority map drafts row
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-33 | DETERMINISTIC PREVIEW AND EDIT LOOP
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-32 + GAP-P2-002 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-33; authority map preview/confirm rows
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-34 | EXPLICIT CONFIRMATION AND OEC DISPATCH
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-33 + GAP-P0-001 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-34; authority map confirm/OEC rows
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-35 | OFFLINE, SYNC, CONFLICT, AND REVERSAL UX
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-34 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-35; eventSyncQueue notes in ledger/authority map
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-36 | LEGAL QUESTION FRAMER AND RESEARCH MODE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-35 + Track E + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap Track G MAI-36
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-37 | CORE NEPAL TAX KNOWLEDGE PILOT
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-36 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-37
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-38 | TAX CALCULATOR/RULE INTEGRATION
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-37 + MAI-26 rates + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-38
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-39 | NFRS/NAS POLICY, MAPPING, AND DISCLOSURE PILOT
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-38 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-39; financial_reporting_runtime tree note
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-40 | FINANCIAL CLOSE AND ADJUSTMENT ASSISTANCE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-39 + MAI-32..34 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-40
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-41 | BROADER NEPAL BUSINESS-LAW DOMAIN RELEASES
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-40 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-41
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-42 | JUDICIAL/DECISION INTELLIGENCE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-41 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-42
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-43 | CONTINUOUS CHANGE INTELLIGENCE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-42 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-43
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-44 | SECURITY AND TENANT RED TEAM
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-43 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap Track H MAI-44
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-45 | LOAD, LATENCY, RESOURCE, AND FAILOVER
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-44 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-45; MAI-03 latency baseline note
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-46 | BACKUP, RESTORE, DISASTER, AND DATA LIFECYCLE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-45 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-46
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-47 | HUMAN REVIEW AND PILOT OPERATIONS
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-46 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-47
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-48 | GOVERNED IMPROVEMENT AND OPTIONAL FINE-TUNING
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-47 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-48; ADR_0011 lesson note
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-49 | PRODUCTION CAPABILITY RELEASE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-48 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-49
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-50 | NEPALI/ENGLISH SPEECH CHANNEL
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-49 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap Track I MAI-50
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-51 | PRIVATE USER-DOCUMENT INTELLIGENCE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-50 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-51
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-52 | CA-FIRM ENGAGEMENT AND WORKPAPER WORKSPACE
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-51 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-52; professional engagement table sketch
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+MAI-53 | COMPLIANCE OBLIGATION AND CALENDAR AUTOMATION
+  Planning status: DRAFT_PACKET_READY
+  Unresolved deps: MAI-52 + upstream UNRESOLVED_PENDING_HANDOFF
+  Files inspected: roadmap MAI-53; legal_runtime obligation/calendar targets
+  Last commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+  Conflicts: none
+
+----------------------------------------------------------------------
+SESSION LOG
+----------------------------------------------------------------------
+
+2026-07-18 — Session
+  1. Read AGENTS.md, CURSOR_PARALLEL_WORKFLOW_MAI26_TO_53.txt, master roadmap,
+     MAI_PHASE_LEDGER.json.
+  2. Recorded git status/HEAD without modifying dirty Codex work.
+  3. Created owned directory + INDEX.txt.
+  4. Prepared DRAFT_PACKET_READY for MAI-26 (deep discovery) through MAI-53.
+  5. All writes confined to docs/mokxya-ai/future-phase-plans/mai26_to_53/.
+  Authoritative files changed: none
+  Implementation performed: false
+  Conflicts detected: none
+  Packet file count: 140 phase files + INDEX.txt = 141
+
+END OF INDEX

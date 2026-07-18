@@ -1,0 +1,29 @@
+﻿STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-40 — DISCOVERY
+======================================================================
+
+Phase: MAI-40 — FINANCIAL CLOSE AND ADJUSTMENT ASSISTANCE
+Discovery date: 2026-07-18
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+ROADMAP OBJECTIVE:
+  Coordinate close: reconciliations, cut-off, adjustments, statements, disclosures, review.
+
+ROADMAP DELIVERABLES:
+  Close workflow/DAG; diagnostics; adjustment drafts via confirm path; lock/release; audit package.
+
+ROADMAP GATE:
+  No auto-post; critical unresolved recon blocks release; released statements immutable/versioned; lineage complete.
+
+LEDGER / REPO NOTES:
+  Ledger NOT_STARTED.
+
+All upstream MAI-07..MAI-25 contracts and sequential predecessors remain
+UNRESOLVED_PENDING_HANDOFF until MAI-25 handoff + prior phases pass.
+
+END OF DISCOVERY

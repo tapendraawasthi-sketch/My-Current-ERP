@@ -1,0 +1,211 @@
+{
+  "generated": "2026-07-18T18:30:32.993900",
+  "status": "AI_ASSISTED_DRAFT_ONLY",
+  "warning": "These are AI-generated drafts. They MUST NOT be used as official Round A submissions. Independent human review is required to close GAP-P1-016.",
+  "summary": {
+    "ACCOUNTING_DOMAIN": {
+      "batches": 6,
+      "rows_filled": 611,
+      "files": [
+        {
+          "src": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_01_of_06.xlsx",
+          "dst": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_01_of_06__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_02_of_06.xlsx",
+          "dst": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_02_of_06__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_03_of_06.xlsx",
+          "dst": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_03_of_06__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_04_of_06.xlsx",
+          "dst": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_04_of_06__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_05_of_06.xlsx",
+          "dst": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_05_of_06__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_06_of_06.xlsx",
+          "dst": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_06_of_06__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 11
+        }
+      ]
+    },
+    "PRODUCT_POLICY": {
+      "batches": 10,
+      "rows_filled": 1111,
+      "files": [
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_01_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_01_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_02_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_02_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_03_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_03_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_04_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_04_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_05_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_05_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_06_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_06_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_07_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_07_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_08_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_08_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_09_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_09_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_10_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_10_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 31
+        }
+      ]
+    },
+    "NEPALI_FLUENT_A": {
+      "batches": 10,
+      "rows_filled": 1111,
+      "files": [
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_01_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_01_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_02_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_02_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_03_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_03_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_04_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_04_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_05_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_05_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_06_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_06_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_07_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_07_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_08_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_08_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_09_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_09_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_10_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__NEPALI_FLUENT_A__ROUND_A__BATCH_10_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 31
+        }
+      ]
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "batches": 10,
+      "rows_filled": 1111,
+      "files": [
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_01_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_01_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_02_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_02_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_03_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_03_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_04_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_04_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_05_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_05_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_06_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_06_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_07_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_07_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_08_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_08_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_09_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_09_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 120
+        },
+        {
+          "src": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_10_of_10.xlsx",
+          "dst": "MokXya_MAI07_V3__PROFESSIONAL_LINGUIST_B__ROUND_A__BATCH_10_of_10__AI_ASSISTED_DRAFT.xlsx",
+          "rows_filled": 31
+        }
+      ]
+    }
+  }
+}

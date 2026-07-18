@@ -9,6 +9,7 @@ import {
   mergeSystemConfiguration,
   type SystemConfiguration,
 } from "../lib/systemConfiguration";
+import { HubCard, HubCardGrid, PageHeader } from "@/design-system";
 
 const CONFIG_SECTIONS = [
   {
@@ -842,52 +843,33 @@ export default function ConfigurationHub() {
   }
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Setup options</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Company-wide settings for reports, alerts, printing, and integrations
-          </p>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="min-h-screen bg-[var(--ds-canvas)] p-4">
+      <PageHeader
+        title="Configuration index"
+        description="Company-wide settings for reports, alerts, printing, and integrations"
+      />
+      <HubCardGrid>
         {CONFIG_SECTIONS.map((s) => (
-          <button
+          <HubCard
             key={s.id}
-            type="button"
-            className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)]/40 hover:bg-gray-50 transition-colors"
+            title={s.label}
+            help={s.desc}
             onClick={() => openSection(s.id)}
-          >
-            <div className="text-[13px] font-semibold text-gray-800 mb-1">{s.label}</div>
-            <div className="text-[11px] text-gray-500">{s.desc}</div>
-          </button>
+          />
         ))}
-        <button
-          type="button"
-          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)]/40 hover:bg-gray-50 transition-colors"
+        <HubCard
+          title="Messages & email"
+          help="Send invoice emails, payment reminders, and SMS using the settings above."
+          shortcut="Open →"
           onClick={() => setCurrentPage("communication-hub")}
-        >
-          <div className="text-[13px] font-semibold text-gray-800 mb-1">Communication Hub</div>
-          <div className="text-[11px] text-gray-500">
-            Send invoice emails, payment reminders, and SMS using the settings above.
-          </div>
-          <div className="mt-2 text-[11px] text-[var(--ds-action-primary)] font-medium">Open hub →</div>
-        </button>
-        <button
-          type="button"
-          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)]/40 hover:bg-gray-50 transition-colors"
+        />
+        <HubCard
+          title="List of holidays"
+          help="Define company holidays for working-day calculations."
+          shortcut={`${(holidays || []).length} configured →`}
           onClick={() => setActiveSection("holidays")}
-        >
-          <div className="text-[13px] font-semibold text-gray-800 mb-1">List of Holidays</div>
-          <div className="text-[11px] text-gray-500">
-            Define company holidays for working-day calculations.
-          </div>
-          <div className="mt-2 text-[11px] text-[var(--ds-action-primary)] font-medium">
-            {(holidays || []).length} holiday(s) configured →
-          </div>
-        </button>
-      </div>
+        />
+      </HubCardGrid>
     </div>
   );
 }

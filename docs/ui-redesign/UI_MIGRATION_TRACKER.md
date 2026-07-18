@@ -115,6 +115,20 @@ Phase UI-0 creates this tracker. **Nothing is marked migrated** unless genuinely
 - select-name a11y — `aria-label` added to unnamed selects in `SalesInvoiceForm` (bill sundry type, bank account), `JournalEntries` (rows per page), `BankReconciliation` (voucher type, counter account).
 - LineItemGrid — invoice/journal line grids stay on the DS-tokenized `.line-table` styles; swapping to the frozen `LineItemGrid` composite would remove Warehouse/VAT/per-line-tax columns (functional change, out of looks-only scope), so the composite remains available for simpler money docs.
 
+## Phase E — Simple Premium visual polish (2026-07-18)
+
+Aligned with `ORBIX_UI_SIMPLE_PREMIUM_IA_PLAN.md` Phases A–E (chrome calm → Home Today → TXN disclosure → nav daily-12 → visual unify).
+
+| Slice | Status |
+|-------|--------|
+| Configuration index HubCardGrid + PageHeader | done |
+| Bank reconciliation / Bank accounts → PageHeader | done |
+| ActionToolbar bridge retoken (`--ds-*`) | done |
+| High-traffic retoken (Journal, Billing, Parties, ItemMaster, StockBook KPI, Master Control, ReportHub) | done |
+| Remaining ActionToolbar consumers → PageHeader | pending (as pages are touched) |
+| AGENTS.md tip rewrite → IMPLEMENT_NOW | deferred (needs approval) |
+| Dead Sidebar/Header/TopMenuBar quarantine | deferred |
+
 ## Field template
 
 Each JSON entry includes: ID, screen/component, module, current system, target pattern, priority, risk, dependencies, functional/visual/a11y/responsive tests, status, owner, migrated files, deprecated files, blockers.

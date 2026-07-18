@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   PageHeader,
   PageMeta,
@@ -33,7 +33,6 @@ import {
 import { useEKhataStore } from "@/store/eKhataStore";
 import { useHomeDashboard } from "./useHomeDashboard";
 import { freshnessLabel, metricTone } from "./format";
-import { MOBILE_SECTION_ORDER } from "./roleWorkspace";
 import type {
   ActivityItem,
   AttentionItem,
@@ -126,18 +125,21 @@ function MetricCard({
 function AttentionList({
   items,
   onNavigate,
+  limit = 5,
 }: {
   items: AttentionItem[];
   onNavigate: (page: string) => void;
+  limit?: number;
 }) {
-  if (items.length === 0) {
+  const shown = items.slice(0, limit);
+  if (shown.length === 0) {
     return (
       <p className="text-[13px] text-[var(--ds-text-muted)]">No urgent items require attention.</p>
     );
   }
   return (
     <ul className="space-y-2">
-      {items.map((item) => {
+      {shown.map((item) => {
         const border =
           item.severity === "danger"
             ? "border-[var(--ds-danger)]/30 bg-[var(--ds-danger-soft,var(--ds-surface-muted))]"
@@ -354,7 +356,7 @@ function renderSections(
         return (
           <section key={key} aria-labelledby="home-financial-heading">
             <h2 id="home-financial-heading" className="mb-3 text-[14px] font-semibold text-[var(--ds-text)]">
-              Financial overview
+              Money picture
             </h2>
             {model.metrics.length === 0 ? (
               <EmptyState
@@ -363,11 +365,11 @@ function renderSections(
               />
             ) : (
               <div
-                className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+                className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
                 data-testid="home-financial-metrics"
                 data-metric-ids={model.metrics.map((m) => m.id).join(",")}
               >
-                {model.metrics.map((m) => (
+                {model.metrics.slice(0, 4).map((m) => (
                   <MetricCard key={m.id} metric={m} onNavigate={nav} />
                 ))}
               </div>
@@ -380,7 +382,7 @@ function renderSections(
             key={key}
             className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface)] p-4"
           >
-            <SectionHeader title="Quick actions" description="Navigate into existing workflows. No posting from Home." />
+            <SectionHeader title="Do next" description="Open a workflow — Home does not post." />
             <div className="mt-3">
               <QuickActionList actions={model.quickActions} onNavigate={nav} onOrbix={openOrbix} />
             </div>
@@ -456,6 +458,23 @@ export function HomePage() {
   const maximizePanel = useEKhataStore((s) => s.maximizePanel);
   const isMobile = useIsMobile();
 
+  const [moreOpen, setMoreOpen] = useState(() => {
+    try {
+      return localStorage.getItem("orbix_home_more_open") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const setMore = (open: boolean) => {
+    setMoreOpen(open);
+    try {
+      localStorage.setItem("orbix_home_more_open", String(open));
+    } catch {
+      /* ignore */
+    }
+  };
+
   const openOrbix = () => {
     setCurrentPage("orbix");
     openPanel();
@@ -487,11 +506,38 @@ export function HomePage() {
 
   if (!model) return null;
 
-  const order = isMobile ? [...MOBILE_SECTION_ORDER] : model.sectionOrder;
-  const mainOrder = isMobile
-    ? order
-    : order.filter((s) => s !== "attention");
-  const sideOrder = isMobile ? [] : ["attention"];
+  /** One banner only — highest severity wins (Phase B Home Today). */
+  const primaryBanner = model.trust.conflictCount > 0
+    ? {
+        tone: "danger" as const,
+        title: "Sync conflict",
+        description:
+          model.trust.syncDetail ||
+          "Conflicts require review. Pending is not the same as synced.",
+      }
+    : model.trust.offline
+      ? {
+          tone: "warning" as const,
+          title: "Offline",
+          description: "Showing available local data. Remote updates may be missing.",
+        }
+      : model.partialErrors.length > 0
+        ? {
+            tone: "warning" as const,
+            title: "Partial data",
+            description: `Some sources failed: ${model.partialErrors.slice(0, 3).join("; ")}. Valid sections remain.`,
+          }
+        : model.isNewCompany
+          ? {
+              tone: "info" as const,
+              title: "New company",
+              description:
+                "No transactional history yet. Use Do next to add parties, items, or documents — Home will not invent balances.",
+            }
+          : null;
+
+  const todayOrder = ["attention", "financial", "quickActions"];
+  const moreOrder = ["activity", "trends", "orbix"];
 
   return (
     <div
@@ -499,10 +545,11 @@ export function HomePage() {
       data-home-workspace={model.workspaceId}
       data-home-freshness={model.trust.freshness}
       data-home-company={model.trust.companyId}
-      className="min-h-full space-y-6"
+      data-home-layout="today"
+      className="min-h-full space-y-5"
     >
       <PageHeader
-        title="Home"
+        title="Today"
         description={`${model.workspaceLabel} · ${model.trust.companyName}`}
         status={
           <StatusChip tone={model.trust.conflictCount > 0 ? "danger" : "neutral"}>
@@ -534,8 +581,8 @@ export function HomePage() {
                   key="branch"
                   value={branchFilter}
                   onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch filter"
+                  className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  aria-label="Branch filter — All branches for Home metrics"
                 >
                   <option value="all">All branches</option>
                   {branchOptions.map((b) => (
@@ -559,72 +606,55 @@ export function HomePage() {
         ]}
       />
 
-      <div
-        className="flex flex-wrap items-center gap-2 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2"
-        data-testid="home-role-strip"
-      >
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
-          Workspace
-        </span>
-        <span className="rounded-md bg-[var(--ds-action-primary)]/10 px-2 py-0.5 text-[12px] font-medium text-[var(--ds-action-primary)]">
-          {model.workspaceLabel}
-        </span>
-        {model.workspaceId === "cashier" ? (
-          <Button variant="secondary" size="small" onClick={() => nav("pos-billing")}>
-            Open POS counter
-          </Button>
-        ) : null}
-        {(model.workspaceId === "accountant" || model.workspaceId === "owner") ? (
-          <>
-            <Button variant="quiet" size="small" onClick={() => nav("vat-reports")}>
-              VAT reports
-            </Button>
-            <Button variant="quiet" size="small" onClick={() => nav("bank-reconciliation")}>
-              Bank match
-            </Button>
-          </>
+      {primaryBanner ? (
+        <Banner
+          tone={primaryBanner.tone}
+          title={primaryBanner.title}
+          description={primaryBanner.description}
+        />
+      ) : null}
+
+      <div className={isMobile ? "space-y-5" : "grid gap-5 lg:grid-cols-12"}>
+        <div className={isMobile ? "space-y-5" : "space-y-5 lg:col-span-8"}>
+          {renderSections(
+            model,
+            todayOrder.filter((s) => s !== "attention" || isMobile),
+            nav,
+            openOrbix,
+          )}
+        </div>
+        {!isMobile ? (
+          <aside className="space-y-5 lg:col-span-4">
+            {renderSections(model, ["attention"], nav, openOrbix)}
+          </aside>
         ) : null}
       </div>
 
-      {model.trust.offline ? (
-        <Banner
-          tone="warning"
-          title="Offline"
-          description="Showing available local data. Remote updates may be missing."
-        />
-      ) : null}
-      {model.trust.conflictCount > 0 ? (
-        <Banner
-          tone="danger"
-          title="Sync conflict"
-          description={
-            model.trust.syncDetail ||
-            "Conflicts require review. Pending is not the same as synced."
-          }
-        />
-      ) : null}
-      {model.partialErrors.length > 0 ? (
-        <Banner
-          tone="warning"
-          title="Partial data"
-          description={`Some sources failed: ${model.partialErrors.slice(0, 3).join("; ")}. Valid sections remain.`}
-        />
-      ) : null}
-      {model.isNewCompany ? (
-        <Banner
-          tone="info"
-          title="New company"
-          description="No transactional history yet. Use quick actions to add parties, items, or documents — Home will not invent balances."
-        />
-      ) : null}
-
-      <div className={isMobile ? "space-y-6" : "grid gap-6 lg:grid-cols-12"}>
-        <div className={isMobile ? "space-y-6" : "space-y-6 lg:col-span-8"}>
-          {renderSections(model, mainOrder, nav, openOrbix)}
-        </div>
-        {!isMobile ? (
-          <aside className="space-y-6 lg:col-span-4">
-            {renderSections(model, sideOrder, nav, openOrbix)}
+      <div
+        className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)]"
+        data-testid="home-more"
+      >
+        <button
+          type="button"
+          className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-[var(--ds-surface-muted)]"
+          aria-expanded={moreOpen}
+          onClick={() => setMore(!moreOpen)}
+        >
+          <span>
+            <span className="text-[13px] font-semibold text-[var(--ds-text-strong)]">
+              More on this company
+            </span>
+            <span className="mt-0.5 block text-[12px] text-[var(--ds-text-muted)]">
+              Recent activity, ageing, Orbix prompts, and data trust
+            </span>
+          </span>
+          <span className="text-[12px] font-medium text-[var(--ds-action-primary)]">
+            {moreOpen ? "Hide" : "Show"}
+          </span>
+        </button>
+        {moreOpen ? (
+          <div className="space-y-5 border-t border-[var(--ds-border-default)] p-4">
+            {renderSections(model, moreOrder, nav, openOrbix)}
             <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface-muted)] p-3 text-[12px] text-[var(--ds-text-muted)]">
               <p className="font-medium text-[var(--ds-text)]">Data trust</p>
               <p className="mt-1">{model.trust.basisLabel}</p>
@@ -634,15 +664,8 @@ export function HomePage() {
                 {model.trust.pendingCount > 0 ? ` · pending ${model.trust.pendingCount}` : ""}
               </p>
             </div>
-          </aside>
-        ) : (
-          <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface-muted)] p-3 text-[12px] text-[var(--ds-text-muted)]">
-            <p className="font-medium text-[var(--ds-text)]">Data trust</p>
-            <p className="mt-1">
-              {model.trust.basisLabel} · Sync {model.trust.syncState}
-            </p>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

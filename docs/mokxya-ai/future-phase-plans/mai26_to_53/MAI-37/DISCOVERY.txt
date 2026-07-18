@@ -1,0 +1,29 @@
+﻿STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-37 — DISCOVERY
+======================================================================
+
+Phase: MAI-37 — CORE NEPAL TAX KNOWLEDGE PILOT
+Discovery date: 2026-07-18
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+ROADMAP OBJECTIVE:
+  Narrow professionally reviewed Income Tax/VAT/TDS pilot — not all-law.
+
+ROADMAP DELIVERABLES:
+  Approved sources; core docs/versions; rates/thresholds; gold Qs; release+review.
+
+ROADMAP GATE:
+  Temporal/citation targets; numerical facts from reviewed primaries; specialist sign-off; unsupported topics documented.
+
+LEDGER / REPO NOTES:
+  Ledger NOT_STARTED. Relies on MAI-24..30 + MAI-26 rates.
+
+All upstream MAI-07..MAI-25 contracts and sequential predecessors remain
+UNRESOLVED_PENDING_HANDOFF until MAI-25 handoff + prior phases pass.
+
+END OF DISCOVERY

@@ -1,0 +1,24 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-34 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Bind explicit user confirm to one safe, idempotent execution with
+  real receipt; NL assent alone never posts.
+
+WS-A Confirmation token issuance from valid preview snapshot
+WS-B Revalidation before dispatch (draft version, permissions, period open)
+WS-C Action Runtime → OEC dispatch_envelope (per handoff architecture choice)
+WS-D Idempotency keys; replay/stale/wrong-user suites
+WS-E Receipt display contract to UI
+
+OUT OF SCOPE: offline queue UX details (35) beyond idempotency hooks
+
+SUCCESS: NL yes cannot post; no duplicate posts on replay/stale; only authorized
+  dispatch path; real receipt shown.
+
+END OF PACKET

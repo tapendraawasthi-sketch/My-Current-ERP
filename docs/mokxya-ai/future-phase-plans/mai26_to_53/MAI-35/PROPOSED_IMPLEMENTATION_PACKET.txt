@@ -1,0 +1,22 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-35 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Honest offline/sync/conflict/reversal lifecycle across devices.
+
+WS-A Explicit state machine: draft/preview/queued/synced/conflict/failed
+WS-B Queue policy + mislabel prevention
+WS-C Conflict diff + regenerate preview → require reconfirm (MAI-34)
+WS-D Receipt/sync badges truthful in UI
+WS-E Supported reversal/correction entry points (no silent history edit)
+WS-F Two-device E2E scenarios
+
+SUCCESS: No queued≠synced mislabel; material conflicts need reconfirm;
+  idempotent retry; posted history not silently edited.
+
+END OF PACKET

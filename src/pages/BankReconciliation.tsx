@@ -2,7 +2,8 @@
 // @ts-nocheck
 import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useStore } from "../store/useStore";
-import { ActionToolbar, Select, NepaliDatePicker, Button } from "../components/ui";
+import { Select, NepaliDatePicker, Button } from "../components/ui";
+import { PageHeader, Button as DsButton } from "@/design-system";
 import {
   RefreshCw,
   Link as LinkIcon,
@@ -687,43 +688,47 @@ export default function BankReconciliation() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* ── Toolbar ──────────────────────────────────────────────────────── */}
-      <ActionToolbar
+      <PageHeader
         title="Match bank statement"
-        subtitle="Match books to bank/wallets."
+        description="Match books to bank and wallets"
+        primaryAction={
+          <DsButton
+            variant="primary"
+            size="small"
+            onClick={handleSave}
+            disabled={matchedPairs.length === 0}
+            startIcon={<CheckCircle className="h-3.5 w-3.5" aria-hidden />}
+          >
+            Save reconciliation
+          </DsButton>
+        }
         secondaryActions={[
+          <DsButton
+            key="auto"
+            variant="secondary"
+            size="small"
+            onClick={handleAutoMatch}
+            startIcon={<RefreshCw className="h-3.5 w-3.5" aria-hidden />}
+          >
+            Auto match
+          </DsButton>,
+          <DsButton
+            key="manual"
+            variant="secondary"
+            size="small"
+            onClick={handleManualMatch}
+            disabled={!selectedBookId || !selectedStmtId}
+            startIcon={<LinkIcon className="h-3.5 w-3.5" aria-hidden />}
+          >
+            Match selected
+          </DsButton>,
+        ]}
+        overflowActions={[
+          { label: "Close session", onSelect: handleCloseReconciliation },
+          { label: "Print report", onSelect: printReport },
           {
-            label: "Auto Match",
-            onClick: handleAutoMatch,
-            icon: <RefreshCw className="h-3.5 w-3.5" />,
-          },
-          {
-            label: "Match Selected",
-            onClick: handleManualMatch,
-            icon: <LinkIcon className="h-3.5 w-3.5" />,
-            disabled: !selectedBookId || !selectedStmtId,
-          },
-          {
-            label: "Save Reconciliation",
-            onClick: handleSave,
-            icon: <CheckCircle className="h-3.5 w-3.5" />,
-            variant: "primary",
-            disabled: matchedPairs.length === 0,
-          },
-          {
-            label: "Close Session",
-            onClick: handleCloseReconciliation,
-            icon: <CheckCircle2 className="h-3.5 w-3.5" />,
-          },
-          {
-            label: "Print Report",
-            onClick: printReport,
-            icon: <Printer className="h-3.5 w-3.5" />,
-          },
-          {
-            label: "Import Statement",
-            onClick: () => setCurrentPage("bank-statement-import"),
-            icon: <Upload className="h-3.5 w-3.5" />,
+            label: "Import statement",
+            onSelect: () => setCurrentPage("bank-statement-import"),
           },
         ]}
       />

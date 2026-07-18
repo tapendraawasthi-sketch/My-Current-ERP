@@ -1,0 +1,39 @@
+{
+  "corrected_presentation": {
+    "metric_false_devanagari_top1_english_scorable": "5/241",
+    "metric_identity_not_top1_english_scorable": "8/241",
+    "primary_ABSTAIN_FORCE_TRANSLITERATED": 3,
+    "primary_FALSE_FORCED_DEVANAGARI_TOP1": 5,
+    "secondary_FALSE_FORCED_DEVANAGARI_TOP1_occurrence": 3,
+    "secondary_IDENTITY_NOT_TOP1_occurrence": 5,
+    "tier1_unique_case_count": 8
+  },
+  "defect_scope": "REPORT_ONLY",
+  "governance": {
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "agreement_is_independent_human_irr": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "majority_voting_is_gold": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "round_a_locked": false,
+    "round_b_authorized": false,
+    "round_b_ready": false,
+    "runtime_conformance_is_language_quality": false
+  },
+  "phase": "MAI-07R3M-CLOSURE-TIER1-SET-RECONCILIATION",
+  "pre_closure_prose_defect": "R3M report presented Tier-1 reason composition as FALSE_FORCED_DEVANAGARI_TOP1×8; IDENTITY_NOT_TOP1×5; ABSTAIN_FORCE_TRANSLITERATED×3 without counting units. Those figures are reason-occurrence counts, not a unique-case partition.",
+  "prohibited_for_training": true,
+  "queues_unchanged": true,
+  "r3l_semantic_sha256_preserved": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+  "r3m_semantic_sha256_preserved": "bd9a9608fe540eb9f10753668df0b99337fee6acf08a15edaa71be6678002b09",
+  "schema_version": "mai07_r3m_tier1_closure_v1",
+  "supersession": null,
+  "verdict": "PASSED_CLOSURE"
+}

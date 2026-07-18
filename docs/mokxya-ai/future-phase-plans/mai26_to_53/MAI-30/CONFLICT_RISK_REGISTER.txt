@@ -1,0 +1,20 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-30 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-30-01 Orbix response adapters / presentation (src/lib/ekhata/orbix*,
+  OrbixResponseRenderer) — currently dirty in git; Codex/frontend may change.
+  Avoidance: no Cursor UI edits pre-handoff; plan backend verifier first.
+CR-30-02 Prompt files / MAI-23 registry — do not invent parallel prompt stores.
+CR-30-03 Weakening MAI-04 no-answer cases to "pass" product — forbidden.
+CR-30-04 Treating NP KB citation presence as verification — forbidden;
+  MAI-30 requires entailment-style check.
+
+Conflicts on owned paths: none
+
+END OF REGISTER

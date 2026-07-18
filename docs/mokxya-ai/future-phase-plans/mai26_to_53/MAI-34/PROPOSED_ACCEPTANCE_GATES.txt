@@ -1,0 +1,26 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-34 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 explicit confirm with valid token posts once; N-02 receipt returned.
+
+FAILURE: F-01 NL "yes" without token → no post; F-02 replay same key → one post;
+  F-03 stale preview/draft → reject; F-04 wrong user/company → reject;
+  F-05 bypass connector without OEC/authorized path → fail architecture gate.
+
+SECURITY/TENANT: S-01 permission registry enforced; S-02 cross-company deny.
+
+DETERMINISM: D-01 idempotent dispatch.
+
+ROLLBACK: R-01 disable OEC path only with documented prior confirm path if still
+  approved — never silent dual-post.
+
+REGRESSION: G-01 orbixPostingService / khataConfirmAuth tests; G-02 zero
+  unauthorized postings invariant.
+
+END OF GATES

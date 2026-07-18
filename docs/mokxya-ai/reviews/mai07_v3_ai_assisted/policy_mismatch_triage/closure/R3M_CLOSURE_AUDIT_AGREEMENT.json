@@ -1,0 +1,21 @@
+{
+  "agreement": {
+    "mismatches": [],
+    "ok": true
+  },
+  "audit_cardinalities": {
+    "A": 3,
+    "C": 0,
+    "D": 5,
+    "D_reason": 8,
+    "E": 241,
+    "I": 8,
+    "I_reason": 5,
+    "Q": 9,
+    "T": 8
+  },
+  "ok": true,
+  "phase": "MAI-07R3M-CLOSURE-TIER1-SET-RECONCILIATION",
+  "prohibited_for_training": true,
+  "schema_version": "mai07_r3m_tier1_closure_v1"
+}

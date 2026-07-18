@@ -1,0 +1,6 @@
+{
+  "duplicate_control_pairs": 40,
+  "note": "Steward inserts duplicate review rows at import time from mapping; not reviewer-authored",
+  "prohibited_for_training": true,
+  "schema_version": "1.0.0"
+}

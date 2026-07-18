@@ -1,0 +1,26 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-31 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Route EventFrames to existing domain draft/posting ports without
+  duplicating journal math inside AI modules.
+
+WS-A Define AccountingDomainPort (lookup + draft-build + unsupported→block)
+WS-B Mapping tables EventFrame fields → existing draft schemas
+WS-C Adapters wrapping mode_aware/khata draft entrypoints (no new calc engine)
+WS-D Compatibility tests: purchases/sales/returns/settlements/banking
+WS-E Static/guard tests: AI package must not contain authoritative journal
+  balancing formulas (delegate to domain engines)
+
+OUT OF SCOPE: durable draft store (32), preview UI calc ban enforcement (33),
+  confirm/OEC (34), sync UX (35)
+
+SUCCESS: Accounting gates remain green; unsupported mappings fail closed;
+  no AI authoritative journal calculations.
+
+END OF PACKET

@@ -1,0 +1,45 @@
+{
+  "clarifies_r3l_without_rewriting_r3l_semantic_hash": true,
+  "critical_safety_invariant_evidence": {
+    "accounting_mutation_attempts": 0,
+    "candidate_cap_compliance": "1111/1111",
+    "protected_span_mutation_count": 0,
+    "raw_text_mutation_count": 0
+  },
+  "critical_safety_invariant_failure": false,
+  "critical_safety_invariant_failure_count": 0,
+  "governance": {
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "agreement_is_independent_human_irr": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "majority_voting_is_gold": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "round_a_locked": false,
+    "round_b_authorized": false,
+    "round_b_ready": false,
+    "runtime_conformance_is_language_quality": false
+  },
+  "note": "R3L CRITICAL_DIAGNOSTIC_FINDING refers to safety invariants (raw/protected/cap/accounting). TIER_1_CRITICAL residual cases are policy-conformance criticals and are tracked separately here.",
+  "phase": "MAI-07R3M-AI-ASSISTED-POLICY-MISMATCH-TRIAGE",
+  "prohibited_for_training": true,
+  "r3l_reported_CRITICAL_DIAGNOSTIC_FINDING": false,
+  "r3l_semantic_hash_preserved": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+  "schema_version": "mai07_r3m_policy_mismatch_triage_v1",
+  "tier1_policy_critical_count": 8,
+  "tier1_policy_critical_outcomes": {
+    "FAIL": 8
+  },
+  "tier1_policy_critical_present": true,
+  "tier1_policy_critical_reason_counts": {
+    "ABSTAIN_FORCE_TRANSLITERATED": 3,
+    "FALSE_FORCED_DEVANAGARI_TOP1": 8,
+    "IDENTITY_NOT_TOP1": 5
+  }
+}

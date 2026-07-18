@@ -1,0 +1,24 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-33 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Authoritative preview before confirm; UI displays domain-engine
+  effects only.
+
+WS-A Preview contract (debits/credits/stock/tax/warnings + rule versions)
+WS-B Domain engine integration for preview payloads
+WS-C Edit → new draft version + invalidate prior preview_hash
+WS-D Frontend card renders server/domain preview; strip UI total authority
+WS-E Accessibility + language rendering checks
+
+OUT OF SCOPE: confirmation token/OEC (34)
+
+SUCCESS: UI does not calculate authoritative totals; effects trace to engines;
+  old preview invalid after edit.
+
+END OF PACKET

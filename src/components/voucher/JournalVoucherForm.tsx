@@ -36,6 +36,7 @@ import { generateSerialNumber, validateDoubleEntry } from "@/lib/accounting";
 import toast from "@/lib/appToast";
 import { postJournalTransaction } from "@/domains/settlement/postJournalTransaction";
 import { generateId } from "@/lib/db";
+import { usePersistedToggle } from "@/hooks/usePersistedToggle";
 
 interface JournalVoucherFormProps {
   voucherId?: string;
@@ -99,6 +100,15 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     }
     return [emptyLine(), emptyLine()];
   });
+  const hasOptionalLineData = !!(existing?.lines || []).some(
+    (l: any) => l.costCenterId || l.billRefNo,
+  );
+  const [showOptionalCols, setShowOptionalCols] = usePersistedToggle(
+    "orbix_txn_journal_optional",
+    hasOptionalLineData,
+  );
+  const showCostCenterCol = enableCostCenter && showOptionalCols;
+  const showBillRefCol = enableBillWise && showOptionalCols;
   const [dirty, setDirty] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -428,7 +438,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     [costCenters],
   );
 
-  const colCount = 7 + (enableCostCenter ? 1 : 0) + (enableBillWise ? 1 : 0);
+  const colCount = 7 + (showCostCenterCol ? 1 : 0) + (showBillRefCol ? 1 : 0);
 
   return (
     <div>
@@ -442,38 +452,39 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             </div>
           )}
 
-          {/* Header bar */}
-          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
-            <div className="flex items-center gap-3">
+          {/* Compact doc toolbar — title lives on TransactionWorkspace */}
+          <div className="flex items-center justify-between py-2 px-3 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleCancel}
                 className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
                 title="Back"
+                aria-label="Back"
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
-              <div>
-                <h1 className="text-[13px] font-semibold text-[var(--ds-text-default)]">Journal Voucher</h1>
-                {isEdit && <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">{voucherNoPreview}</p>}
-              </div>
+              <span className="font-mono text-[12px] font-medium text-[var(--ds-text-default)]">
+                {voucherNoPreview}
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="info" size="sm">
-                JOURNAL
-              </Badge>
-              <Badge
-                variant={
-                  existing?.status === VoucherStatus.POSTED
-                    ? "success"
-                    : existing?.status === VoucherStatus.CANCELLED
-                      ? "danger"
-                      : "default"
-                }
-                size="sm"
-              >
-                {(existing?.status || "NEW").toUpperCase()}
-              </Badge>
-            </div>
+            <Badge
+              variant={
+                existing?.status === VoucherStatus.POSTED
+                  ? "success"
+                  : existing?.status === VoucherStatus.CANCELLED
+                    ? "danger"
+                    : "default"
+              }
+              size="sm"
+            >
+              {existing?.status === VoucherStatus.POSTED
+                ? "Posted"
+                : existing?.status === VoucherStatus.CANCELLED
+                  ? "Cancelled"
+                  : existing?.status === VoucherStatus.DRAFT
+                    ? "Draft"
+                    : "New"}
+            </Badge>
           </div>
 
           {/* Header section: 2 columns */}
@@ -559,15 +570,27 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
 
           {/* Accounts grid */}
           <Card title="Account Postings" padding="none">
+            {(enableCostCenter || enableBillWise) && (
+              <div className="flex items-center justify-end gap-2 border-b border-[var(--ds-border-default)] px-3 py-2">
+                <Button
+                  variant="outline"
+                  size="xs"
+                  onClick={() => setShowOptionalCols(!showOptionalCols)}
+                  aria-pressed={showOptionalCols}
+                >
+                  {showOptionalCols ? "Hide optional columns" : "Optional columns"}
+                </Button>
+              </div>
+            )}
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left border-collapse">
-                <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[var(--ds-text-default)] uppercase tracking-wider font-bold">
+                <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[12px] font-semibold text-[var(--ds-text-muted)]">
                   <tr>
                     <th className="px-2 py-2.5 w-10 text-center">No.</th>
                     <th className="px-2 py-2.5 min-w-[220px]">Account</th>
                     <th className="px-2 py-2.5 min-w-[160px]">Sub-Ledger</th>
-                    {enableCostCenter && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
-                    {enableBillWise && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
+                    {showCostCenterCol && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
+                    {showBillRefCol && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
                     <th className="px-2 py-2.5 min-w-[140px]">Narration</th>
                     <th className="text-right text-[12px] font-semibold text-[var(--ds-action-primary)] uppercase px-3 py-2 w-32">
                       Debit
@@ -598,7 +621,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                           disabled={readOnly}
                         />
                       </td>
-                      {enableCostCenter && (
+                      {showCostCenterCol && (
                         <td className="px-2 py-2">
                           <Select
                             options={costCenterOptions}
@@ -610,7 +633,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                           />
                         </td>
                       )}
-                      {enableBillWise && (
+                      {showBillRefCol && (
                         <td className="px-2 py-2">
                           <Input
                             value={line.billRefNo}
@@ -729,27 +752,21 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-6">
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold">
-                    Total Debit
-                  </p>
-                  <p className="text-base font-bold text-[var(--ds-text-default)] font-mono">
+                  <p className="text-[12px] font-semibold text-[var(--ds-text-muted)]">Total debit</p>
+                  <p className="text-[13px] font-bold text-[var(--ds-text-default)] font-mono">
                     {symbol} {formatNumber(totals.debit)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold">
-                    Total Credit
-                  </p>
-                  <p className="text-base font-bold text-amber-700 font-mono">
+                  <p className="text-[12px] font-semibold text-[var(--ds-text-muted)]">Total credit</p>
+                  <p className="text-[13px] font-bold text-amber-700 font-mono">
                     {symbol} {formatNumber(totals.credit)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold">
-                    Difference
-                  </p>
+                  <p className="text-[12px] font-semibold text-[var(--ds-text-muted)]">Difference</p>
                   <p
-                    className={`text-base font-bold font-mono ${totals.balanced ? "text-[var(--ds-status-success)]" : "text-[var(--ds-status-danger)]"}`}
+                    className={`text-[13px] font-bold font-mono ${totals.balanced ? "text-[var(--ds-status-success)]" : "text-[var(--ds-status-danger)]"}`}
                   >
                     {symbol} {formatNumber(Math.abs(totals.diff))}
                   </p>

@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   ChevronRight,
 } from "lucide-react";
+import { PageHeader } from "@/design-system";
 
 interface Report {
   label: string;
@@ -46,7 +47,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
   {
     title: "Financial Statements",
     icon: BarChart2,
-    color: "#7c3aed",
+    color: "var(--ds-status-info)",
     reports: [
       {
         label: "Trial Balance",
@@ -72,7 +73,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
   {
     title: "Sales & Purchase",
     icon: TrendingUp,
-    color: "#059669",
+    color: "var(--ds-status-success)",
     reports: [
       { label: "Sales Analysis", page: "sales-analysis", desc: "Sales by party, item, period" },
       {
@@ -92,7 +93,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
   {
     title: "Inventory",
     icon: Package,
-    color: "#d97706",
+    color: "var(--ds-status-warning)",
     reports: [
       { label: "Stock Summary", page: "stock-summary", desc: "Item-wise stock position" },
       { label: "Stock Ledger", page: "stock-ledger", desc: "Detailed stock movements" },
@@ -102,7 +103,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
   {
     title: "Budget & Analysis",
     icon: FileBarChart,
-    color: "#0284c7",
+    color: "var(--ds-action-primary)",
     reports: [
       { label: "Budget vs Actual", page: "budget-vs-actual", desc: "Budget deviation analysis" },
       {
@@ -120,7 +121,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
   {
     title: "Statutory Reports",
     icon: ShieldCheck,
-    color: "#dc2626",
+    color: "var(--ds-status-danger)",
     reports: [
       {
         label: "VAT Reports",
@@ -172,7 +173,7 @@ const ReportRow: React.FC<{
           style={{
             fontSize: 12,
             fontWeight: hovered ? 600 : 500,
-            color: hovered ? "#111827" : "#374151",
+            color: hovered ? "var(--ds-text-strong)" : "var(--ds-text-default)",
             transition: "font-weight 120ms ease, color 120ms ease",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -181,7 +182,7 @@ const ReportRow: React.FC<{
         >
           {report.label}
         </div>
-        <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>{report.desc}</div>
+        <div style={{ fontSize: 12, color: "var(--ds-text-muted)", marginTop: 1 }}>{report.desc}</div>
       </div>
 
       {/* Shortcut badge */}
@@ -225,23 +226,11 @@ const ReportHub: React.FC = () => {
   const { setCurrentPage } = useStore();
 
   return (
-    <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 0 }}>
-      {/* Page header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 20,
-        }}
-      >
-        <div>
-          <h1 style={{ fontSize: 15, fontWeight: 700, color: "#111827", margin: 0 }}>Reports</h1>
-          <p style={{ fontSize: 11, color: "#6b7280", marginTop: 3 }}>
-            Financial reports, registers, and statutory filings
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-0 p-5">
+      <PageHeader
+        title="Reports"
+        description="Financial reports, registers, and statutory filings"
+      />
 
       {/* Category grid — responsive: 1 col on narrow, 2 on medium, 3 on wide */}
       <div

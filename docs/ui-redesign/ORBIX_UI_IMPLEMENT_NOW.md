@@ -633,6 +633,7 @@ per docs/ui-redesign/ORBIX_UI_IMPLEMENT_NOW.md §4 and §6.
 - [x] A11y select-name fixed on billing, journal, bank-recon
 - [x] Orphan registry JSON committed; tally quarantined
 - [x] `ui:governance` pass; migration tracker honest
+- [x] Phase E polish slice (2026-07-18) — HubCardGrid on Configuration index; PageHeader on bank recon + bank accounts; ActionToolbar `--ds-*` bridge; high-traffic gray/`#1557b0` retoken on Journal/Billing/Parties/ItemMaster/StockBook/Master Control/ReportHub *(see SIMPLE_PREMIUM IA plan + UI_MIGRATION_TRACKER)*
 
 **Non-goals:** Full Nepali UI translation; POS; Tally restyle; engine changes.
 

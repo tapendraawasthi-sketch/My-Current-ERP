@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { ActionToolbar } from "../components/ui";
 import { Plus, Edit2, Trash2, Building } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { Button, PageHeader } from "@/design-system";
 
 interface BankAccount {
   id: string;
@@ -141,34 +141,40 @@ export default function BankAccountsPage() {
 
   return (
     <div className="space-y-6">
-      <ActionToolbar title="Bank Accounts" subtitle="Manage bank and cash accounts" />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Bank Accounts</h1>
-        <div className="flex items-center gap-2">
-          {branchOptions.length > 0 && (
-            <select
-              value={branchFilter}
-              onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              aria-label="Branch"
-            >
-              <option value="all">All branches</option>
-              {branchOptions.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name || b.code || b.id}
-                </option>
-              ))}
-            </select>
-          )}
-          <button
+      <PageHeader
+        title="Bank accounts"
+        description="Manage bank and cash accounts"
+        primaryAction={
+          <Button
+            variant="primary"
+            size="small"
             onClick={() => setShowForm(true)}
-            className="btn-primary flex items-center space-x-2"
+            startIcon={<Plus className="h-4 w-4" aria-hidden />}
           >
-            <Plus className="w-4 h-4" />
-            <span>Add Bank Account</span>
-          </button>
-        </div>
-      </div>
+            Add bank account
+          </Button>
+        }
+        secondaryActions={[
+          ...(branchOptions.length > 0
+            ? [
+                <select
+                  key="branch"
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>,
+              ]
+            : []),
+        ]}
+      />
 
       <div className="bg-white p-4 rounded-lg shadow">
         <input

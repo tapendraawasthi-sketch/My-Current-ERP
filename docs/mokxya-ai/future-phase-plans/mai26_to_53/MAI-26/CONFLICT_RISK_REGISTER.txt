@@ -1,0 +1,124 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-26 — CONFLICT RISK REGISTER
+======================================================================
+
+Phase: MAI-26 — TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+Codex exclusive ownership until MAI-25 handoff: MAI-07..MAI-25 implementation,
+  production code for those phases, tests/evals, MAI_PHASE_LEDGER.json,
+  authoritative docs/ADRs/releases.
+
+----------------------------------------------------------------------
+1. HIGH OVERLAP PATHS (DO NOT EDIT IN THIS LANE)
+----------------------------------------------------------------------
+
+CR-26-01 erp_bot/src/oip/modules/knowledge/**
+  Why: Existing EffectiveDateRange, TemporalFilterStage, as_of SQL — Codex may
+    reshape during MAI-24/25.
+  Avoidance: Plan only; revalidate after handoff; no Cursor edits now.
+
+CR-26-02 erp_bot/src/oip/modules/knowledge/infrastructure/persistence/**
+     including 013_oip_knowledge.sql and knowledge_sqlite.py
+  Why: Schema evolution for DocumentVersion/KnowledgeUnit belongs to MAI-24/25.
+  Avoidance: Propose additive MAI-26 tables only after handoff ownership transfer.
+
+CR-26-03 knowledgebase/** schemas, manifests, review, indexes
+  Why: MAI-24 governance and MAI-25 extraction will redefine canonical units.
+  Avoidance: Read-only discovery; no pipeline runs that write outside owned dir.
+
+CR-26-04 erp_bot/src/oip/contracts/** and docs/mokxya-ai/contracts/**
+  Why: MAI-02+ contract authority; Track E schemas not finalized.
+  Avoidance: Do not invent conflicting Canonical* types in production trees.
+
+CR-26-05 docs/mokxya-ai/MAI_PHASE_LEDGER.json and gap registers / ADRs
+  Why: Codex status authority.
+  Avoidance: Never modify; reference only in planning files under owned dir.
+
+CR-26-06 erp_bot/src/oip/modules/language_runtime/** and evals/mai07/**
+  Why: Active MAI-07 corrective chain (Codex).
+  Avoidance: Zero edits; MAI-26 must not retune transliteration.
+
+CR-26-07 erp_bot/src/api/oip_chat_ingress.py and shared orchestrator stages
+  Why: Currently dirty in git status; Codex/language ingress work ongoing.
+  Avoidance: Do not attach temporal resolver to ingress until handoff names
+    the integration owner and contract.
+
+CR-26-08 evals/** and erp_bot/src/oip/evaluation/**
+  Why: Frozen harness governance; holdout rules.
+  Avoidance: No new sealed packs or score reports outside planning text now.
+
+----------------------------------------------------------------------
+2. CONCEPTUAL CONFLICT RISKS
+----------------------------------------------------------------------
+
+CR-26-09 Active-only TemporalFilterStage vs historical accessibility gate
+  Risk: Current stage keeps status=active only; MAI-26 requires historical
+    versions. Premature "fix" could break current callers.
+  Strategy: After handoff, introduce explicit query mode
+    (CURRENT vs AS_OF_VALID vs AS_OF_SYSTEM) rather than silently changing
+    default filter; migrate callers with tests.
+
+CR-26-10 EffectiveDateRange.supersedes fields vs full relationship graph
+  Risk: Dual authority (columns vs edges) causing inconsistent resolution.
+  Strategy: At handoff, choose single authority (prefer relationship graph +
+    derived columns) per MAI-24 schema decision; document migration.
+
+CR-26-11 Inventing MAI-24 DocumentVersion fields before Codex lands them
+  Risk: Incompatible implementations.
+  Strategy: Mark UNRESOLVED_PENDING_HANDOFF; use roadmap field names only as
+    proposals inside this directory.
+
+CR-26-12 Calendar / BS-AD / FY parsing owned by MAI-09
+  Risk: Duplicate date parsers in temporal resolver.
+  Strategy: Depend on MAI-09 role outputs when available; until then accept
+    ISO/normalized as_of only in MAI-26 tests, with handoff note.
+
+CR-26-13 Dirty working tree collisions
+  Risk: Cursor staging/committing Codex files; or formatting bulk repo.
+  Strategy: Write solely under
+    docs/mokxya-ai/future-phase-plans/mai26_to_53/;
+    never git add/commit/stash/restore; preserve dirty work; recheck git
+    status for write targets before each edit session.
+
+----------------------------------------------------------------------
+3. PROCESS CONFLICT RISKS
+----------------------------------------------------------------------
+
+CR-26-14 Premature implementation request
+  Response: Refuse implementation; cite missing
+    docs/mokxya-ai/MAI_25_TO_MAI_26_HANDOFF_REPORT.txt and ledger conditions;
+    continue planning.
+
+CR-26-15 Simultaneous edit of planning files
+  Response: Stop editing that file; record conflict in INDEX.txt.
+
+CR-26-16 Treating planning packet as phase pass evidence
+  Response: Headers assert PHASE_PASS_CLAIM false; INDEX statuses are planning
+    only.
+
+----------------------------------------------------------------------
+4. CURRENT CONFLICT DETECTION RESULT
+----------------------------------------------------------------------
+
+Conflicts detected against owned planning paths: none
+Owned directory created this session; no concurrent Cursor writers observed.
+Git shows extensive dirty Codex/prior work outside owned directory — left
+untouched.
+
+----------------------------------------------------------------------
+5. HANDOFF-TIME TASKS (PROHIBITED NOW; DOCUMENT ONLY)
+----------------------------------------------------------------------
+
+HT-26-01 Diff MAI-24/25 final schemas against this packet; rewrite unresolved.
+HT-26-02 Obtain ownership transfer list of knowledge/legal paths from handoff.
+HT-26-03 Decide fate of oip_knowledge_documents effective_* columns.
+HT-26-04 Author sealed evals/mai26 temporal suite under evaluation governance.
+HT-26-05 Update INDEX planning status to NEEDS_REVALIDATION_AFTER_MAI25 then
+  resolve to implementation-ready only after revalidation.
+
+END OF CONFLICT RISK REGISTER

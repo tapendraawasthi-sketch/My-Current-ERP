@@ -1,0 +1,8 @@
+{
+  "mismatch_count": 0,
+  "mismatches": [],
+  "ok": true,
+  "phase": "MAI-07R3M-AI-ASSISTED-POLICY-MISMATCH-TRIAGE",
+  "prohibited_for_training": true,
+  "schema_version": "mai07_r3m_policy_mismatch_triage_v1"
+}

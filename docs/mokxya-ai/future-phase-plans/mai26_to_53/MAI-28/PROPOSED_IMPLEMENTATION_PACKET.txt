@@ -1,0 +1,28 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-28 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Multilingual vector index with real embeddings; never SHA pseudo-embed
+  for semantic authority.
+
+WS-A EmbeddingProviderPort real adapter(s) + benchmark matrix
+WS-B Batch embed/index pipeline bound to KnowledgeRelease + model manifest
+WS-C Store/index with tenant isolation; rebuildable; not canonical source
+WS-D Eval: Romanized/Devanagari/English paraphrase sets vs lexical-only baseline
+WS-E Resource/latency measurements; licensing/deployment record
+WS-F Remove or quarantine HashEmbeddingProviderAdapter from production semantic path
+
+OUT OF SCOPE: fusion/rerank (MAI-29); claim verify (MAI-30); MAI-07 packs
+
+PROVISIONAL TOUCH: embedding_provider_adapter.py, search_semantic, semantic
+  adapters, evals/mai28 — only after handoff.
+
+SUCCESS: Material lift over lexical-only on intended cases; no hash embeddings;
+  license/deploy recorded; index/release compatibility enforced.
+
+END OF PACKET

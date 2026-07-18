@@ -1,0 +1,26 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-29 — DEPENDENCIES
+======================================================================
+
+MAI-28 real vector index — UNRESOLVED_PENDING_HANDOFF
+MAI-27 lexical index — UNRESOLVED_PENDING_HANDOFF
+MAI-26 temporal/authority version policy — UNRESOLVED_PENDING_HANDOFF
+MAI-24/25 — UNRESOLVED_PENDING_HANDOFF
+MAI-07..MAI-23 — UNRESOLVED_PENDING_HANDOFF
+MAI-11 response language (query variants may need register) —
+  UNRESOLVED_PENDING_HANDOFF (soft; variants can start deterministic)
+MAI-00..MAI-06 — PASSED_FOUNDATION
+
+UQ-29-01: Fusion algorithm (RRF vs weighted) locked after baseline?
+UQ-29-02: Reranker model license/latency budget?
+UQ-29-03: EvidenceBundle schema vs MAI-30 AnswerPlan boundary?
+UQ-29-04: Query variants interaction with MAI-07 transliteration candidates?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

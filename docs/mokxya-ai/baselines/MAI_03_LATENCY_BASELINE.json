@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "phase": "MAI-03",
+  "collection_date": "2026-07-14",
+  "disclaimer": "This is a controlled development baseline for MAI-03 latency visibility. It is NOT a production SLO and must not be treated as p50/p95 capacity planning evidence.",
+  "environment": {
+    "os": "Windows 10",
+    "runtime": "local developer machine",
+    "secrets_included": false
+  },
+  "component_versions": {
+    "trace_schema_version": "1.0.0",
+    "redaction_version": "mai-03.1.0",
+    "constitution_policy_version": "mai-01.1.0",
+    "contract_schema_version": "1.0.0"
+  },
+  "scenarios": [
+    {
+      "scenario": "unit_stage_instrumentation_sample",
+      "sample_count": 1,
+      "timings_ms": {
+        "CLIENT_CONTRACT_VALIDATED": 5,
+        "DETERMINISTIC_PREPROCESS_STARTED": 3,
+        "REQUEST_COMPLETED": 0
+      },
+      "notes": "Synthetic controlled sleep around TraceRecorder stages to prove monotonic non-negative duration recording.",
+      "status": "captured"
+    },
+    {
+      "scenario": "deterministic_greeting_or_read_path",
+      "sample_count": 0,
+      "timings_ms": [],
+      "status": "instrumented_unit"
+    },
+    {
+      "scenario": "deterministic_accounting_interpretation",
+      "sample_count": 0,
+      "timings_ms": [],
+      "status": "instrumented_unit"
+    },
+    {
+      "scenario": "provider_model_path",
+      "sample_count": 0,
+      "timings_ms": [],
+      "status": "environment_blocked",
+      "reason": "Provider credentials/service may be unavailable in MAI-03 validation environment"
+    },
+    {
+      "scenario": "policy_denial_path",
+      "sample_count": 0,
+      "timings_ms": [],
+      "status": "instrumented_unit"
+    },
+    {
+      "scenario": "malformed_contract_path",
+      "sample_count": 0,
+      "timings_ms": [],
+      "status": "instrumented_unit"
+    }
+  ],
+  "blocked_scenarios": [
+    "provider_model_path",
+    "playwright_browser_e2e_streaming"
+  ],
+  "percentile_method": "Not calculated — sample size not meaningful"
+}

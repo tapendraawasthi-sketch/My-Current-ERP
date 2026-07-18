@@ -1,0 +1,18 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-34 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-34-01 orbixPostingService.ts / OrbixWorkspace.tsx / packages/backend khata
+  routes (dirty) — Codex ownership until handoff.
+CR-34-02 OEC vs Dexie dual write — highest product risk; resolve in handoff
+  before implementing.
+CR-34-03 Weakening confirm auth tests — forbidden.
+
+Conflicts on owned paths: none
+
+END OF REGISTER

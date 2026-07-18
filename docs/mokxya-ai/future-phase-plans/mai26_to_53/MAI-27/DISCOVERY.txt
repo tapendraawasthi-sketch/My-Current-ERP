@@ -1,0 +1,74 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-27 — DISCOVERY
+======================================================================
+
+Phase: MAI-27 — LEXICAL INDEX
+Lane: CURSOR_MAI26_TO_53_PLANNING
+Discovery date: 2026-07-18
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+----------------------------------------------------------------------
+1. ROADMAP AUTHORITY
+----------------------------------------------------------------------
+
+Objective: strong exact retrieval for citations, names, rare terms, identifiers.
+Deliverables: BM25/FTS adapter; Nepali-aware analyzer benchmark; field/authority/
+  time filters; rebuild manifest; retrieval evaluation.
+Gate: target lexical recall on exact/legal benchmark; filter correctness;
+  corrupted/stale index detected; no derived index treated as source.
+
+Depends on: MAI-26 (and thus MAI-24/25) — UNRESOLVED_PENDING_HANDOFF
+Feeds: MAI-28..MAI-30
+
+Related roadmap: §13.8 Hybrid retrieval (lexical critical for section numbers,
+  Act names, PAN/VAT terms, citations); §13.10 filters; §13.13 releases;
+  knowledge_runtime ports: lexical_index_port.py
+
+----------------------------------------------------------------------
+2. LEDGER SNAPSHOT
+----------------------------------------------------------------------
+
+MAI-27 NOT_STARTED; dependencies ["MAI-26"]; implementation_evidence notes
+  "kb_lexical.sqlite ACTIVE" — pre-existing supporting code, not a pass claim.
+
+----------------------------------------------------------------------
+3. REUSABLE COMPONENTS
+----------------------------------------------------------------------
+
+A. NP KB FTS5 path (ACTIVE_SUPPORTING language KB)
+  erp_bot/src/nlu/np_kb_adapter.py
+    NpKbLexicalRetriever; bm25(prod_fts); _sanitize_fts_query (Devanagari-aware)
+    Paths: knowledgebase/indexes/lexical/kb_lexical.sqlite or kb_grounding.sqlite
+  knowledgebase/scripts/build_retrieval_indexes.py
+    Phase 5 FTS5 builder; prod_fts vs eval_fts; collection routing
+  knowledgebase/manifests/retrieval_collections.json
+    production_fts_table=prod_fts; large production_rows count
+
+B. OIP knowledge module lexical (incomplete vs MAI-27)
+  erp_bot/src/oip/modules/knowledge/infrastructure/adapters/lexical_search_adapter.py
+  erp_bot/src/oip/modules/knowledge/infrastructure/persistence/knowledge_sqlite.py
+    search_lexical: token substring match on chunks — NOT SQLite FTS5/BM25
+  LexicalSearchStage in pipeline/stages.py
+
+C. Gaps vs MAI-27 intent
+  OIP path lacks true BM25/FTS and rebuild manifest tied to KnowledgeRelease.
+  NP KB FTS is language-ONLI oriented; legal KnowledgeUnit indexing for Track E
+    not proven as MAI-24/25 governed source.
+  Stale/corrupt index detection and "index is never source" enforcement need
+    explicit MAI-27 gates.
+  Authority/time filters must consume MAI-26 temporal model — pending handoff.
+
+----------------------------------------------------------------------
+4. DISCOVERY CONCLUSION
+----------------------------------------------------------------------
+
+Sufficient grounding to draft MAI-27 packet: reuse NP KB FTS patterns as
+reference, require OIP/Track E lexical port to become real BM25/FTS over
+MAI-24/25/26 units, with rebuild manifests and non-authority of derived indexes.
+
+END OF DISCOVERY

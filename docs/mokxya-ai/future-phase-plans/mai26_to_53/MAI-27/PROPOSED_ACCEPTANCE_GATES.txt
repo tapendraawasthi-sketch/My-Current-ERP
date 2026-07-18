@@ -1,0 +1,49 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-27 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+Phase: MAI-27 — LEXICAL INDEX
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+NORMAL
+  N-01 Exact section/provision number query retrieves gold unit @k
+  N-02 Rare legal phrase / Act title recall target met
+  N-03 Identifier (PAN/VAT-style / official id) exact hit
+  N-04 Field boost: provision_number match ranks above body-only
+  N-05 Rebuild from same KnowledgeRelease → identical manifest hash
+
+FAILURE / FAIL-CLOSED
+  F-01 Corrupted index file → detected; retrieval blocked or rebuild required
+  F-02 Stale index (release_id mismatch) → detected; not served as current
+  F-03 Empty/stopword-only query → no blast recall (align np_kb sanitize lesson)
+  F-04 Index absent → safe empty/no-answer; not fabricated hits
+
+SECURITY / TENANT
+  S-01 Cross-tenant FTS isolation
+  S-02 Evaluation_only collections excluded from production FTS by default
+
+PRIVACY
+  P-01 Lexical trace events do not log full unit text payloads
+
+DETERMINISM
+  D-01 Same query + release → stable ordered hit IDs (tie-break documented)
+  D-02 Analyzer version pinned in manifest
+
+ROLLBACK
+  R-01 Point retrieval to prior index_manifest / KnowledgeRelease
+  R-02 Feature flag disable new adapter; no authority claim from partial index
+
+REGRESSION
+  G-01 MAI-26 temporal filters still applied with lexical hits
+  G-02 ONLI np_kb language path not broken if still enabled for non-legal assist
+  G-03 No hash-embedding masquerading as lexical score
+  G-04 Substring toy scorer not used on production Track E path
+
+Pass flags: not claimable from this planning document.
+
+END OF GATES

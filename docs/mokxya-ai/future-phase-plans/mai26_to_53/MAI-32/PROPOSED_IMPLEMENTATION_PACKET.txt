@@ -1,0 +1,24 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-32 — PROPOSED IMPLEMENTATION PACKET
+======================================================================
+
+OBJECTIVE: Replace fragile transient drafts with versioned, tenant-owned
+  DraftAggregates and optimistic concurrency.
+
+WS-A DraftAggregate schema (versions, provenance, expiry, company/tenant)
+WS-B Repository with optimistic concurrency tokens
+WS-C Migrate/adapt khata draft flows to aggregate without dual authority
+WS-D Refresh + multi-device tests; deny cross-company access
+WS-E Prohibit local JSON as production draft authority
+
+OUT OF SCOPE: preview calc (33), confirm/OEC (34)
+
+SUCCESS: Survives refresh; cross-company denied; stale updates conflict;
+  no local JSON production authority.
+
+END OF PACKET

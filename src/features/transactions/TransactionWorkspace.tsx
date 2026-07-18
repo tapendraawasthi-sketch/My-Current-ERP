@@ -75,21 +75,35 @@ export function TransactionWorkspace({
           </span>
         }
         meta={
-          <div className="flex flex-wrap gap-2 text-[12px] text-[var(--ds-text-muted)]">
-            <span data-testid="txn-company">{companyName}</span>
-            <span aria-hidden>·</span>
-            <span data-testid="txn-fy">FY {fiscalYearName}</span>
-            {periodLocked ? (
-              <span className="text-[var(--ds-status-danger)]" data-testid="txn-period-locked">
-                Period locked
+          periodLocked || permissionDenied ? (
+            <div className="flex flex-wrap gap-2 text-[12px] text-[var(--ds-text-muted)]">
+              <span className="sr-only" data-testid="txn-company">
+                {companyName}
               </span>
-            ) : null}
-            {permissionDenied ? (
-              <span className="text-[var(--ds-status-danger)]" data-testid="txn-permission-denied">
-                Not permitted to post
+              <span className="sr-only" data-testid="txn-fy">
+                FY {fiscalYearName}
               </span>
-            ) : null}
-          </div>
+              {periodLocked ? (
+                <span className="text-[var(--ds-status-danger)]" data-testid="txn-period-locked">
+                  Period locked
+                </span>
+              ) : null}
+              {permissionDenied ? (
+                <span className="text-[var(--ds-status-danger)]" data-testid="txn-permission-denied">
+                  Not permitted to post
+                </span>
+              ) : null}
+            </div>
+          ) : (
+            <>
+              <span className="sr-only" data-testid="txn-company">
+                {companyName}
+              </span>
+              <span className="sr-only" data-testid="txn-fy">
+                FY {fiscalYearName}
+              </span>
+            </>
+          )
         }
         primaryAction={primaryAction}
         secondaryActions={
@@ -173,9 +187,7 @@ export function TransactionInspector({
 }) {
   return (
     <div className="space-y-2">
-      <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-subtle)]">
-        Evidence
-      </p>
+      <p className="text-[12px] font-semibold text-[var(--ds-text-muted)]">Evidence</p>
       {children}
     </div>
   );

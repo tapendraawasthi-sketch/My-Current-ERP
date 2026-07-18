@@ -1,0 +1,2 @@
+﻿src/components/invoice/InvoicePrint.tsx(466,5): error TS1005: ')' expected.
+src/components/invoice/InvoicePrint.tsx(467,3): error TS1109: Expression expected.

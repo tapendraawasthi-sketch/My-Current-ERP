@@ -1,0 +1,29 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-29 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 fusion improves ranking vs single-channel on reviewed set;
+  N-02 EvidenceBundle cites only release-approved units; N-03 diversity policy
+  drops near-duplicate chunks; N-04 version policy surfaces single as_of winner
+  or explicit multi-version conflict flag for MAI-26/30.
+
+FAILURE: F-01 below threshold → NO_ANSWER; F-02 hard negatives not ranked as
+  support; F-03 authority/time filter bypass attempted → blocked.
+
+SECURITY/TENANT: S-01 bundle cannot include other-tenant units.
+
+PRIVACY: P-01 bundle metadata redaction in traces.
+
+DETERMINISM: D-01 fixed inputs → stable bundle document_id order (ties broken).
+
+ROLLBACK: R-01 disable reranker/fusion flag → lexical-filtered only mode.
+
+REGRESSION: G-01 MAI-27/28 indexes unchanged; G-02 no hash-semantic promotion;
+  G-03 GAP-P2-008 no-answer suite not weakened.
+
+END OF GATES

@@ -1,0 +1,6 @@
+{
+  "algorithm": "sha256(json.dumps({phase,provenance,roles[].rows sorted by review_id}, sort_keys=True))",
+  "phase": "MAI-07R3J-AI-ASSISTED-REMAINING-ROLE-DRAFTS",
+  "semantic_hash": "fd10bd0f501d9a25534db18e98254c3e1dec1cbc4acc971f76c42012279a929a",
+  "total_rows": 3333
+}

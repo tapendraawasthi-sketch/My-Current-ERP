@@ -1,0 +1,27 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-31 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 supported EventFrames create drafts via domain ports; N-02 master
+  lookup stable IDs; N-03 banking/settlement narrow paths work where mapped.
+
+FAILURE: F-01 unmapped event → block; F-02 AI-side journal invent → reject in
+  review/tests; F-03 partial mapping without required fields → clarification
+  or block (not silent post).
+
+SECURITY/TENANT: S-01 company/tenant scoping on lookups.
+
+DETERMINISM: D-01 same EventFrame → same draft field mapping.
+
+ROLLBACK: R-01 feature flag disable port; legacy mode_aware path only if still
+  authorized by handoff.
+
+REGRESSION: G-01 existing postPurchase/postSales/accounting vitest gates green;
+  G-02 GAP-P0-001 not expanded; G-03 no edits to dead invoice forms.
+
+END OF GATES

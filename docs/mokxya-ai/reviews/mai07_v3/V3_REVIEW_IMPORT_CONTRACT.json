@@ -1,0 +1,21 @@
+{
+  "does_not_import_incomplete_reviews": true,
+  "fail_closed": [
+    "wrong_file_hash",
+    "missing_reviewer_declaration",
+    "duplicate_review_ids",
+    "missing_required_cells",
+    "invalid_enums",
+    "overwritten_round_a_evidence",
+    "candidate_order_mismatch",
+    "unauthorized_bulk_mapping",
+    "reviewer_identity_collision",
+    "incomplete_professional_review",
+    "missing_domain_review",
+    "unresolved_adjudication",
+    "mapping_runtime_import_attempt"
+  ],
+  "immutable_submitted_reviews": true,
+  "produces": "immutable_adjudication_record",
+  "schema_version": "1.0.0"
+}

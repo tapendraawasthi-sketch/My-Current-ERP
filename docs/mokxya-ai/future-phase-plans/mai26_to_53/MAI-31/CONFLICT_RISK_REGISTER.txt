@@ -1,0 +1,18 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-31 — CONFLICT RISK REGISTER
+======================================================================
+
+CR-31-01 mode_aware_erp.py (dirty in git) — Codex lane; no Cursor edits.
+CR-31-02 khata draft modules / orbix drafts API — shared; wait handoff.
+CR-31-03 Dexie posting engines — must remain calc authority; AI must not fork.
+CR-31-04 Node khata confirm parallel writer (GAP-P0-001) — do not add third writer.
+CR-31-05 Dead PurchaseInvoiceForm/ReturnInvoiceForm/StockItems — never open/edit.
+
+Conflicts on owned paths: none
+
+END OF REGISTER

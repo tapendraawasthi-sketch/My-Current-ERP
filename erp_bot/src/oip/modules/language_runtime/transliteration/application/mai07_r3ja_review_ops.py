@@ -686,6 +686,12 @@ def detect_returned_batches(role_id: str) -> list[Path]:
         name = _safe_filename(p.name)
         if name.lower().endswith((".xlsm", ".xltm")):
             raise ValueError(f"MACRO_ENABLED_FILE_REJECTED:{name}")
+        upper = name.upper()
+        if "AI_ASSISTED" in upper or "__AI_ASSISTED_DRAFT" in upper:
+            raise ValueError(
+                "AI_ASSISTED_ARTIFACT_FORBIDDEN_IN_OFFICIAL_INBOX:"
+                f"{role_id}:{name}"
+            )
         files.append(inbox / name)
     return files
 

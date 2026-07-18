@@ -1,0 +1,23 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-32 — DISCOVERY
+======================================================================
+
+Phase: MAI-32 — DURABLE VERSIONED DRAFTS
+Repository commit observed: ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37
+
+ROADMAP: DraftAggregate repository; versions/provenance/expiry; tenant ownership;
+  optimistic concurrency; refresh/multi-device tests.
+Gate: survives refresh; cross-company denied; stale update conflicts; no local
+  JSON production authority.
+
+LEDGER: NOT_STARTED; deps MAI-31; evidence "khata *_draft.py"
+
+CURRENT: Khata draft stores / session draft_id; merge risks noted in authority
+  map (stale merge). Local JSON must not be production authority per gate.
+
+END OF DISCOVERY

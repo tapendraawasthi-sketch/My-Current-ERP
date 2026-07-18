@@ -91,7 +91,11 @@ def validate_production_security_config(
     if not auth_flag:
         raise ConfigValidationError(
             code=DecisionCode.INSECURE_PRODUCTION_CONFIGURATION.value,
-            message="OIP_AUTH_REQUIRED must be true in production",
+            message=(
+                "OIP_AUTH_REQUIRED must be true in production "
+                "(set OIP_AUTH_REQUIRED=true on Render Environment; "
+                "also set a strong OIP_JWT_SECRET or API_SECRET_KEY, length>=16)"
+            ),
             config_keys=("OIP_AUTH_REQUIRED",),
         )
 

@@ -1,0 +1,22 @@
+﻿STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-47 — DEPENDENCIES
+======================================================================
+
+Direct dependency: MAI-46 — UNRESOLVED_PENDING_HANDOFF
+MAI-07 through MAI-25 (Codex lane / NOT_STARTED or corrective) — UNRESOLVED_PENDING_HANDOFF
+MAI-26 through predecessor of MAI-46 (planning/implement later) — UNRESOLVED_PENDING_HANDOFF until each passes
+MAI-00..MAI-06 — PASSED_FOUNDATION (revalidate after handoff)
+
+Unresolved questions (generic; refine at handoff):
+  UQ-MAI-47-01: Final module paths and schema names after MAI-24/25?
+  UQ-MAI-47-02: Exact eval dataset IDs and thresholds after baselines exist?
+  UQ-MAI-47-03: Ownership transfer list from MAI_25_TO_MAI_26_HANDOFF_REPORT?
+
+All UQ-*: UNRESOLVED_PENDING_HANDOFF
+
+END OF DEPENDENCIES

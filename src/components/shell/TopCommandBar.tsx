@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { HelpCircle, Menu, Moon, Search, Sun, User } from "lucide-react";
+import { Menu, Moon, Search, Settings, Sun, User } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { useTheme } from "../../context/ThemeContext";
 import { findNavLabel } from "./navConfig";
-import CompanySwitcher from "./CompanySwitcher";
-import BranchSwitcher from "./BranchSwitcher";
+import ContextSwitcher from "./ContextSwitcher";
 import SyncStatusControl from "./SyncStatusControl";
 import { NotificationBellButton } from "./NotificationCentre";
 import { DisplayLanguageModal } from "../ui/LanguageModal";
@@ -43,8 +42,6 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
   const currentUser = useStore((s) => s.currentUser);
   const logout = useStore((s) => s.logout);
   const setCurrentPage = useStore((s) => s.setCurrentPage);
-  const companyName = useStore((s) => s.companySettings?.companyName);
-  const fiscal = useStore((s) => s.currentFiscalYear);
   const { theme, preference, setThemePreference, toggleTheme } = useTheme();
   const [userOpen, setUserOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -88,12 +85,7 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
               </span>
             ) : null}
           </div>
-          <p className="truncate text-[12px] text-[var(--ds-text-muted)]">
-            {companyName ? `${companyName} · ` : ""}
-            {crumb}
-            {fiscal ? ` · FY ${fiscal.name || fiscal.id}` : ""}
-            {fiscal?.isClosed ? " (closed)" : ""}
-          </p>
+          <p className="truncate text-[12px] text-[var(--ds-text-muted)]">{crumb}</p>
         </div>
       </div>
 
@@ -123,8 +115,7 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
           <Search className="h-4 w-4" aria-hidden />
         </button>
 
-        <CompanySwitcher />
-        <BranchSwitcher />
+        <ContextSwitcher />
         <SyncStatusControl />
 
         <button
@@ -135,16 +126,6 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
           title={`Theme: ${preference}`}
         >
           {theme === "dark" ? <Sun className="h-4 w-4" aria-hidden /> : <Moon className="h-4 w-4" aria-hidden />}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setCurrentPage("configuration-hub")}
-          className="ds-focus-ring hidden h-9 w-9 items-center justify-center rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-hover)] md:inline-flex"
-          aria-label="Help and configuration"
-          title="Help"
-        >
-          <HelpCircle className="h-4 w-4" aria-hidden />
         </button>
 
         <NotificationBellButton onClick={onOpenNotifications} />
@@ -179,7 +160,6 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
               >
                 <div className="border-b border-[var(--ds-border-subtle)] px-3 py-2 text-[12px] text-[var(--ds-text-muted)]">
                   {currentUser?.role || "user"}
-                  {companyName ? ` · ${companyName}` : ""}
                 </div>
                 <div className="border-b border-[var(--ds-border-subtle)] px-3 py-2">
                   <p className="mb-1 text-[12px] font-medium text-[var(--ds-text-muted)]">Density</p>
@@ -236,6 +216,18 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
                   }}
                 >
                   Display language
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-hover)]"
+                  onClick={() => {
+                    setUserOpen(false);
+                    setCurrentPage("configuration-hub");
+                  }}
+                >
+                  <Settings className="h-3.5 w-3.5 text-[var(--ds-text-muted)]" aria-hidden />
+                  Help & configuration
                 </button>
                 <button
                   type="button"

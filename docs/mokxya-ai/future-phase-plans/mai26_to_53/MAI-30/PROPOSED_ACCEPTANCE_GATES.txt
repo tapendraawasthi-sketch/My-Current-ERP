@@ -1,0 +1,30 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-30 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 supported claims pass verifier with correct cites + as_of;
+  N-02 effective period rendered; N-03 bilingual answers obey MAI-11 when ready.
+
+FAILURE: F-01 fabricated citation → reject/no-answer (0 acceptance on critical);
+  F-02 unsupported material claim → strip or fail closed; F-03 MAI-26 CONFLICT →
+  disclose, no silent pick; F-04 unreviewed unit → cannot present as approved
+  current law.
+
+SECURITY/TENANT: S-01 no cross-tenant evidence in answers.
+
+PRIVACY: P-01 prompts/traces redacted (MAI-03).
+
+DETERMINISM: D-01 verifier deterministic on fixed claim+unit text.
+
+ROLLBACK: R-01 disable composer; return EvidenceBundle-only or no-answer mode.
+
+REGRESSION: G-01 MAI-04 fake_cite / knowledge_no_answer still fail closed;
+  G-02 GAP-P2-008 not falsely marked closed without product evidence;
+  G-03 accounting mutation paths untouched.
+
+END OF GATES

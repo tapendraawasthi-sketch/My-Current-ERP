@@ -1,0 +1,2349 @@
+{
+  "schema_version": "1.0.0",
+  "product": "MokXya / MokXya Hisab / MokXya ERP / Ask MokXya",
+  "audited_at": "2026-07-14",
+  "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
+  "branch": "main",
+  "recommended_next_phase": "MAI-07R3O-INDEPENDENT-V3-REVIEW-RESOLUTION-AND-FREEZE",
+  "phases": [
+    {
+      "id": "MAI-00",
+      "title": "COMPLETE REPOSITORY AND AUTHORITY MAP",
+      "status": "PASSED",
+      "production_approved": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_00_REPOSITORY_AUTHORITY_AUDIT.md",
+        "docs/mokxya-ai/MAI_00_AUTHORITY_MAP.md",
+        "docs/mokxya-ai/MAI_00_MACHINE_INVENTORY.json",
+        "docs/mokxya-ai/MAI_00_GAP_REGISTER.md",
+        "docs/mokxya-ai/MAI_PHASE_LEDGER.json",
+        "docs/mokxya-ai/decisions/ADR_0001_AI_AUTHORITY_BOUNDARIES.md",
+        "docs/mokxya-ai/MAI_00_RUNTIME_FLOW.md"
+      ],
+      "implementation_evidence": [
+        "docs/mokxya-ai/* MAI-00 deliverables",
+        "static audit of erp_bot/src, src/, packages/backend"
+      ],
+      "blockers": [],
+      "dependencies": [],
+      "recommended_order": 0
+    },
+    {
+      "id": "MAI-01",
+      "title": "PRODUCT CONSTITUTION AS EXECUTABLE POLICY",
+      "status": "PASSED",
+      "production_approved": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_01_EXECUTABLE_CONSTITUTION.md",
+        "docs/mokxya-ai/decisions/ADR_0002_EXECUTABLE_AI_CONSTITUTION.md",
+        "erp_bot/tests/oip/test_mai01_constitution_policy.py:35 passed",
+        "vitest orbix+khataConfirmAuth:141 passed",
+        "from src.oip.api import router OK; OIP mounted /oip/v1"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/domain/constitution/",
+        "packages/backend/src/middleware/khataConfirmAuth.ts",
+        "render.yaml OIP_AUTH_REQUIRED=true",
+        "planner/router relative-import fix"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-00"
+      ],
+      "recommended_order": 1
+    },
+    {
+      "id": "MAI-02",
+      "title": "CANONICAL AI CONTRACTS",
+      "status": "PASSED",
+      "production_approved": false,
+      "schema_versions": ["1.0.0"],
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_02_CANONICAL_AI_CONTRACTS.md (closure §24)",
+        "docs/mokxya-ai/decisions/ADR_0003_CANONICAL_AI_CONTRACT_AUTHORITY.md",
+        "docs/mokxya-ai/contracts/README.md",
+        "docs/mokxya-ai/baselines/MAI_02_ORBIX_TEST_MANIFEST.txt",
+        "erp_bot/tests/oip/test_mai02_canonical_contracts.py",
+        "erp_bot/tests/oip/test_mai02_ingress_authority.py",
+        "src/__tests__/orbix/mai02CanonicalContracts.test.ts",
+        "python -m src.oip.contracts.export_schemas --check (no drift)",
+        "npx tsc -p tsconfig.mai02.json --noEmit",
+        "npm run test:orbix-contract: 140 passed (reconciled vs MAI-01 combined 141)",
+        "khataConfirmAuth: 8 passed"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/contracts/",
+        "erp_bot/src/oip/contracts/adapters/canonical_oip.py",
+        "erp_bot/src/oip/contracts/adapters/legacy_orbix.py",
+        "erp_bot/src/api/oip_chat_ingress.py build_canonical_ai_request -> CanonicalOipRequestAdapter",
+        "src/lib/ekhata/mai02CanonicalContracts.ts",
+        "orbixResponseAdapter unsupported_response path"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-01"
+      ],
+      "recommended_order": 2
+    },
+    {
+      "id": "MAI-03",
+      "title": "TRACE, CORRELATION, AND REDACTION FOUNDATION",
+      "status": "PASSED",
+      "production_approved": false,
+      "trace_schema_version": "1.0.0",
+      "redaction_version": "mai-03.1.0",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_03_TRACE_CORRELATION_REDACTION.md",
+        "docs/mokxya-ai/decisions/ADR_0004_TRACE_AND_REDACTION_AUTHORITY.md",
+        "docs/mokxya-ai/TRACE_DATA_CLASSIFICATION.md",
+        "docs/mokxya-ai/TRACE_EVENT_CATALOGUE.md",
+        "docs/mokxya-ai/baselines/MAI_03_LATENCY_BASELINE.json",
+        "erp_bot/tests/oip/test_mai03_trace_redaction.py:19 passed",
+        "MAI-01..03 focused Python: 78 passed",
+        "npm run test:orbix-contract: 143 passed (140 prior + 3 mai03Trace)",
+        "khataConfirmAuth: 8 passed; correlation.test: 4 passed",
+        "npx tsc -p tsconfig.mai03.json --noEmit: exit 0",
+        "python collection: 734 collected, 1 unrelated reasoning_filter error (unchanged class)",
+        "global tsc: 2 InvoicePrint.tsx errors (baseline; no new)",
+        "accounting: 17 passed, 3 failed, 1 suite-class failure (baseline unchanged)",
+        "E2E streaming: ENVIRONMENT-BLOCKED"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/infrastructure/observability/mai03*.py",
+        "erp_bot/src/api/oip_chat_ingress.py + server.py correlation/SSE trace_reference",
+        "module_stages.py deterministic/model stage emit (no prompt/content)",
+        "packages/backend/src/middleware/correlation.ts + khata confirm",
+        "src/lib/ekhata/mai03Trace.ts + orbixQwenClient support reference"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-02"
+      ],
+      "recommended_order": 3
+    },
+    {
+      "id": "MAI-04",
+      "title": "FROZEN EVALUATION HARNESS AND BASELINE",
+      "status": "PASSED",
+      "production_approved": false,
+      "harness_valid": true,
+      "quality_baseline_recorded": true,
+      "quality_gate_passed": false,
+      "dataset_manifest_id": "MAI_04_FROZEN_V1",
+      "dataset_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+      "runner_version": "mai-04.1.0",
+      "scorer_version": "mai-04.1.0",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_04_FROZEN_EVALUATION_HARNESS.md",
+        "docs/mokxya-ai/decisions/ADR_0005_FROZEN_EVALUATION_AUTHORITY.md",
+        "docs/mokxya-ai/EVALUATION_GOVERNANCE.md",
+        "docs/mokxya-ai/EVALUATION_METRICS.md",
+        "docs/mokxya-ai/baselines/MAI_04_BASELINE_SUMMARY.md",
+        "evals/mai04/manifests/MAI_04_FROZEN_V1.manifest.json",
+        "erp_bot/tests/oip/evaluation/test_mai04_harness.py:15 passed",
+        "cli validate: 245 cases ok",
+        "component baseline semantic_hash 4b783199… (repro match)",
+        "pipeline baseline: 112 passed / 93 failed / 0 mutation success",
+        "live_shadow: BLOCKED"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/evaluation/",
+        "evals/mai04/frozen/*.jsonl",
+        "EvaluationSafetyGuard + pipeline_adapter"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-03"
+      ],
+      "recommended_order": 4
+    },
+    {
+      "id": "MAI-05",
+      "title": "SPAN-LEVEL SCRIPT/LANGUAGE-FORM AND PROTECTED SPANS",
+      "status": "PASSED",
+      "production_approved": false,
+      "analyzer_version": "mai-05.1.0",
+      "resource_pack_version": "mai-05.1.0",
+      "resource_content_hash": "6fd49e99acbea3f15fb9442d741d38982391a57438300d15926a5aececb06aa6",
+      "dataset_manifest_id": "MAI_05_LANGUAGE_SPANS_V1",
+      "dataset_hash": "2eb4f0d8edd5544fb8266fd8eebf6eceffd40f13db1f37b6892eb48ea61dbe7c",
+      "dataset_total_cases": 470,
+      "offset_unit": "UNICODE_CODE_POINT",
+      "mai04_regression_dataset_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+      "mai04_component_semantic_hash": "4b7831993c212137167a882fd0f399f433ac9e259175050de12572151ca6921f",
+      "mai04_pipeline_semantic_hash": "9e831c3561ae59102e463f0d5fa70b02dd6d8008f09e6ab28f86828983fc3b76",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_05_SPAN_LANGUAGE_AND_PROTECTED_SPANS.md",
+        "docs/mokxya-ai/decisions/ADR_0006_LANGUAGE_FORM_AND_PROTECTED_SPAN_AUTHORITY.md",
+        "docs/mokxya-ai/LANGUAGE_FORM_TAXONOMY.md",
+        "docs/mokxya-ai/PROTECTED_SPAN_POLICY.md",
+        "docs/mokxya-ai/baselines/MAI_05_LANGUAGE_SPAN_BASELINE.md",
+        "evals/mai05/manifests/MAI_05_LANGUAGE_SPANS_V1.manifest.json",
+        "evals/mai05/baselines/MAI_05_eval_report.json all_gates_passed=true",
+        "erp_bot/tests/oip/language_runtime/test_mai05_language_spans.py:15 passed",
+        "MAI-01..05 focused Python: 108 passed",
+        "MAI-04 component 137/68/40 mutations=0; pipeline 112/93/40 mutations=0",
+        "resource --check-twice ok second_run_no_diff",
+        "npm run test:orbix-contract: 144 passed (+1 mai05 offset)",
+        "khataConfirmAuth 8 + correlation 4",
+        "npx tsc -p tsconfig.mai05.json --noEmit exit 0",
+        "global tsc: 2 InvoicePrint baseline; accounting 17/3/1 baseline",
+        "collection: 764 collected, 1 reasoning_filter error (unchanged class)"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/",
+        "oip_chat_ingress LanguageFrame attach (annotation only)",
+        "contracts LanguageFrameV1/SourceSpanV1 offset_unit + CanonicalAIRequestV1.language_frame",
+        "src/lib/ekhata/mai05CodePointOffsets.ts"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-04"
+      ],
+      "recommended_order": 5
+    },
+    {
+      "id": "MAI-06",
+      "title": "LOSSLESS NORMALIZATION",
+      "status": "PASSED",
+      "production_approved": false,
+      "closure_note": "MAI-06C2 integrity closure: ReconstructionIntegrityV1 digests; typed integrity errors; mai-06.1.1",
+      "normalizer_version": "mai-06.1.1",
+      "integrity_schema_version": "1.0.0",
+      "integrity_algorithm": "SHA-256",
+      "integrity_domain": "MOKXYA_NORMALIZATION_RECONSTRUCTION_V1",
+      "raw_preservation_accuracy": 1.0,
+      "valid_reconstruction_accuracy": 1.0,
+      "edit_based_reconstruction_accuracy": 1.0,
+      "structural_corruption_detection_rate": 1.0,
+      "same_length_original_surface_corruption_detection_rate": 1.0,
+      "cross_artifact_substitution_detection_rate": 1.0,
+      "valid_artifact_false_rejection_rate": 0,
+      "float_interpolation_usage_count": 0,
+      "raw_text_shortcut_usage_count": 0,
+      "sensitive_error_or_trace_leak_count": 0,
+      "generated_reconstruction_seed": 20260714,
+      "generated_reconstruction_cases": 1000,
+      "resource_pack_version": "mai-06.1.0",
+      "resource_content_hash": "4558bcad1f2c7915968faa8a7371bb3e1f038fd4732eafd6203ea837f437e65f",
+      "dataset_manifest_id": "MAI_06_LOSSLESS_NORMALIZATION_V1",
+      "dataset_hash": "abe90267a94479f58be9fa7caf353fcd069ea3e2f77145a3fe68c884fcc23bc5",
+      "dataset_total_cases": 470,
+      "offset_unit": "UNICODE_CODE_POINT",
+      "mai04_regression_dataset_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+      "mai05_regression_dataset_hash": "2eb4f0d8edd5544fb8266fd8eebf6eceffd40f13db1f37b6892eb48ea61dbe7c",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_06_LOSSLESS_NORMALIZATION.md",
+        "docs/mokxya-ai/decisions/ADR_0007_LOSSLESS_NORMALIZATION_AUTHORITY.md",
+        "docs/mokxya-ai/NORMALIZATION_POLICY.md",
+        "docs/mokxya-ai/baselines/MAI_06_NORMALIZATION_BASELINE.md",
+        "evals/mai06/baselines/MAI_06_eval_report.json integrity gates all_gates_passed=true",
+        "erp_bot/tests/oip/language_runtime/test_mai06_normalization.py",
+        "erp_bot/tests/oip/language_runtime/test_mai06_reconstruction_closure.py (1000 generated)",
+        "erp_bot/tests/oip/language_runtime/test_mai06_reconstruction_integrity_closure.py (1000 generated + corruption matrix)",
+        "resource --check-twice ok"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/normalization/",
+        "erp_bot/src/oip/modules/language_runtime/normalization/domain/integrity.py",
+        "erp_bot/src/oip/contracts/normalization.py ReconstructionIntegrityV1",
+        "LanguageFrameV1.normalization_bundle",
+        "oip_chat_ingress NORMALIZATION_* after MAI-05",
+        "nlu/text_normalize.py legacy boundary markers"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-05"
+      ],
+      "recommended_order": 6
+    },
+    {
+      "id": "MAI-07",
+      "title": "ROMANIZED NEPALI CANDIDATE TRANSLITERATION",
+      "status": "NEEDS_CORRECTIVE_WORK",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed_r3d": true,
+      "runtime_version": "mai-07.1.3-r3f-sealnew",
+      "resource_pack_version": "mai-07.1.3-r3f-sealnew",
+      "evaluator_version": "mai-07.1.3",
+      "resource_content_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "prior_resource_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+      "prior_resource_content_hash_mai0720_r1_failed": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+      "prior_resource_content_hash_mai0730_r2_failed": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+      "dataset_manifest_id": "MAI_07_ROMANIZED_TRANSLITERATION_V1",
+      "dataset_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+      "runtime_output_semantic_hash": "b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849",
+      "offset_unit": "UNICODE_CODE_POINT",
+      "r3a_status": "COMPLETE",
+      "r3b_status": "PASSED_REVIEW_IMPORT_POLICY_LOCK",
+      "r3c_status": "COMPLETE_QUALITY_FAILED",
+      "r3d_status": "PASSED_CORRECTIVE_RC",
+      "r3e_status": "FAILED_QUALITY",
+      "r3f_status": "PASSED_CORRECTIVE_RC",
+      "r3g_status": "BLOCKED_PRECONDITION_FAILED",
+      "r3f_seal_restore_status": "RESTORE_NOT_POSSIBLE_NEW_RC_REQUIRED",
+      "r3f_seal_new_status": "PASSED_NEW_RC",
+      "r3g_reauthorized_status": "BLOCKED_PRECONDITION_FAILED",
+      "r3h2_status": "PASSED_CORRECTIVE_RC",
+      "r3i_status": "FAILED_QUALITY",
+      "r3ja_status": "REVIEW_PACKET_READY",
+      "r3n5_status": "INVALIDATED_INCOMPLETE_INDEPENDENT_SCORING_AND_OUTPUT_BINDING_NEW_RC_REQUIRED",
+      "r3n6_status": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC",
+      "r3o_status": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+      "closure_note": "R3N5 release authority withdrawn (ADR_0020). R3N6 PASSED_FRESH_HOLDOUT_CORRECTIVE_RC. R3O opened but blocked: official Round A inbox still 0% returned. Candidate unpromoted; active R3F unchanged. Next=human Round A returns into round_a_inbox. MAI-08 NOT_STARTED.",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3G_REAUTHORIZED_FROZEN_V2_EVALUATION_REPORT.md",
+        "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_PREFLIGHT_REPORT.json",
+        "docs/mokxya-ai/MAI_07_R3F_SEAL_NEW_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3G_FROZEN_V2_EVALUATION_REPORT.md",
+        "evals/mai07/r3g/reports/MAI_07R3G_PREFLIGHT_REPORT.json",
+        "docs/mokxya-ai/MAI_07_R3F_CORRECTIVE_RC_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3E_FROZEN_V2_EVALUATION_REPORT.md"
+      ],
+      "implementation_evidence": [
+        "ENABLE_PROMOTION_OVERLAY=false",
+        "Active runtime mai-07.1.3-r3f-sealnew; sealed pack 16174253…",
+        "Historical R3F RC 37e551f2… INVALIDATED_BY_SEAL_DRIFT",
+        "R3G-REAUTHORIZED blocked on missing immutable lock-before-holdout RC body"
+      ],
+      "blockers": [
+        "GAP-P1-011 OPEN; GAP-P1-014 lock-before-holdout body missing; GAP-P0-001 OPEN; GAP-P1-012 linguist OPEN"
+      ],
+      "dependencies": [
+        "MAI-06"
+      ],
+      "recommended_order": 7
+    },
+    {
+      "id": "MAI-07R3A",
+      "title": "BLINDED LANGUAGE-POLICY ADJUDICATION",
+      "status": "COMPLETE",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/reviews/mai07r3/MAI_07R3_CONTROL_SAMPLE_MANIFEST.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3a_review.py"
+      ],
+      "implementation_evidence": [
+        "docs/mokxya-ai/reviews/mai07r3/",
+        "locked Round A/B responses imported in R3B"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07"
+      ],
+      "recommended_order": 7.1
+    },
+    {
+      "id": "MAI-07R3B",
+      "title": "REVIEW IMPORT AND OPTION A POLICY LOCK",
+      "status": "PASSED",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/reviews/mai07r3/MAI_07R3_REVIEW_IMPORT_COMPLETED.jsonl",
+        "docs/mokxya-ai/reviews/mai07r3/MAI_07R3_ADJUDICATION_REPORT.json",
+        "docs/mokxya-ai/reviews/mai07r3/MAI_07R3_EVALUATION_SEMANTICS_V2.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3b_import.py"
+      ],
+      "implementation_evidence": [
+        "import_mai07r3b_reviews.py",
+        "ADR_0009 PRODUCT_POLICY_APPROVED_IMPLEMENTATION_PENDING",
+        "bulk schema mapping 223/36/4 with EXPLICIT_USER_AUTHORIZED_BULK_SCHEMA_MAPPING"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07R3A"
+      ],
+      "recommended_order": 7.2
+    },
+    {
+      "id": "MAI-07R3C",
+      "title": "NON_VACUOUS DATASET V2 AND QUALITY EVALUATION",
+      "status": "COMPLETE",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "evals/mai07/baselines/MAI_07R3C_BASELINE_V2_QUALITY_REPORT.json",
+        "evals/mai07/manifests/MAI_07_R3C_V2_RELEASE_CANDIDATE.manifest.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3c_dataset_v2.py",
+        "docs/mokxya-ai/baselines/MAI_07R3C_HISTORICAL_TEST_DISPOSITION.md"
+      ],
+      "implementation_evidence": [
+        "dataset_v2_hash=0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+        "one-shot predictions + dual scorers; no runtime retune"
+      ],
+      "blockers": [
+        "Automated V2 quality gates failed; corrective phase must use separate development/holdout data"
+      ],
+      "dependencies": [
+        "MAI-07R3B"
+      ],
+      "recommended_order": 7.3
+    },
+    {
+      "id": "MAI-07R3D",
+      "title": "NON_FROZEN TRANSLITERATION SAFETY AND RECALL CORRECTIVE RC",
+      "status": "PASSED_CORRECTIVE_RC",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": true,
+      "runtime_version": "mai-07.1.1-r3d",
+      "resource_content_hash": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+      "rc_manifest_sha256": "2ebe29fac17b836849e3c3e1054c704a03d762bc5f28879a9a0de2f5a62d2c26",
+      "holdout_predictions_sha256": "1d3b04d60d6621af4ffe3c46c2776a85630043ba4194269c31b2604fa8c0b4b5",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3D_CORRECTIVE_RC_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3D_ROOT_CAUSE_REPORT.md",
+        "evals/mai07_r3d_corrective/reports/MAI_07R3D_HOLDOUT_VALIDATION_SCORE_REPORT.json"
+      ],
+      "implementation_evidence": [
+        "Protected hard gate + English multi-signal identity + morph recall",
+        "Non-frozen DEVELOPMENT/HOLDOUT/SAFETY under evals/mai07_r3d_corrective/",
+        "Frozen V2 not opened for corrective development; not rerun"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07R3C"
+      ],
+      "recommended_order": 7.4
+    },
+    {
+      "id": "MAI-07R3E",
+      "title": "FROZEN V2 RELEASE EVALUATION OF R3D CORRECTIVE RUNTIME",
+      "status": "FAILED_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-07.1.1-r3d",
+      "predictions_sha256": "89ee4789333bc1fd5b5ea3b1b505c0a53b7a5f7e159d5966511ead52735a7e9c",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3E_FROZEN_V2_EVALUATION_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3E_BASELINE_SUMMARY.md",
+        "evals/mai07/r3e/reports/MAI_07R3E_V2_CANONICAL_SCORE_REPORT.json",
+        "evals/mai07/r3e/reports/MAI_07R3E_V2_AUDIT_SCORE_REPORT.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3e_frozen_eval.py"
+      ],
+      "implementation_evidence": [
+        "One-shot attempt MAI_07R3E_FROZEN_V2_ATTEMPT_001 consumed",
+        "English identity FAIL 98/102; false-Dev FAIL 4/102; protected mutations PASS 0",
+        "Failed R3D RC preserved; no retune; no automatic rerun"
+      ],
+      "blockers": [
+        "English identity / false-Devanagari gates; next work must be non-frozen corrective (not frozen retune)"
+      ],
+      "dependencies": [
+        "MAI-07R3D"
+      ],
+      "recommended_order": 7.5
+    },
+    {
+      "id": "MAI-07R3F",
+      "title": "NON_FROZEN ENGLISH-IDENTITY CORRECTIVE AFTER R3E FAIL",
+      "status": "PASSED_CORRECTIVE_RC",
+      "rc_validity_after_seal_restore": "INVALIDATED_BY_SEAL_DRIFT",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": true,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3F_CORRECTIVE_RC_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3F_ROOT_CAUSE_REPORT.md",
+        "evals/mai07_r3f_english_identity/MAI_07R3F_RELEASE_CANDIDATE.manifest.json",
+        "evals/mai07_r3f_english_identity/reports/MAI_07R3F_HOLDOUT_VALIDATION_SCORE_REPORT.json",
+        "evals/mai07_r3f_english_identity/reports/MAI_07R3F_CONTEXT_COUNTERFACTUAL_SCORE_REPORT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/english_identity_guard.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/resources/r3f_english_identity_guard.json",
+        "runtime mai-07.1.2-r3f",
+        "language_runtime suite 285 passed / 6 historical skips"
+      ],
+      "blockers": [
+        "Frozen V2 quality still open (GAP-P1-011); R3F must not claim QUALITY_GATES_PASSED"
+      ],
+      "dependencies": [
+        "MAI-07R3E"
+      ],
+      "recommended_order": 7.6,
+      "closure_note": "MAI-07R3F non-frozen English Identity Guard RC PASSED_CORRECTIVE_RC. Holdout all_pass. QUALITY_GATES_PASSED remains false. Next=MAI-07R3G frozen V2 under separate authorization. MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3G",
+      "title": "FROZEN V2 EVALUATION OF SEALED R3F RC",
+      "status": "BLOCKED_PRECONDITION_FAILED",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3G_FROZEN_V2_EVALUATION_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3G_BASELINE_SUMMARY.md",
+        "evals/mai07/r3g/reports/MAI_07R3G_PREFLIGHT_REPORT.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3g_frozen_eval.py"
+      ],
+      "implementation_evidence": [
+        "Preflight only; frozen V2 not opened; attempt not locked for execute",
+        "Resource pack unrestorable; prediction field later clarified as canonical-list contract (not file drift)"
+      ],
+      "blockers": [
+        "Await MAI-07R3F-SEAL-NEW then re-authorize frozen eval"
+      ],
+      "dependencies": [
+        "MAI-07R3F"
+      ],
+      "recommended_order": 7.7
+    },
+    {
+      "id": "MAI-07R3F-SEAL-RESTORE",
+      "title": "RESTORE SEALED R3F RESOURCE AND HOLDOUT PREDICTION INTEGRITY",
+      "status": "RESTORE_NOT_POSSIBLE_NEW_RC_REQUIRED",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3F_SEAL_RESTORE_REPORT.md",
+        "docs/mokxya-ai/MAI_07R3F_SEAL_HASH_CONTRACT.md",
+        "docs/mokxya-ai/MAI_07R3F_SEAL_DRIFT_CHRONOLOGY.md",
+        "evals/mai07_r3f_seal_restore/forensics/MAI_07R3F_SEAL_FORENSIC_SNAPSHOT.manifest.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3f_seal_restore.py"
+      ],
+      "implementation_evidence": [
+        "Predictions reproduce b5cdb56f… under producer contract; sealed reports reproduced without runtime",
+        "Resource e94cc8c… unrestorable; seal tooling mutation-proofed",
+        "Original R3F RC INVALIDATED_BY_SEAL_DRIFT"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07R3G"
+      ],
+      "recommended_order": 7.75
+    },
+    {
+      "id": "MAI-07R3F-SEAL-NEW",
+      "title": "NEW R3F RELEASE CANDIDATE UNDER VERSIONED SEAL CONTRACT",
+      "status": "PASSED_NEW_RC",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": true,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3F_SEAL_NEW_REPORT.md",
+        "docs/mokxya-ai/MAI_07_ARTIFACT_SEAL_CONTRACT_2_0_0.md",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.manifest.json",
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_SCORE_REPORT.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3f_seal_new.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_seal_contract_v2.py"
+      ],
+      "implementation_evidence": [
+        "New pack mai-07.1.3-r3f-sealnew content_hash 16174253… SEALED_READ_ONLY",
+        "Seal contract mai-07-artifact-seal-contract.2.0.0",
+        "Fresh holdout 1475 cases; English identity 1003/1003; gates all_pass",
+        "Parent R3F RC remains INVALIDATED_BY_SEAL_DRIFT (37e551f2…)",
+        "language_runtime: 308 passed / 6 skipped"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07R3F-SEAL-RESTORE"
+      ],
+      "recommended_order": 7.76,
+      "closure_note": "PASSED_NEW_RC. QUALITY_GATES_PASSED=false. Next=MAI-07R3G-REAUTHORIZED. MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3G-REAUTHORIZED",
+      "title": "RE-AUTHORIZED FROZEN V2 EVAL OF SEAL-NEW RC",
+      "status": "BLOCKED_PRECONDITION_FAILED",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3G_REAUTHORIZED_FROZEN_V2_EVALUATION_REPORT.md",
+        "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_PREFLIGHT_REPORT.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3g_reauthorized.py"
+      ],
+      "implementation_evidence": [
+        "Lock-before-holdout body f4c07e24… not preserved; narrative hash only",
+        "Frozen V2 not opened; no attempt locked; historical R3G untouched"
+      ],
+      "blockers": [
+        "Missing immutable LOCKED_NOT_RUN RC snapshot / append-only lock body"
+      ],
+      "dependencies": [
+        "MAI-07R3F-SEAL-NEW"
+      ],
+      "recommended_order": 7.77,
+      "closure_note": "BLOCKED_PRECONDITION_FAILED. Next=MAI-07R3F-SEAL-LOCK-CHAIN."
+    },
+    {
+      "id": "MAI-07R3F-SEAL-LOCK-CHAIN",
+      "title": "PRESERVE IMMUTABLE LOCK-BEFORE-HOLDOUT RC BODY",
+      "status": "PASSED_RECOVERED_LOCK_CHAIN",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": true,
+      "gate_evidence": [
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+        "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.CHAIN_MANIFEST.json",
+        "docs/mokxya-ai/MAI_07_R3F_SEAL_LOCK_CHAIN_REPORT.md"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/rc_lock_chain.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3f_seal_lock_chain.py"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07R3G-REAUTHORIZED"
+      ],
+      "recommended_order": 7.78,
+      "closure_note": "Branch A recovered f4c07e24… immutable LOCKED_NOT_RUN body + saved-holdout chain for RC_001. Branch B append-only RC_002 fresh holdout also verified. Frozen V2 not opened. Next=MAI-07R3G-REAUTHORIZED-002."
+    },
+    {
+      "id": "MAI-07R3G-REAUTHORIZED-002",
+      "title": "ONE-SHOT FROZEN V2 OF SEALED R3F CANDIDATE",
+      "status": "FAILED_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": false,
+      "gate_evidence": [
+        "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_CANDIDATE_SELECTION.json",
+        "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT.manifest.json",
+        "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT_001.EXECUTION_RESULT.json",
+        "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT_001.QUALITY_RESULT.json",
+        "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_V2_CANONICAL_SCORE_REPORT.json",
+        "docs/mokxya-ai/MAI_07_R3G_REAUTHORIZED_002_FROZEN_V2_EVALUATION_REPORT.md"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3g_reauthorized_002.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3g_reauthorized_002.py"
+      ],
+      "blockers": [
+        "English identity 98/102 (required ≥100/102)",
+        "False Devanagari on English 4/102 (required ≤2/102)"
+      ],
+      "dependencies": [
+        "MAI-07R3F-SEAL-LOCK-CHAIN"
+      ],
+      "recommended_order": 7.79,
+      "closure_note": "One-shot frozen V2 consumed against RC_002. Target/core/unambiguous gates pass; English identity gates fail (identical to R3E). No retune/rerun. Next=non-frozen English identity corrective (MAI-07R3H). MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3H",
+      "title": "NON_FROZEN ENGLISH IDENTITY AND SHARED-COLLISION CORRECTIVE",
+      "status": "FAILED_HOLDOUT_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": false,
+      "runtime_version": "mai-07.1.4-r3h-englishid",
+      "resource_pack_version": "mai-07.1.4-r3h-englishid",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3H_ENGLISH_IDENTITY_ROOT_CAUSE_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3H_ENGLISH_IDENTITY_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3H_BASELINE_SUMMARY.md",
+        "evals/mai07_r3h_english_identity/MAI_07R3H_DATASET_MANIFEST.json",
+        "evals/mai07_r3h_english_identity/MAI_07R3H_THRESHOLDS.json",
+        "evals/mai07_r3h_english_identity/MAI_07R3H_ENGLISH_IDENTITY_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/english_identity_guard.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3h_english_identity_datasets.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3h.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3h_corrective.py"
+      ],
+      "blockers": [
+        "target_missing_from_top5_rate failed on sealed non-frozen holdout",
+        "unresolved shared identity-review accuracy failed on sealed non-frozen holdout",
+        "counterfactual pair accuracy failed on sealed non-frozen holdout"
+      ],
+      "dependencies": [
+        "MAI-07R3G-REAUTHORIZED-002"
+      ],
+      "recommended_order": 7.8,
+      "closure_note": "Branch B selected from code-path audit. Frozen V2 remained unopened. English identity / false-Devanagari safety improved on non-frozen evidence, but shared ambiguous-review and counterfactual gates failed. Next=MAI-07R3H2-SHARED-COLLISION-CORRECTIVE. MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3H2",
+      "title": "SHARED-COLLISION CORRECTIVE (NON-FROZEN)",
+      "status": "PASSED_CORRECTIVE_RC",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": true,
+      "runtime_version": "mai-07.1.3-r3f-sealnew",
+      "resource_pack_version_active": "mai-07.1.3-r3f-sealnew",
+      "resource_pack_version_rc": "mai-07.1.5-r3h2-shared",
+      "policy_version": "mai-07-r3h2.1.0.0",
+      "rc_id": "MAI_07R3H2_SHARED_COLLISION_RELEASE_CANDIDATE_001",
+      "pack_promoted": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3H2_SHARED_COLLISION_ROOT_CAUSE_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3H2_SHARED_COLLISION_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3H2_BASELINE_SUMMARY.md",
+        "evals/mai07_r3h2_shared_collision/MAI_07R3H2_SHARED_COLLISION_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "evals/mai07_r3h2_shared_collision/MAI_07R3H2_SHARED_COLLISION_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+        "evals/mai07_r3h2_shared_collision/MAI_07R3H2_THRESHOLDS.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/english_identity_guard.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3h2.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3h2_canonical_scorer.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3h2_audit_scorer.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3h2_scoring_contracts.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/canonical_path_guard.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3h2_shared_collision_datasets.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3h2_shared_collision.py"
+      ],
+      "blockers": [
+        "Product QUALITY_GATES_PASSED remains false pending frozen reauthorization path",
+        "LINGUIST_APPROVED=false",
+        "PRODUCTION_APPROVED=false",
+        "GAP-P1-011 / GAP-P1-012 / GAP-P0-001 remain OPEN"
+      ],
+      "dependencies": [
+        "MAI-07R3H"
+      ],
+      "recommended_order": 7.85,
+      "corrective_branches": ["C_shared_context_disposition", "D_shared_surface_generate", "A_review_metadata"],
+      "closure_note": "Sealed non-frozen holdout PASSED_CORRECTIVE_RC. Pack mai-07.1.5-r3h2-shared not promoted; active remains mai-07.1.3-r3f-sealnew. GAP-P1-015 CLOSED. Frozen V2 not opened during R3H2. Next=MAI-07R3I-FROZEN-REAUTHORIZED (executed). MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3I",
+      "title": "FROZEN-REAUTHORIZED (R3H2 CANDIDATE ON FROZEN V2)",
+      "status": "FAILED_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "automated_engineering_gates_passed": false,
+      "runtime_version_active": "mai-07.1.3-r3f-sealnew",
+      "resource_pack_version_active": "mai-07.1.3-r3f-sealnew",
+      "candidate_runtime_version": "mai-07.1.5-r3h2-shared",
+      "candidate_resource_content_sha256": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+      "policy_version": "mai-07-r3h2.1.0.0",
+      "rc_id": "MAI_07R3H2_SHARED_COLLISION_RELEASE_CANDIDATE_001",
+      "attempt_id": "MAI_07R3I_FROZEN_V2_ATTEMPT_001",
+      "pack_promoted": false,
+      "frozen_v2_opened": true,
+      "attempt_consumed": true,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3I_FROZEN_REAUTHORIZED_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3I_BASELINE_SUMMARY.md",
+        "evals/mai07/r3i_frozen_reauthorized/MAI_07R3I_FROZEN_V2_ATTEMPT_001.QUALITY_RESULT.json",
+        "evals/mai07/r3i_frozen_reauthorized/MAI_07R3I_FROZEN_V2_ATTEMPT_001.CLOSEOUT.json",
+        "evals/mai07/r3i_frozen_reauthorized/reports/MAI_07R3I_V2_CANONICAL_SCORE_REPORT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3i_frozen_reauthorized.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3i_frozen_reauthorized.py"
+      ],
+      "blockers": [
+        "QUALITY_GATES_PASSED=false",
+        "LINGUIST_APPROVED=false",
+        "PRODUCTION_APPROVED=false",
+        "GAP-P1-011 / GAP-P1-012 / GAP-P0-001 remain OPEN",
+        "Do not retune from frozen V2; prefer V3 / professional adjudication"
+      ],
+      "dependencies": [
+        "MAI-07R3H2"
+      ],
+      "recommended_order": 7.9,
+      "closure_note": "One-shot frozen V2 FAILED_QUALITY. R3H2 pack not promoted. Attempt consumed. Next=MAI-07R3J-A (executed). MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3J-A",
+      "title": "INDEPENDENT V3 GOVERNANCE AND REVIEW PACKET",
+      "status": "REVIEW_PACKET_READY",
+      "blocker": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "v2_governance": "HISTORICAL_BENCHMARK_EXHAUSTED_FOR_MODEL_SELECTION",
+      "runtime_modified": false,
+      "model_evaluation_performed": false,
+      "pack_promoted": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/decisions/ADR_0010_V2_RETIREMENT_AND_V3_GOVERNANCE.md",
+        "docs/mokxya-ai/reviews/mai07_v3/V3_PACKET_MANIFEST.json",
+        "docs/mokxya-ai/reviews/mai07_v3/README.md",
+        "docs/mokxya-ai/reviews/mai07_v3/V3_HASH_MANIFEST.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07_r3ja_v3_review_packet.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3ja_v3_firewall.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3ja_v3_independent_corpus.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3ja_v3_agreement.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3ja_v3_governance.py"
+      ],
+      "blockers": [
+        "Independent human Round A/B/adjudication not yet completed",
+        "LINGUIST_APPROVED=false",
+        "QUALITY_GATES_PASSED=false",
+        "GAP-P1-011 / GAP-P1-012 / GAP-P0-001 remain OPEN"
+      ],
+      "dependencies": [
+        "MAI-07R3I"
+      ],
+      "recommended_order": 7.91,
+      "closure_note": "Review packet ready (1111 independent items). Review-ops automation PASSED; state WAITING_FOR_ROUND_A_SUBMISSIONS. No human decisions. No runtime change. Next=human Round A returns. MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3J-A-REVIEW-OPS",
+      "title": "AUTOMATED REVIEW OPERATIONS",
+      "status": "PASSED_AUTOMATION",
+      "workflow_state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+      "human_blocker": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_modified": false,
+      "model_evaluation_performed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/REVIEW_STATUS.json",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/REVIEW_STATUS.html",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/hash_manifests/ROUND_A_PACKAGE_HASH_MANIFEST.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3ja_review_ops.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3ja_review_ops.py",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/RUN_REVIEW_WORKFLOW.bat"
+      ],
+      "blockers": [
+        "Waiting for genuine human Round A submissions",
+        "LINGUIST_APPROVED=false until professional workflow + manual credential verification"
+      ],
+      "dependencies": ["MAI-07R3J-A"],
+      "recommended_order": 7.915,
+      "closure_note": "Round A ZIPs packaged. No answers generated. MAI-08 NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3J-AI-ASSISTED-ACCOUNTING-IMPORT",
+      "title": "AI-ASSISTED ACCOUNTING DOMAIN ROUND A ENGINEERING IMPORT",
+      "status": "PASSED_ENGINEERING_IMPORT",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "ai_autofill_used": true,
+      "user_confirmation": "USER_ACCEPTED_AI_SUGGESTIONS_WITHOUT_CHANGES",
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "model_evaluation_performed": false,
+      "pack_promoted": false,
+      "row_count": 611,
+      "workbook_count": 6,
+      "package_sha256": "f558fefdc186ba79bbe2a8757569204b88ce1aa1ed27400cda7705c1551cdb68",
+      "semantic_hash": "b96bec29e30ddcdc6dce1a5ef09a2003ee9de003a336cd98b43341c6e55e363b",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3J_AI_ASSISTED_ACCOUNTING_IMPORT_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0011_AI_ASSISTED_VS_INDEPENDENT_REVIEW_EVIDENCE.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/accounting_domain/reports/IMPORT_REPORT.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/accounting_domain/reports/SEMANTIC_HASH.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/accounting_domain/canonical/ACCOUNTING_DOMAIN_ROUND_A_AI_ASSISTED_HUMAN_VERIFIED.jsonl"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/import_mai07_r3j_ai_assisted_accounting.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3j_ai_assisted_accounting_import.py"
+      ],
+      "blockers": [
+        "Does not close GAP-P1-016 independent human review",
+        "Does not close GAP-P1-012 professional linguist approval",
+        "Official Round A lock still blocked pending genuine human submissions"
+      ],
+      "dependencies": [
+        "MAI-07R3J-A",
+        "MAI-07R3J-A-REVIEW-OPS"
+      ],
+      "recommended_order": 7.916,
+      "closure_note": "PASSED_ENGINEERING_IMPORT only. AI-assisted ACCOUNTING_DOMAIN evidence segregated. Official inbox untouched. ROUND_A_LOCKED=false. ROUND_B_READY=false. QUALITY_GATES_PASSED=false. LINGUIST_APPROVED=false. PRODUCTION_APPROVED=false. MAI-07=NEEDS_CORRECTIVE_WORK. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3J-AI-ASSISTED-REMAINING-ROLE-DRAFTS",
+      "title": "AI-ASSISTED DRAFTS FOR REMAINING ROUND A ROLES",
+      "status": "PASSED_DRAFT_GENERATION",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "ai_autofill_used": true,
+      "user_accepted": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "model_evaluation_performed": false,
+      "pack_promoted": false,
+      "total_rows": 3333,
+      "roles": ["PRODUCT_POLICY", "NEPALI_FLUENT_A", "PROFESSIONAL_LINGUIST_B"],
+      "semantic_hash": "fd10bd0f501d9a25534db18e98254c3e1dec1cbc4acc971f76c42012279a929a",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3J_AI_ASSISTED_REMAINING_ROLE_DRAFTS_REPORT.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/role_drafts/REMAINING_ROLE_DRAFTS_SUMMARY.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/role_drafts/SEMANTIC_HASH.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/draft_mai07_r3j_ai_assisted_remaining_roles.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3j_ai_assisted_remaining_role_drafts.py"
+      ],
+      "blockers": [
+        "Drafts only — not user-accepted verified imports",
+        "Does not close GAP-P1-016 / GAP-P1-012",
+        "Must not enter official round_a_inbox"
+      ],
+      "dependencies": [
+        "MAI-07R3J-AI-ASSISTED-ACCOUNTING-IMPORT"
+      ],
+      "recommended_order": 7.917,
+      "closure_note": "PASSED_DRAFT_GENERATION. 3333 AI-assisted draft rows for three remaining roles. Not verified import. Not Round A lock. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3J-AI-ASSISTED-REMAINING-ROLES-IMPORT",
+      "title": "AI-ASSISTED REMAINING ROLES ROUND A ENGINEERING IMPORT",
+      "status": "PASSED_ENGINEERING_IMPORT",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "ai_autofill_used": true,
+      "user_confirmation": "USER_ACCEPTED_AI_SUGGESTIONS_WITHOUT_CHANGES",
+      "professional_linguist_b_is_ai_role_simulation": true,
+      "professional_linguist_adjudication": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "model_evaluation_performed": false,
+      "pack_promoted": false,
+      "total_rows": 3333,
+      "roles": ["PRODUCT_POLICY", "NEPALI_FLUENT_A", "PROFESSIONAL_LINGUIST_B"],
+      "semantic_hash": "1cc783d79cc3cc5f3f2daa288ae8b4721238fed584dbfb540597c8f883a8f4a1",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3J_AI_ASSISTED_REMAINING_ROLES_IMPORT_REPORT.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/remaining_roles/reports/IMPORT_REPORT.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/remaining_roles/reports/SEMANTIC_HASH.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/remaining_roles/canonical/REMAINING_ROLES_ROUND_A_AI_ASSISTED_HUMAN_VERIFIED.jsonl"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/import_mai07_r3j_ai_assisted_remaining_roles.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3j_ai_assisted_remaining_roles_import.py"
+      ],
+      "blockers": [
+        "Does not close GAP-P1-016 independent human review",
+        "Does not close GAP-P1-012 professional linguist approval",
+        "PROFESSIONAL_LINGUIST_B remains AI role simulation only"
+      ],
+      "dependencies": [
+        "MAI-07R3J-AI-ASSISTED-REMAINING-ROLE-DRAFTS"
+      ],
+      "recommended_order": 7.918,
+      "closure_note": "PASSED_ENGINEERING_IMPORT. 3333 user-accepted AI-assisted rows. Not official Round A lock. LINGUIST_APPROVED=false. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3K",
+      "title": "AI-ASSISTED CROSS-ROLE CONSENSUS DIAGNOSTIC",
+      "status": "PASSED_ENGINEERING_DIAGNOSTIC",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "majority_voting_is_gold": false,
+      "agreement_is_independent_human_irr": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "model_evaluation_performed": false,
+      "pack_promoted": false,
+      "unique_cases": 1111,
+      "total_judgments": 3944,
+      "four_role_cases": 611,
+      "three_role_cases": 500,
+      "risk_queue_count": 700,
+      "semantic_hash": "42d1a5ffc170d201f8a4bf92e4cef4f156dde57c07e847c960835e26080ddafc",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3K_AI_ASSISTED_CROSS_ROLE_CONSENSUS_DIAGNOSTIC_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0012_AI_ASSISTED_CROSS_ROLE_CONSENSUS_DIAGNOSTIC_ONLY.md",
+        "docs/mokxya-ai/baselines/MAI_07R3K_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/cross_role_diagnostic/reports/CONSENSUS_DIAGNOSTIC_REPORT.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/cross_role_diagnostic/reports/SEMANTIC_HASH.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3k_cross_role_contracts.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3k_cross_role_consensus_diagnostic.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3k_cross_role_consensus_diagnostic.py"
+      ],
+      "blockers": [
+        "Agreement contaminated by shared draft generator — not independent IRR",
+        "Does not close GAP-P1-016 / GAP-P1-012"
+      ],
+      "dependencies": [
+        "MAI-07R3J-AI-ASSISTED-ACCOUNTING-IMPORT",
+        "MAI-07R3J-AI-ASSISTED-REMAINING-ROLES-IMPORT"
+      ],
+      "recommended_order": 7.92,
+      "closure_note": "PASSED_ENGINEERING_DIAGNOSTIC only. No majority gold, lock, Round B, frozen V3, runtime promotion, linguist/production approval. Hash-contract closure REPORT_ONLY (MAI-07R3K-CLOSURE). MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3K-CLOSURE",
+      "title": "INPUT HASH CONTRACT RECONCILIATION AND DETERMINISTIC AUTHORITY PROOF",
+      "status": "PASSED_CLOSURE",
+      "defect_scope": "REPORT_ONLY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "majority_voting_is_gold": false,
+      "agreement_is_independent_human_irr": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_ready": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "r3k_canonical_outputs_changed": false,
+      "r3k_semantic_hash_preserved": true,
+      "ambiguous_citation": "hybrid prefix b96bec29 (accounting semantic) + suffix 1cdb68 (accounting ZIP raw)",
+      "accounting_package_zip_raw_sha256": "f558fefdc186ba79bbe2a8757569204b88ce1aa1ed27400cda7705c1551cdb68",
+      "accounting_import_semantic_sha256": "b96bec29e30ddcdc6dce1a5ef09a2003ee9de003a336cd98b43341c6e55e363b",
+      "remaining_roles_import_semantic_sha256": "1cc783d79cc3cc5f3f2daa288ae8b4721238fed584dbfb540597c8f883a8f4a1",
+      "r3k_semantic_sha256": "42d1a5ffc170d201f8a4bf92e4cef4f156dde57c07e847c960835e26080ddafc",
+      "authority_manifest_sha256": "65bfa6847a8d3d58af4e092f4217d65b3b6e5d51035c401e7304be1ed77fe2b8",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3K_HASH_CONTRACT_CLOSURE_REPORT.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/cross_role_diagnostic/R3K_INPUT_AUTHORITY_MANIFEST.json",
+        "docs/mokxya-ai/decisions/ADR_0012_AI_ASSISTED_CROSS_ROLE_CONSENSUS_DIAGNOSTIC_ONLY.md"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3k_hash_contract.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3k_hash_contract_closure.py"
+      ],
+      "blockers": [
+        "Does not close GAP-P1-016 / GAP-P1-012",
+        "R3K remains engineering diagnostic only"
+      ],
+      "dependencies": [
+        "MAI-07R3K"
+      ],
+      "recommended_order": 7.921,
+      "closure_note": "PASSED_CLOSURE REPORT_ONLY. Hybrid conversational citation reconciled. R3K semantic preserved. Next=MAI-07R3L completed. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3L",
+      "title": "AI-ASSISTED RUNTIME CONFORMANCE DIAGNOSTIC",
+      "status": "PASSED_ENGINEERING_DIAGNOSTIC",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "majority_voting_is_gold": false,
+      "agreement_is_independent_human_irr": false,
+      "runtime_conformance_is_language_quality": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "round_b_ready": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "overlay_enabled": false,
+      "runtime_version": "mai-07.1.3-r3f-sealnew",
+      "resource_content_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "case_count": 1111,
+      "pass_count": 769,
+      "fail_count": 328,
+      "span_failure_count": 14,
+      "residual_total": 829,
+      "targeted_packet_count": 65,
+      "semantic_hash": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3L_AI_ASSISTED_RUNTIME_CONFORMANCE_DIAGNOSTIC_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3L_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/decisions/ADR_0013_POLICY_CONFORMANCE_IS_NOT_LANGUAGE_QUALITY.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/runtime_conformance_diagnostic/SEMANTIC_HASH.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/runtime_conformance_diagnostic/AUDIT_AGREEMENT_REPORT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3l_contracts.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3l_behavior_policy.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3l_runtime_conformance_diagnostic.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3l_canonical_scorer.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3l_audit_scorer.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3l_runtime_conformance_diagnostic.py"
+      ],
+      "blockers": [
+        "Devanagari script-candidate presence ~45% under AI policy reference — not quality gold",
+        "Does not close GAP-P1-016 / GAP-P1-012"
+      ],
+      "dependencies": [
+        "MAI-07R3K-CLOSURE"
+      ],
+      "recommended_order": 7.93,
+      "closure_note": "PASSED_ENGINEERING_DIAGNOSTIC only. Policy conformance ≠ language quality. Next=MAI-07R3M triage complete. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3M",
+      "title": "AI-ASSISTED POLICY MISMATCH TRIAGE",
+      "status": "PASSED_ENGINEERING_TRIAGE",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "majority_voting_is_gold": false,
+      "runtime_conformance_is_language_quality": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "runtime_modified": false,
+      "residual_triaged": 829,
+      "actual_conformance_failures": 328,
+      "risk_only_pass": 487,
+      "span_failures": 14,
+      "code_corrective_candidates": 9,
+      "resource_corrective_candidates": 0,
+      "critical_safety_invariant_failure": false,
+      "tier1_policy_critical_count": 8,
+      "semantic_hash": "bd9a9608fe540eb9f10753668df0b99337fee6acf08a15edaa71be6678002b09",
+      "r3l_semantic_hash_preserved": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3M_AI_ASSISTED_POLICY_MISMATCH_TRIAGE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3M_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/decisions/ADR_0014_DIAGNOSTIC_MISMATCH_VERSUS_ACTIONABLE_DEFECT.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/SEMANTIC_HASH.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/AUDIT_AGREEMENT_REPORT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3m_contracts.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3m_canonical_triage.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3m_audit_triage.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3m_policy_mismatch_triage.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3m_policy_mismatch_triage.py"
+      ],
+      "blockers": [
+        "Does not close GAP-P1-016 / GAP-P1-012",
+        "Corrective candidates not yet implemented"
+      ],
+      "dependencies": [
+        "MAI-07R3L"
+      ],
+      "recommended_order": 7.94,
+      "closure_note": "PASSED_ENGINEERING_TRIAGE. Closure REPORT_ONLY reconciled Tier-1 reason counting units. Next=MAI-07R3N-NON-FROZEN-POLICY-CONFORMANCE-CORRECTIVE. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3M-CLOSURE",
+      "title": "TIER-1 SET RECONCILIATION AND CODE-CORRECTIVE AUTHORITY PROOF",
+      "status": "PASSED_CLOSURE",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "independent_human_review": false,
+      "majority_voting_is_gold": false,
+      "runtime_conformance_is_language_quality": false,
+      "official_round_a_lock_eligible": false,
+      "round_b_authorized": false,
+      "frozen_v3_quality_gate_authorized": false,
+      "prohibited_for_training": true,
+      "defect_scope": "REPORT_ONLY",
+      "tier1_unique_case_count": 8,
+      "primary_false_forced_devanagari": 5,
+      "primary_abstain_force": 3,
+      "code_corrective_eligible": 9,
+      "queues_changed": false,
+      "semantic_hash": "f39432c6e085c89964e2551fe27921d32c79235061fea218262f6d3093e00afd",
+      "r3m_semantic_hash_preserved": "bd9a9608fe540eb9f10753668df0b99337fee6acf08a15edaa71be6678002b09",
+      "r3l_semantic_hash_preserved": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3M_TIER1_AND_CORRECTIVE_AUTHORITY_CLOSURE_REPORT.md",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/closure/R3M_CLOSURE_SEMANTIC_HASH.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/closure/R3M_TIER1_SET_RECONCILIATION.json",
+        "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/closure/R3M_CLOSURE_AUDIT_AGREEMENT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3m_tier1_set_reconciliation.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3m_audit_set_reconciliation.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3m_tier1_closure.py"
+      ],
+      "blockers": [
+        "Does not close GAP-P1-016 / GAP-P1-012",
+        "Corrective candidates not yet implemented"
+      ],
+      "dependencies": [
+        "MAI-07R3M"
+      ],
+      "recommended_order": 7.941,
+      "closure_note": "PASSED_CLOSURE REPORT_ONLY. Tier-1 occurrence vs primary partition reconciled. Nine code candidates authority-proven. R3M semantic preserved. Next=MAI-07R3N. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3N",
+      "title": "NON-FROZEN POLICY-CONFORMANCE CORRECTIVE",
+      "status": "PASSED_CORRECTIVE_RC",
+      "rc_validity_after_integrity_closure": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+      "candidate_not_eligible_for_frozen_v3": true,
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "independent_human_review": false,
+      "frozen_v2_opened": false,
+      "frozen_v3_opened": false,
+      "prohibited_for_training": true,
+      "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+      "active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "overlay_enabled": false,
+      "candidate_runtime": "mai-07.1.6-r3n-policyconf",
+      "candidate_policy_version": "mai-07-r3n.1.0.0",
+      "rc_id": "MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002",
+      "rc_locked_semantic_sha256": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+      "holdout_attempt": "MAI_07R3N_HOLDOUT_ATTEMPT_002",
+      "code_corrective_lanes": {
+        "ENGLISH_IDENTITY_GUARD": 5,
+        "IDENTITY_CANDIDATE_INVARIANT": 3,
+        "ACRONYM_OR_IDENTIFIER_PROTECTION": 1,
+        "RESOURCE_CORRECTIVE": 0
+      },
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3N_NON_FROZEN_POLICY_CONFORMANCE_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3N_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/R3N_CORRECTIVE_POLICY.md",
+        "docs/mokxya-ai/R3N_NON_FROZEN_EVALUATION_PROTOCOL.md",
+        "docs/mokxya-ai/decisions/ADR_0015_ISOLATED_CANDIDATE_CORRECTIVE_NON_PROMOTION.md",
+        "evals/mai07_r3n_policy_conformance/MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002.CHAIN_MANIFEST.json",
+        "docs/mokxya-ai/MAI_07_R3N_INTEGRITY_CLOSURE_REPORT.md"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/english_identity_guard.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/resources/r3n_policy_conformance_policy.json",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.6-r3n-policyconf/",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n_policy_conformance.py"
+      ],
+      "blockers": [
+        "RC_002 invalidated by integrity closure — not release authority",
+        "Does not close GAP-P1-016 / GAP-P1-012",
+        "Candidate not promoted"
+      ],
+      "dependencies": [
+        "MAI-07R3M-CLOSURE"
+      ],
+      "recommended_order": 7.95,
+      "closure_note": "Historical PASSED_CORRECTIVE_RC withdrawn for release authority by MAI-07R3N-INTEGRITY-CLOSURE (HOLDOUT_CONTAMINATED). Next=MAI-07R3N2. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3N-INTEGRITY-CLOSURE",
+      "title": "ATTEMPT LINEAGE, HOLDOUT REUSE, AND GATE-AUTHORITY AUDIT",
+      "status": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "candidate_not_eligible_for_frozen_v3": true,
+      "passed_corrective_rc_remains_valid": false,
+      "prohibited_for_training": true,
+      "no_prediction_rerun": true,
+      "semantic_hash": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+      "lock_chain_semantic_integrity": true,
+      "lock_body_post_closeout_mutation": false,
+      "raw_file_hash_is_lock_authority": false,
+      "primary_verdict": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+      "secondary_reasons": [
+        "HOLDOUT_CONTAMINATED",
+        "POST_OBSERVATION_GATE_SEMANTICS_CHANGE",
+        "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE",
+        "MINIMUM_DENOMINATOR_POLICY_MISSING",
+        "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT"
+      ],
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3N_INTEGRITY_CLOSURE_REPORT.md",
+        "evals/mai07_r3n_integrity_closure/SEMANTIC_HASH.json",
+        "evals/mai07_r3n_integrity_closure/LOCK_CHAIN_SEMANTIC_INTEGRITY.json",
+        "evals/mai07_r3n_integrity_closure/RC_002_VALIDITY_DECISION.json",
+        "evals/mai07_r3n_policy_conformance/MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002.HISTORICAL_INVALIDATION_SIDECAR.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n_integrity_closure.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n_integrity_closure_finalize.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n_integrity_closure.py"
+      ],
+      "blockers": [
+        "Fresh holdout + new candidate version required before any corrective-RC claim"
+      ],
+      "dependencies": [
+        "MAI-07R3N"
+      ],
+      "recommended_order": 7.951,
+      "closure_note": "RC_002 invalidated. Lock-chain semantic integrity resolved true (not post-closeout mutation). PASSED_CORRECTIVE_RC not restored. R3N2 protocol specified not executed. Do not start R3O. MAI-08=NOT_STARTED."
+    },
+    {
+      "id": "MAI-07R3N2",
+      "title": "FRESH-HOLDOUT POLICY-CONFORMANCE CORRECTIVE",
+      "status": "FAILED_HOLDOUT_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "candidate_not_eligible_for_frozen_v3": true,
+      "passed_corrective_rc": false,
+      "passed_fresh_holdout_corrective_rc": false,
+      "prohibited_for_training": true,
+      "no_prediction_rerun": true,
+      "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+      "active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "overlay_enabled": false,
+      "candidate_runtime_version": "mai-07.1.7-r3n2-freshholdout",
+      "candidate_policy_version": "mai-07-r3n2.1.0.0",
+      "candidate_pack_content_hash": "170610284993061dd93efc3150f09f03ac2f1e3d69052c964cbe7c3aab61c1f3",
+      "invalidated_parent_runtime_version": "mai-07.1.6-r3n-policyconf",
+      "invalidated_parent_pack_hash": "4bbd3e97c99bf769e58924fc6a8d8a7de943db63700d2bdabf02b31236dd0d8c",
+      "r3m_closure_semantic": "f39432c6e085c89964e2551fe27921d32c79235061fea218262f6d3093e00afd",
+      "r3n_integrity_closure_semantic": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+      "rc_id": "MAI_07R3N2_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+      "attempt_id": "MAI_07R3N2_HOLDOUT_ATTEMPT_001",
+      "lock_semantic_sha256": "25f9eac74b8c9331a474c54ef2bb723157789aba00cab7bb8194dbb6b999c710",
+      "holdout_failed_gates": [
+        "identity_retention",
+        "identity_invariant_analogue"
+      ],
+      "holdout_identity_retention": "148/150",
+      "holdout_identity_invariant_analogue": "98/100",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3N2_FRESH_HOLDOUT_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3N2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/R3N2_FRESH_HOLDOUT_PROTOCOL.md",
+        "docs/mokxya-ai/R3N2_MINIMUM_POPULATION_POLICY.md",
+        "docs/mokxya-ai/decisions/ADR_0016_R3N2_INVALIDATED_PARENT_AND_FRESH_HOLDOUT.md",
+        "evals/mai07_r3n2_fresh_holdout/MAI_07R3N2_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n2_fresh_holdout.py"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n2_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3n2_pack.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n2.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.7-r3n2-freshholdout/",
+        "evals/mai07_r3n2_fresh_holdout/"
+      ],
+      "blockers": [
+        "Identity retention under cap-pressure holdout analogues failed 148/150 and 98/100",
+        "Fresh-holdout corrective RC not earned; do not repair R3N2 in-place"
+      ],
+      "dependencies": [
+        "MAI-07R3N-INTEGRITY-CLOSURE"
+      ],
+      "recommended_order": 7.952,
+      "closure_note": "FAILED_HOLDOUT_QUALITY. One attempt consumed. Supporting splits passed. PASSED_CORRECTIVE_RC not earned. Next=MAI-07R3N3. MAI-08=NOT_STARTED. Do not create RC_002."
+    },
+    {
+      "id": "MAI-07R3N3",
+      "title": "FRESH-HOLDOUT IDENTITY-INVARIANT CORRECTIVE",
+      "status": "FAILED_HOLDOUT_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "candidate_not_eligible_for_frozen_v3": true,
+      "passed_corrective_rc": false,
+      "passed_fresh_holdout_corrective_rc": false,
+      "prohibited_for_training": true,
+      "no_prediction_rerun": true,
+      "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+      "active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "overlay_enabled": false,
+      "candidate_runtime_version": "mai-07.1.8-r3n3-identityinv",
+      "candidate_policy_version": "mai-07-r3n3.1.0.0",
+      "candidate_pack_content_hash": "1268527c5c5d99e036628dc104340dafe297afadf9938a310a099a38f825c0e7",
+      "finalizer_version": "mai-07-r3n3.finalizer.1.0.0",
+      "parent_failed_r3n2_runtime_version": "mai-07.1.7-r3n2-freshholdout",
+      "parent_failed_r3n2_pack_hash": "170610284993061dd93efc3150f09f03ac2f1e3d69052c964cbe7c3aab61c1f3",
+      "parent_failed_r3n2_lock_semantic": "25f9eac74b8c9331a474c54ef2bb723157789aba00cab7bb8194dbb6b999c710",
+      "r3n_integrity_closure_semantic": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+      "rc_id": "MAI_07R3N3_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+      "attempt_id": "MAI_07R3N3_HOLDOUT_ATTEMPT_001",
+      "lock_semantic_sha256": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+      "holdout_failed_gates": [
+        "identity_retention",
+        "exact_raw_identity",
+        "exactly_one_identity",
+        "identity_invariant_analogue",
+        "cap_pressure_identity_retention",
+        "finalizer_idempotence"
+      ],
+      "holdout_identity_retention": "288/300",
+      "holdout_exact_raw_identity": "288/300",
+      "holdout_identity_invariant_analogue": "238/250",
+      "holdout_finalizer_idempotence": "1188/1200",
+      "monotonic_failed_gates": [
+        "finalizer_idempotence"
+      ],
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3N3_FRESH_HOLDOUT_IDENTITY_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3N3_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/R3N3_IDENTITY_CANDIDATE_INVARIANT.md",
+        "docs/mokxya-ai/R3N3_CANDIDATE_FINALIZATION_POLICY.md",
+        "docs/mokxya-ai/decisions/ADR_0017_R3N3_RESERVED_IDENTITY_AND_FAILED_PARENT.md",
+        "evals/mai07_r3n3_fresh_holdout/MAI_07R3N3_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "evals/mai07_r3n3_fresh_holdout/R3N3_AGGREGATE_ONLY_INPUT_PROOF.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n3_fresh_holdout.py"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n3_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n3_candidate_finalization.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3n3_pack.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n3.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.8-r3n3-identityinv/",
+        "evals/mai07_r3n3_fresh_holdout/"
+      ],
+      "blockers": [
+        "Identity retention and exact-identity gates failed 288/300 under holdout",
+        "Identity invariant and cap-pressure retention failed 238/250",
+        "Finalizer idempotence failed 1188/1200; monotonic split failed only finalizer_idempotence",
+        "Fresh-holdout corrective RC not earned; do not repair R3N3 in-place"
+      ],
+      "dependencies": [
+        "MAI-07R3N2",
+        "MAI-07R3N-INTEGRITY-CLOSURE"
+      ],
+      "recommended_order": 7.953,
+      "closure_note": "FAILED_HOLDOUT_QUALITY. One attempt consumed. Reserved-identity finalizer shipped but holdout identity/finalizer gates failed. Supporting splits passed. PASSED_CORRECTIVE_RC not earned. Next=MAI-07R3N4. MAI-08=NOT_STARTED. Do not create RC_002."
+    },
+    {
+      "id": "MAI-07R3N4",
+      "title": "FRESH-HOLDOUT IDENTITY-ANCHOR CORRECTIVE",
+      "status": "FAILED_HOLDOUT_QUALITY",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "candidate_not_eligible_for_frozen_v3": true,
+      "passed_corrective_rc": false,
+      "passed_fresh_holdout_corrective_rc": false,
+      "prohibited_for_training": true,
+      "no_prediction_rerun": true,
+      "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+      "active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "overlay_enabled": false,
+      "candidate_runtime_version": "mai-07.1.9-r3n4-identityanchor",
+      "candidate_policy_version": "mai-07-r3n4.1.0.0",
+      "candidate_pack_content_hash": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "finalizer_version": "mai-07-r3n4.finalizer.1.0.0",
+      "parent_failed_r3n3_runtime_version": "mai-07.1.8-r3n3-identityinv",
+      "parent_failed_r3n3_pack_hash": "1268527c5c5d99e036628dc104340dafe297afadf9938a310a099a38f825c0e7",
+      "parent_failed_r3n3_lock_semantic": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+      "r3n_integrity_closure_semantic": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+      "rc_id": "MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+      "attempt_id": "MAI_07R3N4_HOLDOUT_ATTEMPT_001",
+      "attempt_consumed": true,
+      "lock_semantic_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+      "holdout_failed_gates": [
+        "identity_retention",
+        "exact_raw_identity",
+        "exactly_one_identity",
+        "anchor_validity",
+        "identity_invariant_analogue",
+        "cap_pressure_identity_retention",
+        "finalizer_idempotence",
+        "path_finalization_coverage"
+      ],
+      "holdout_identity_retention": "827/850",
+      "holdout_exact_raw_identity": "827/850",
+      "holdout_anchor_validity": "827/850",
+      "holdout_identity_invariant_analogue": "327/350",
+      "holdout_cap_pressure_identity_retention": "327/350",
+      "holdout_finalizer_idempotence": "2452/2475",
+      "holdout_path_finalization_coverage": "2452/2475",
+      "failure_deficit_cases_per_gate": 23,
+      "identity_anchor_challenge_result": "500/500 PASSED",
+      "monotonic_failed_gates": [
+        "finalizer_idempotence",
+        "path_finalization_coverage"
+      ],
+      "monotonic_result": "360/400",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3N4_IDENTITY_ANCHOR_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/baselines/MAI_07R3N4_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/R3N4_IDENTITY_ANCHOR_POLICY.md",
+        "docs/mokxya-ai/R3N4_FINALIZATION_PATH_AUTHORITY.md",
+        "docs/mokxya-ai/decisions/ADR_0018_R3N4_IDENTITY_ANCHOR_AND_PATH_FINALIZATION.md",
+        "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "evals/mai07_r3n4_fresh_holdout/R3N4_AGGREGATE_ONLY_INPUT_PROOF.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n4_fresh_holdout.py"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n4_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_identity_anchor.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_candidate_finalization.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_finalization_path_registry.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3n4_pack.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n4.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.9-r3n4-identityanchor/",
+        "evals/mai07_r3n4_fresh_holdout/"
+      ],
+      "blockers": [
+        "Identity retention and exact-identity gates failed 827/850 under holdout",
+        "Identity invariant and cap-pressure retention failed 327/350",
+        "Finalizer idempotence and path-finalization coverage failed 2452/2475; monotonic split failed only the same two gates (360/400)",
+        "Every failing gate's deficit equals exactly 23 cases at its own population scale",
+        "Fresh-holdout corrective RC not earned; do not repair R3N4 in-place"
+      ],
+      "dependencies": [
+        "MAI-07R3N3",
+        "MAI-07R3N-INTEGRITY-CLOSURE"
+      ],
+      "recommended_order": 7.954,
+      "closure_note": "FAILED_HOLDOUT_QUALITY. One attempt consumed. Identity-anchor construction and path-finalization registry shipped; adversarial IDENTITY_ANCHOR_CHALLENGE (500 cases) and supporting splits passed in full, but holdout identity/cap-pressure/finalizer-idempotence/path-coverage gates failed by a coupled 23-case deficit. PASSED_CORRECTIVE_RC not earned. Next=MAI-07R3N5. MAI-08=NOT_STARTED. Do not create RC_002."
+    },
+    {
+      "id": "MAI-07R3N5",
+      "title": "FRESH-HOLDOUT TARGET-SPAN AND PATH-AUTHORITY CORRECTIVE",
+      "status": "INVALIDATED_INCOMPLETE_INDEPENDENT_SCORING_AND_OUTPUT_BINDING_NEW_RC_REQUIRED",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "prohibited_for_training": true,
+      "release_authority": "WITHDRAWN",
+      "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+      "active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "candidate_runtime_version": "mai-07.1.10-r3n5-targetspan",
+      "candidate_policy_version": "mai-07-r3n5.1.0.0",
+      "candidate_pack_content_hash": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "rc_id": "MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+      "attempt_id": "MAI_07R3N5_HOLDOUT_ATTEMPT_001",
+      "attempt_consumed": true,
+      "lock_semantic_sha256": "80bb914f01cc365582177592516ec2bb9e519f4f17a3456b1a2bd48d053af907",
+      "lock_physical_sha256": "743c34b9f7235c6fb6e32990ee413be89f76c4ee6508df1f220d9e94773dcb07",
+      "invalidation_artifact": "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_INTEGRITY_INVALIDATION.json",
+      "invalidation_raw_sha256": "8d7b26bbcd813c79d8a4568acf096dfe7455ef1e1b1df3ab7367c811a293a1e2",
+      "invalidation_semantic_sha256": "204665a84c076c5193038b11ae058b746b66101c2fb33332d32716d7dc2d5353",
+      "critical_metrics": {
+        "identity_retention": "850/850",
+        "exact_raw_identity": "850/850",
+        "exactly_one_identity": "850/850",
+        "identity_invariant_analogue": "350/350",
+        "cap_pressure_identity_retention": "350/350",
+        "finalizer_idempotence": "2475/2475",
+        "path_finalization_coverage": "2475/2475",
+        "anchor_validity": "850/850"
+      },
+      "gate_evidence": [
+        "docs/mokxya-ai/decisions/ADR_0020_R3N5_INVALIDATION_AND_R3N6_COMPLETE_EVIDENCE_PROTOCOL.md",
+        "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_INTEGRITY_INVALIDATION.json",
+        "docs/mokxya-ai/MAI_07_R3N5_FRESH_HOLDOUT_TARGET_SPAN_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0019_R3N5_TARGET_SPAN_AND_PHYSICAL_LOCK_AUTHORITY.md",
+        "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n5_integrity_invalidation.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n5_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n5_target_span_contract.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n5.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.10-r3n5-targetspan/",
+        "evals/mai07_r3n5_fresh_holdout/"
+      ],
+      "blockers": [
+        "Release authority withdrawn; incomplete independent scoring and attempt-time output binding",
+        "Do not repair or rerun R3N5 in place; next governed phase was MAI-07R3N6",
+        "Post-invalidation mutation of mai07_r3n5_candidate_runtime.py broke live invalidation recomputation equality (invalidation JSON hashes remain authentic)"
+      ],
+      "dependencies": [
+        "MAI-07R3N4",
+        "MAI-07R3N-INTEGRITY-CLOSURE"
+      ],
+      "recommended_order": 7.955,
+      "closure_note": "Historical numerical evidence retained. Release authority withdrawn under ADR_0020. Next=MAI-07R3N6 (executed). No MAI-07 or MAI-08 completion claim."
+    },
+    {
+      "id": "MAI-07R3N6",
+      "title": "FRESH-HOLDOUT COMPLETE-EVIDENCE CORRECTIVE",
+      "status": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "prohibited_for_training": true,
+      "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+      "active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "candidate_runtime_version": "mai-07.1.11-r3n6-chaincomplete",
+      "candidate_policy_version": "mai-07-r3n6.1.0.0",
+      "candidate_pack_content_hash": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_004",
+      "attempt_id": "MAI_07R3N6_HOLDOUT_ATTEMPT_004",
+      "attempt_consumed": true,
+      "lock_semantic_sha256": "cdae150ce30a120a18f53c6be418fd8ed1be48d0ebb152800a087ca909ca044a",
+      "lock_physical_sha256": "604e32daaf4aa3ebe12dc2bd07d704e5471ad4b4cb6ffec87bfd2248b13ea5d6",
+      "chain_raw_sha256": "b1c7c8f4137e7f3a88d02ca59e7e09a2a657ec5e9463d7328fa86e81243ba11c",
+      "prior_rc_lineage": [
+        "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+        "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002",
+        "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_003"
+      ],
+      "critical_metrics": {
+        "identity_retention": "850/850",
+        "exact_raw_identity": "850/850",
+        "exactly_one_identity": "850/850",
+        "identity_invariant_analogue": "350/350",
+        "cap_pressure_identity_retention": "350/350",
+        "finalizer_idempotence": "2475/2475",
+        "path_finalization_coverage": "2475/2475",
+        "anchor_validity": "850/850",
+        "split_expected_pass": "2475/2475"
+      },
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3N6_FRESH_HOLDOUT_COMPLETE_EVIDENCE_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0020_R3N5_INVALIDATION_AND_R3N6_COMPLETE_EVIDENCE_PROTOCOL.md",
+        "docs/mokxya-ai/baselines/MAI_07R3N6_BASELINE_SUMMARY.md",
+        "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_004.QUALIFICATION_RESULT.json",
+        "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_004.CHAIN_MANIFEST.json",
+        "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_004.OUTPUT_BINDING_MANIFEST.json",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n6_lock_chain.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3n6_chain_adversarial.py"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n6_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n6.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n6_output_binding.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.11-r3n6-chaincomplete/",
+        "evals/mai07_r3n6_fresh_holdout/"
+      ],
+      "blockers": [
+        "Independent V3 review resolution/freeze not complete",
+        "Professional linguist approval remains false",
+        "Candidate is not promoted; parent MAI-07 quality/production gates remain false"
+      ],
+      "dependencies": [
+        "MAI-07R3N5",
+        "ADR_0020"
+      ],
+      "recommended_order": 7.956,
+      "closure_note": "Engineering corrective RC passed under complete independent scoring and 15-artifact attempt-time output binding. Active runtime remains mai-07.1.3-r3f-sealnew. Next=MAI-07R3O independent V3 review resolution and freeze. No MAI-07 or MAI-08 completion claim. QUALITY_GATES_PASSED/LINGUIST_APPROVED/PRODUCTION_APPROVED remain false."
+    },
+    {
+      "id": "MAI-07R3O",
+      "title": "INDEPENDENT V3 REVIEW RESOLUTION AND FREEZE",
+      "status": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+      "production_approved": false,
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "workflow_state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+      "human_blocker": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+      "round_a_locked": false,
+      "round_b_ready": false,
+      "round_b_locked": false,
+      "official_inbox_returns": {
+        "ACCOUNTING_DOMAIN": 0,
+        "NEPALI_FLUENT_A": 0,
+        "PRODUCT_POLICY": 0,
+        "PROFESSIONAL_LINGUIST_B": 0
+      },
+      "parent_engineering_rc": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_004",
+      "parent_engineering_verdict": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3O_INDEPENDENT_V3_REVIEW_RESOLUTION_READINESS_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0021_PREFER_GENUINE_INDEPENDENT_REVIEW_OVER_AI_FREEZE_SHORTCUT.md",
+        "docs/mokxya-ai/MAI_07_R3N6_FRESH_HOLDOUT_COMPLETE_EVIDENCE_CORRECTIVE_REPORT.md",
+        "docs/mokxya-ai/MAI_07_R3JA_REVIEW_OPS_REPORT.md",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/REVIEW_STATUS.json",
+        "docs/mokxya-ai/decisions/ADR_0010_V2_RETIREMENT_AND_V3_GOVERNANCE.md",
+        "docs/mokxya-ai/decisions/ADR_0011_AI_ASSISTED_VS_INDEPENDENT_REVIEW_EVIDENCE.md"
+      ],
+      "implementation_evidence": [
+        "docs/mokxya-ai/reviews/mai07_v3/",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/"
+      ],
+      "blockers": [
+        "Zero official Round A submissions in round_a_inbox (all four roles)",
+        "GAP-P1-016 independent V3 human review OPEN",
+        "GAP-P1-012 professional linguist approval OPEN",
+        "AI must not fill answers or move AI-assisted drafts into official inbox"
+      ],
+      "dependencies": [
+        "MAI-07R3N6",
+        "MAI-07R3J-A",
+        "MAI-07R3J-A-REVIEW-OPS"
+      ],
+      "recommended_order": 7.96,
+      "closure_note": "R3O opened as blocked. Engineering parent R3N6 ready. Review packet and Round A ZIPs ready. Awaiting real human Round A returns. No freeze, linguist approval, quality-gates pass, runtime promotion, or MAI-08 start."
+    },
+    {
+      "id": "MAI-08",
+      "title": "CODE-MIX AND TYPO ROBUSTNESS",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "nepali_shop_nlu",
+        "operation_classifier regex"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-07"
+      ],
+      "recommended_order": 8
+    },
+    {
+      "id": "MAI-09",
+      "title": "NUMBER, DATE, MONEY, QUANTITY, DURATION, AND ID ROLES",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "draft parsers / shop NLU number handling — partial roles"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-08"
+      ],
+      "recommended_order": 9
+    },
+    {
+      "id": "MAI-10",
+      "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "NP KB lexicon indexes",
+        "Falcon/nepal-ai maps"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-09"
+      ],
+      "recommended_order": 10
+    },
+    {
+      "id": "MAI-11",
+      "title": "RESPONSE LANGUAGE AND REGISTER POLICY",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "conversation tone in prompts — no versioned register policy"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-10"
+      ],
+      "recommended_order": 11
+    },
+    {
+      "id": "MAI-12",
+      "title": "LANGUAGE DATA GOVERNANCE AND TRAINING PIPELINE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "knowledgebase/config.json pipeline",
+        "zips offline"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-11"
+      ],
+      "recommended_order": 12
+    },
+    {
+      "id": "MAI-13",
+      "title": "CONVERSATION AND OBJECT-REFERENCE STORE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "oip conversation/session modules",
+        "khata draft stores",
+        "Dexie UI history"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-12"
+      ],
+      "recommended_order": 13
+    },
+    {
+      "id": "MAI-14",
+      "title": "TURN RELATION BEFORE DRAFT MERGE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "mode_aware pending draft selection \u2014 turn-relation incomplete"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-13"
+      ],
+      "recommended_order": 14
+    },
+    {
+      "id": "MAI-15",
+      "title": "REFERENCE, COREFERENCE, AND CORRECTION",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "discourse confirm_pending / corrections partial"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-14"
+      ],
+      "recommended_order": 15
+    },
+    {
+      "id": "MAI-16",
+      "title": "CONTEXT ASSEMBLER AND MEMORY POLICY",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "oip memory module",
+        "layered_memory legacy",
+        "NIOS memory sqlite"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-15"
+      ],
+      "recommended_order": 16
+    },
+    {
+      "id": "MAI-17",
+      "title": "HIERARCHICAL ROUTER AND OOD",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "oip router module",
+        "operation_classifier"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-16"
+      ],
+      "recommended_order": 17
+    },
+    {
+      "id": "MAI-18",
+      "title": "EVENT SPECIFICATION REGISTRY",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "execution_intent_registry partial"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-17"
+      ],
+      "recommended_order": 18
+    },
+    {
+      "id": "MAI-19",
+      "title": "STRUCTURED EVENT EXTRACTION",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "shop NLU + draft extractors deterministic"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-18"
+      ],
+      "recommended_order": 19
+    },
+    {
+      "id": "MAI-20",
+      "title": "INFORMATION-GAIN CLARIFICATION ENGINE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "purchase/sales clarification_message helpers"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-19"
+      ],
+      "recommended_order": 20
+    },
+    {
+      "id": "MAI-21",
+      "title": "TYPED PLANNER AND TOOL LOOP",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "oip planner module \u2014 API import broken"
+      ],
+      "blockers": [
+        "GAP-P0-004"
+      ],
+      "dependencies": [
+        "MAI-20"
+      ],
+      "recommended_order": 21
+    },
+    {
+      "id": "MAI-22",
+      "title": "PROVIDER PORT AND MODEL CASCADE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "provider_runtime adapters groq/ollama/openai/..."
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-21"
+      ],
+      "recommended_order": 22
+    },
+    {
+      "id": "MAI-23",
+      "title": "PROMPT REGISTRY AND STRUCTURED OUTPUT",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "prompt_grounding \u2014 not full PromptRegistry"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-22"
+      ],
+      "recommended_order": 23
+    },
+    {
+      "id": "MAI-24",
+      "title": "KNOWLEDGE SOURCE AND DOCUMENT GOVERNANCE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "knowledgebase manifests/governance docs"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-23"
+      ],
+      "recommended_order": 24
+    },
+    {
+      "id": "MAI-25",
+      "title": "EXTRACTION, OCR, AND STRUCTURAL SEGMENTATION",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "knowledgebase parser pipeline"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-24"
+      ],
+      "recommended_order": 25
+    },
+    {
+      "id": "MAI-26",
+      "title": "TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "partial \u2014 Nepal law effective dates not proven"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-25"
+      ],
+      "recommended_order": 26
+    },
+    {
+      "id": "MAI-27",
+      "title": "LEXICAL INDEX",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "kb_lexical.sqlite ACTIVE"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-26"
+      ],
+      "recommended_order": 27
+    },
+    {
+      "id": "MAI-28",
+      "title": "MULTILINGUAL VECTOR INDEX",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "optional semantic chroma \u2014 partial/prod-limited"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-27"
+      ],
+      "recommended_order": 28
+    },
+    {
+      "id": "MAI-29",
+      "title": "HYBRID FUSION, RERANKING, AND EVIDENCE BUNDLES",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "hybrid_rag RRF \u2014 local path"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-28"
+      ],
+      "recommended_order": 29
+    },
+    {
+      "id": "MAI-30",
+      "title": "GROUNDED ANSWER AND CLAIM-CITATION VERIFICATION",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "ORBIX_NP_KB_CITATIONS \u2014 claim verifier incomplete"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-29"
+      ],
+      "recommended_order": 30
+    },
+    {
+      "id": "MAI-31",
+      "title": "EVENTFRAME TO EXISTING DOMAIN PORTS",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "mode_aware \u2192 draft cards \u2192 Dexie engines"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-30"
+      ],
+      "recommended_order": 31
+    },
+    {
+      "id": "MAI-32",
+      "title": "DURABLE VERSIONED DRAFTS",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "khata *_draft.py"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-31"
+      ],
+      "recommended_order": 32
+    },
+    {
+      "id": "MAI-33",
+      "title": "DETERMINISTIC PREVIEW AND EDIT LOOP",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "preview_message / confirmation cards"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-32"
+      ],
+      "recommended_order": 33
+    },
+    {
+      "id": "MAI-34",
+      "title": "EXPLICIT CONFIRMATION AND OEC DISPATCH",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "UI explicit confirm; Action\u2192OEC not product path"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-33"
+      ],
+      "recommended_order": 34
+    },
+    {
+      "id": "MAI-35",
+      "title": "OFFLINE, SYNC, CONFLICT, AND REVERSAL UX",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [
+        "eventSyncQueue + dual sync remains"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "MAI-34"
+      ],
+      "recommended_order": 35
+    },
+    {
+      "id": "MAI-36",
+      "title": "LEGAL QUESTION FRAMER AND RESEARCH MODE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-35"
+      ],
+      "recommended_order": 36
+    },
+    {
+      "id": "MAI-37",
+      "title": "CORE NEPAL TAX KNOWLEDGE PILOT",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-36"
+      ],
+      "recommended_order": 37
+    },
+    {
+      "id": "MAI-38",
+      "title": "TAX CALCULATOR/RULE INTEGRATION",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-37"
+      ],
+      "recommended_order": 38
+    },
+    {
+      "id": "MAI-39",
+      "title": "NFRS/NAS POLICY, MAPPING, AND DISCLOSURE PILOT",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-38"
+      ],
+      "recommended_order": 39
+    },
+    {
+      "id": "MAI-40",
+      "title": "FINANCIAL CLOSE AND ADJUSTMENT ASSISTANCE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-39"
+      ],
+      "recommended_order": 40
+    },
+    {
+      "id": "MAI-41",
+      "title": "BROADER NEPAL BUSINESS-LAW DOMAIN RELEASES",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-40"
+      ],
+      "recommended_order": 41
+    },
+    {
+      "id": "MAI-42",
+      "title": "JUDICIAL/DECISION INTELLIGENCE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-41"
+      ],
+      "recommended_order": 42
+    },
+    {
+      "id": "MAI-43",
+      "title": "CONTINUOUS CHANGE INTELLIGENCE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-42"
+      ],
+      "recommended_order": 43
+    },
+    {
+      "id": "MAI-44",
+      "title": "SECURITY AND TENANT RED TEAM",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-43"
+      ],
+      "recommended_order": 44
+    },
+    {
+      "id": "MAI-45",
+      "title": "LOAD, LATENCY, RESOURCE, AND FAILOVER",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-44"
+      ],
+      "recommended_order": 45
+    },
+    {
+      "id": "MAI-46",
+      "title": "BACKUP, RESTORE, DISASTER, AND DATA LIFECYCLE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-45"
+      ],
+      "recommended_order": 46
+    },
+    {
+      "id": "MAI-47",
+      "title": "HUMAN REVIEW AND PILOT OPERATIONS",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-46"
+      ],
+      "recommended_order": 47
+    },
+    {
+      "id": "MAI-48",
+      "title": "GOVERNED IMPROVEMENT AND OPTIONAL FINE-TUNING",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-47"
+      ],
+      "recommended_order": 48
+    },
+    {
+      "id": "MAI-49",
+      "title": "PRODUCTION CAPABILITY RELEASE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-48"
+      ],
+      "recommended_order": 49
+    },
+    {
+      "id": "MAI-50",
+      "title": "NEPALI/ENGLISH SPEECH CHANNEL",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-49"
+      ],
+      "recommended_order": 50
+    },
+    {
+      "id": "MAI-51",
+      "title": "PRIVATE USER-DOCUMENT INTELLIGENCE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-50"
+      ],
+      "recommended_order": 51
+    },
+    {
+      "id": "MAI-52",
+      "title": "CA-FIRM ENGAGEMENT AND WORKPAPER WORKSPACE",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-51"
+      ],
+      "recommended_order": 52
+    },
+    {
+      "id": "MAI-53",
+      "title": "COMPLIANCE OBLIGATION AND CALENDAR AUTOMATION",
+      "status": "NOT_STARTED",
+      "production_approved": false,
+      "gate_evidence": [],
+      "implementation_evidence": [],
+      "blockers": [],
+      "dependencies": [
+        "MAI-52"
+      ],
+      "recommended_order": 53
+    }
+  ],
+  "notes": [
+    "No later phase marked PASSED merely because related code exists.",
+    "implementation_evidence relates to phase requirements; gate_evidence empty until gate proven.",
+    "MAI-00 PASSED as architecture audit; production behavior unchanged.",
+    "MAI-01 PASSED 2026-07-14; production_approved remains false; GAP-P0-001 still open."
+  ]
+}

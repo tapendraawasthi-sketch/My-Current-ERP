@@ -256,7 +256,7 @@ const StockBook: React.FC = () => {
               key={cell.label}
               className={`flex-1 px-4 py-3 ${idx < arr.length - 1 ? "border-r border-gray-200" : ""}`}
             >
-              <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
                 {cell.label}
               </div>
               <div className="text-[12px] number-cell-bold text-gray-800 mt-1">

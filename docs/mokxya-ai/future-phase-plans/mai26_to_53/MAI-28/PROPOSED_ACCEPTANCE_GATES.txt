@@ -1,0 +1,31 @@
+STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+IMPLEMENTATION_AUTHORIZED: false
+PHASE_PASS_CLAIM: false
+REQUIRES_MAI25_HANDOFF: true
+
+======================================================================
+MAI-28 — PROPOSED ACCEPTANCE GATES
+======================================================================
+
+NORMAL: N-01 paraphrase/cross-lingual recall improves vs lexical-only baseline;
+  N-02 model+release manifest pins model name/version/dim; N-03 rebuild
+  reproducibility within documented tolerance or exact for deterministic local.
+
+FAILURE: F-01 hash_embed / SHA pseudo-vector rejected on production semantic path;
+  F-02 missing model license/deploy record blocks activation; F-03 index/release
+  mismatch blocked.
+
+SECURITY/TENANT: S-01 no cross-tenant vector leakage; S-02 eval corpora not in
+  prod collection (align build_semantic_index policy).
+
+PRIVACY: P-01 embed batch logs redacted (MAI-03).
+
+DETERMINISM: D-01 same model+inputs → documented similarity stability; D-02
+  manifest hash for index contents.
+
+ROLLBACK: R-01 deactivate vector index; lexical-only safe mode; prior release.
+
+REGRESSION: G-01 MAI-27 lexical still works alone; G-02 GAP-P2-001 not worsened
+  (prod must not require unavailable Ollama); G-03 no MAI-07 pack edits.
+
+END OF GATES

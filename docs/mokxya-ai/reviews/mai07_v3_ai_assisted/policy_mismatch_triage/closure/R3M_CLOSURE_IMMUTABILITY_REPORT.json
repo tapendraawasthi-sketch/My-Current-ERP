@@ -1,0 +1,15 @@
+{
+  "frozen_datasets_not_opened": true,
+  "historical_semantic_hashes_preserved": true,
+  "llm_not_invoked": true,
+  "mai08_not_started": true,
+  "official_inbox_empty": true,
+  "overlay_disabled": true,
+  "phase": "MAI-07R3M-CLOSURE-TIER1-SET-RECONCILIATION",
+  "r3l_predictions_not_regenerated": true,
+  "r3m_queues_not_rewritten": true,
+  "resource_not_modified": true,
+  "runtime_not_invoked": true,
+  "runtime_version_unchanged": true,
+  "schema_version": "mai07_r3m_tier1_closure_v1"
+}

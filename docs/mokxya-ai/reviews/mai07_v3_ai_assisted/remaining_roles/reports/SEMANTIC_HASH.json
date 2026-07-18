@@ -1,0 +1,7 @@
+{
+  "algorithm": "sha256(json.dumps({schema,phase,provenance,records_sorted}, sort_keys=True))",
+  "phase": "MAI-07R3J-AI-ASSISTED-REMAINING-ROLES-IMPORT",
+  "schema": "mai07_v3_ai_assisted_remaining_roles_import_v1",
+  "semantic_hash": "1cc783d79cc3cc5f3f2daa288ae8b4721238fed584dbfb540597c8f883a8f4a1",
+  "total_rows": 3333
+}

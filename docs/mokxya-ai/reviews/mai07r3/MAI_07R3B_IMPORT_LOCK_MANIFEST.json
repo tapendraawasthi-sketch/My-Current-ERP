@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "MAI_07R3B_IMPORT_LOCK_MANIFEST",
+  "status": "PASSED_REVIEW_IMPORT_POLICY_LOCK",
+  "locked_on": "2026-07-15",
+  "product_policy": "OPTION_A_CONSERVATIVE_IDENTITY_POLICY",
+  "adr_0009_status": "PRODUCT_POLICY_APPROVED_IMPLEMENTATION_PENDING",
+  "import_semantic_hash": "10afcc2f8a58d7fa03745cf27f825504fafdcc5dfe9e8c54addf7d56c91d51e7",
+  "counts": {
+    "round_a": 149,
+    "round_b": 263,
+    "mapping": 149,
+    "conflicts": 49,
+    "ACCEPTABLE_PREFERRED": 223,
+    "UNNATURAL_BUT_POSSIBLE": 36,
+    "CANNOT_DECIDE": 4
+  },
+  "artifact_sha256": {
+    "round_a_locked": "f01270e3017162259d2d305e158e86e386eb86841e4928b99546cd613d037f49",
+    "round_b_broad_locked": "79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61",
+    "round_b_official": "642bc6f39d6eb2797974e704cd32034f520abf0c5df43cb8aa9dcb06a8438021",
+    "blind_mapping": "b6888bfd207d0dd225ecf2c9d403dad9a5c761eede1ddcfba4cd97d1701bcfd6",
+    "review_schema": "e802be835e61c555ba7699b1bbed65ae597322b1d5c8cb075341e4d23e66e48a",
+    "import_completed": "6cfb5a7bdaacfb3a4bbe63a4d35c5e6077dadb0e620c22454413a774ef2ce9e3",
+    "bulk_decision": "4567504dc10443893f87b69fa46718722c747ee33c0384a2fac007f29362380d",
+    "evaluation_semantics_v2": "54e92c5933a55b14043eed1f2c78ec7e3ef615c7896a50092c7cea1d5c05ae24",
+    "unblinded_adjudication": "6550d62c73d7deb475c6932df7445f26a355ae02b75f08d3d423b7aebcf32359",
+    "frozen_v1_parent": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+    "active_resource_expected": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+    "active_semantic_expected": "b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849"
+  },
+  "flags": {
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "linguist_approved": false,
+    "production_approved": false,
+    "row_by_row_five_label_review_performed": false,
+    "professional_linguist_adjudication": false,
+    "mai08_authorized": false,
+    "dataset_v2_built": false
+  },
+  "importer": "erp_bot/src/oip/modules/language_runtime/transliteration/application/import_mai07r3b_reviews.py"
+}

@@ -1,0 +1,304 @@
+MOKXYA AI — SAFE PARALLEL WORKFLOW FOR CURSOR AND CODEX
+
+Document version: 1.0
+Created: 2026-07-18
+Repository: C:\Users\Acer\Documents\My-Current-ERP
+Governing roadmap: MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt
+
+======================================================================
+1. PURPOSE
+======================================================================
+
+This file defines how Cursor and Codex may work at the same time without
+editing the same authority, invalidating phase evidence, bypassing dependencies,
+or creating incompatible implementations.
+
+The work is divided as follows:
+
+  Codex:
+    Complete the current MAI-07 corrective chain and then MAI-08 through
+    MAI-25, one governed phase at a time.
+
+  Cursor:
+    While Codex is completing work through MAI-25, inspect the repository and
+    prepare non-authoritative implementation packets for MAI-26 through MAI-53.
+    Cursor must not implement MAI-26 or any later phase until the formal MAI-25
+    handoff gate in this document is satisfied.
+
+The purpose of Cursor's initial parallel lane is preparation, dependency
+analysis, acceptance-test design, risk discovery, and conflict prevention. It
+is not permission to claim later phases are implemented or passed.
+
+======================================================================
+2. CURRENT AUTHORITY AND NEXT PHASE
+======================================================================
+
+The repository phase ledger is the current status authority:
+
+  docs/mokxya-ai/MAI_PHASE_LEDGER.json
+
+At the creation of this workflow:
+
+  MAI-00 through MAI-06: PASSED
+  MAI-07: NEEDS_CORRECTIVE_WORK
+  Exact recommended next phase:
+    MAI-07R3N5-FRESH-HOLDOUT-IDENTITY-ANCHOR-CORRECTIVE
+  MAI-08 through MAI-53: NOT_STARTED
+
+Cursor must re-read the ledger before every work session. This snapshot is
+context only and must not override newer repository evidence.
+
+======================================================================
+3. NON-NEGOTIABLE OWNERSHIP BOUNDARY
+======================================================================
+
+Until the MAI-25 handoff gate is satisfied, Codex exclusively owns:
+
+  1. All implementation for MAI-07 through MAI-25.
+  2. Production/runtime source code changed by those phases.
+  3. Tests, evaluations, sealed packs, and evidence for those phases.
+  4. docs/mokxya-ai/MAI_PHASE_LEDGER.json.
+  5. Authoritative gap registers, governance documents, ADRs, phase reports,
+     release records, and approval flags affected by MAI-07 through MAI-25.
+  6. Active runtime/resource/model/prompt/knowledge/rule release selection.
+
+Until that handoff, Cursor may write only beneath this isolated directory:
+
+  docs/mokxya-ai/future-phase-plans/mai26_to_53/
+
+Cursor may read all repository files permitted by AGENTS.md, but must not edit,
+format, rename, move, generate into, or delete anything outside that directory.
+If the directory does not exist, Cursor may create it.
+
+Cursor must never edit this workflow file while Codex's MAI-07-to-MAI-25 lane
+is active. Proposed changes must be written as suggestions inside Cursor's
+isolated planning directory.
+
+======================================================================
+4. FILES AND PATHS CURSOR MUST NOT OPEN OR EDIT
+======================================================================
+
+Cursor must obey every applicable AGENTS.md. In particular, it must never read
+or edit anything under:
+
+  node_modules/
+  dist/
+  .git/
+  .workspace/
+  .tanstack/
+
+It must not open or edit these dead/unused files:
+
+  src/components/StockItems.tsx
+  src/components/invoice/PurchaseInvoiceForm.tsx
+  src/components/invoice/ReturnInvoiceForm.tsx
+
+Repository-specific route/form facts in AGENTS.md remain authoritative.
+
+======================================================================
+5. CURSOR'S PARALLEL PLANNING DELIVERABLES
+======================================================================
+
+Cursor must create one directory per phase:
+
+  docs/mokxya-ai/future-phase-plans/mai26_to_53/MAI-26/
+  ...
+  docs/mokxya-ai/future-phase-plans/mai26_to_53/MAI-53/
+
+Each directory may contain only the following proposed, non-authoritative files:
+
+  1. DISCOVERY.txt
+     Current relevant authorities and reusable components, with exact paths.
+
+  2. DEPENDENCIES.txt
+     Required earlier phases, contracts, schemas, releases, and unresolved
+     questions. Anything dependent on unfinished MAI-07-to-MAI-25 work must be
+     marked UNRESOLVED_PENDING_HANDOFF.
+
+  3. PROPOSED_IMPLEMENTATION_PACKET.txt
+     A narrowly scoped future implementation plan. It must not claim that paths,
+     interfaces, or contracts controlled by unfinished phases are final.
+
+  4. PROPOSED_ACCEPTANCE_GATES.txt
+     Normal, failure, security, privacy, tenant-isolation, determinism, rollback,
+     and regression tests required by the roadmap.
+
+  5. CONFLICT_RISK_REGISTER.txt
+     Likely overlap with MAI-07-to-MAI-25 files and a strategy to avoid it.
+
+Every file must begin with:
+
+  STATUS: NON_AUTHORITATIVE_FUTURE_PHASE_PLAN
+  IMPLEMENTATION_AUTHORIZED: false
+  PHASE_PASS_CLAIM: false
+  REQUIRES_MAI25_HANDOFF: true
+
+Cursor must also maintain:
+
+  docs/mokxya-ai/future-phase-plans/mai26_to_53/INDEX.txt
+
+The index must list each phase, planning status, unresolved dependencies, files
+inspected, and the last repository commit observed. Planning status values are:
+
+  NOT_REVIEWED
+  DISCOVERY_IN_PROGRESS
+  DRAFT_PACKET_READY
+  NEEDS_REVALIDATION_AFTER_MAI25
+
+These values are planning statuses only, never roadmap completion statuses.
+
+======================================================================
+6. PROHIBITED CURSOR ACTIONS BEFORE HANDOFF
+======================================================================
+
+Before the MAI-25 handoff is accepted, Cursor must not:
+
+  1. Implement, activate, or mark passed MAI-26 through MAI-53.
+  2. Modify source code, tests, schemas, migrations, prompts, runtime resources,
+     evaluation datasets, sealed packs, or production configuration.
+  3. Modify MAI_PHASE_LEDGER.json, gap registers, ADRs, approvals, or releases.
+  4. Set QUALITY_GATES_PASSED, LINGUIST_APPROVED, PRODUCTION_APPROVED, or any
+     equivalent flag to true.
+  5. Run migrations, publish, deploy, push, open a PR, or mutate external state.
+  6. Use future plans as evidence that a phase is complete.
+  7. invent interfaces that conflict with unfinished upstream phases.
+  8. weaken tests, reuse consumed holdouts, inspect sealed holdout answers before
+     candidate lock, or fabricate evidence/reviewer approval.
+  9. edit a file currently owned or being edited by Codex.
+ 10. rebase, amend, squash, force-push, or rewrite published history. The
+     repository is connected to Lovable and published history must be preserved.
+
+If useful preparation would require a prohibited action, Cursor must document it
+as a handoff-time task and continue with other safe planning work.
+
+======================================================================
+7. SHARED-WORKSPACE SAFETY
+======================================================================
+
+Cursor and Codex may see filesystem changes immediately. Therefore:
+
+  1. Never assume a file is unchanged because it was inspected earlier.
+  2. Before writing, Cursor must verify the target is under its isolated planning
+     directory and inspect git status for that target.
+  3. Cursor must not stage, commit, restore, stash, or discard Codex's changes.
+  4. Cursor must preserve unrelated dirty work.
+  5. Cursor must use apply-patch-style minimal edits and never bulk-format the
+     repository.
+  6. Cursor must not run generators that write outside its owned directory.
+  7. If Cursor detects simultaneous modification of a planning file, it must stop
+     editing that file and record the conflict in INDEX.txt.
+  8. No destructive commands are permitted.
+
+Separate Git worktrees are preferable for implementation, but they do not waive
+phase dependencies or file ownership. During the planning-only period, Cursor's
+strict directory boundary is sufficient if faithfully followed.
+
+======================================================================
+8. CODEX IMPLEMENTATION SEQUENCE
+======================================================================
+
+Codex must use repository evidence to select the earliest safe incomplete phase.
+The intended high-level sequence is:
+
+  MAI-07R3N5
+    -> governed MAI-07 closure/revalidation
+    -> MAI-08
+    -> MAI-09
+    -> ... one phase at a time ...
+    -> MAI-25
+    -> formal handoff
+
+Passing a subphase does not automatically pass its parent. Codex must not move to
+MAI-08 until MAI-07's actual dependency gate is satisfied. Each phase requires
+focused tests, broader regressions, evidence, truthful ledger status, and rollback.
+
+======================================================================
+9. MAI-25 HANDOFF GATE
+======================================================================
+
+Cursor may begin implementation of MAI-26 only after a Codex-created handoff
+report exists at:
+
+  docs/mokxya-ai/MAI_25_TO_MAI_26_HANDOFF_REPORT.txt
+
+The report must contain:
+
+  1. HANDOFF_STATUS: ACCEPTED_FOR_MAI_26_IMPLEMENTATION
+  2. Exact Git commit hash and branch.
+  3. MAI-00 through MAI-25 authoritative statuses.
+  4. Proof that MAI-26 dependencies passed or an explicit blocker.
+  5. Active runtime, resource, schema, model, prompt, knowledge, and rule versions
+     and hashes where applicable.
+  6. Migrations and compatibility obligations.
+  7. Exact test commands, exit codes, counts, skips, and known baseline failures.
+  8. Open gaps, risks, limitations, security/privacy notes, and rollback.
+  9. Changed paths and current ownership transfer.
+ 10. The exact recommended next phase from the updated ledger.
+
+Both of these conditions must also be true:
+
+  docs/mokxya-ai/MAI_PHASE_LEDGER.json records MAI-25 as passed; and
+  its recommended_next_phase identifies MAI-26 (or a required closure immediately
+  preceding MAI-26).
+
+If any condition is absent or contradictory, Cursor remains planning-only.
+
+======================================================================
+10. POST-HANDOFF CURSOR PROCEDURE
+======================================================================
+
+After the handoff gate is satisfied, Cursor must:
+
+  1. Re-read AGENTS.md, the master roadmap, phase ledger, handoff report, gap
+     register, and the relevant proposed phase packet.
+  2. Revalidate the MAI-26 plan against actual MAI-25 repository contracts.
+  3. Treat all earlier planning documents as drafts, not authority.
+  4. Update the MAI-26 plan to resolve every UNRESOLVED_PENDING_HANDOFF item.
+  5. Implement only MAI-26, test it, and report evidence.
+  6. Update authoritative ledgers only if the MAI-26 gate genuinely passes.
+  7. Continue sequentially, one phase per governed change, through MAI-53.
+
+Cursor must not implement several roadmap phases in a single giant change.
+
+======================================================================
+11. COMMUNICATION CONTRACT
+======================================================================
+
+Cursor's progress message during parallel planning must use this format:
+
+  Lane: CURSOR_MAI26_TO_53_PLANNING
+  Mode: NON_AUTHORITATIVE_PLANNING_ONLY
+  Phase packet: <MAI-ID>
+  Files written: <paths under owned directory only>
+  Repository commit observed: <hash>
+  Upstream dependencies unresolved: <list>
+  Conflicts detected: <none or list>
+  Implementation performed: false
+  Authoritative files changed: none
+
+If the user asks Cursor to implement MAI-26 early, Cursor must explain that the
+MAI-25 handoff dependency is not satisfied and continue safe planning unless the
+repository now contains valid evidence satisfying Section 9.
+
+======================================================================
+12. EXACT STARTING INSTRUCTION FOR CURSOR
+======================================================================
+
+Read AGENTS.md and this entire file first. Then read the master roadmap and the
+current phase ledger. Work only in the CURSOR_MAI26_TO_53_PLANNING lane. Create
+or update docs/mokxya-ai/future-phase-plans/mai26_to_53/INDEX.txt and prepare
+future-phase packets sequentially beginning with MAI-26. You may inspect permitted
+repository files, but you must not modify anything outside that isolated planning
+directory. Do not implement MAI-26+, change authoritative status, or claim any
+phase passed until the formal MAI-25 handoff gate is satisfied.
+
+======================================================================
+13. FINAL PRINCIPLE
+======================================================================
+
+Parallel work is safe only when ownership is separate and later-phase work remains
+preparatory until upstream contracts are proven. Speed must not replace dependency
+order, deterministic evidence, tenant safety, accounting authority, or truthful
+release status.
+
+END OF FILE

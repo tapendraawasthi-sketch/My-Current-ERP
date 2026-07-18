@@ -1,0 +1,34 @@
+{
+  "correction_requirements": [
+    "Return every listed batch using its exact filename.",
+    "Complete the signed reviewer declaration.",
+    "Complete every assigned disposition and confidence cell using allowed enums.",
+    "Do not rename sheets, headers, or review IDs.",
+    "Save as .xlsx without formulas or macros."
+  ],
+  "credential_status": "CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION",
+  "declaration_status": "pending_submission",
+  "expected_batch_count": 10,
+  "expected_row_count": 1111,
+  "human_answers_altered": false,
+  "human_answers_generated": false,
+  "inbox_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/PRODUCT_POLICY",
+  "missing_batch_count": 10,
+  "missing_files": [
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_01_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_02_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_03_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_04_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_05_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_06_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_07_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_08_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_09_of_10.xlsx",
+    "MokXya_MAI07_V3__PRODUCT_POLICY__ROUND_A__BATCH_10_of_10.xlsx"
+  ],
+  "missing_row_count": 1111,
+  "returned_batch_count": 0,
+  "role_id": "PRODUCT_POLICY",
+  "state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
+  "unexpected_files": []
+}

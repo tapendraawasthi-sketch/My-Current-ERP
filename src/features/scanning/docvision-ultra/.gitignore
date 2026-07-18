@@ -1,0 +1,35 @@
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.xcworkspace
+
+# Gradle
+.gradle/
+build/
+.build/
+
+# SDK
+local.properties
+
+# iOS / Mac
+Pods/
+derived_data/
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# C/C++ Build
+*.o
+*.so
+*.dylib
+*.a
+
+# Node
+node_modules/

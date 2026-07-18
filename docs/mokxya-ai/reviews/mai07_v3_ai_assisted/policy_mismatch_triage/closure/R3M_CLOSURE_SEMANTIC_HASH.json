@@ -1,0 +1,12 @@
+{
+  "algorithm": "sha256",
+  "closure_semantic_hash": "f39432c6e085c89964e2551fe27921d32c79235061fea218262f6d3093e00afd",
+  "defect_scope": "REPORT_ONLY",
+  "phase": "MAI-07R3M-CLOSURE-TIER1-SET-RECONCILIATION",
+  "prohibited_for_training": true,
+  "r3l_semantic_sha256_preserved": "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de",
+  "r3m_semantic_sha256_preserved": "bd9a9608fe540eb9f10753668df0b99337fee6acf08a15edaa71be6678002b09",
+  "schema_version": "mai07_r3m_tier1_closure_v1",
+  "serialization": "canonical_json_sort_keys_separators_comma_colon",
+  "verdict": "PASSED_CLOSURE"
+}

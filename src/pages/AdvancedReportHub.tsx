@@ -558,7 +558,7 @@ const AdvancedReportHub: React.FC = () => {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Advanced Report Hub</h1>
+            <h1 className="text-[15px] font-semibold text-gray-800">Advanced reports index</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Explore drill-down financials, ratios, exceptions, and schedule automatic reports
             </p>
