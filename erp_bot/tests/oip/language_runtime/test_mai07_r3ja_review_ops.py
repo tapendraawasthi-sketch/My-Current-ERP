@@ -200,8 +200,8 @@ def test_mai08_untouched_and_runtime_immutable(packages):
     assert xlrr.compute_pack_content_hash() == (
         "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930"
     )
-    assert RESOURCE_PACK_VERSION == "mai-07.1.3-r3f-sealnew"
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RESOURCE_PACK_VERSION == "mai-07.1.11-r3n6-chaincomplete"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
 
 

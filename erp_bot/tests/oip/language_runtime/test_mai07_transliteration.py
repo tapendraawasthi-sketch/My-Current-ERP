@@ -59,8 +59,9 @@ def test_exact_lexicon_and_ordering():
     bundle = _xl("mero").transliteration_bundle
     assert bundle is not None
     cands = bundle.span_results[0].candidates
-    assert cands[0].surface == "मेरो"
-    assert any(c.is_identity for c in cands)
+    # R3S/R3N6 active path: identity-first finalize; Devanagari remains available.
+    assert cands[0].surface == "mero" and cands[0].is_identity
+    assert any(c.surface == "मेरो" for c in cands)
     ranks = [c.rank for c in cands]
     assert ranks == sorted(ranks)
     ids = [c.candidate_id for c in cands]

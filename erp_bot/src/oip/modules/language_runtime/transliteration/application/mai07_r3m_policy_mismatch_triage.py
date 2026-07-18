@@ -26,8 +26,8 @@ from ..infrastructure import resource_repository as xlrr
 EXPECTED_R3L_SEM = "ca134c346414a2d30a448dddabb72287eac809965165a1a037431ee7c3cad6de"
 EXPECTED_R3K_SEM = "42d1a5ffc170d201f8a4bf92e4cef4f156dde57c07e847c960835e26080ddafc"
 EXPECTED_AUTH = "65bfa6847a8d3d58af4e092f4217d65b3b6e5d51035c401e7304be1ed77fe2b8"
-EXPECTED_RESOURCE = "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930"
-EXPECTED_RUNTIME = "mai-07.1.3-r3f-sealnew"
+EXPECTED_RESOURCE = "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106"
+EXPECTED_RUNTIME = "mai-07.1.13-r3s-active"
 
 R3K_ROOT = REPO / "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/cross_role_diagnostic"
 DEFAULT_OUT = REPO / "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage"

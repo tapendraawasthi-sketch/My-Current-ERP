@@ -26,7 +26,7 @@ from ...normalization.infrastructure.norm_resource_repository import (
     CompactNormResources,
 )
 from ...normalization.application.normalization_service import attach_normalization_to_frame
-from .. import ENABLE_PROMOTION_OVERLAY, RUNTIME_VERSION
+from .. import ENABLE_PROMOTION_OVERLAY, RESOURCE_PACK_VERSION, RUNTIME_VERSION
 from ..infrastructure.resource_repository import CompactXlResources, load_resources
 from .transliteration_service import transliterate_frame
 from .r3n4_candidate_finalization import (
@@ -42,12 +42,16 @@ _STRUCTURAL_IDENTIFIER = re.compile(
 
 REPO = Path(__file__).resolve().parents[7]
 XL = REPO / "erp_bot/src/oip/modules/language_runtime/transliteration"
+# Historical parent before R3S cutover (immutable lineage record / source pack path).
 PARENT_RUNTIME_VERSION = "mai-07.1.3-r3f-sealnew"
 PARENT_RESOURCE_HASH = "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930"
+HISTORICAL_PRE_CUTOVER_RUNTIME_VERSION = PARENT_RUNTIME_VERSION
+HISTORICAL_PRE_CUTOVER_RESOURCE_HASH = PARENT_RESOURCE_HASH
 CANDIDATE_RUNTIME_VERSION = "mai-07.1.9-r3n4-identityanchor"
 CANDIDATE_POLICY_VERSION = "mai-07-r3n4.1.0.0"
 CANDIDATE_PACK_DIR = XL / "sealed_packs" / CANDIDATE_RUNTIME_VERSION
 DEFAULT_ACTIVE = False
+ACTIVE_PACK_VERSION = "mai-07.1.11-r3n6-chaincomplete"
 
 # Parent failed R3N3 (consumed attempt; not release evidence).
 PARENT_FAILED_R3N3_RUNTIME_VERSION = "mai-07.1.8-r3n3-identityinv"
@@ -66,16 +70,14 @@ ACTIVATION_METHOD = "explicit_load_resources_resources_dir_plus_r3n4_factory"
 
 
 def assert_active_default_immutable() -> None:
-    if RUNTIME_VERSION != PARENT_RUNTIME_VERSION:
-        raise RuntimeError(f"active_runtime_drift:{RUNTIME_VERSION}")
-    if ENABLE_PROMOTION_OVERLAY is not False:
-        raise RuntimeError("overlay_must_remain_disabled")
-    if DEFAULT_ACTIVE is not False:
-        raise RuntimeError("r3n4_default_active_must_be_false")
+    from .mai07_active_default_guard import assert_active_default_immutable as _assert
+
+    _assert(candidate_default_active=DEFAULT_ACTIVE)
+
 
 
 def load_r3n4_resources() -> CompactXlResources:
-    """Load the R3N4 sealed pack explicitly. Never the silent default."""
+    """Load the R3N4 sealed pack explicitly. Prefer active pack via load_resources()."""
     assert_active_default_immutable()
     if not CANDIDATE_PACK_DIR.is_dir():
         raise FileNotFoundError(f"r3n4_pack_missing:{CANDIDATE_PACK_DIR}")
@@ -221,6 +223,35 @@ def analyze_language_r3n4(
     return coalesce_structural_identifiers(frame)
 
 
+def apply_r3n4_pipeline_to_frame(
+    frame: LanguageFrameV1,
+    *,
+    resources: CompactXlResources,
+    normalization_resources: CompactNormResources | None = None,
+    path_spy: list[dict[str, Any]] | None = None,
+) -> Any:
+    """Normalize + generate/rank + authoritative R3N4 finalize on an analyzed frame."""
+    raw_text = frame.raw_text
+    for ann in frame.span_annotations:
+        _ = create_identity_anchor(
+            raw_text,
+            raw_start=ann.start_offset,
+            raw_end_exclusive=ann.end_offset,
+            anchor_kind="SOURCE_SPAN",
+            created_from="pre_transform_annotation",
+        )
+    frame = attach_normalization_to_frame(
+        frame, resources=normalization_resources
+    )
+    bundle = transliterate_frame(
+        frame,
+        resources=resources,
+        use_context=True,
+        finalize_candidates_fn=finalize_candidates_r3n4_compat,
+    )
+    return apply_r3n4_finalize_bundle(bundle, raw_text, path_spy=path_spy)
+
+
 def transliterate_r3n4(
     raw_text: str,
     *,
@@ -241,30 +272,19 @@ def transliterate_r3n4(
     frame = analyze_language_r3n4(
         raw_text, language_resources=language_resources
     )
-    # Pre-transform anchors for every annotation (created before generation).
-    for ann in frame.span_annotations:
-        _ = create_identity_anchor(
-            raw_text,
-            raw_start=ann.start_offset,
-            raw_end_exclusive=ann.end_offset,
-            anchor_kind="SOURCE_SPAN",
-            created_from="pre_transform_annotation",
-        )
-    frame = attach_normalization_to_frame(
-        frame, resources=normalization_resources
-    )
-    bundle = transliterate_frame(
+    return apply_r3n4_pipeline_to_frame(
         frame,
         resources=res,
-        use_context=True,
-        finalize_candidates_fn=finalize_candidates_r3n4_compat,
+        normalization_resources=normalization_resources,
+        path_spy=path_spy,
     )
-    return apply_r3n4_finalize_bundle(bundle, raw_text, path_spy=path_spy)
 
 
 def candidate_identity_card() -> dict[str, Any]:
     return {
         "parent_runtime_version": PARENT_RUNTIME_VERSION,
+        "historical_pre_cutover_runtime": HISTORICAL_PRE_CUTOVER_RUNTIME_VERSION,
+        "historical_pre_cutover_resource_hash": HISTORICAL_PRE_CUTOVER_RESOURCE_HASH,
         "candidate_runtime_version": CANDIDATE_RUNTIME_VERSION,
         "candidate_policy_version": CANDIDATE_POLICY_VERSION,
         "parent_resource_hash": PARENT_RESOURCE_HASH,

@@ -293,7 +293,7 @@ def build_batch_workbook(
         ["qualification_summary", ""],
         ["professional_linguist_credentials", ""],
         ["relevant_experience", ""],
-        ["declaration_independent", ""],
+        ["declaration_independent_from_other_reviewers", ""],
         ["declaration_no_conflict_of_interest", ""],
         ["declaration_answers_are_own", ""],
         ["declaration_did_not_see_other_reviewers", ""],
@@ -684,6 +684,10 @@ def detect_returned_batches(role_id: str) -> list[Path]:
     files = []
     for p in sorted(inbox.glob("*.xlsx")):
         name = _safe_filename(p.name)
+        # A prior successful merge leaves the canonical role workbook beside the
+        # returned batches. It is derived output, not an additional submission.
+        if name == ROLE_FILES.get(role_id):
+            continue
         if name.lower().endswith((".xlsm", ".xltm")):
             raise ValueError(f"MACRO_ENABLED_FILE_REJECTED:{name}")
         upper = name.upper()
@@ -958,6 +962,59 @@ def advance_workflow() -> dict[str, Any]:
         render_dashboard(status)
         return {"status": "WAITING_FOR_ROUND_B_SUBMISSIONS", "round_a_lock": result}
 
+    # Round B submissions / lock
+    if state in {
+        "WAITING_FOR_ROUND_B_SUBMISSIONS",
+        "WAITING_FOR_ROUND_B_LOCK",
+        "ROUND_B_CORRECTION_REQUIRED",
+        "ROUND_B_PACKAGES_READY",
+    }:
+        from .validate_mai07_r3ja_round_b import ROUND_B_PACKAGES, ROUND_B_ROLES
+        from .validate_mai07_r3ja_round_b import run_round_b_validation
+
+        any_b = False
+        for role_id in ROUND_B_ROLES:
+            pkg = OPS / "round_b_inbox" / role_id / ROUND_B_PACKAGES[role_id]
+            if pkg.exists():
+                any_b = True
+                break
+        if not any_b:
+            status["state"] = "WAITING_FOR_ROUND_B_SUBMISSIONS"
+            status["next_human_action"] = (
+                "Round A locked. Place completed Round B packages under "
+                "round_b_inbox/<ROLE>/ then re-run."
+            )
+            save_status(status)
+            render_dashboard(status)
+            return {"status": "WAITING_FOR_ROUND_B_SUBMISSIONS", "state": status["state"]}
+
+        result_b = run_round_b_validation()
+        if result_b.get("status") != "ROUND_B_LOCKED":
+            status["state"] = "ROUND_B_CORRECTION_REQUIRED"
+            status["ROUND_B_LOCKED"] = False
+            status["next_human_action"] = result_b.get("next_human_action") or (
+                "Correct Round B submissions."
+            )
+            _write_json(OPS / "validation_reports" / "ROUND_B_VALIDATION_SUMMARY.json", result_b)
+            save_status(status)
+            render_dashboard(status)
+            return result_b
+
+        status["state"] = "ROUND_B_LOCKED"
+        status["ROUND_A_LOCKED"] = True
+        status["ROUND_B_READY"] = True
+        status["ROUND_B_LOCKED"] = True
+        status["LINGUIST_APPROVED"] = False
+        status["QUALITY_GATES_PASSED"] = False
+        status["option_a_round_b_remap"] = {
+            "present": bool(result_b.get("option_a_mechanical_remap")),
+            "lock_manifest": result_b.get("lock_manifest_path"),
+        }
+        status["next_human_action"] = result_b.get("next_human_action")
+        save_status(status)
+        render_dashboard(status)
+        return {"status": "ROUND_B_LOCKED", "round_b_lock": result_b}
+
     # Later states: keep waiting / report only until submissions exist
     save_status(status)
     render_dashboard(status)
@@ -977,13 +1034,19 @@ def merge_round_a_batches(role_id: str) -> Path:
     if len(files) != expected_batches:
         raise RuntimeError(f"batch_count_mismatch:{len(files)}!={expected_batches}")
 
-    # Read rows from each batch, keyed by review_id
+    # Read rows from each batch, keyed by review_id.
+    # Preserve REVIEWER_DECLARATION from the first returned batch that has values.
     by_id: dict[str, list[Any]] = {}
+    declaration_rows: list[tuple[Any, Any]] = []
     for f in files:
         wb = load_workbook(f, read_only=True, data_only=True)
         if "ROUND_A_CONTEXT" not in wb.sheetnames:
             wb.close()
             raise RuntimeError(f"missing_ROUND_A_CONTEXT:{f.name}")
+        if not declaration_rows and "REVIEWER_DECLARATION" in wb.sheetnames:
+            decl_raw = list(wb["REVIEWER_DECLARATION"].iter_rows(values_only=True))
+            # Keep header + field/value pairs exactly as submitted
+            declaration_rows = [(r[0] if r else None, r[1] if r and len(r) > 1 else None) for r in decl_raw]
         rows = list(wb["ROUND_A_CONTEXT"].iter_rows(values_only=True))
         wb.close()
         for raw in rows[1:]:
@@ -1027,7 +1090,7 @@ def merge_round_a_batches(role_id: str) -> Path:
         rows=[[r[0], r[1], r[2], "", "", "", "", "", ""] for r in rows_out],
         dest=dest,
     )
-    # Re-open and write actual human dispositions without changing them
+    # Re-open and write actual human dispositions + declaration without changing them
     wb = load_workbook(dest)
     ws = wb["ROUND_A_CONTEXT"]
     for i, r in enumerate(rows_out, start=2):
@@ -1037,6 +1100,13 @@ def merge_round_a_batches(role_id: str) -> Path:
         ws.cell(i, 7, r[6])
         ws.cell(i, 8, r[7])
         ws.cell(i, 9, r[8])
+    if declaration_rows and "REVIEWER_DECLARATION" in wb.sheetnames:
+        ws_decl = wb["REVIEWER_DECLARATION"]
+        # Clear existing template rows then rewrite submitted declaration
+        for row_idx in range(ws_decl.max_row, 0, -1):
+            ws_decl.delete_rows(row_idx)
+        for field, value in declaration_rows:
+            ws_decl.append([field, value])
     wb.save(dest)
     stabilize_xlsx(dest)
     # Preserve originals already in inbox; copy merge to locked staging later
@@ -1111,7 +1181,14 @@ def main() -> int:
     out = advance_workflow()
     print(json.dumps(out, indent=2, sort_keys=True, default=str))
     state = out.get("state") or out.get("status")
-    return 0 if state in {"WAITING_FOR_ROUND_A_SUBMISSIONS", "WAITING_FOR_ROUND_B_SUBMISSIONS", "REVIEW_COMPLETE_READY_FOR_R3J_B", "PASSED_AUTOMATION"} or out.get("status") == "PASSED_AUTOMATION" else 1
+    return 0 if state in {
+        "WAITING_FOR_ROUND_A_SUBMISSIONS",
+        "WAITING_FOR_ROUND_B_SUBMISSIONS",
+        "WAITING_FOR_ROUND_B_LOCK",
+        "ROUND_B_LOCKED",
+        "REVIEW_COMPLETE_READY_FOR_R3J_B",
+        "PASSED_AUTOMATION",
+    } or out.get("status") in {"PASSED_AUTOMATION", "ROUND_B_LOCKED"} else 1
 
 
 if __name__ == "__main__":

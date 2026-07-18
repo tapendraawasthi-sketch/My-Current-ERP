@@ -43,26 +43,41 @@ Severity legend:
 - **Affected capability:** MAI-07 automated frozen quality gates
 - **Evidence:** R3E FAILED_QUALITY (English 98/102; false-Dev 4/102). R3G-REAUTHORIZED-002 one-shot frozen V2 (2026-07-16) FAILED_QUALITY with identical English identity metrics. R3F sealed non-frozen RC passed holdout but frozen eval unchanged on safety gates.
 - **Updated evidence:** MAI-07R3H2 sealed non-frozen `PASSED_CORRECTIVE_RC`. MAI-07R3I (2026-07-16) one-shot frozen V2 of R3H2 RC = `FAILED_QUALITY`: TARGET_TOP1 240/288, UNAMBIGUOUS 228/255, ENGLISH 99/102, FALSE_DEV 3/102, PROTECTED 6. Attempt consumed; no automatic rerun.
-- **User/business impact:** Cannot set `QUALITY_GATES_PASSED=true`
-- **Current mitigation:** Frozen attempts consumed; artifacts preserved; R3H2 pack not promoted
-- **Required remediation:** Governance decision for independently reviewed V3 benchmark and/or professional adjudication — do **not** retune from frozen V2 cases. V2 is `HISTORICAL_BENCHMARK_EXHAUSTED_FOR_MODEL_SELECTION` (ADR_0010). Complete R3J-A human review → R3J-B freeze.
-- **Recommended MAI phase:** MAI-07R3J-B-ADJUDICATION-AND-V3-FREEZE (after R3J-A packet reviews return)
-- **Dependencies:** GAP-P1-012; ADR_0009 Option A; ADR_0010
-- **Acceptance condition:** `QUALITY_GATES_PASSED` only after authorized frozen eval that passes on a governed **V3** benchmark
-- **Status:** OPEN
+- **R3P update (2026-07-18):** V3 human-review freeze consumed into `MAI_07_ROMANIZED_TRANSLITERATION_V3` (hash `6ad2a824…`, 1111 cases). Thresholds locked pre-observation. R3P-2 one-shot of `mai-07.1.11-r3n6-chaincomplete` on FROZEN_EVALUATION (583) = `FAILED_QUALITY` — sole failing gate `protected_mutations` 40/155 (false positives from first-token extract fallback). Attempt consumed.
+- **R3Q update (2026-07-18):** New candidate `mai-07.1.12-r3q-protspan` + highlight-range protected-span alignment. One-shot `MAI_07R3Q_FROZEN_V3_ATTEMPT_001` = `PASSED_QUALITY` (protected_mutations 0/155; all applicable gates pass). Candidate not promoted; active runtime unchanged; `PRODUCTION_APPROVED` still false.
+- **User/business impact:** V3 quality gates now pass on frozen evaluation; production/runtime promotion still gated separately
+- **Current mitigation:** V3 FE one-shot passed under R3Q; promotion withheld pending separate authorization
+- **Required remediation:** Explicit production-approval / runtime-promotion decision (do not silently promote)
+- **Recommended MAI phase:** MAI-07R3R-PRODUCTION-APPROVAL-OR-RUNTIME-PROMOTION
+- **Dependencies:** ADR_0010; ADR_0022; MAI-07R3Q closeout
+- **Acceptance condition:** `QUALITY_GATES_PASSED` only after authorized frozen eval that passes on a governed **V3** benchmark — **met by R3Q**
+- **Status:** CLOSED — V3 FE quality gates passed under R3Q; **R3R / ADR_0023** also set `PRODUCTION_APPROVED=true` with `CUTOVER_AUTHORIZED=true`; live active runtime cutover remains open as MAI-07R3S (`candidate_promoted=false`)
+
+### GAP-P1-017 — Qualified R3N6 path not yet cut over to active default
+
+- **Severity:** P1
+- **Affected capability:** MAI-07 production transliteration active path
+- **Evidence:** ADR_0024 cutover completed 2026-07-18. Active is now `mai-07.1.13-r3s-active` + pack `mai-07.1.11-r3n6-chaincomplete` (`8b57db0f…`). Previous active `mai-07.1.3-r3f-sealnew` retained for lineage.
+- **User/business impact:** Default transliteration path now uses V3-qualified R3N6 behavior
+- **Current mitigation:** N/A — cutover done
+- **Required remediation:** None
+- **Recommended MAI phase:** MAI-07R3S (complete)
+- **Dependencies:** ADR_0023; ADR_0024; MAI-07R3Q; MAI-07R3N6
+- **Acceptance condition:** Active defaults point at qualified R3N6 path; `candidate_promoted=true` — **met**
+- **Status:** CLOSED
 
 ### GAP-P1-016 — Independent V3 human review not yet completed
 
 - **Severity:** P1
 - **Affected capability:** MAI-07 V3 benchmark adjudication / linguist path
-- **Evidence:** R3J-A packet `REVIEW_PACKET_READY` under `docs/mokxya-ai/reviews/mai07_v3/`; no independent human decisions in official inbox; `LINGUIST_APPROVED=false`. AI-assisted ACCOUNTING_DOMAIN import (611 rows) exists only under `mai07_v3_ai_assisted/` and does **not** close this gap (ADR_0011).
-- **User/business impact:** Cannot freeze V3 or claim professional approval
-- **Current mitigation:** Blind review workbooks issued; firewall prevents V2 mining; AI-assisted path segregated
-- **Required remediation:** Complete Round A → lock → Round B → lock → adjudication → R3J-B
-- **Recommended MAI phase:** MAI-07R3J-B-ADJUDICATION-AND-V3-FREEZE
+- **Evidence:** Round A + Round B locked under official inbox; freeze sealed `MAI_07_V3_HUMAN_REVIEW_FREEZE_MANIFEST.json`; ADR_0022. Earlier quarantined `__AI_ASSISTED_DRAFT` path remains non-authoritative (ADR_0021/ADR_0011). Round B used product-authorized Option A mechanical remap.
+- **User/business impact:** V3 human-review freeze available; production/quality gates still separate
+- **Current mitigation:** Freeze sealed; runtime not promoted
+- **Required remediation:** None for R3O review-evidence scope
+- **Recommended MAI phase:** MAI-07R3O (complete for review freeze) → MAI-07R3P governed eval / freeze consumption
 - **Dependencies:** GAP-P1-012
-- **Acceptance condition:** Locked Round A/B + adjudication with professional-linguist evidence package
-- **Status:** OPEN
+- **Acceptance condition:** Locked Round A/B + adjudication with professional-linguist evidence package — **met under ADR_0022** (adjudication N/A: 0 disagreements)
+- **Status:** CLOSED (2026-07-18) for R3O independent V3 human-review evidence — does not set `QUALITY_GATES_PASSED` or `PRODUCTION_APPROVED`
 
 ### GAP-P2-021 — AI-assisted ACCOUNTING_DOMAIN Round A engineering evidence imported (non-authoritative)
 
@@ -237,14 +252,14 @@ Severity legend:
 
 - **Severity:** P1
 - **Affected capability:** MAI-07 `LINGUIST_APPROVED`
-- **Evidence:** Bulk R3B mapping / engineering curation only; `LINGUIST_APPROVED=false` through R3F
-- **User/business impact:** Cannot claim professional-linguist sign-off even if automated gates later pass
-- **Current mitigation:** Engineering-only authority labels on resources and RCs
-- **Required remediation:** Professional linguist review under separate authorization
-- **Recommended MAI phase:** post-automated MAI-07 linguist review (not MAI-08)
+- **Evidence:** R3O Round A/B locked; coordinator credential verification attestation 2026-07-18; `LINGUIST_APPROVED=true` under ADR_0022 for R3O review-resolution scope only
+- **User/business impact:** Professional-linguist review-resolution sign-off recorded; production approval still false
+- **Current mitigation:** Attestation + freeze seal; no runtime promotion
+- **Required remediation:** None for R3O linguist-approval scope; production still blocked on other gates
+- **Recommended MAI phase:** MAI-07R3O (linguist path closed) → later governed quality/production phases
 - **Dependencies:** GAP-P1-011 quality path
-- **Acceptance condition:** Explicit professional linguist approval artifact
-- **Status:** OPEN
+- **Acceptance condition:** Explicit professional linguist approval artifact — **met under ADR_0022 + coordinator attestation**
+- **Status:** CLOSED (2026-07-18) for R3O `LINGUIST_APPROVED` scope — does not set `PRODUCTION_APPROVED` or start MAI-08
 
 ### GAP-P0-002 — Unauthenticated `/api/khata/confirm` mutates Postgres from body tenant/company
 

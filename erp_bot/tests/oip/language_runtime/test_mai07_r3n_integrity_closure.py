@@ -301,7 +301,7 @@ def test_historical_artifact_immutability(closure_artifacts):
 
 def test_no_runtime_rerun_active_immutable(closure_artifacts):
     assert_active_default_immutable()
-    assert RUNTIME_VERSION == PARENT_RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
     imm = _load("IMMUTABILITY_REPORT.json")
     assert imm["no_prediction_rerun"] is True

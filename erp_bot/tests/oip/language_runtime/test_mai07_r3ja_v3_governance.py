@@ -277,8 +277,8 @@ def test_mai08_untouched():
 def test_runtime_resource_hashes_unchanged():
     xlrr.load_resources(force_reload=True)
     assert xlrr.compute_pack_content_hash() == DEFAULT_RESOURCE
-    assert RESOURCE_PACK_VERSION == "mai-07.1.3-r3f-sealnew"
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RESOURCE_PACK_VERSION == "mai-07.1.11-r3n6-chaincomplete"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
 
 

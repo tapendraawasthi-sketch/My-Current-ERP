@@ -1,0 +1,19 @@
+{
+  "acceptability_counts": {
+    "ACCEPTABLE_ALTERNATIVE": 68,
+    "ACCEPTABLE_PREFERRED": 233,
+    "CANNOT_DECIDE": 698,
+    "INCORRECT": 1023
+  },
+  "corrections": [],
+  "errors": [],
+  "file_sha256": "59fddfad7360729bae04ee38cc5cc97e2c32e9c33d3b74ccddc72f4f951f0d68",
+  "ok": true,
+  "option_a_remap_notes_present": true,
+  "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/ACCOUNTING_DOMAIN/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx",
+  "role_id": "ACCOUNTING_DOMAIN",
+  "rows_blank": 0,
+  "rows_completed": 2022,
+  "rows_expected": 2022,
+  "rows_invalid_enum": 0
+}

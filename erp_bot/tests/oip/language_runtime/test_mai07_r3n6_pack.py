@@ -86,7 +86,7 @@ def test_r3n6_candidate_identity_isolated_from_active_runtime():
     assert SOURCE_PACK_VERSION == "mai-07.1.10-r3n5-targetspan"
     assert CANDIDATE_POLICY_VERSION == "mai-07-r3n6.1.0.0"
     assert DEFAULT_ACTIVE is False
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
     assert "INVALIDATED_INCOMPLETE_INDEPENDENT_SCORING" in (
         PARENT_INVALIDATED_R3N5_VERDICT

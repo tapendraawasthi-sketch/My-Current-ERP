@@ -42,7 +42,7 @@ def test_runtime_version_and_overlay():
         PARENT_R3D_RUNTIME_VERSION,
     )
 
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert PARENT_R3D_RUNTIME_VERSION == "mai-07.1.1-r3d"
     assert ENABLE_PROMOTION_OVERLAY is False
 

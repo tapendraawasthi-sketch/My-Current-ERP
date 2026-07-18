@@ -706,8 +706,8 @@ def test_no_linguist_or_production_approval_inference():
     assert POLICY_VERSION == "mai-07-r3h2.1.0.0"
     assert PACK_VERSION == "mai-07.1.5-r3h2-shared"
     # Active default remains SEAL-NEW; R3H2 pack is not promoted.
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
-    assert RESOURCE_PACK_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
+    assert RESOURCE_PACK_VERSION == "mai-07.1.11-r3n6-chaincomplete"
 
 
 # ---------------------------------------------------------------------------

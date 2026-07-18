@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "phase": "MAI-07R3O",
+  "status": "V3_HUMAN_REVIEW_FREEZE_SEALED",
+  "created_utc": "2026-07-18T16:30:49.029237+00:00",
+  "authority": "ADR_0022",
+  "ROUND_A_LOCKED": true,
+  "ROUND_B_LOCKED": true,
+  "LINGUIST_APPROVED": true,
+  "QUALITY_GATES_PASSED": false,
+  "PRODUCTION_APPROVED": false,
+  "option_a_mechanical_remap": true,
+  "adjudication_status": "NO_DISAGREEMENTS",
+  "agreement_round_a": {
+    "cohen_kappa": 1.0,
+    "exact_disposition_agreement": 1.0,
+    "note": "Diagnostic only; adjudication not performed in this phase.",
+    "ok": true,
+    "paired_n": 1111,
+    "status": "COMPUTED"
+  },
+  "agreement_round_b": {
+    "cohen_kappa": 1.0,
+    "disagreement_count": 0,
+    "exact_acceptability_agreement": 1.0,
+    "gate_exact_min": 0.85,
+    "gate_kappa_min": 0.7,
+    "gates_met_diagnostic": true,
+    "note": "Diagnostic agreement only. Adjudication + credential verification still required before LINGUIST_APPROVED.",
+    "ok": true,
+    "paired_n": 3262,
+    "status": "COMPUTED"
+  },
+  "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+  "candidate_not_promoted": "mai-07.1.11-r3n6-chaincomplete",
+  "mai_08": "NOT_STARTED",
+  "artifacts": {
+    "round_a_lock_manifest": {
+      "path": "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_A_LOCK_MANIFEST.json",
+      "sha256": "ff9240a432bef14df0e0026b8863a84ca455c70ae7a2abcae5599da79301b406"
+    },
+    "round_b_lock_manifest": {
+      "path": "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_B_LOCK_MANIFEST.json",
+      "sha256": "ea221cd09a81ba64da434d71ea90beccfe3dfc62142438709f34b63a2da66597"
+    },
+    "credential_attestation": {
+      "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/MAI_07_V3_COORDINATOR_CREDENTIAL_VERIFICATION_ATTESTATION.json",
+      "sha256": "60d926e25539050fe340fb1a895cb1f97a6bc19a5018f2132ff3ae31f98caf74"
+    },
+    "option_a_remap_report": {
+      "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/validation_reports/ROUND_B_OPTION_A_REMAP_REPORT.json",
+      "sha256": "2fabd1c46c1786fea41836f6a8799be6bbff263fb00bc7007e9efe86f31367e3"
+    },
+    "adr_0022": {
+      "path": "docs/mokxya-ai/decisions/ADR_0022_OPTION_A_ROUND_B_AND_COORDINATOR_CREDENTIAL_VERIFICATION.md",
+      "sha256": "4e790fed698d6f222e776b66b6b8e8a5958669c926895473510aa5d18a75f428"
+    },
+    "adr_0021": {
+      "path": "docs/mokxya-ai/decisions/ADR_0021_PREFER_GENUINE_INDEPENDENT_REVIEW_OVER_AI_FREEZE_SHORTCUT.md",
+      "sha256": "5138481a648bb03cfedca01403a5cb3701e6c9f8d78c4b0f20818d515ed06ae7"
+    },
+    "round_a_responses_PRODUCT_POLICY": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\round_a_locked_submissions\\MAI_07_V3_ROUND_A_RESPONSES__PRODUCT_POLICY.json",
+      "sha256": "1d48f2c0ef16cc0bca5774aca3c5def83b25a2ba13b80163bebabf2e5ae166a8"
+    },
+    "round_a_responses_NEPALI_FLUENT_A": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\round_a_locked_submissions\\MAI_07_V3_ROUND_A_RESPONSES__NEPALI_FLUENT_A.json",
+      "sha256": "f9cb944e227ab44e674206710a3d8c8c0e28fa400349749ef0866e949b173f40"
+    },
+    "round_a_responses_PROFESSIONAL_LINGUIST_B": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\round_a_locked_submissions\\MAI_07_V3_ROUND_A_RESPONSES__PROFESSIONAL_LINGUIST_B.json",
+      "sha256": "4631fa8058fbb2f88c3587b378642aceecbae8ef943e391cc7fcbcb827be7c91"
+    },
+    "round_a_responses_ACCOUNTING_DOMAIN": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\round_a_locked_submissions\\MAI_07_V3_ROUND_A_RESPONSES__ACCOUNTING_DOMAIN.json",
+      "sha256": "74570662c7529f3994000d15844b31fa0d7436957b0c9dc79761252a32568943"
+    },
+    "round_b_responses_NEPALI_FLUENT_A": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\review_operations\\round_b_locked\\MAI_07_V3_ROUND_B_RESPONSES__NEPALI_FLUENT_A.json",
+      "sha256": "7acade06182b975571b2f97a819b6e0aa923cc86e46fe2d881eaeccaa6a1869a"
+    },
+    "round_b_responses_PROFESSIONAL_LINGUIST_B": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\review_operations\\round_b_locked\\MAI_07_V3_ROUND_B_RESPONSES__PROFESSIONAL_LINGUIST_B.json",
+      "sha256": "bb8b998772765d43f8568ae8e269620448571f10371eaed3a225986617913776"
+    },
+    "round_b_responses_ACCOUNTING_DOMAIN": {
+      "path": "docs\\mokxya-ai\\reviews\\mai07_v3\\review_operations\\round_b_locked\\MAI_07_V3_ROUND_B_RESPONSES__ACCOUNTING_DOMAIN.json",
+      "sha256": "5ea52bca23535143ef1d04445d23d883f79d84728a4bd07961444fe8d24ed3ca"
+    }
+  },
+  "non_claims": [
+    "Does not set PRODUCTION_APPROVED",
+    "Does not pass QUALITY_GATES_PASSED (frozen V3 eval still required)",
+    "Does not promote candidate runtime",
+    "Does not start MAI-08"
+  ],
+  "next_phase_recommendation": "MAI-07R3P-V3-FREEZE-CONSUMPTION-OR-GOVERNED-EVAL",
+  "freeze_manifest_sha256": "db8c510b325864dc02e9527cdd5e796d90bc50da661928c5534eeab20a22f623"
+}

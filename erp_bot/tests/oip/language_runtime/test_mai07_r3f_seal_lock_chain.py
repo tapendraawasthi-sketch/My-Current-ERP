@@ -297,7 +297,7 @@ def test_fresh_holdout_no_seal_new_reuse():
 
 
 def test_active_runtime_and_resource():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
     assert xlrr.compute_pack_content_hash() == "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930"
     lock = json.loads(LOCK_PATH.read_text(encoding="utf-8"))

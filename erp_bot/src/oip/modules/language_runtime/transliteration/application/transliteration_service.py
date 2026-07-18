@@ -639,7 +639,22 @@ def attach_transliteration_to_frame(
     use_context: bool = True,
     resources: CompactXlResources | None = None,
 ) -> LanguageFrameV1:
-    bundle = transliterate_frame(frame, resources=resources, use_context=use_context)
+    """Attach transliteration using the R3S-active (R3N4/R3N6) finalize path."""
+    from .mai07_r3n4_candidate_runtime import (
+        apply_r3n4_pipeline_to_frame,
+        assert_active_default_immutable,
+        coalesce_structural_identifiers,
+        refine_overmerged_identifier_spans,
+    )
+
+    assert_active_default_immutable()
+    res = resources or load_resources()
+    refined = refine_overmerged_identifier_spans(frame)
+    refined = coalesce_structural_identifiers(refined)
+    # use_context reserved for future; R3N4 pipeline always uses context=True.
+    _ = use_context
+    bundle = apply_r3n4_pipeline_to_frame(refined, resources=res)
+    bundle = bundle.model_copy(update={"runtime_version": RUNTIME_VERSION})
     if frame.raw_text != frame.raw_text:  # pragma: no cover
         raise RuntimeError("RAW_TEXT_MUTATION")
     versions = dict(frame.analyzer_versions or {})
@@ -651,5 +666,7 @@ def attach_transliteration_to_frame(
             # Keep legacy string tuple empty — typed bundle is the sole authority
             "transliteration_candidates": (),
             "analyzer_versions": versions,
+            "span_annotations": refined.span_annotations,
+            "protected_spans": refined.protected_spans,
         }
     )

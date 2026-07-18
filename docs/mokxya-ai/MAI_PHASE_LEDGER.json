@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
   "product": "MokXya / MokXya Hisab / MokXya ERP / Ask MokXya",
-  "audited_at": "2026-07-14",
+  "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-07R3O-INDEPENDENT-V3-REVIEW-RESOLUTION-AND-FREEZE",
+  "recommended_next_phase": "MAI-08",
   "phases": [
     {
       "id": "MAI-00",
@@ -57,7 +57,9 @@
       "title": "CANONICAL AI CONTRACTS",
       "status": "PASSED",
       "production_approved": false,
-      "schema_versions": ["1.0.0"],
+      "schema_versions": [
+        "1.0.0"
+      ],
       "gate_evidence": [
         "docs/mokxya-ai/MAI_02_CANONICAL_AI_CONTRACTS.md (closure §24)",
         "docs/mokxya-ai/decisions/ADR_0003_CANONICAL_AI_CONTRACT_AUTHORITY.md",
@@ -260,20 +262,26 @@
     {
       "id": "MAI-07",
       "title": "ROMANIZED NEPALI CANDIDATE TRANSLITERATION",
-      "status": "NEEDS_CORRECTIVE_WORK",
-      "production_approved": false,
-      "linguist_approved": false,
-      "quality_gates_passed": false,
+      "status": "RUNTIME_CUTOVER_COMPLETE",
+      "production_approved": true,
+      "linguist_approved": true,
+      "quality_gates_passed": true,
+      "candidate_promoted": true,
+      "cutover_authorized": true,
       "automated_engineering_gates_passed_r3d": true,
-      "runtime_version": "mai-07.1.3-r3f-sealnew",
-      "resource_pack_version": "mai-07.1.3-r3f-sealnew",
-      "evaluator_version": "mai-07.1.3",
-      "resource_content_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "runtime_version": "mai-07.1.13-r3s-active",
+      "resource_pack_version": "mai-07.1.11-r3n6-chaincomplete",
+      "evaluator_version": "mai-07.1.13",
+      "resource_content_hash": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "qualified_pack": "mai-07.1.11-r3n6-chaincomplete",
+      "qualified_pack_content_hash": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
       "prior_resource_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
       "prior_resource_content_hash_mai0720_r1_failed": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
       "prior_resource_content_hash_mai0730_r2_failed": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
-      "dataset_manifest_id": "MAI_07_ROMANIZED_TRANSLITERATION_V1",
-      "dataset_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+      "previous_active_runtime": "mai-07.1.3-r3f-sealnew",
+      "previous_active_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "dataset_manifest_id": "MAI_07_ROMANIZED_TRANSLITERATION_V3",
+      "dataset_hash": "6ad2a824a6fe0cb1248d7640692f8c45635b4290ee33647d5cbe4b82af2bdde8",
       "runtime_output_semantic_hash": "b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849",
       "offset_unit": "UNICODE_CODE_POINT",
       "r3a_status": "COMPLETE",
@@ -291,8 +299,12 @@
       "r3ja_status": "REVIEW_PACKET_READY",
       "r3n5_status": "INVALIDATED_INCOMPLETE_INDEPENDENT_SCORING_AND_OUTPUT_BINDING_NEW_RC_REQUIRED",
       "r3n6_status": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC",
-      "r3o_status": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
-      "closure_note": "R3N5 release authority withdrawn (ADR_0020). R3N6 PASSED_FRESH_HOLDOUT_CORRECTIVE_RC. R3O opened but blocked: official Round A inbox still 0% returned. Candidate unpromoted; active R3F unchanged. Next=human Round A returns into round_a_inbox. MAI-08 NOT_STARTED.",
+      "r3o_status": "V3_HUMAN_REVIEW_FREEZE_SEALED",
+      "r3p2_status": "FAILED_QUALITY",
+      "r3q_status": "PASSED_QUALITY_UNPROMOTED",
+      "r3r_status": "PRODUCTION_APPROVED_CUTOVER_PENDING",
+      "r3s_status": "RUNTIME_CUTOVER_COMPLETE",
+      "closure_note": "ADR_0024 cutover complete. Active=mai-07.1.13-r3s-active + R3N6 pack. candidate_promoted=true. PRODUCTION_APPROVED/QUALITY_GATES_PASSED/LINGUIST_APPROVED true. Overlay disabled. MAI-08 NOT_STARTED (next).",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_07_R3G_REAUTHORIZED_FROZEN_V2_EVALUATION_REPORT.md",
         "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_PREFLIGHT_REPORT.json",
@@ -309,7 +321,8 @@
         "R3G-REAUTHORIZED blocked on missing immutable lock-before-holdout RC body"
       ],
       "blockers": [
-        "GAP-P1-011 OPEN; GAP-P1-014 lock-before-holdout body missing; GAP-P0-001 OPEN; GAP-P1-012 linguist OPEN"
+        "GAP-P0-001 OPEN",
+        "MAI-08 NOT_STARTED"
       ],
       "dependencies": [
         "MAI-06"
@@ -711,7 +724,11 @@
         "MAI-07R3H"
       ],
       "recommended_order": 7.85,
-      "corrective_branches": ["C_shared_context_disposition", "D_shared_surface_generate", "A_review_metadata"],
+      "corrective_branches": [
+        "C_shared_context_disposition",
+        "D_shared_surface_generate",
+        "A_review_metadata"
+      ],
       "closure_note": "Sealed non-frozen holdout PASSED_CORRECTIVE_RC. Pack mai-07.1.5-r3h2-shared not promoted; active remains mai-07.1.3-r3f-sealnew. GAP-P1-015 CLOSED. Frozen V2 not opened during R3H2. Next=MAI-07R3I-FROZEN-REAUTHORIZED (executed). MAI-08 NOT_STARTED."
     },
     {
@@ -818,7 +835,9 @@
         "Waiting for genuine human Round A submissions",
         "LINGUIST_APPROVED=false until professional workflow + manual credential verification"
       ],
-      "dependencies": ["MAI-07R3J-A"],
+      "dependencies": [
+        "MAI-07R3J-A"
+      ],
       "recommended_order": 7.915,
       "closure_note": "Round A ZIPs packaged. No answers generated. MAI-08 NOT_STARTED."
     },
@@ -884,7 +903,11 @@
       "model_evaluation_performed": false,
       "pack_promoted": false,
       "total_rows": 3333,
-      "roles": ["PRODUCT_POLICY", "NEPALI_FLUENT_A", "PROFESSIONAL_LINGUIST_B"],
+      "roles": [
+        "PRODUCT_POLICY",
+        "NEPALI_FLUENT_A",
+        "PROFESSIONAL_LINGUIST_B"
+      ],
       "semantic_hash": "fd10bd0f501d9a25534db18e98254c3e1dec1cbc4acc971f76c42012279a929a",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_07_R3J_AI_ASSISTED_REMAINING_ROLE_DRAFTS_REPORT.md",
@@ -926,7 +949,11 @@
       "model_evaluation_performed": false,
       "pack_promoted": false,
       "total_rows": 3333,
-      "roles": ["PRODUCT_POLICY", "NEPALI_FLUENT_A", "PROFESSIONAL_LINGUIST_B"],
+      "roles": [
+        "PRODUCT_POLICY",
+        "NEPALI_FLUENT_A",
+        "PROFESSIONAL_LINGUIST_B"
+      ],
       "semantic_hash": "1cc783d79cc3cc5f3f2daa288ae8b4721238fed584dbfb540597c8f883a8f4a1",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_07_R3J_AI_ASSISTED_REMAINING_ROLES_IMPORT_REPORT.md",
@@ -1629,43 +1656,42 @@
     {
       "id": "MAI-07R3O",
       "title": "INDEPENDENT V3 REVIEW RESOLUTION AND FREEZE",
-      "status": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
+      "status": "V3_HUMAN_REVIEW_FREEZE_SEALED",
       "production_approved": false,
-      "linguist_approved": false,
+      "linguist_approved": true,
       "quality_gates_passed": false,
       "candidate_promoted": false,
-      "workflow_state": "WAITING_FOR_ROUND_A_SUBMISSIONS",
-      "human_blocker": "BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW",
-      "round_a_locked": false,
-      "round_b_ready": false,
-      "round_b_locked": false,
+      "workflow_state": "V3_HUMAN_REVIEW_FREEZE_SEALED",
+      "human_blocker": null,
+      "round_a_locked": true,
+      "round_b_ready": true,
+      "round_b_locked": true,
       "official_inbox_returns": {
-        "ACCOUNTING_DOMAIN": 0,
-        "NEPALI_FLUENT_A": 0,
-        "PRODUCT_POLICY": 0,
-        "PROFESSIONAL_LINGUIST_B": 0
+        "ACCOUNTING_DOMAIN": 6,
+        "NEPALI_FLUENT_A": 10,
+        "PRODUCT_POLICY": 10,
+        "PROFESSIONAL_LINGUIST_B": 10
       },
       "parent_engineering_rc": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_004",
       "parent_engineering_verdict": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_07_R3O_INDEPENDENT_V3_REVIEW_RESOLUTION_READINESS_REPORT.md",
-        "docs/mokxya-ai/decisions/ADR_0021_PREFER_GENUINE_INDEPENDENT_REVIEW_OVER_AI_FREEZE_SHORTCUT.md",
-        "docs/mokxya-ai/MAI_07_R3N6_FRESH_HOLDOUT_COMPLETE_EVIDENCE_CORRECTIVE_REPORT.md",
-        "docs/mokxya-ai/MAI_07_R3JA_REVIEW_OPS_REPORT.md",
-        "docs/mokxya-ai/reviews/mai07_v3/review_operations/REVIEW_STATUS.json",
-        "docs/mokxya-ai/decisions/ADR_0010_V2_RETIREMENT_AND_V3_GOVERNANCE.md",
-        "docs/mokxya-ai/decisions/ADR_0011_AI_ASSISTED_VS_INDEPENDENT_REVIEW_EVIDENCE.md"
+        "docs/mokxya-ai/decisions/ADR_0022_OPTION_A_ROUND_B_AND_COORDINATOR_CREDENTIAL_VERIFICATION.md",
+        "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_HUMAN_REVIEW_FREEZE_MANIFEST.json",
+        "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_A_LOCK_MANIFEST.json",
+        "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_B_LOCK_MANIFEST.json",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/MAI_07_V3_COORDINATOR_CREDENTIAL_VERIFICATION_ATTESTATION.json",
+        "docs/mokxya-ai/decisions/ADR_0021_PREFER_GENUINE_INDEPENDENT_REVIEW_OVER_AI_FREEZE_SHORTCUT.md"
       ],
       "implementation_evidence": [
-        "docs/mokxya-ai/reviews/mai07_v3/",
-        "docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/",
-        "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/"
+        "docs/mokxya-ai/reviews/mai07_v3/round_a_locked_submissions/",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/",
+        "docs/mokxya-ai/reviews/mai07_v3/review_operations/adjudication_package/"
       ],
       "blockers": [
-        "Zero official Round A submissions in round_a_inbox (all four roles)",
-        "GAP-P1-016 independent V3 human review OPEN",
-        "GAP-P1-012 professional linguist approval OPEN",
-        "AI must not fill answers or move AI-assisted drafts into official inbox"
+        "QUALITY_GATES_PASSED still false (GAP-P1-011)",
+        "PRODUCTION_APPROVED still false",
+        "Runtime promotion not authorized"
       ],
       "dependencies": [
         "MAI-07R3N6",
@@ -1673,7 +1699,165 @@
         "MAI-07R3J-A-REVIEW-OPS"
       ],
       "recommended_order": 7.96,
-      "closure_note": "R3O opened as blocked. Engineering parent R3N6 ready. Review packet and Round A ZIPs ready. Awaiting real human Round A returns. No freeze, linguist approval, quality-gates pass, runtime promotion, or MAI-08 start."
+      "closure_note": "PASSED review resolution + V3 human-review freeze seal under ADR_0022. LINGUIST_APPROVED=true. Option A Round B remap recorded. No disagreements requiring adjudicator. No runtime promotion. MAI-08 NOT_STARTED.",
+      "credentials_manually_verified": true,
+      "option_a_mechanical_remap": true,
+      "authority": "ADR_0022"
+    },
+    {
+      "id": "MAI-07R3P",
+      "title": "V3 FREEZE CONSUMPTION OR GOVERNED EVAL",
+      "status": "SUPERSEDED_BY_R3Q_PASSED_QUALITY",
+      "production_approved": false,
+      "linguist_approved": true,
+      "quality_gates_passed": false,
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3P_V3_FREEZE_CONSUMPTION_REPORT.md",
+        "evals/mai07/manifests/MAI_07_ROMANIZED_TRANSLITERATION_V3.manifest.json",
+        "evals/mai07/manifests/MAI_07_R3P_THRESHOLDS_V3.manifest.json",
+        "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_HUMAN_REVIEW_FREEZE_MANIFEST.json",
+        "docs/mokxya-ai/MAI_07_R3P2_FROZEN_V3_ONE_SHOT_REPORT.md",
+        "evals/mai07/r3p_frozen_v3/MAI_07R3P_FROZEN_V3_ATTEMPT_001.CLOSEOUT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3p_dataset_v3.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3p_dataset_v3.py",
+        "evals/mai07/frozen_v3/"
+      ],
+      "blockers": [
+        "R3P-2 attempt consumed FAILED_QUALITY; corrective is MAI-07R3Q"
+      ],
+      "dependencies": [
+        "MAI-07R3O",
+        "MAI-07R3N6"
+      ],
+      "recommended_order": 7.97,
+      "closure_note": "R3P-1 froze V3 dataset. R3P-2 one-shot of mai-07.1.11-r3n6-chaincomplete on FROZEN_EVALUATION (583) = FAILED_QUALITY (protected_mutations 40/155 false positives from span extract). Attempt consumed. Corrected by MAI-07R3Q.",
+      "dataset_id": "MAI_07_ROMANIZED_TRANSLITERATION_V3",
+      "dataset_hash": "6ad2a824a6fe0cb1248d7640692f8c45635b4290ee33647d5cbe4b82af2bdde8"
+    },
+    {
+      "id": "MAI-07R3P-2",
+      "title": "AUTHORIZED FROZEN V3 ONE-SHOT",
+      "status": "FAILED_QUALITY",
+      "production_approved": false,
+      "linguist_approved": true,
+      "quality_gates_passed": false,
+      "candidate_promoted": false,
+      "attempt_id": "MAI_07R3P_FROZEN_V3_ATTEMPT_001",
+      "candidate_runtime": "mai-07.1.11-r3n6-chaincomplete",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3P2_FROZEN_V3_ONE_SHOT_REPORT.md",
+        "evals/mai07/r3p_frozen_v3/MAI_07R3P_FROZEN_V3_ATTEMPT_001.QUALITY_RESULT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3p_frozen_v3.py"
+      ],
+      "blockers": [
+        "protected_mutations 40/155 on FROZEN_EVALUATION (false positives; see R3Q)"
+      ],
+      "dependencies": [
+        "MAI-07R3P",
+        "MAI-07R3N6"
+      ],
+      "recommended_order": 7.971,
+      "closure_note": "One-shot consumed FAILED_QUALITY. No automatic rerun. No promotion. Active remains mai-07.1.3-r3f-sealnew. Superseded by MAI-07R3Q."
+    },
+    {
+      "id": "MAI-07R3Q",
+      "title": "PROTECTED-SPAN ALIGNMENT CORRECTIVE FROZEN V3 ONE-SHOT",
+      "status": "PASSED_QUALITY_UNPROMOTED",
+      "production_approved": false,
+      "linguist_approved": true,
+      "quality_gates_passed": true,
+      "candidate_promoted": false,
+      "attempt_id": "MAI_07R3Q_FROZEN_V3_ATTEMPT_001",
+      "candidate_runtime": "mai-07.1.12-r3q-protspan",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3Q_FROZEN_V3_ONE_SHOT_REPORT.md",
+        "evals/mai07/r3q_frozen_v3/MAI_07R3Q_FROZEN_V3_ATTEMPT_001.QUALITY_RESULT.json",
+        "evals/mai07/r3q_frozen_v3/MAI_07R3Q_FROZEN_V3_ATTEMPT_001.CLOSEOUT.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3q_protected_span_align.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3q_candidate_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3q_frozen_v3.py",
+        "erp_bot/tests/oip/language_runtime/test_mai07_r3q_protected_span.py"
+      ],
+      "blockers": [
+        "Superseded for production-approval scope by MAI-07R3R / ADR_0023",
+        "MAI-08 NOT_STARTED"
+      ],
+      "dependencies": [
+        "MAI-07R3P-2",
+        "MAI-07R3N6"
+      ],
+      "recommended_order": 7.972,
+      "closure_note": "Corrected protected_mutations false positives via highlight-range alignment. FROZEN_EVALUATION 583 cases PASSED_QUALITY. protected_mutations 0/155. Production approval deferred to MAI-07R3R. Active runtime unchanged."
+    },
+    {
+      "id": "MAI-07R3R",
+      "title": "PRODUCTION APPROVAL WITHOUT LIVE CUTOVER",
+      "status": "PRODUCTION_APPROVED_CUTOVER_PENDING",
+      "production_approved": true,
+      "linguist_approved": true,
+      "quality_gates_passed": true,
+      "cutover_authorized": true,
+      "candidate_promoted": false,
+      "authority": "ADR_0023",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3R_PRODUCTION_APPROVAL_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0023_PRODUCTION_APPROVAL_WITHOUT_LIVE_CUTOVER.md",
+        "evals/mai07/manifests/MAI_07_R3P_V3_RELEASE_CANDIDATE.manifest.json"
+      ],
+      "implementation_evidence": [
+        "Active RUNTIME_VERSION remains mai-07.1.3-r3f-sealnew",
+        "Qualified pack mai-07.1.11-r3n6-chaincomplete under R3Q eval identity"
+      ],
+      "blockers": [
+        "Live cutover not executed — MAI-07R3S required",
+        "MAI-08 NOT_STARTED"
+      ],
+      "dependencies": [
+        "MAI-07R3Q"
+      ],
+      "recommended_order": 7.973,
+      "closure_note": "PRODUCTION_APPROVED=true and CUTOVER_AUTHORIZED=true under ADR_0023. Cutover executed in MAI-07R3S."
+    },
+    {
+      "id": "MAI-07R3S",
+      "title": "RUNTIME CUTOVER R3N6 TO ACTIVE",
+      "status": "RUNTIME_CUTOVER_COMPLETE",
+      "production_approved": true,
+      "linguist_approved": true,
+      "quality_gates_passed": true,
+      "cutover_authorized": true,
+      "candidate_promoted": true,
+      "authority": "ADR_0024",
+      "active_runtime_version": "mai-07.1.13-r3s-active",
+      "active_pack_version": "mai-07.1.11-r3n6-chaincomplete",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_07_R3S_RUNTIME_CUTOVER_REPORT.md",
+        "docs/mokxya-ai/decisions/ADR_0024_RUNTIME_CUTOVER_R3N6_TO_ACTIVE.md",
+        "evals/mai07/manifests/MAI_07_R3P_V3_RELEASE_CANDIDATE.manifest.json"
+      ],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/transliteration/__init__.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/resource_repository.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3s_active_runtime.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_active_default_guard.py",
+        "erp_bot/src/oip/modules/language_runtime/transliteration/application/transliteration_service.py"
+      ],
+      "blockers": [
+        "MAI-08 NOT_STARTED"
+      ],
+      "dependencies": [
+        "MAI-07R3R",
+        "MAI-07R3Q",
+        "MAI-07R3N6"
+      ],
+      "recommended_order": 7.974,
+      "closure_note": "Active cutover complete. RUNTIME_VERSION=mai-07.1.13-r3s-active; pack=mai-07.1.11-r3n6-chaincomplete; candidate_promoted=true; overlay disabled. MAI-08 next."
     },
     {
       "id": "MAI-08",
@@ -1777,7 +1961,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "mode_aware pending draft selection \u2014 turn-relation incomplete"
+        "mode_aware pending draft selection — turn-relation incomplete"
       ],
       "blockers": [],
       "dependencies": [
@@ -1885,7 +2069,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "oip planner module \u2014 API import broken"
+        "oip planner module — API import broken"
       ],
       "blockers": [
         "GAP-P0-004"
@@ -1917,7 +2101,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "prompt_grounding \u2014 not full PromptRegistry"
+        "prompt_grounding — not full PromptRegistry"
       ],
       "blockers": [],
       "dependencies": [
@@ -1962,7 +2146,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "partial \u2014 Nepal law effective dates not proven"
+        "partial — Nepal law effective dates not proven"
       ],
       "blockers": [],
       "dependencies": [
@@ -1992,7 +2176,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "optional semantic chroma \u2014 partial/prod-limited"
+        "optional semantic chroma — partial/prod-limited"
       ],
       "blockers": [],
       "dependencies": [
@@ -2007,7 +2191,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "hybrid_rag RRF \u2014 local path"
+        "hybrid_rag RRF — local path"
       ],
       "blockers": [],
       "dependencies": [
@@ -2022,7 +2206,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "ORBIX_NP_KB_CITATIONS \u2014 claim verifier incomplete"
+        "ORBIX_NP_KB_CITATIONS — claim verifier incomplete"
       ],
       "blockers": [],
       "dependencies": [
@@ -2037,7 +2221,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "mode_aware \u2192 draft cards \u2192 Dexie engines"
+        "mode_aware → draft cards → Dexie engines"
       ],
       "blockers": [],
       "dependencies": [
@@ -2082,7 +2266,7 @@
       "production_approved": false,
       "gate_evidence": [],
       "implementation_evidence": [
-        "UI explicit confirm; Action\u2192OEC not product path"
+        "UI explicit confirm; Action→OEC not product path"
       ],
       "blockers": [],
       "dependencies": [

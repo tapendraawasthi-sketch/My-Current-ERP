@@ -45,7 +45,7 @@ def test_historical_resource_claim_unchanged_and_not_active():
     )
     assert hist["content_hash"] == PARENT_R3F_INVALIDATED_RESOURCE_CLAIM
     assert xlrr.RESOURCES_DIR != xlrr.HISTORICAL_INVALIDATED_R3F_RESOURCES_DIR
-    assert xlrr.RESOURCES_DIR.name == "mai-07.1.3-r3f-sealnew"
+    assert xlrr.RESOURCES_DIR.name == "mai-07.1.11-r3n6-chaincomplete"
 
 
 def test_active_pack_claim_equals_compute():
@@ -55,17 +55,17 @@ def test_active_pack_claim_equals_compute():
     assert report["content_hash"] == report["claimed_content_hash"]
     man = json.loads((xlrr.RESOURCES_DIR / "manifest.json").read_text(encoding="utf-8"))
     assert man["content_hash"] == xlrr.compute_pack_content_hash()
-    assert man["resource_pack_version"] == RESOURCE_PACK_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert man["resource_pack_version"] == RESOURCE_PACK_VERSION == "mai-07.1.11-r3n6-chaincomplete"
     assert man.get("SEALED_READ_ONLY") is True
     assert man.get("seal_contract_version") == SEAL_CONTRACT_VERSION
 
 
 def test_runtime_references_new_pack_only():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
-    assert RESOURCE_PACK_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
+    assert RESOURCE_PACK_VERSION == "mai-07.1.11-r3n6-chaincomplete"
     assert ENABLE_PROMOTION_OVERLAY is False
     res = xlrr.load_resources(force_reload=True)
-    assert res.version == "mai-07.1.3-r3f-sealnew"
+    assert res.version == "mai-07.1.11-r3n6-chaincomplete"
     assert res.content_hash == xlrr.compute_pack_content_hash()
 
 
@@ -144,4 +144,5 @@ def test_rc_locked_before_holdout_fields():
     assert rc["no_runtime_tuning"] is True
     assert rc["no_frozen_data_use"] is True
     assert rc["prohibited_rerun"] is True
-    assert rc["resource_content_sha256"] == xlrr.compute_pack_content_hash()
+    hist = xlrr.HISTORICAL_R3F_SEALNEW_RESOURCES_DIR
+    assert rc["resource_content_sha256"] == xlrr.compute_pack_content_hash(resources_dir=hist)

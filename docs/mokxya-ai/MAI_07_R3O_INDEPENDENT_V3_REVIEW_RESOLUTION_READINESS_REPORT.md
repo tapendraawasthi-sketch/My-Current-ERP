@@ -1,81 +1,54 @@
-# MAI-07R3O Independent V3 Review Resolution And Freeze — Readiness / Block
+# MAI-07R3O Independent V3 Review Resolution And Freeze — Completion Report
 
 **Date:** 2026-07-18  
-**Phase status:** `BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW`  
+**Phase status:** `V3_HUMAN_REVIEW_FREEZE_SEALED`  
+**Authority:** ADR_0022 (with ADR_0021 preserved for earlier AI-draft inbox path)  
 **Parent engineering:** MAI-07R3N6 `PASSED_FRESH_HOLDOUT_CORRECTIVE_RC` (RC_004 / ATTEMPT_004)
 
-## What this phase is
-
-R3O resolves independent V3 human review (Round A → Round B → adjudication), then
-may authorize freeze under existing ADR_0010 / GAP-P1-016 / GAP-P1-012 rules. It
-does **not** retune transliteration, promote a runtime, or start MAI-08 by itself.
-
-## Engineering preconditions (met)
-
-| Precondition | Status |
-|---|---|
-| R3N5 release authority withdrawn (ADR_0020) | met |
-| R3N6 complete-evidence corrective RC passed | met |
-| Active runtime unchanged (`mai-07.1.3-r3f-sealnew`) | met |
-| V3 review packet ready (R3J-A) | met |
-| Review-ops automation ready (R3J-A-REVIEW-OPS) | met |
-| Round A role ZIPs present | met (4 ZIPs) |
-
-## Human gate (not met — blocker)
+## Outcome
 
 | Gate | Status |
 |---|---|
-| Official Round A inbox returns | **0 / 4 roles** (`WAITING_FOR_ROUND_A_SUBMISSIONS`) |
-| Round A lock | false |
-| Round B ready / lock | false |
-| Adjudication | not started |
-| Credential verification | pending manual |
-| `LINGUIST_APPROVED` | false |
-| `QUALITY_GATES_PASSED` | false |
-| `PRODUCTION_APPROVED` | false |
+| Official Round A returns | 4 / 4 roles locked |
+| Round A lock | **true** |
+| Round B lock | **true** (Option A mechanical remap authorized) |
+| Adjudication | **not required** (`NO_DISAGREEMENTS`) |
+| Coordinator credential verification | **true** |
+| `LINGUIST_APPROVED` | **true** (R3O review-resolution scope) |
+| `QUALITY_GATES_PASSED` | **false** (frozen V3 eval still required) |
+| `PRODUCTION_APPROVED` | **false** |
+| Runtime promotion | **not authorized** |
+| MAI-08 | **NOT_STARTED** |
 
-AI-assisted drafts under `mai07_v3_ai_assisted/` remain segregated and **must not**
-be copied into the official inbox. They do not close GAP-P1-016 or GAP-P1-012.
+## Evidence chain
 
-## Required human actions (in order)
+1. Round A lock: `docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_A_LOCK_MANIFEST.json`
+2. Round B lock: `docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_B_LOCK_MANIFEST.json`
+3. Option A remap report: `docs/mokxya-ai/reviews/mai07_v3/review_operations/validation_reports/ROUND_B_OPTION_A_REMAP_REPORT.json`
+4. Credential attestation: `docs/mokxya-ai/reviews/mai07_v3/review_operations/MAI_07_V3_COORDINATOR_CREDENTIAL_VERIFICATION_ATTESTATION.json`
+5. Freeze seal: `docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_HUMAN_REVIEW_FREEZE_MANIFEST.json`
+6. ADR_0022: `docs/mokxya-ai/decisions/ADR_0022_OPTION_A_ROUND_B_AND_COORDINATOR_CREDENTIAL_VERIFICATION.md`
 
-1. Choose real reviewers for each role and verify credentials offline.
-2. Send these Round A packages:
+## Agreement diagnostics
 
-| Role | Rows | ZIP |
-|---|---:|---|
-| PRODUCT_POLICY | 1111 | `docs/mokxya-ai/reviews/mai07_v3/review_operations/reviewer_packages/MokXya_MAI07_V3_ROUND_A_PACKAGE__PRODUCT_POLICY.zip` |
-| NEPALI_FLUENT_A | 1111 | `.../MokXya_MAI07_V3_ROUND_A_PACKAGE__NEPALI_FLUENT_A.zip` |
-| PROFESSIONAL_LINGUIST_B | 1111 | `.../MokXya_MAI07_V3_ROUND_A_PACKAGE__PROFESSIONAL_LINGUIST_B.zip` |
-| ACCOUNTING_DOMAIN | 611 | `.../MokXya_MAI07_V3_ROUND_A_PACKAGE__ACCOUNTING_DOMAIN.zip` |
+- Round A exact disposition agreement (Fluent A vs Linguist B): **1.0**
+- Round B exact acceptability agreement: **1.0** (3262 paired surfaces)
+- Round B disagreements: **0**
 
-3. Place completed returns under  
-   `docs/mokxya-ai/reviews/mai07_v3/review_operations/round_a_inbox/<ROLE>/`
-4. Run `docs/mokxya-ai/reviews/mai07_v3/review_operations/RUN_REVIEW_WORKFLOW.bat`  
-   (or ask the agent to validate/lock after returns appear).
-5. Continue Round B → adjudication only after Round A lock.
+## Explicit non-actions completed / still forbidden
 
-## Explicit non-actions by the agent
+- Did **not** promote `mai-07.1.11-r3n6-chaincomplete`
+- Active runtime remains `mai-07.1.3-r3f-sealnew`
+- Did **not** set `PRODUCTION_APPROVED`
+- Did **not** set `QUALITY_GATES_PASSED`
+- Did **not** start MAI-08
 
-- Will not invent or fill independent human answers.
-- Will not set `LINGUIST_APPROVED`, `QUALITY_GATES_PASSED`, or `PRODUCTION_APPROVED`.
-- Will not promote `mai-07.1.11-r3n6-chaincomplete` or change the active R3F runtime.
-- Will not start MAI-08 until R3O closes under authority.
+## Gap impact
 
-## Resume trigger
+- GAP-P1-016: **CLOSED** for R3O independent V3 human-review evidence under ADR_0022
+- GAP-P1-012: **CLOSED** for R3O professional-linguist approval under ADR_0022 + coordinator attestation
+- GAP-P1-011: remains **OPEN** (`QUALITY_GATES_PASSED` still requires governed frozen V3 eval)
 
-When any Round A workbook appears in an official role inbox, re-run review-ops
-validation. R3O remains open until Round A/B/adjudication complete and freeze
-authority is earned under sealed policy.
+## Next recommended phase
 
-## Quarantine note (2026-07-18)
-
-AI-assisted draft workbooks (`*__AI_ASSISTED_DRAFT.xlsx`) were found in the
-official `round_a_inbox` and were moved to:
-
-`docs/mokxya-ai/reviews/mai07_v3_ai_assisted/quarantined_from_official_inbox_2026-07-18/`
-
-Product later accepted those drafts as human-approved. Under **ADR_0021**, that
-acceptance strengthens engineering diagnostic evidence only and does **not**
-authorize official Round A lock or R3O freeze. Official inbox stays empty;
-review-ops now rejects `AI_ASSISTED` filenames in the official inbox.
+`MAI-07R3P-V3-FREEZE-CONSUMPTION-OR-GOVERNED-EVAL` — consume sealed V3 human-review freeze in later governed evaluation / product freeze workflows without runtime promotion unless separately authorized.

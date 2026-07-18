@@ -261,7 +261,7 @@ def test_official_round_a_inbox_untouched():
 
 
 def test_runtime_and_resources_unchanged():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
     report = xlrr.validate_resources()
     assert report["ok"] is True

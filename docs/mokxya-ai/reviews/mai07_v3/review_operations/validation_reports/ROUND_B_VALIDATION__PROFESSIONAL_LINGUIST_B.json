@@ -1,0 +1,17 @@
+{
+  "acceptability_counts": {
+    "ACCEPTABLE_PREFERRED": 1111,
+    "INCORRECT": 2151
+  },
+  "corrections": [],
+  "errors": [],
+  "file_sha256": "30ac33e4217142b559c07eeed20cd129bddaacfdbe6dd6905b5eff99f3996949",
+  "ok": true,
+  "option_a_remap_notes_present": true,
+  "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/PROFESSIONAL_LINGUIST_B/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx",
+  "role_id": "PROFESSIONAL_LINGUIST_B",
+  "rows_blank": 0,
+  "rows_completed": 3262,
+  "rows_expected": 3262,
+  "rows_invalid_enum": 0
+}

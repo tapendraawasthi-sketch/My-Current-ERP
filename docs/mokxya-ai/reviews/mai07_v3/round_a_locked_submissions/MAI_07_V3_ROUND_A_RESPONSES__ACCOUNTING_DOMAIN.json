@@ -1,0 +1,3671 @@
+{
+  "role_id": "ACCOUNTING_DOMAIN",
+  "rows": [
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-0144779dffa0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-0228296f375e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-0286e45724ec"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-031a92ca68a7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-035b2c80b5b1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-03e8397435fb"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-043586fd5df0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-05105636435e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-05242bb9eb94"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-057662827656"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-05a7dc77b970"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-05cb2a080641"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-0606c086fc8e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0614d057399a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-0630f37bbd07"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-07c7de2cb07c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-085639d1a2e2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0939753a1192"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0984a2cb9622"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-09bc92a74e9d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-0a239fdca995"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0b0f93368279"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-0b6374e79a5a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-0bbf177ddeb6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0c2c18712298"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-0c3f8305c233"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0c6bafa4fe74"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-0cbfbbc5f37e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-0cee521fe329"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0d615e158fd1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-0d9a9bec6c99"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-0e007c1b4e83"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-0e9baa70235d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-0f199b5b76a8"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-0fe968d0e334"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-10c330b85032"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-1177de629b8b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-120d96b361ba"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-121e516a91bd"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-12445c86782d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-12d94252c26f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-133124e7f16d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-13905509c95f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-139736cb8e75"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-144026a3d23e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-145efc4a0550"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-146a08280ca1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-149c878fb952"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-14a11f3324b4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-151d46813145"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-15740d9bf5ee"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-15a09c1a3589"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-1637cd9e08f1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-163a27bca207"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-168513d5ad04"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-1750d807116d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-1753357a319a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-177875ff7fec"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-17c4daf6d209"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-1892d7c7ab07"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-18a1f721c7a2"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-18de432599c0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-18dee75c9b42"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-18f79e5bff62"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-19860b3b92a2"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-19b81032d950"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-1acf8251c368"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-1b5240303171"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-1b658c707426"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-1c091b78ae07"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-1c379c29fcaf"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-1cef8fa0086c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-1cfa3f64ef8e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-1d2f24c4a5ea"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-1d798346ebe5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-1dd470e83010"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-1e0cd51a4d93"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-1e0f47cf0255"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-1e5f86c4619c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-1f57c7bedfc5"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-1f7a7a0771fa"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-1ff093d1a1d5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-202cb15c4e92"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-2128d9b30717"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-22756958ec92"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-231540b4b9fe"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-233373860e3f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-241c40299ec1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-245f33011ddb"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-246641914a54"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-246c6390f755"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-250931ca8324"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-2644e44d031a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-27c672db0b72"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-28488934b449"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-2861d4df097d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-28b15dd77a0a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-28e630ad33dc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-2949d240a2f7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-294eea4bee3c"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-295914cae4d1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-296405771fc7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-297beced41f6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-2a340c1ba05e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-2b3c4e97ae0c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-2b694b31bd71"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-2b79eda166ca"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-2bbecc16523a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-2c7b9bc3b131"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-2c804f0e4b7a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-2ca0e361c264"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-2cecfde09f7e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-2de5a13cc032"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-2f8f5758c52f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3033769d8111"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-306c2d58d6fc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-3292f3a37431"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3298b65fbcf3"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-32ada445ac45"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-32ec85ea6ce1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3316482b369b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-34fdf6705770"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-350e68897ca7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-351923dbf4c4"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-352f396aecb3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-35baad9cf18d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-35f1393c2b70"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3625b8182b00"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-36554126c526"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-36acbaa3ee58"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-373c90897411"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-3760c23cd8d7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-377fec2e68b7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-3868816d187a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-387ad580db45"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-392b439ac1c5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-39313ae11ef6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-39c0220aa455"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-39f9e6cb5e12"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-3a3f935e9213"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3abb8d78b9d0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-3afc98949356"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-3b08043c7d75"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-3b6b86a215db"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-3bf288176366"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-3cb917d8357f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3d01da403c8c"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-3d293a6d570f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-3daa96d9f0fc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-3dffd497bd52"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-3eaf6b7f40a3"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-3fab673b6911"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-401598bcde7c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4031b06dd959"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-411005c16d98"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-41794d6253ee"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-418ce4bb00ea"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-41cfa03babd1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-41ea38ed362e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-427c38595892"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4360dc5bd9dc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-43ea050a2624"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-43eccf62cea3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-43ef2b2f7b57"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-43f3f9c8cbb4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-44a97031bf2a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-44ece77b6d90"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-459043c5d75d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-46444cf46707"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-46a0e4f9c2e7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-46a9c18bfee3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4734204d8bc9"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-47bf3c319030"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-48e121aa080c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-49015e87549e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-49591728b679"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4a73bc91841a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4abb4ebf3f34"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-4b4fa8766cf3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4b585ff6b535"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-4bcd8febc4f2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-4c011c65d8f6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-4c050e96f108"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-4c659eb42d73"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-4ca8705934e3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-4cc8504f044a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4cd86c0706b4"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-4cfa8b592adc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-4d5614a46f00"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4d8e386a5224"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-4da07d670e4d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-4e25699e3484"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-4f462f29c923"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4f5e318c4504"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-4fae795d26ee"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-4fc007820f20"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-4ff9e422c5a6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-503caff3e257"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-503e385883c9"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-50952a20da40"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-51936b4fea15"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-51e8dab8cf50"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-522805dc4ec2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-538aeb4eb062"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-5398e298991a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-53ac64b7ad79"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-53e6edeebb9e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-545197a2dc2e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-546744827921"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-54ca61faff41"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-5542e99f2d6d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-584e05c745d1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-58669fdb0151"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-58d69ae302f8"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-5a09a8385d52"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-5a150b6612d8"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-5a4653ffc35a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-5af4090c311c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-5af49b1865f2"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-5b089d29f5e7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-5b12473f2f5c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-5b471e5f18a5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-5bd0d0791823"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-5c3a26e573eb"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-5c5e1d0bd7b2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-5cc87c95846a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-5d278b67cb1d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-5dd3424ae32c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-5dd3a74c8a21"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-5e4c16199615"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-5f34fa981bc5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-5f97277c5bab"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-5fbc83887d59"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-60114d7507c4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-60315f0fc867"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-6069fbf05b7c"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-60aff549523a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-60b7c732f436"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-614265ee164f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-620b2b646d51"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "system_queue_identifier",
+      "review_id": "V3R-624f6d880336"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-6353783e5260"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-635452f19c0d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-636cd65b8174"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-640e2f1ac984"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-643017426c00"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-65a240fdea0d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-66918f84e41a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-66bb25d5535a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-66eec93dd493"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-66f9e864ad30"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-67109a22bf62"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-6756b5c8f4f3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-676ab510d836"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-67dd148619d8"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-67ee7f4c174e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-6895c5a0dbeb"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-6913b6ce35eb"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-69d7ec80fb40"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-6a302d10551d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-6a72776c0c35"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-6ab92b6cb325"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-6ba8c3a2e478"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-6c66ab38bd51"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-6d3bda511205"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-6d5a20105021"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-6d5b833dc4b2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-6da2f0e315b2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-6da4c28053e3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-6dab45b56d59"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-6e98d2112908"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-6f9c1449536a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-7072e58eede1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "system_queue_identifier",
+      "review_id": "V3R-70bb538103a1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-710e647d3c50"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-71a4a7458588"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-71e5df7596e1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-720e5bfae064"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-721f96c25d80"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-72aa3bc9f50b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-72c387e38542"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-73674a1d24c3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-744f312652d3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-7452d219ed38"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-7461b4ce66fa"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-747e12ef179e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-75252f1747f5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-755e16dd8fa6"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-7579e9c62958"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-765706eed332"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-7700b1636194"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-77acbe52e63b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-77f712446449"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-78155611eaae"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-799475487163"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-7a23c45c78e3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-7b0a9361d4fe"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-7bcf99d7d0d8"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-7bdbe95c5b21"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-7bde06b2f2ad"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-7cd823dbe193"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-7ceae126d3ab"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-7d48e8893896"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-7d93b3d89327"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-7e7796c5f299"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-7f5e2f0e7f4f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-7f8405f06bc5"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-7fd5b20ca763"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-808222af6ab0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-80a23d89ce23"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-81411f288b18"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-8148eb5d2db1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-81b9665fab2c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-81c14c5cba0e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-82b36e04336f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-82d983729ce1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-82e9289b901d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-8392dd771d5a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-844a7463f990"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-86390311eecb"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-866666f47a45"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-869937924425"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-86aa72402ba8"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-872255c87e9c"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "system_queue_identifier",
+      "review_id": "V3R-873cb6c47870"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-876c54d68693"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-8952e58a4f56"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-89e52b618a3c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-89efab1ab4fd"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8abac211dd02"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8b66144c1ddf"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-8bbf635c5ad3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8c9069ba07b7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-8c9573584a9c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-8d4e000ffe9b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-8da08d41d7e2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-8db14f2446b0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-8db1cb68aee5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8e1c3100511f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8e2163043303"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8e4efead3a46"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-8e93b2fdf513"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-8e9820580eee"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8ea04ec2be46"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-8ea4fbbc84a1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-8ef33a5bd025"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-8f442114ed7e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-90c6303d4852"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-90f8a68f3ef7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-912fadea2e5f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-91a6f47c1df1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-91c37973e14c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-921d5b85e0a2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-92b9cb602c35"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-9406edd0bebd"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-9477b5a51f99"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-94c732dde18f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-94dd02a169df"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-95536f5779ec"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-95b18b37dd6f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-962bc2fdd66a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-97435c1106c9"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-977d07af46cc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-977ef6fb8269"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-98d87e6283ed"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-99fcd48ae47d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-9a3d09803fd7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-9ae40bbea2d5"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-9b7beb1ed1c7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-9bb66132c2c9"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-9bf2fcd24c43"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-9e6ea448cca4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-9f1047c84b8b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-9f28192e6aa8"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-9fe181b0dae6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-9ff8d0d4d943"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-a01d19442513"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-a059da1c05d3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-a0dabb1202b0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-a12ade20186f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-a165d3800730"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-a1777ebc3966"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-a19c4908c5dc"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-a1d9e20fbdfc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-a222807d63c0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-a2574e23f018"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-a261eaaad232"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-a42fc44b2b15"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-a4d7dd18c298"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-a5021b261f56"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-a5173205a627"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-a544ae945d41"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-a5ead2863bee"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-a669e94897bb"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-a70abc2fd4dc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-a7340a4bd760"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-a7bc692a581b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-a8260bbf220f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-a8eff1d35ffc"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-a8f30280b2dc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-a8f4d72568ad"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-a9524600acf6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-a98e954aa301"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-aa82fcac28cc"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-aa976a560b71"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-ab1ab35b4793"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-ab56f478030e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-ace44e58df19"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-addcb790b7be"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-ade5ca5235da"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-aedf32bc1d4b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-af13f08de00a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-af64436ce1f8"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b005c9c48fe5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-b0b99adc070f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-b12a96649a8c"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b159be207b0c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-b18a74a52dae"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-b1e7cbac70d4"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-b226042e5fad"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b34c7d5c96b1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b37363a8d140"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b454216bb38e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-b454401bb625"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-b47707db4d76"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-b4baf0204eba"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-b5213febd201"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-b5d1ad1db651"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-b74bc513e21c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-b78621b20b16"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-b7d5f4acb983"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-b816eb5a2565"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-b8421582ad9a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-b846d14748e5"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-b84d9916226f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b8592fe9a52f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b89835039049"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-b8cd0d142f95"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b8eef4c90025"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-b9250ee545ab"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-b95ca513f3c4"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-b960232025d7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "system_queue_identifier",
+      "review_id": "V3R-b979dbf116a6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-b98d092c8912"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-b9d0d62f500c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-ba76c92d1b6d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-bb3a2a977534"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-bb416e17ec91"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-bb9f6a4a6fd0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-bbd4e0e4f0cb"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-bcae03a44559"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-bcc0878ef38a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-bce1d06c0b53"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-bcefd3e58194"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-bd27f4ae58c6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-bd72f0cf1250"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-bdaab59250c6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-bdc55abe6a3a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-bf66b25fe66d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-bfbd7207fd81"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-bfe5574a2035"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-c0c99152d8d6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c1b3f585f05b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c1bd8118a570"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-c1c8101fe31b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-c1ed5a0a53f1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c2060457d556"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c23c7f55db6d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-c29ca4e384a3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c4117fc53b72"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c430e69730c0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-c45a3ee2db04"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c48d8d79740b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-c596cc903ab9"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-c5d88e244da9"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-c64bd5b87786"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-c65937892221"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-c6a3b805e792"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-c87293f0bce7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-c87b6a33c9f8"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-c8d8b4a88ad9"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-c8fe1f87ae5a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-c971bdb5a50d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-c9a5fc4a695e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-c9fbb774f7f2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-ca7efcd54b2d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-cb37907917b1"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-cbb159d764d0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-cbda31ed04c1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-cc3e9d33cc63"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-cc7a01345558"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-cca12875ccc7"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-ccf9fe79fccd"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-cd6164213845"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-cdc7e6ae2e40"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-cdfd5f82950c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-ce0b9edc3116"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-d014f262c54b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-d077d4918318"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-d1d0b3194c12"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-d1fccfe3427f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-d1fe69cafd89"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-d2ed931b9639"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-d382b0280389"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-d3c9ec5777f4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-d40b32b21ac4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-d412a050e825"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-d4735514fe85"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-d4774dc29171"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-d48b37273270"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-d56f24a778cb"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-d5ab6216954e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-d7060c476a26"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-d7c56805e338"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-d8fba05e97e0"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-d91468725cc7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-d91cf275af0e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-d9bc0946447f"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-d9dfc395ea88"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-da31ab00c761"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-dab205d804ff"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-dbb398055ac6"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-dbb78a7ab87b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-dbbcbee7023d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-dbf2ccabda16"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-dd1128b190d3"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-dda49869526d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-de0f641145ff"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-de521d184e1d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-debae48f46dc"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-df871b87d761"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_draft",
+      "review_id": "V3R-e04324adb9a0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e0c78b7e7e2a"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e11ed64aab42"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-e1a294f79c24"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-e30e12b84154"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-e31fd858f6d6"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e36403e675ba"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-e41a0228373c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_settings_query",
+      "review_id": "V3R-e41cd7b68963"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-e448ded91cf1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e47664c6d013"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-e4d9b65f110e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-e4eadbcacc4c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-e521f92824a3"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-e54822ff93f4"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e55449e9d81f"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-e5909b42c003"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-e593bf3c852d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-e697169f7224"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-e6a4c16c45b6"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-e75852ec3868"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-e7b652000bd6"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e87f6cd986e6"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-e92ff81b2fd0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-e97009891527"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-e98209574235"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-e99dba332cb7"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-e9eab2928dd0"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-e9f2e258cb69"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-eaa2e04be0cd"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-eaa4c6b20df1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-eb15f5fdc374"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-eb5f09909c7c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-ec092f662f6a"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-ec2b39281d51"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-ec313ee5c23e"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-ec6055c669aa"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-ec7931aac30b"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-ecbf465eee84"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-eccad7288123"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-ed0425b71389"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "NO_TRANSLITERATION_ALLOWED",
+      "reason_category": "explicit_english_context",
+      "review_id": "V3R-ed446fef1c46"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-ed4bf79fd51d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-ed4f18176822"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-ed8d61a3e411"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-eee8dbdf7283"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-ef1dee8fb20d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-ef4a4fd00257"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "pending_status_term",
+      "review_id": "V3R-f11e547d9b55"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-f126e203696c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-f18dd128a2e1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "explicit_latin_identity_instruction",
+      "review_id": "V3R-f193d1a13be5"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-f1ad9313c853"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-f2ea35825c2b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-f32ca3590a11"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_technical_queue_term",
+      "review_id": "V3R-f34bd039e79d"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_in_filter_context",
+      "review_id": "V3R-f3e136e94282"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "shared_surface_mixed_context",
+      "review_id": "V3R-f3edbd35dc4b"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-f3f53ca36776"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-f43d52c0ce93"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "system_queue_identifier",
+      "review_id": "V3R-f57aad742da1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-f5ed03ea8fb2"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-f5f306640f8c"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-f66ef9480002"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-f6a3884e3fdf"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-f6dab734d18e"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-f71f480923c4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-f7e0d707df70"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-f95c9d02c942"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-f9dc043d6845"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "ACRONYM_OR_IDENTIFIER",
+      "reason_category": "short_code_shared_surface",
+      "review_id": "V3R-f9f8ad250ac6"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "DEVANAGARI_TRANSLITERATION_REQUIRED",
+      "reason_category": "nepali_word_in_ledger_note",
+      "review_id": "V3R-fa501b9c293d"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_module_name",
+      "review_id": "V3R-fa6f11380b27"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_accounting_term_in_ledger",
+      "review_id": "V3R-fac10e432121"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-fafce13a07c1"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-fb6d6b2cdb40"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-fd3f50896c75"
+    },
+    {
+      "confidence": "HIGH",
+      "disposition": "ENGLISH_IDENTITY_REQUIRED",
+      "reason_category": "english_ui_label_in_settings_panel",
+      "review_id": "V3R-fd70d4c780ca"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "CONTEXT_DEPENDENT",
+      "reason_category": "context_insufficient_for_determination",
+      "review_id": "V3R-fd947b1a10c4"
+    },
+    {
+      "confidence": "MEDIUM",
+      "disposition": "TRANSLITERATION_OPTIONAL",
+      "reason_category": "english_term_mixed_nepali_sentence",
+      "review_id": "V3R-ff7755c41f0d"
+    }
+  ]
+}

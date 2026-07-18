@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
-RUNTIME_VERSION = "mai-07.1.3-r3f-sealnew"
-RESOURCE_PACK_VERSION = "mai-07.1.3-r3f-sealnew"
+RUNTIME_VERSION = "mai-07.1.13-r3s-active"
+RESOURCE_PACK_VERSION = "mai-07.1.11-r3n6-chaincomplete"
+# Previous active default before MAI-07R3S cutover (immutable lineage).
+PREVIOUS_ACTIVE_RUNTIME_VERSION = "mai-07.1.3-r3f-sealnew"
+PREVIOUS_ACTIVE_RESOURCE_HASH = (
+    "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930"
+)
 # Historical pre-R1 baseline preserved as parent for R3D differential and R3C frozen artifacts.
 PARENT_PRE_R1_RUNTIME_VERSION = "mai-07.1.0"
 PARENT_PRE_R1_RESOURCE_HASH = "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566"
@@ -22,7 +27,7 @@ PARENT_R3F_INVALIDATED_RC_HASH = (
 )
 PARENT_R3F_INVALIDATED_STATUS = "INVALIDATED_BY_SEAL_DRIFT"
 ENGLISH_IDENTITY_GUARD_VERSION = "mai-07-r3f.1.0.0"
-# MAI-07R2 experimental overlay — DISABLED by default (MAI-07R3A/R3D/R3F). Do not enable.
+# MAI-07R2 experimental overlay — DISABLED by default (MAI-07R3A/R3D/R3F/R3S). Do not enable.
 ENABLE_PROMOTION_OVERLAY = False
 OFFSET_UNIT = "UNICODE_CODE_POINT"
 MAX_CANDIDATES_PER_SPAN = 5
@@ -36,6 +41,8 @@ GENERATED_INVARIANT_SEED = 20260714
 __all__ = [
     "RUNTIME_VERSION",
     "RESOURCE_PACK_VERSION",
+    "PREVIOUS_ACTIVE_RUNTIME_VERSION",
+    "PREVIOUS_ACTIVE_RESOURCE_HASH",
     "PARENT_PRE_R1_RUNTIME_VERSION",
     "PARENT_PRE_R1_RESOURCE_HASH",
     "PARENT_R3D_RUNTIME_VERSION",

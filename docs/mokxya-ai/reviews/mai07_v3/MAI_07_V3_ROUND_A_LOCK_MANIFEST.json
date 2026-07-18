@@ -1,0 +1,123 @@
+{
+  "LINGUIST_APPROVED": false,
+  "MAI_08": "NOT_STARTED",
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "ROUND_A_LOCKED": true,
+  "ROUND_B_READY": true,
+  "adjudication_performed": false,
+  "agreement_round_a": {
+    "cohen_kappa": 1.0,
+    "exact_disposition_agreement": 1.0,
+    "note": "Diagnostic only; adjudication not performed in this phase.",
+    "ok": true,
+    "paired_n": 1111,
+    "status": "COMPUTED"
+  },
+  "human_answers_altered": false,
+  "identical_response_pattern": {
+    "flagged": [],
+    "ok": true,
+    "pairs": [
+      {
+        "identical_sequence": false,
+        "role_a": "NEPALI_FLUENT_A",
+        "role_b": "PROFESSIONAL_LINGUIST_B",
+        "trivial_constant_a": false,
+        "trivial_constant_b": false,
+        "unique_labels_a": 8,
+        "unique_labels_b": 8
+      },
+      {
+        "identical_sequence": false,
+        "role_a": "NEPALI_FLUENT_A",
+        "role_b": "PRODUCT_POLICY",
+        "trivial_constant_a": false,
+        "trivial_constant_b": false,
+        "unique_labels_a": 8,
+        "unique_labels_b": 8
+      },
+      {
+        "identical_sequence": false,
+        "role_a": "PROFESSIONAL_LINGUIST_B",
+        "role_b": "PRODUCT_POLICY",
+        "trivial_constant_a": false,
+        "trivial_constant_b": false,
+        "unique_labels_a": 8,
+        "unique_labels_b": 8
+      }
+    ]
+  },
+  "lock_manifest_sha256": "c6da47f904162f241f06aef571c359208608c4cde8dd06f84e3249650c0683e2",
+  "locked_files": {
+    "ACCOUNTING_DOMAIN": {
+      "canonical_sha256": "355d0caf3ee28ca13912bbb5c1452bd3efff8406224b4c0c95f91e9f820522ab",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_locked_submissions/MokXya_MAI07_V3__accounting_domain.xlsx",
+      "raw_sha256": "34bcd44ace36d17204c2a4b69f11e8b633d646eb37a6188662427f2df2db642d",
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/MokXya_MAI07_V3__accounting_domain.xlsx",
+      "source_sha256": "34bcd44ace36d17204c2a4b69f11e8b633d646eb37a6188662427f2df2db642d"
+    },
+    "NEPALI_FLUENT_A": {
+      "canonical_sha256": "3a1b3a4193acd41abfccfac11c5b2be44d33c6a64185ea847a1cedf98be163f8",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_locked_submissions/MokXya_MAI07_V3__nepali_fluent_a.xlsx",
+      "raw_sha256": "15c44e5f0199f541452bf0ab6c18d5d07a9706a9bd8e68ec763a01079dfbd1d4",
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/MokXya_MAI07_V3__nepali_fluent_a.xlsx",
+      "source_sha256": "15c44e5f0199f541452bf0ab6c18d5d07a9706a9bd8e68ec763a01079dfbd1d4"
+    },
+    "PRODUCT_POLICY": {
+      "canonical_sha256": "af086aa0aa00fb81f995b5119767de289cd7df667946f907bc4a30c16767db52",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_locked_submissions/MokXya_MAI07_V3__product_policy.xlsx",
+      "raw_sha256": "c77850728823f65bb29e7d456b95368114411c2ca2e5bccaa577bbc9cec09ac0",
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/MokXya_MAI07_V3__product_policy.xlsx",
+      "source_sha256": "c77850728823f65bb29e7d456b95368114411c2ca2e5bccaa577bbc9cec09ac0"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "canonical_sha256": "9bcb519a6056a8895ff12cf4bb3f9b1488e4a01212df586173ce645148aa0fcb",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_locked_submissions/MokXya_MAI07_V3__professional_linguist_b.xlsx",
+      "raw_sha256": "6f5d1d22bbc3ba031ecb8fc524bfbc5d07d56b75746f8b2ee3894e15c982bc3b",
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/round_a_submissions_inbox/MokXya_MAI07_V3__professional_linguist_b.xlsx",
+      "source_sha256": "6f5d1d22bbc3ba031ecb8fc524bfbc5d07d56b75746f8b2ee3894e15c982bc3b"
+    }
+  },
+  "model_evaluation_performed": false,
+  "packet_authority_utc": "2026-07-16T00:00:00+00:00",
+  "phase": "MAI-07R3J-A-ROUND-A-LOCK-AND-VALIDATION",
+  "round_b_files": {
+    "ACCOUNTING_DOMAIN": {
+      "csv": "docs/mokxya-ai/reviews/mai07_v3/round_b_release/MokXya_MAI07_V3_ROUND_B__accounting_domain.csv",
+      "csv_sha256": "d815b6a67d7b29e0fd66b542143716a8156168e85b9ff6effcacbf9297b15cea",
+      "note": "Round B only; do not overwrite Round A; candidate order is sealed per reviewer.",
+      "xlsx_package": "docs/mokxya-ai/reviews/mai07_v3/round_b_release/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx",
+      "xlsx_sha256": "027d9607e79273d71121c328b5ac1ec0466e70ac335506a43b0f186c8babc969"
+    },
+    "NEPALI_FLUENT_A": {
+      "csv": "docs/mokxya-ai/reviews/mai07_v3/round_b_release/MokXya_MAI07_V3_ROUND_B__nepali_fluent_a.csv",
+      "csv_sha256": "d47babab7406fe2025e9d0f7865ae8db5c6935f03f90e45e51abc9e61284918b",
+      "note": "Round B only; do not overwrite Round A; candidate order is sealed per reviewer.",
+      "xlsx_package": "docs/mokxya-ai/reviews/mai07_v3/round_b_release/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx",
+      "xlsx_sha256": "9de072503760985a9d17b12f63c668c33d8767466838f37d6af582559d292933"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "csv": "docs/mokxya-ai/reviews/mai07_v3/round_b_release/MokXya_MAI07_V3_ROUND_B__professional_linguist_b.csv",
+      "csv_sha256": "b841451b311a395cbdb6f3cde3f71a66b8584e3913e85aaffd74e1865ccc0a94",
+      "note": "Round B only; do not overwrite Round A; candidate order is sealed per reviewer.",
+      "xlsx_package": "docs/mokxya-ai/reviews/mai07_v3/round_b_release/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx",
+      "xlsx_sha256": "1c65e44217b5676c7813515414aa5962894d4525e04107cad58f5f26af93b4e2"
+    }
+  },
+  "schema_version": "1.0.0",
+  "sealed": {
+    "blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+    "errors": [],
+    "expected_blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+    "expected_packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c",
+    "ok": true,
+    "packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c"
+  },
+  "status": "ROUND_B_READY",
+  "v2_governance": "HISTORICAL_BENCHMARK_EXHAUSTED_FOR_MODEL_SELECTION"
+}

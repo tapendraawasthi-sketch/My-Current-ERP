@@ -25,7 +25,7 @@ R3G = REPO / "evals/mai07/r3g"
 
 
 def test_runtime_claims_r3f_but_r3g_does_not_mutate_overlay():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
     assert ENGLISH_IDENTITY_GUARD_VERSION == "mai-07-r3f.1.0.0"
 

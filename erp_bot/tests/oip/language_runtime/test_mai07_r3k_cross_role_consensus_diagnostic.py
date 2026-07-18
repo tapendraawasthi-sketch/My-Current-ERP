@@ -138,7 +138,7 @@ def test_official_inbox_isolation():
 
 
 def test_runtime_unchanged():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
     r = xlrr.validate_resources()
     assert r["ok"] and r["content_hash"] == ACTIVE

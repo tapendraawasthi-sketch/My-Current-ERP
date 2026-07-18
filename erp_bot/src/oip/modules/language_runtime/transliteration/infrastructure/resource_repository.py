@@ -22,11 +22,13 @@ _LOCK = threading.Lock()
 _CACHE: CompactXlResources | None = None
 
 _XL_ROOT = Path(__file__).resolve().parent.parent
-# Active sealed pack remains the historical R3F seal-new pack by default.
-# R3H corrective artifacts are built and evaluated explicitly without mutating
-# historical active-path defaults.
-ACTIVE_PACK_VERSION = "mai-07.1.3-r3f-sealnew"
+# Active sealed pack after MAI-07R3S cutover: qualified R3N6 pack bytes.
+# Previous active mai-07.1.3-r3f-sealnew retained under sealed_packs/ for lineage.
+ACTIVE_PACK_VERSION = "mai-07.1.11-r3n6-chaincomplete"
 RESOURCES_DIR = _XL_ROOT / "sealed_packs" / ACTIVE_PACK_VERSION
+HISTORICAL_R3F_SEALNEW_RESOURCES_DIR = (
+    _XL_ROOT / "sealed_packs" / "mai-07.1.3-r3f-sealnew"
+)
 HISTORICAL_INVALIDATED_R3F_RESOURCES_DIR = _XL_ROOT / "resources"
 HISTORICAL_INVALIDATED_R3F_CONTENT_HASH_CLAIM = (
     "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a"
@@ -199,8 +201,8 @@ def check_twice_isolated() -> dict[str, Any]:
 def load_resources(*, force_reload: bool = False, resources_dir: Path | None = None) -> CompactXlResources:
     """Load CompactXlResources.
 
-    When resources_dir is None, uses the historical active default pack
-    (mai-07.1.3-r3f-sealnew) and the process-wide cache.
+    When resources_dir is None, uses the active default pack
+    (mai-07.1.11-r3n6-chaincomplete after R3S) and the process-wide cache.
     Explicit resources_dir loads that pack without mutating the default cache
     unless resources_dir resolves to RESOURCES_DIR.
     """

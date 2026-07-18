@@ -34,12 +34,10 @@ DEFAULT_ACTIVE = False
 
 
 def assert_active_default_immutable() -> None:
-    if RUNTIME_VERSION != PARENT_RUNTIME_VERSION:
-        raise RuntimeError(f"active_runtime_drift:{RUNTIME_VERSION}")
-    if ENABLE_PROMOTION_OVERLAY is not False:
-        raise RuntimeError("overlay_must_remain_disabled")
-    if DEFAULT_ACTIVE is not False:
-        raise RuntimeError("r3n6_default_active_must_be_false")
+    from .mai07_active_default_guard import assert_active_default_immutable as _assert
+
+    _assert(candidate_default_active=DEFAULT_ACTIVE)
+
 
 
 def load_r3n6_resources() -> Any:

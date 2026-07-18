@@ -1,0 +1,17 @@
+{
+  "acceptability_counts": {
+    "ACCEPTABLE_PREFERRED": 1111,
+    "INCORRECT": 2151
+  },
+  "corrections": [],
+  "errors": [],
+  "file_sha256": "061555b60b350a5c2c97dd4772f016f1cb3cf80282e3c38e783d3986cce455d0",
+  "ok": true,
+  "option_a_remap_notes_present": true,
+  "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/NEPALI_FLUENT_A/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx",
+  "role_id": "NEPALI_FLUENT_A",
+  "rows_blank": 0,
+  "rows_completed": 3262,
+  "rows_expected": 3262,
+  "rows_invalid_enum": 0
+}

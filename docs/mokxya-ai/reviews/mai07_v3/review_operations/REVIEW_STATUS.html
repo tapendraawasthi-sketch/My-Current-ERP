@@ -12,16 +12,16 @@ th{background:#1e2433;color:#fff}
 .warn{background:#fff7ed;border-color:#fdba74}
 </style></head><body>
 <h1>MAI-07 V3 Review Operations</h1>
-<div class="card"><span class="badge">State: WAITING_FOR_ROUND_A_SUBMISSIONS</span>
+<div class="card"><span class="badge">State: WAITING_FOR_ROUND_B_SUBMISSIONS</span>
 <span class="badge warn">Human blocker: BLOCKED_PENDING_INDEPENDENT_HUMAN_REVIEW</span>
 <p>QUALITY_GATES_PASSED=False ·
 LINGUIST_APPROVED=False ·
 MAI_08=NOT_STARTED</p>
-<p><b>Next action:</b> No Round A submissions in inbox yet. Send ZIPs to reviewers; place completed batches under round_a_inbox/&lt;ROLE&gt;/.</p>
+<p><b>Next action:</b> Round A locked. Send Round B packages from round_b_packages/ to eligible reviewers.</p>
 </div>
 <div class="card"><h2>Round A lock / Round B</h2>
-<p>ROUND_A_LOCKED=False ·
-ROUND_B_READY=False ·
+<p>ROUND_A_LOCKED=True ·
+ROUND_B_READY=True ·
 ROUND_B_LOCKED=False</p>
 <p>Credential status: CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</p>
 </div>
@@ -29,7 +29,7 @@ ROUND_B_LOCKED=False</p>
 <table><thead><tr>
 <th>Role</th><th>Batches</th><th>Returned</th><th>Completion</th><th>Declaration</th><th>Credentials</th>
 </tr></thead><tbody>
-<tr><td>ACCOUNTING_DOMAIN</td><td>6</td><td>0</td><td>0%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr><tr><td>NEPALI_FLUENT_A</td><td>10</td><td>0</td><td>0%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr><tr><td>PRODUCT_POLICY</td><td>10</td><td>0</td><td>0%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr><tr><td>PROFESSIONAL_LINGUIST_B</td><td>10</td><td>0</td><td>0%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr>
+<tr><td>ACCOUNTING_DOMAIN</td><td>6</td><td>6</td><td>100%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr><tr><td>NEPALI_FLUENT_A</td><td>10</td><td>10</td><td>100%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr><tr><td>PRODUCT_POLICY</td><td>10</td><td>10</td><td>100%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr><tr><td>PROFESSIONAL_LINGUIST_B</td><td>10</td><td>10</td><td>100%</td><td>pending_submission</td><td>CREDENTIALS_DECLARED_PENDING_MANUAL_VERIFICATION</td></tr>
 </tbody></table></div>
 <div class="card"><h2>Security</h2>
 <p>Blind mapping is not shown. Macro-enabled files are rejected. No answers are auto-filled.</p>

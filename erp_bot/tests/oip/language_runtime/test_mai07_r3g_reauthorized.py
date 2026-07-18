@@ -28,9 +28,9 @@ OUT = REPO / "evals/mai07/r3g_reauthorized"
 
 
 def test_active_runtime_is_sealnew_not_invalidated_r3f():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENABLE_PROMOTION_OVERLAY is False
-    assert "mai-07.1.3-r3f-sealnew" in str(xlrr.RESOURCES_DIR)
+    assert "mai-07.1.11-r3n6-chaincomplete" in str(xlrr.RESOURCES_DIR)
     assert xlrr.compute_pack_content_hash() == EXPECTED["resource"]
 
 

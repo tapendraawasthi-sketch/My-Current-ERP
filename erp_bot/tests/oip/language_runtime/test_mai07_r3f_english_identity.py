@@ -62,7 +62,7 @@ def _primary_top(text: str, token: str):
 
 
 def test_runtime_versions_and_overlay():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert ENGLISH_IDENTITY_GUARD_VERSION == "mai-07-r3f.1.0.0"
     assert ENABLE_PROMOTION_OVERLAY is False
     assert PARENT_R3D_RESOURCE_HASH == "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f"

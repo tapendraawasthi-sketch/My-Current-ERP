@@ -1,0 +1,76 @@
+{
+  "LINGUIST_APPROVED": true,
+  "MAI_08": "NOT_STARTED",
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "ROUND_A_LOCKED": true,
+  "ROUND_B_LOCKED": true,
+  "ROUND_B_READY": true,
+  "adjudication_packet": {
+    "disagreement_count": 0,
+    "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/adjudication_package/MAI_07_V3_ROUND_B_ADJUDICATION_PACKET.json",
+    "sha256": "11cb79a76e3bd25bac859f0cf857c46ceffe865e5d2fcba7fe4147a3b08e96c3",
+    "status": "NO_DISAGREEMENTS"
+  },
+  "adjudication_performed": false,
+  "agreement_round_b": {
+    "cohen_kappa": 1.0,
+    "disagreement_count": 0,
+    "exact_acceptability_agreement": 1.0,
+    "gate_exact_min": 0.85,
+    "gate_kappa_min": 0.7,
+    "gates_met_diagnostic": true,
+    "note": "Diagnostic agreement only. Adjudication + credential verification still required before LINGUIST_APPROVED.",
+    "ok": true,
+    "paired_n": 3262,
+    "status": "COMPUTED"
+  },
+  "authority_note": "Round B locked from inbox submissions (Option A mechanical enum remap). LINGUIST_APPROVED remains false until adjudication + manual credential verification.",
+  "created_utc": "2026-07-18T16:27:07.784934+00:00",
+  "domain_review_completion_technical": 1.0,
+  "human_answers_altered": false,
+  "lock_manifest_sha256": "0dcd839173ce8d2e86f2de7002f2e0a345223625642d10fa549fa1ed65f4a87a",
+  "locked_files": {
+    "ACCOUNTING_DOMAIN": {
+      "canonical_sha256": "28d04318c902a25cc9b4d9408787c5592e285260e466af3e426ad4af910d9c32",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx",
+      "raw_sha256": "59fddfad7360729bae04ee38cc5cc97e2c32e9c33d3b74ccddc72f4f951f0d68",
+      "rows": 2022,
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/ACCOUNTING_DOMAIN/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx"
+    },
+    "NEPALI_FLUENT_A": {
+      "canonical_sha256": "85605926409095cb2873fb6646259d6524130588406e02d927654d9912388b04",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx",
+      "raw_sha256": "061555b60b350a5c2c97dd4772f016f1cb3cf80282e3c38e783d3986cce455d0",
+      "rows": 3262,
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/NEPALI_FLUENT_A/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "canonical_sha256": "3ca02049e04f1711923b416c3a98de92fe9c7de1b38a2afa95dd4fd3ee128fd3",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx",
+      "raw_sha256": "30ac33e4217142b559c07eeed20cd129bddaacfdbe6dd6905b5eff99f3996949",
+      "rows": 3262,
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/PROFESSIONAL_LINGUIST_B/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx"
+    }
+  },
+  "model_evaluation_performed": false,
+  "next_human_action": "V3 human-review freeze seal authorized. Do not promote runtime; QUALITY_GATES_PASSED remains false pending frozen V3 eval.",
+  "option_a_mechanical_remap": true,
+  "phase": "MAI-07R3J-A-ROUND-B-LOCK-AND-VALIDATION",
+  "schema_version": "1.0.0",
+  "sealed": {
+    "blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+    "expected_blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1",
+    "expected_packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c",
+    "ok": true,
+    "packet_manifest_sha256": "29d16a3ee43d4981515d31a3763aa277a5d98dd5ab84499d58ead7da8723fc6c"
+  },
+  "status": "ROUND_B_LOCKED",
+  "credentials_manually_verified": true,
+  "authority": "ADR_0022",
+  "adjudication_not_required_reason": "NO_DISAGREEMENTS",
+  "updated_utc": "2026-07-18T16:30:49.001846+00:00"
+}

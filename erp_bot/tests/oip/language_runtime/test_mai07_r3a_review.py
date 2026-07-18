@@ -81,7 +81,7 @@ def test_sealed_prer1_v1_semantic_hash_authority_unchanged():
         RUNTIME_VERSION,
     )
 
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
     assert PARENT_PRE_R1_RUNTIME_VERSION == "mai-07.1.0"
     assert PARENT_PRE_R1_RESOURCE_HASH == FROZEN_RESOURCE_HASH
     assert PARENT_R3D_RUNTIME_VERSION == "mai-07.1.1-r3d"

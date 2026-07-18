@@ -1,0 +1,152 @@
+{
+  "created_utc": "2026-07-18T16:17:12.354142+00:00",
+  "source_file": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/Nepali_AI_training_data_file_preparation_request-Genspark_AI_Sheets-20260718_2156.xlsx",
+  "source_sha256": "bf1e793626ca7471d0d55c1f81211700cccf528293578ac0505491dea7d7a203",
+  "status": "QUARANTINED_NOT_OFFICIAL_ROUND_B",
+  "why_not_imported_to_official_inbox": [
+    "Filename/tooling indicates Genspark AI Sheets generation, not official Round B package fill.",
+    "Round A dispositions use non-official enums (KEEP_ENGLISH / KEEP_ROMANIZED_NEPALI / ABSTAIN).",
+    "Round B acceptability uses non-official enums (ACCEPTABLE / NOT_ACCEPTABLE / ABSTAIN) instead of ACCEPTABLE_PREFERRED / ACCEPTABLE_ALTERNATIVE / UNNATURAL_BUT_POSSIBLE / INCORRECT / CANNOT_DECIDE.",
+    "Round A is already locked with different official answers; this workbook must not overwrite locked Round A.",
+    "ACCOUNTING_DOMAIN Round B still has 422 blank acceptability cells."
+  ],
+  "roles": {
+    "ACCOUNTING_DOMAIN": {
+      "role_id": "ACCOUNTING_DOMAIN",
+      "expects_round_b": true,
+      "round_a_rows": 611,
+      "round_a_disposition_counts": {
+        "KEEP_ROMANIZED_NEPALI": 184,
+        "KEEP_ENGLISH": 307,
+        "ABSTAIN": 120
+      },
+      "round_a_uses_official_enums": false,
+      "round_a_invalid_enums": [
+        "KEEP_ROMANIZED_NEPALI",
+        "KEEP_ENGLISH",
+        "ABSTAIN"
+      ],
+      "round_b_rows": 2022,
+      "round_b_blank": 422,
+      "round_b_acceptability_counts": {
+        "NOT_ACCEPTABLE": 1023,
+        "ABSTAIN": 276,
+        "ACCEPTABLE": 301,
+        "(blank)": 422
+      },
+      "round_b_official_enum_hits": 0,
+      "round_b_unofficial_enum_hits": 1600,
+      "declaration_role_id": "ACCOUNTING_DOMAIN",
+      "declaration_name_present": true,
+      "declaration_email_present": true,
+      "official_round_b_pairs_expected": 2022,
+      "pairs_present": 2022,
+      "pairs_missing": 0,
+      "pairs_extra": 0,
+      "split_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3_ai_assisted/quarantined_round_b_like_workbook_2026-07-18/DIAGNOSTIC_SPLIT__ACCOUNTING_DOMAIN.xlsx"
+    },
+    "NEPALI_FLUENT_A": {
+      "role_id": "NEPALI_FLUENT_A",
+      "expects_round_b": true,
+      "round_a_rows": 1111,
+      "round_a_disposition_counts": {
+        "KEEP_ENGLISH": 490,
+        "KEEP_ROMANIZED_NEPALI": 461,
+        "ABSTAIN": 160
+      },
+      "round_a_uses_official_enums": false,
+      "round_a_invalid_enums": [
+        "KEEP_ENGLISH",
+        "KEEP_ROMANIZED_NEPALI",
+        "ABSTAIN"
+      ],
+      "round_b_rows": 3262,
+      "round_b_blank": 0,
+      "round_b_acceptability_counts": {
+        "ACCEPTABLE": 1111,
+        "NOT_ACCEPTABLE": 2151
+      },
+      "round_b_official_enum_hits": 0,
+      "round_b_unofficial_enum_hits": 3262,
+      "declaration_role_id": "NEPALI_FLUENT_A",
+      "declaration_name_present": true,
+      "declaration_email_present": true,
+      "official_round_b_pairs_expected": 3262,
+      "pairs_present": 3262,
+      "pairs_missing": 0,
+      "pairs_extra": 0,
+      "split_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3_ai_assisted/quarantined_round_b_like_workbook_2026-07-18/DIAGNOSTIC_SPLIT__NEPALI_FLUENT_A.xlsx"
+    },
+    "PRODUCT_POLICY": {
+      "role_id": "PRODUCT_POLICY",
+      "expects_round_b": false,
+      "round_a_rows": 1111,
+      "round_a_disposition_counts": {
+        "KEEP_ENGLISH": 491,
+        "KEEP_ROMANIZED_NEPALI": 460,
+        "ABSTAIN": 160
+      },
+      "round_a_uses_official_enums": false,
+      "round_a_invalid_enums": [
+        "KEEP_ENGLISH",
+        "KEEP_ROMANIZED_NEPALI",
+        "ABSTAIN"
+      ],
+      "round_b_rows": 0,
+      "round_b_blank": 0,
+      "round_b_acceptability_counts": {},
+      "round_b_official_enum_hits": 0,
+      "round_b_unofficial_enum_hits": 0,
+      "declaration_role_id": "PRODUCT_POLICY",
+      "declaration_name_present": true,
+      "declaration_email_present": true,
+      "split_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3_ai_assisted/quarantined_round_b_like_workbook_2026-07-18/DIAGNOSTIC_SPLIT__PRODUCT_POLICY.xlsx"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "role_id": "PROFESSIONAL_LINGUIST_B",
+      "expects_round_b": true,
+      "round_a_rows": 1111,
+      "round_a_disposition_counts": {
+        "KEEP_ENGLISH": 1111
+      },
+      "round_a_uses_official_enums": false,
+      "round_a_invalid_enums": [
+        "KEEP_ENGLISH"
+      ],
+      "round_b_rows": 3262,
+      "round_b_blank": 0,
+      "round_b_acceptability_counts": {
+        "NOT_ACCEPTABLE": 2151,
+        "ACCEPTABLE": 1111
+      },
+      "round_b_official_enum_hits": 0,
+      "round_b_unofficial_enum_hits": 3262,
+      "declaration_role_id": "PROFESSIONAL_LINGUIST_B",
+      "declaration_name_present": true,
+      "declaration_email_present": true,
+      "official_round_b_pairs_expected": 3262,
+      "pairs_present": 3262,
+      "pairs_missing": 0,
+      "pairs_extra": 0,
+      "split_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3_ai_assisted/quarantined_round_b_like_workbook_2026-07-18/DIAGNOSTIC_SPLIT__PROFESSIONAL_LINGUIST_B.xlsx"
+    },
+    "INDEPENDENT_ADJUDICATOR": {
+      "role_id": "INDEPENDENT_ADJUDICATOR",
+      "expects_round_b": false,
+      "round_a_rows": 0,
+      "round_a_disposition_counts": {},
+      "round_a_uses_official_enums": true,
+      "round_a_invalid_enums": [],
+      "round_b_rows": 0,
+      "round_b_blank": 0,
+      "round_b_acceptability_counts": {},
+      "round_b_official_enum_hits": 0,
+      "round_b_unofficial_enum_hits": 0,
+      "declaration_role_id": "INDEPENDENT_ADJUDICATOR",
+      "declaration_name_present": true,
+      "declaration_email_present": true,
+      "split_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3_ai_assisted/quarantined_round_b_like_workbook_2026-07-18/DIAGNOSTIC_SPLIT__INDEPENDENT_ADJUDICATOR.xlsx"
+    }
+  },
+  "official_next_step": "Fill the official packages under docs/mokxya-ai/reviews/mai07_v3/round_b_release/ using only official acceptability enums, then place each completed role file into docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/<ROLE>/"
+}

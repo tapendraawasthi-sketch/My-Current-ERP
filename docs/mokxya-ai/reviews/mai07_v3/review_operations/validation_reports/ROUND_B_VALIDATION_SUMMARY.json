@@ -1,0 +1,59 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "ROUND_A_LOCKED": true,
+  "ROUND_B_LOCKED": true,
+  "ROUND_B_READY": true,
+  "adjudication_packet": {
+    "disagreement_count": 0,
+    "path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/adjudication_package/MAI_07_V3_ROUND_B_ADJUDICATION_PACKET.json",
+    "sha256": "11cb79a76e3bd25bac859f0cf857c46ceffe865e5d2fcba7fe4147a3b08e96c3",
+    "status": "NO_DISAGREEMENTS"
+  },
+  "agreement_round_b": {
+    "cohen_kappa": 1.0,
+    "disagreement_count": 0,
+    "exact_acceptability_agreement": 1.0,
+    "gate_exact_min": 0.85,
+    "gate_kappa_min": 0.7,
+    "gates_met_diagnostic": true,
+    "note": "Diagnostic agreement only. Adjudication + credential verification still required before LINGUIST_APPROVED.",
+    "ok": true,
+    "paired_n": 3262,
+    "status": "COMPUTED"
+  },
+  "human_answers_altered": false,
+  "lock_manifest_path": "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_ROUND_B_LOCK_MANIFEST.json",
+  "lock_manifest_sha256": "a8fcd50d93aa859bdd9c27958c791d08836e650f063f0bfd7c9e8123cdf2740f",
+  "locked_files": {
+    "ACCOUNTING_DOMAIN": {
+      "canonical_sha256": "28d04318c902a25cc9b4d9408787c5592e285260e466af3e426ad4af910d9c32",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx",
+      "raw_sha256": "59fddfad7360729bae04ee38cc5cc97e2c32e9c33d3b74ccddc72f4f951f0d68",
+      "rows": 2022,
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/ACCOUNTING_DOMAIN/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx"
+    },
+    "NEPALI_FLUENT_A": {
+      "canonical_sha256": "85605926409095cb2873fb6646259d6524130588406e02d927654d9912388b04",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx",
+      "raw_sha256": "061555b60b350a5c2c97dd4772f016f1cb3cf80282e3c38e783d3986cce455d0",
+      "rows": 3262,
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/NEPALI_FLUENT_A/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx"
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "canonical_sha256": "3ca02049e04f1711923b416c3a98de92fe9c7de1b38a2afa95dd4fd3ee128fd3",
+      "locked_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_locked/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx",
+      "raw_sha256": "30ac33e4217142b559c07eeed20cd129bddaacfdbe6dd6905b5eff99f3996949",
+      "rows": 3262,
+      "source_matches_locked": true,
+      "source_path": "docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/PROFESSIONAL_LINGUIST_B/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx"
+    }
+  },
+  "model_evaluation_performed": false,
+  "next_human_action": "No Round B disagreements sampled. Still verify linguist credentials manually before LINGUIST_APPROVED.",
+  "option_a_mechanical_remap": true,
+  "status": "ROUND_B_LOCKED"
+}

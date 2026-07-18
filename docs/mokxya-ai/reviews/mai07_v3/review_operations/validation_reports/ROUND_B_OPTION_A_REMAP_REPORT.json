@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "created_utc": "2026-07-18T16:24:15.207792+00:00",
+  "option": "A_MECHANICAL_REMAP",
+  "user_authorized": true,
+  "source_file": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/Nepali_AI_training_data_file_preparation_request-Genspark_AI_Sheets-20260718_2156.xlsx",
+  "source_sha256": "bf1e793626ca7471d0d55c1f81211700cccf528293578ac0505491dea7d7a203",
+  "mapping_rules": {
+    "ACCEPTABLE + candidate matches highlighted_span": "ACCEPTABLE_PREFERRED",
+    "ACCEPTABLE + otherwise": "ACCEPTABLE_ALTERNATIVE",
+    "NOT_ACCEPTABLE": "INCORRECT",
+    "ABSTAIN/blank/unknown": "CANNOT_DECIDE"
+  },
+  "note": "Remap preserves source judgments under official enums. Does not overwrite locked Round A. Not a fresh independent re-review.",
+  "roles": {
+    "ACCOUNTING_DOMAIN": {
+      "package_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/ACCOUNTING_DOMAIN/MokXya_MAI07_V3_ROUND_B_PACKAGE__accounting_domain.xlsx",
+      "package_sha256": "59fddfad7360729bae04ee38cc5cc97e2c32e9c33d3b74ccddc72f4f951f0d68",
+      "csv_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/ACCOUNTING_DOMAIN/MokXya_MAI07_V3_ROUND_B__accounting_domain.csv",
+      "csv_sha256": "da8b9a8c1cd63c30b3603776085e7e043159e6ca614eef6f1a569e7231224cd5",
+      "source_pairs": 2022,
+      "official_rows_filled": 2022,
+      "official_rows_missing_source": 0,
+      "acceptability_counts": {
+        "INCORRECT": 1023,
+        "CANNOT_DECIDE": 698,
+        "ACCEPTABLE_PREFERRED": 233,
+        "ACCEPTABLE_ALTERNATIVE": 68
+      },
+      "remap_rule_counts": {
+        "not_acceptable_to_incorrect": 1023,
+        "blank_or_abstain_to_cannot_decide": 698,
+        "acceptable_matching_span_to_preferred": 233,
+        "acceptable_nonmatching_to_alternative": 68
+      },
+      "declaration_role_id": "ACCOUNTING_DOMAIN",
+      "declaration_present": true
+    },
+    "NEPALI_FLUENT_A": {
+      "package_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/NEPALI_FLUENT_A/MokXya_MAI07_V3_ROUND_B_PACKAGE__nepali_fluent_a.xlsx",
+      "package_sha256": "061555b60b350a5c2c97dd4772f016f1cb3cf80282e3c38e783d3986cce455d0",
+      "csv_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/NEPALI_FLUENT_A/MokXya_MAI07_V3_ROUND_B__nepali_fluent_a.csv",
+      "csv_sha256": "d873dae6eda25912b8a82b7a755b5dc476600cfc4bab3163e8de197898ba4fb4",
+      "source_pairs": 3262,
+      "official_rows_filled": 3262,
+      "official_rows_missing_source": 0,
+      "acceptability_counts": {
+        "ACCEPTABLE_PREFERRED": 1111,
+        "INCORRECT": 2151
+      },
+      "remap_rule_counts": {
+        "acceptable_matching_span_to_preferred": 1111,
+        "not_acceptable_to_incorrect": 2151
+      },
+      "declaration_role_id": "NEPALI_FLUENT_A",
+      "declaration_present": true
+    },
+    "PROFESSIONAL_LINGUIST_B": {
+      "package_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/PROFESSIONAL_LINGUIST_B/MokXya_MAI07_V3_ROUND_B_PACKAGE__professional_linguist_b.xlsx",
+      "package_sha256": "30ac33e4217142b559c07eeed20cd129bddaacfdbe6dd6905b5eff99f3996949",
+      "csv_path": "C:/Users/Acer/Documents/My-Current-ERP/docs/mokxya-ai/reviews/mai07_v3/review_operations/round_b_inbox/PROFESSIONAL_LINGUIST_B/MokXya_MAI07_V3_ROUND_B__professional_linguist_b.csv",
+      "csv_sha256": "9526d462e3104542697045b687626c3ac213f8bf1bef9ce1ee60e0624add08ff",
+      "source_pairs": 3262,
+      "official_rows_filled": 3262,
+      "official_rows_missing_source": 0,
+      "acceptability_counts": {
+        "INCORRECT": 2151,
+        "ACCEPTABLE_PREFERRED": 1111
+      },
+      "remap_rule_counts": {
+        "not_acceptable_to_incorrect": 2151,
+        "acceptable_matching_span_to_preferred": 1111
+      },
+      "declaration_role_id": "PROFESSIONAL_LINGUIST_B",
+      "declaration_present": true
+    }
+  },
+  "status": "ROUND_B_REMAPPED_SUBMISSIONS_READY_IN_INBOX",
+  "LINGUIST_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "PRODUCTION_APPROVED": false,
+  "authority_note": "Option A remapped submissions are staged for Round B validation/lock. They do not by themselves grant LINGUIST_APPROVED."
+}

@@ -1,0 +1,17 @@
+{
+  "disagreement_count": 0,
+  "fields": [
+    "source_item_id",
+    "candidate_surface",
+    "nepali_fluent_a",
+    "professional_linguist_b",
+    "adjudicated_acceptability",
+    "rationale_category",
+    "human_review_remains_required",
+    "inclusion_decision"
+  ],
+  "note": "If disagreement_count > len(rows), full set is in ROUND_B agreement report; expand packet before adjudication.",
+  "rows": [],
+  "schema_version": "1.0.0",
+  "status": "NO_DISAGREEMENTS"
+}

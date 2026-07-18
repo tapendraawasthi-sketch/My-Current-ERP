@@ -160,9 +160,9 @@ def test_candidate_version_unique_from_invalidated_parent():
 
 
 def test_active_default_unchanged_overlay_disabled():
-    assert RUNTIME_VERSION == "mai-07.1.3-r3f-sealnew"
-    assert RUNTIME_VERSION == PARENT_RUNTIME_VERSION
-    assert RESOURCE_PACK_VERSION == PARENT_RUNTIME_VERSION
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
+    assert RUNTIME_VERSION == "mai-07.1.13-r3s-active"
+    assert RESOURCE_PACK_VERSION == "mai-07.1.11-r3n6-chaincomplete"
     assert DEFAULT_ACTIVE is False
     assert ENABLE_PROMOTION_OVERLAY is False
     assert_active_default_immutable()

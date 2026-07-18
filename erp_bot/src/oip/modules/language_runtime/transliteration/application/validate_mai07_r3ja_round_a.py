@@ -610,8 +610,10 @@ def run_round_a_validation(*, inbox: Path = INBOX) -> dict[str, Any]:
     for role_id, src in found.items():
         dest = LOCKED_DIR / ROLE_FILES[role_id]
         if dest.exists():
-            raise FileExistsError(f"already_locked:{dest}")
-        shutil.copy2(src, dest)
+            if _sha(dest) != _sha(src):
+                raise FileExistsError(f"already_locked_with_different_content:{dest}")
+        else:
+            shutil.copy2(src, dest)
         raw = _sha(dest)
         # Canonical: role + sorted (review_id, disposition, confidence) from validation extract
         rep = next(r for r in reports if r["role_id"] == role_id)
