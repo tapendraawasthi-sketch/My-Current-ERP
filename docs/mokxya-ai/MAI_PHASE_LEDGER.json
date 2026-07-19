@@ -5,9 +5,19 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-04",
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..03 DONE. NEXT-03 ADR_0073 production secondary AI stacks gated (GAP-P1-001 REDUCED). NEXT recommended=NEXT-04 (GAP-P1-002 sync authority). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-06",
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..04 DONE. NEXT-04 ADR_0074 accounting EVENT_SYNC_QUEUE authority (GAP-P1-002 REDUCED; runtime dual OPEN with written exception). NEXT recommended=NEXT-06 (MAI-04 language suites). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
   "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
+  "sync_authority": {
+    "authority": "ADR_0074",
+    "decision": "ACCOUNTING_EVENT_SYNC_QUEUE_AUTHORITY",
+    "accounting_path": "EVENT_SYNC_QUEUE",
+    "conflict_policy": "REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT",
+    "registry": "docs/mokxya-ai/MAI_SYNC_AUTHORITY_REGISTRY.json",
+    "gap_p1_002_register_status": "REDUCED",
+    "gap_p1_002_runtime_status": "OPEN",
+    "dual_sync_written_exception": "NON_ACCOUNTING_LEGACY_OUTBOX_AND_AGGREGATE_BADGE_RESIDUAL"
+  },
   "ai_stack_strangler": {
     "authority": "ADR_0073",
     "primary_chat_route": "/orbix/chat/stream",

@@ -16,7 +16,7 @@
 | Track I (MAI-50…53) | **Dormant / FREEZE ACTIVE** ([ADR_0071](decisions/ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md)) until **NEXT-20** |
 | `production_approved` (product) | **false** |
 | `legal_effective_dates_proven` | **false** |
-| Recommended next step | **NEXT-04** (GAP-P1-002) |
+| Recommended next step | **NEXT-06** (MAI-04 language suites) |
 
 **PASSED_ENGINEERING ≠ master Gate proven ≠ production released.**
 
@@ -36,7 +36,7 @@
 |-----|--------|--------|
 | GAP-P0-001 | REDUCED | Dual writers remain; sole-OEC still false (ADR_0072) |
 | GAP-P1-001 | REDUCED | Prod secondary mounts gated (ADR_0073); code remains |
-| GAP-P1-002 | OPEN | Sync authority |
+| GAP-P1-002 | REDUCED | Accounting EVENT_SYNC_QUEUE (ADR_0074); residual dual OPEN |
 | GAP-P1-004 / P1-008 | REDUCED | Stale-draft / turn-relation suites |
 | GAP-P1-007 | REDUCED | Number-role suite green |
 | GAP-P1-009 | OPEN | Multilingual product quality |
@@ -104,7 +104,8 @@ Per `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` default order:
 1. ~~NEXT-01~~ — Track I freeze (ADR_0071)  
 2. ~~NEXT-02~~ — Mutation authority Option A / GAP-P0-001 REDUCED (ADR_0072)  
 3. ~~NEXT-03~~ — Production AI stack strangler / GAP-P1-001 REDUCED (ADR_0073)  
-4. **NEXT-04** — Sync authority hardening (GAP-P1-002)
+4. ~~NEXT-04~~ — Sync authority / GAP-P1-002 REDUCED (ADR_0074)  
+5. **NEXT-06** — Reprove MAI-04 critical language suites
 
 ## Explicit non-claims
 

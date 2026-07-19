@@ -23,7 +23,7 @@
   "blocking_gaps": [
     {"id": "GAP-P0-001", "severity": "P0", "status": "REDUCED", "blocks": ["sole_oec_strangler", "MAI-34_depth", "NEXT-05"], "note": "ADR_0072 Option A; dual writers remain; runtime gap OPEN"},
     {"id": "GAP-P1-001", "severity": "P1", "status": "REDUCED", "blocks": ["retire_secondary_code", "NEXT-H3"], "note": "ADR_0073 prod mount gate; secondary code remains for non-prod/DX"},
-    {"id": "GAP-P1-002", "severity": "P1", "status": "OPEN", "blocks": ["sync_authority", "MAI-35_depth", "NEXT-04"]},
+    {"id": "GAP-P1-002", "severity": "P1", "status": "REDUCED", "blocks": ["single_worker_e2e", "NEXT-05"], "note": "ADR_0074 accounting event-sync authority; residual dual runtime OPEN"},
     {"id": "GAP-P1-004", "severity": "P1", "status": "REDUCED", "blocks": ["stale_draft_merge", "NEXT-06"]},
     {"id": "GAP-P1-007", "severity": "P1", "status": "REDUCED", "blocks": ["number_roles_suite", "NEXT-06"]},
     {"id": "GAP-P1-008", "severity": "P1", "status": "REDUCED", "blocks": ["turn_relation_suite", "NEXT-06"]},
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-04",
+  "recommended_next_step": "NEXT-06",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04"]
 }

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_SYNC_AUTHORITY_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0074",
+  "step": "NEXT-04",
+  "decision": "ACCOUNTING_EVENT_SYNC_QUEUE_AUTHORITY",
+  "gap_p1_002": {
+    "register_status": "REDUCED",
+    "runtime_status": "OPEN",
+    "runtime_status_reason": "Residual legacy outbox + dual badge aggregation remain for non-accounting / UX; accounting path classified and gated.",
+    "dual_sync_status_runtime": "OPEN",
+    "dual_sync_written_exception": "NON_ACCOUNTING_LEGACY_OUTBOX_AND_AGGREGATE_BADGE_RESIDUAL",
+    "closed": false
+  },
+  "accounting_sync_authority": {
+    "id": "EVENT_SYNC_QUEUE",
+    "role": "PRODUCT_AUTHORITY_FOR_ACCOUNTING",
+    "enqueue_entry": "src/platform/sync/enqueue*Sync.ts",
+    "queue_store": "eventSyncQueue",
+    "cycle_entry": "src/platform/sync/syncCoordinator.ts::runEventSyncCycle",
+    "mutation_authority_link": "ADR_0072 DEXIE_EXECUTE_ORBIX_CONFIRM"
+  },
+  "paths": [
+    {
+      "id": "EVENT_SYNC_QUEUE",
+      "classification": "PRODUCT_AUTHORITY_ACCOUNTING",
+      "status": "ACTIVE",
+      "gated_for_ai": true
+    },
+    {
+      "id": "LEGACY_SYNC_OUTBOX_ACCOUNTING",
+      "classification": "BLOCKED_FOR_ACCOUNTING",
+      "status": "BLOCKED",
+      "gate": "src/store/syncEnqueueRouter.ts::isAccountingEntitySyncBlocked",
+      "entity_types": [
+        "invoice",
+        "invoices",
+        "voucher",
+        "vouchers",
+        "stockMovement",
+        "stockMovements",
+        "orbixPostingReceipt",
+        "orbixPostingReceipts"
+      ],
+      "evidence_test": "src/__tests__/orbix/noDoubleSync.test.ts"
+    },
+    {
+      "id": "LEGACY_SYNC_OUTBOX_NON_ACCOUNTING",
+      "classification": "ALTERNATE_RESIDUAL",
+      "status": "ACTIVE",
+      "notes": "May still enqueue non-accounting entities; residual dual."
+    },
+    {
+      "id": "NODE_KHATA_CONFIRM_INSERT",
+      "classification": "ALTERNATE_WRITER_SIDE_EFFECT",
+      "status": "ACTIVE",
+      "notes": "Parallel server path; not AI sync authority; linked GAP-P0-001 residual."
+    },
+    {
+      "id": "AI_OFFLINE_SYNC_CANDIDATE",
+      "classification": "ANNOTATION_ONLY",
+      "status": "CANDIDATE_ONLY",
+      "allow_sync_push": false,
+      "allow_conflict_resolve": false,
+      "allow_reversal_dispatch": false
+    }
+  ],
+  "policies": {
+    "conflict_policy": "REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT",
+    "reversal_policy": "GOVERNED_CORRECTION_ONLY",
+    "queued_must_not_label_synced": true,
+    "retry_must_be_idempotent": true,
+    "conflict_auto_overwrite": false
+  },
+  "forbidden_claims": [
+    "dual_sync_closed=true while residual active",
+    "queued_labeled_synced=true",
+    "conflict_auto_overwrite=true",
+    "allow_sync_push=true on live AI ingress",
+    "sync_workers_started=true from AI path",
+    "accounting legacy outbox as product authority"
+  ],
+  "honesty": {
+    "production_approved": false,
+    "dual_writers_or_queues_present": true,
+    "accounting_legacy_outbox_blocked": true
+  }
+}

@@ -330,8 +330,8 @@ Severity legend:
 - **Recommended MAI phase:** MAI-35
 - **Dependencies:** posting authority decision
 - **Acceptance condition:** One authoritative sync path for accounting events; tests for two-device conflict
-- **Status:** OPEN
-- **Progress (2026-07-19):** MAI-35 slices 1–2 annotate offline/sync policy and emit `CANDIDATE_ONLY` `offline_sync_candidate` (`conflict_policy=REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT`, `reversal_policy=GOVERNED_CORRECTION_ONLY`, `queued_must_not_label_synced=true`, `dual_sync_status=OPEN`, `gap_p1_002_status=OPEN`). Live `allow_sync_push` / `allow_conflict_resolve` / `allow_reversal_dispatch` forced false. Does **not** close the gap (dual sync workers still active; no enqueue / resolve / reversal).
+- **Status:** REDUCED
+- **Progress (2026-07-19):** NEXT-04 / ADR_0074 — accounting sync authority = `EVENT_SYNC_QUEUE`; legacy outbox **blocked** for accounting entity types (`syncEnqueueRouter` + `noDoubleSync` evidence); conflict = reconfirm; queued ≠ synced; AI sync dispatch fail-closed via `sync_authority_policy.py`. Written exception: residual non-accounting legacy outbox + badge aggregation → runtime `dual_sync_status` / `gap_p1_002_status` remain OPEN. Does **not** CLOSE (full single-worker / two-device proof still pending).
 
 - **Severity:** P1
 - **Affected capability:** security

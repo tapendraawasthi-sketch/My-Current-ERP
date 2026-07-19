@@ -291,8 +291,16 @@ Gate:
   Two-device / conflict tests; dual_sync_status no longer OPEN without written
   exception; GAP-P1-002 REDUCED with evidence (CLOSED only when single path proven).
 
-Status: OPEN
-Depends on: NEXT-02
+Status: DONE (2026-07-19)
+Decision: ACCOUNTING_EVENT_SYNC_QUEUE_AUTHORITY (ADR_0074)
+Evidence:
+  docs/mokxya-ai/decisions/ADR_0074_SYNC_AUTHORITY_HARDENING.md
+  docs/mokxya-ai/MAI_SYNC_AUTHORITY_REGISTRY.json
+  erp_bot/.../sync_authority_policy.py
+  src/platform/sync/syncAuthorityPolicy.ts
+  src/__tests__/orbix/noDoubleSync.test.ts (pre-existing accounting outbox block)
+  src/__tests__/orbix/maiNext04SyncAuthority.test.ts
+  GAP-P1-002 REDUCED; runtime dual OPEN with written exception
 
 
 NEXT-05 — CONFIRM PATH HONESTY DEPTH (MAI-34 depth, still fail-closed)
@@ -594,7 +602,7 @@ NEXT-00  | DONE   | MAI_CAPABILITY_TRUTH_MATRIX.* | honest depths; Track I dorma
 NEXT-01  | DONE   | ADR_0071 + ledger track_i_freeze | freeze until NEXT-20
 NEXT-02  | DONE   | ADR_0072 + mutation registry | GAP-P0-001 REDUCED (not CLOSED)
 NEXT-03  | DONE   | ADR_0073 + prod mount gates | GAP-P1-001 REDUCED (not CLOSED)
-NEXT-04  | OPEN   |                   | GAP-P1-002
+NEXT-04  | DONE   | ADR_0074 + sync registry | GAP-P1-002 REDUCED (runtime dual OPEN)
 NEXT-05  | OPEN   |                   | MAI-34 depth
 NEXT-06  | OPEN   |                   | MAI-04 suites
 NEXT-07  | OPEN   |                   | NLU consume
@@ -615,12 +623,13 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-04
-  last_shipped_step = NEXT-03
+  recommended_next_step = NEXT-06
+  last_shipped_step = NEXT-04
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
   ai_stack_strangler = ACTIVE (ADR_0073); primary=/orbix/chat/stream
+  sync_authority = EVENT_SYNC_QUEUE (ADR_0074); queued≠synced; conflict=reconfirm
 
 ======================================================================
 10. RELATIONSHIP TO THE MASTER FILE

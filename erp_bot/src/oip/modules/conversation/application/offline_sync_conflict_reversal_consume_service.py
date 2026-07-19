@@ -213,6 +213,9 @@ def offline_sync_consume_observability(
         allow_conflict_resolve=False,
         allow_reversal_dispatch=False,
     )
+    from .sync_authority_policy import sync_authority_observability
+
+    auth = sync_authority_observability()
     return {
         "offline_sync_consume_mode": built["offline_sync_consume_mode"],
         "offline_sync_consume_ready": bool(built["offline_sync_consume_ready"]),
@@ -225,11 +228,18 @@ def offline_sync_consume_observability(
         "reversal_dispatched": False,
         "ui_badge_mutated": False,
         "queued_labeled_synced": False,
+        "conflict_auto_overwrite": False,
         "queue_mutations": 0,
         "sync_mutations": 0,
         "reversal_mutations": 0,
         "gap_p1_002_status": "OPEN",
         "gap_p0_001_status": "OPEN",
+        "gap_p1_002_register_status": auth["gap_p1_002_register_status"],
+        "sync_authority_adr": auth["sync_authority_adr"],
+        "sync_authority_decision": auth["sync_authority_decision"],
+        "accounting_sync_authority": auth["accounting_sync_authority"],
+        "conflict_policy": auth["conflict_policy"],
+        "dual_sync_written_exception": auth["dual_sync_written_exception"],
         "is_execution_authority": False,
         "runtime_version": RUNTIME_VERSION,
         "allow_sync_push": False,
@@ -241,8 +251,12 @@ def offline_sync_consume_observability(
 def assert_offline_sync_consume_authority(
     obs: Mapping[str, Any] | None,
 ) -> None:
+    from .sync_authority_policy import assert_sync_authority_honesty
+
     if not obs:
+        assert_sync_authority_honesty()
         return
+    assert_sync_authority_honesty(obs)
     if (
         obs.get("is_execution_authority") is True
         or obs.get("sync_workers_started") is True
@@ -253,6 +267,7 @@ def assert_offline_sync_consume_authority(
         or obs.get("reversal_dispatched") is True
         or obs.get("ui_badge_mutated") is True
         or obs.get("queued_labeled_synced") is True
+        or obs.get("conflict_auto_overwrite") is True
         or int(obs.get("queue_mutations") or 0) != 0
         or int(obs.get("sync_mutations") or 0) != 0
         or int(obs.get("reversal_mutations") or 0) != 0
