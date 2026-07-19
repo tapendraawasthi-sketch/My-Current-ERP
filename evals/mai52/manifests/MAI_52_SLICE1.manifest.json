@@ -1,0 +1,26 @@
+{
+  "phase": "MAI-52",
+  "slice": "1",
+  "runtime_version": "mai-52.0.1-slice1",
+  "authority": "ADR_0069",
+  "frozen_sets": [
+    {
+      "id": "ca_firm_engagement_workpaper_v1",
+      "path": "evals/mai52/frozen/ca_firm_engagement_workpaper_v1.jsonl",
+      "sha256": "1d63c1500b162553aab79141de63740fc508cd99cefc29e41302c5e548dbaa9d",
+      "row_count": 6
+    }
+  ],
+  "honesty": {
+    "ca_firm_workspace_enabled": false,
+    "engagement_opened": false,
+    "engagement_signed": false,
+    "workpaper_created": false,
+    "workpaper_posted": false,
+    "client_binder_released": false,
+    "staff_assignment_applied": false,
+    "review_notes_finalized": false,
+    "production_approved": false,
+    "gap_p2_008": "OPEN"
+  }
+}

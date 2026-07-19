@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-51",
-  "active_phase_note": "MAI-51 slice 2 IN_PROGRESS (ADR_0068); CANDIDATE_ONLY private-document candidates (never ingest / never QA live); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-52",
+  "active_phase_note": "MAI-52 slice 1 IN_PROGRESS (ADR_0069); CA-firm engagement / workpaper policy (never open engagement / never post workpaper); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3504,7 +3504,7 @@
     {
       "id": "MAI-51",
       "title": "PRIVATE USER-DOCUMENT INTELLIGENCE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3515,6 +3515,7 @@
         "docs/mokxya-ai/decisions/ADR_0068_PRIVATE_USER_DOCUMENT_INTELLIGENCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_51_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_51_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_51_ENGINEERING_CLOSURE.md",
         "evals/mai51/manifests/MAI_51_SLICE1.manifest.json",
         "evals/mai51/manifests/MAI_51_SLICE2.manifest.json"
       ],
@@ -3538,20 +3539,43 @@
         "MAI-50"
       ],
       "recommended_order": 51,
-      "closure_note": "Slice 2: CANDIDATE_ONLY private-document candidates; never ingest / never QA live; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: private user-document intelligence POLICY + CANDIDATE_ONLY candidates; never ingest / never QA live; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-52",
       "title": "CA-FIRM ENGAGEMENT AND WORKPAPER WORKSPACE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-52.0.1-slice1",
+      "slice": "SLICE1_CA_FIRM_ENGAGEMENT_WORKPAPER_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_52_CA_FIRM_ENGAGEMENT_WORKPAPER.md",
+        "docs/mokxya-ai/decisions/ADR_0069_CA_FIRM_ENGAGEMENT_WORKPAPER_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_52_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai52/manifests/MAI_52_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "ca_firm_engagement_workpaper_service.py (policy annotation)",
+        "CaFirmEngagementWorkpaperBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress CA_FIRM_ENGAGEMENT_WORKPAPER after PRIVATE_USER_DOCUMENT_INTELLIGENCE",
+        "release_status=NOT_RELEASED; ca_firm_workspace_enabled=false; engagement_opened=false; engagement_signed=false; workpaper_created=false; workpaper_posted=false; client_binder_released=false; production_approved=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-51"
       ],
-      "recommended_order": 52
+      "recommended_order": 52,
+      "closure_note": "Slice 1: CA-firm engagement / workpaper POLICY_DECLARED; never open engagement / never post workpaper; GAP-P2-008 open."
     },
     {
       "id": "MAI-53",

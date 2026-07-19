@@ -1,7 +1,7 @@
 # MAI-51 — Private User-Document Intelligence
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0068](decisions/ADR_0068_PRIVATE_USER_DOCUMENT_INTELLIGENCE_AUTHORITY.md)  
 **Runtime:** `mai-51.0.2-slice2` (engineering; not production-approved)
 

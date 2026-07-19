@@ -3918,6 +3918,86 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent document ingest.
 
+    # MAI-52: CA-firm engagement / workpaper (never opens engagements).
+    ca_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.CA_FIRM_ENGAGEMENT_WORKPAPER_STARTED,
+        component="conversation.ca_firm_engagement_workpaper",
+    )
+    try:
+        from ..oip.modules.conversation.application.ca_firm_engagement_workpaper_service import (
+            assert_ca_firm_engagement_workpaper_authority,
+            attach_ca_firm_engagement_workpaper_to_request,
+        )
+
+        updated = attach_ca_firm_engagement_workpaper_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.ca_firm_engagement_workpaper_bundle
+        assert_ca_firm_engagement_workpaper_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            ca_ev,
+            version_map={
+                "ca_firm_engagement_workpaper": "mai-52.0.1-slice1",
+            },
+            safe_attributes={
+                "ca_firm_engagement_workpaper_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "ca_firm_engagement_workpaper_readiness": (
+                    bundle.ca_firm_engagement_workpaper_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "CA_FIRM_ENGAGEMENT_WORKPAPER_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "engagement_authority_claimed": False,
+                "ca_firm_workspace_enabled": False,
+                "engagement_opened": False,
+                "engagement_signed": False,
+                "workpaper_created": False,
+                "workpaper_posted": False,
+                "client_binder_released": False,
+                "staff_assignment_applied": False,
+                "review_notes_finalized": False,
+                "production_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CA_FIRM_ENGAGEMENT_WORKPAPER_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            ca_ev,
+            safe_error_code="CA_FIRM_ENGAGEMENT_WORKPAPER_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CA_FIRM_ENGAGEMENT_WORKPAPER_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="CA_FIRM_ENGAGEMENT_WORKPAPER_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent engagement open.
+
     return canonical
 
 

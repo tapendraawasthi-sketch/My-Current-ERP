@@ -585,6 +585,218 @@
       "title": "BroaderNepalBusinessLawDomainReleaseStatus",
       "type": "string"
     },
+    "CaFirmEngagementWorkpaperBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/CaFirmEngagementWorkpaperStatus",
+          "default": "NOT_RUN"
+        },
+        "ca_firm_engagement_workpaper_readiness": {
+          "$ref": "#/$defs/CaFirmEngagementWorkpaperReadiness",
+          "default": "NOT_APPLICABLE"
+        },
+        "ca_firm_workspace_enabled": {
+          "default": false,
+          "title": "Ca Firm Workspace Enabled",
+          "type": "boolean"
+        },
+        "claims_verified": {
+          "default": false,
+          "title": "Claims Verified",
+          "type": "boolean"
+        },
+        "client_binder_released": {
+          "default": false,
+          "title": "Client Binder Released",
+          "type": "boolean"
+        },
+        "current_law_definitive": {
+          "default": false,
+          "title": "Current Law Definitive",
+          "type": "boolean"
+        },
+        "documents_retrieved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Retrieved",
+          "type": "integer"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "engagement_authority_claimed": {
+          "default": false,
+          "title": "Engagement Authority Claimed",
+          "type": "boolean"
+        },
+        "engagement_opened": {
+          "default": false,
+          "title": "Engagement Opened",
+          "type": "boolean"
+        },
+        "engagement_signed": {
+          "default": false,
+          "title": "Engagement Signed",
+          "type": "boolean"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "gap_p2_008_status": {
+          "default": "OPEN",
+          "title": "Gap P2 008 Status",
+          "type": "string"
+        },
+        "gold_questions_status": {
+          "default": "NOT_RELEASED",
+          "title": "Gold Questions Status",
+          "type": "string"
+        },
+        "in_scope_topics": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "In Scope Topics",
+          "type": "array"
+        },
+        "kb_retrieval_invoked": {
+          "default": false,
+          "title": "Kb Retrieval Invoked",
+          "type": "boolean"
+        },
+        "legal_effective_dates_proven": {
+          "default": false,
+          "title": "Legal Effective Dates Proven",
+          "type": "boolean"
+        },
+        "legal_proof_claimed": {
+          "default": false,
+          "title": "Legal Proof Claimed",
+          "type": "boolean"
+        },
+        "mutation_tools_allowed": {
+          "default": false,
+          "title": "Mutation Tools Allowed",
+          "type": "boolean"
+        },
+        "pilot_scope": {
+          "default": "CA_FIRM_ENGAGEMENT_WORKPAPER_CANDIDATE_ONLY",
+          "title": "Pilot Scope",
+          "type": "string"
+        },
+        "posting_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Posting Mutations",
+          "type": "integer"
+        },
+        "production_approved": {
+          "default": false,
+          "title": "Production Approved",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "release_status": {
+          "default": "NOT_RELEASED",
+          "title": "Release Status",
+          "type": "string"
+        },
+        "review_notes_finalized": {
+          "default": false,
+          "title": "Review Notes Finalized",
+          "type": "boolean"
+        },
+        "runtime_version": {
+          "default": "mai-52.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "specialist_signoff_status": {
+          "default": "NOT_SIGNED",
+          "title": "Specialist Signoff Status",
+          "type": "string"
+        },
+        "staff_assignment_applied": {
+          "default": false,
+          "title": "Staff Assignment Applied",
+          "type": "boolean"
+        },
+        "unsupported_topics": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Unsupported Topics",
+          "type": "array"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "workpaper_created": {
+          "default": false,
+          "title": "Workpaper Created",
+          "type": "boolean"
+        },
+        "workpaper_posted": {
+          "default": false,
+          "title": "Workpaper Posted",
+          "type": "boolean"
+        }
+      },
+      "title": "CaFirmEngagementWorkpaperBundleV1",
+      "type": "object"
+    },
+    "CaFirmEngagementWorkpaperReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "SCOPE_PARTIAL"
+      ],
+      "title": "CaFirmEngagementWorkpaperReadiness",
+      "type": "string"
+    },
+    "CaFirmEngagementWorkpaperStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "CaFirmEngagementWorkpaperStatus",
+      "type": "string"
+    },
     "CalcAuthorityOnConfirm": {
       "enum": [
         "DEXIE_DOMAIN_ENGINE",
@@ -8099,7 +8311,7 @@
           "type": "boolean"
         },
         "runtime_version": {
-          "default": "mai-51.0.1-slice1",
+          "default": "mai-51.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },
@@ -11369,6 +11581,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/BroaderNepalBusinessLawDomainReleaseBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "ca_firm_engagement_workpaper_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CaFirmEngagementWorkpaperBundleV1"
         },
         {
           "type": "null"

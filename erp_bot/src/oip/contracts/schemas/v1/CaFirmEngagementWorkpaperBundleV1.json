@@ -1,71 +1,55 @@
 {
   "$defs": {
-    "PrivateUserDocumentIntelligenceReadiness": {
+    "CaFirmEngagementWorkpaperReadiness": {
       "enum": [
         "NOT_APPLICABLE",
         "POLICY_DECLARED",
         "BLOCKED",
         "SCOPE_PARTIAL"
       ],
-      "title": "PrivateUserDocumentIntelligenceReadiness",
+      "title": "CaFirmEngagementWorkpaperReadiness",
       "type": "string"
     },
-    "PrivateUserDocumentIntelligenceStatus": {
+    "CaFirmEngagementWorkpaperStatus": {
       "enum": [
         "NOT_RUN",
         "COMPLETE",
         "SKIP",
         "FAILED"
       ],
-      "title": "PrivateUserDocumentIntelligenceStatus",
+      "title": "CaFirmEngagementWorkpaperStatus",
       "type": "string"
     }
   },
-  "$id": "https://mokxya.local/contracts/v1/PrivateUserDocumentIntelligenceBundleV1.json",
+  "$id": "https://mokxya.local/contracts/v1/CaFirmEngagementWorkpaperBundleV1.json",
   "additionalProperties": false,
   "properties": {
-    "access_control_enforced": {
-      "default": false,
-      "title": "Access Control Enforced",
-      "type": "boolean"
-    },
     "analysis_status": {
-      "$ref": "#/$defs/PrivateUserDocumentIntelligenceStatus",
+      "$ref": "#/$defs/CaFirmEngagementWorkpaperStatus",
       "default": "NOT_RUN"
+    },
+    "ca_firm_engagement_workpaper_readiness": {
+      "$ref": "#/$defs/CaFirmEngagementWorkpaperReadiness",
+      "default": "NOT_APPLICABLE"
+    },
+    "ca_firm_workspace_enabled": {
+      "default": false,
+      "title": "Ca Firm Workspace Enabled",
+      "type": "boolean"
     },
     "claims_verified": {
       "default": false,
       "title": "Claims Verified",
       "type": "boolean"
     },
-    "cross_tenant_isolation_proven": {
+    "client_binder_released": {
       "default": false,
-      "title": "Cross Tenant Isolation Proven",
+      "title": "Client Binder Released",
       "type": "boolean"
     },
     "current_law_definitive": {
       "default": false,
       "title": "Current Law Definitive",
-      "type": "boolean"
-    },
-    "document_authority_claimed": {
-      "default": false,
-      "title": "Document Authority Claimed",
-      "type": "boolean"
-    },
-    "document_indexed": {
-      "default": false,
-      "title": "Document Indexed",
-      "type": "boolean"
-    },
-    "document_ingested": {
-      "default": false,
-      "title": "Document Ingested",
-      "type": "boolean"
-    },
-    "document_qa_live": {
-      "default": false,
-      "title": "Document Qa Live",
       "type": "boolean"
     },
     "documents_retrieved": {
@@ -79,6 +63,21 @@
       "minimum": 0,
       "title": "Draft Mutations",
       "type": "integer"
+    },
+    "engagement_authority_claimed": {
+      "default": false,
+      "title": "Engagement Authority Claimed",
+      "type": "boolean"
+    },
+    "engagement_opened": {
+      "default": false,
+      "title": "Engagement Opened",
+      "type": "boolean"
+    },
+    "engagement_signed": {
+      "default": false,
+      "title": "Engagement Signed",
+      "type": "boolean"
     },
     "error_codes": {
       "default": [],
@@ -127,7 +126,7 @@
       "type": "boolean"
     },
     "pilot_scope": {
-      "default": "PRIVATE_USER_DOCUMENT_INTELLIGENCE_CANDIDATE_ONLY",
+      "default": "CA_FIRM_ENGAGEMENT_WORKPAPER_CANDIDATE_ONLY",
       "title": "Pilot Scope",
       "type": "string"
     },
@@ -136,15 +135,6 @@
       "minimum": 0,
       "title": "Posting Mutations",
       "type": "integer"
-    },
-    "private_document_intelligence_enabled": {
-      "default": false,
-      "title": "Private Document Intelligence Enabled",
-      "type": "boolean"
-    },
-    "private_user_document_intelligence_readiness": {
-      "$ref": "#/$defs/PrivateUserDocumentIntelligenceReadiness",
-      "default": "NOT_APPLICABLE"
     },
     "production_approved": {
       "default": false,
@@ -164,13 +154,13 @@
       "title": "Release Status",
       "type": "string"
     },
-    "retention_policy_applied": {
+    "review_notes_finalized": {
       "default": false,
-      "title": "Retention Policy Applied",
+      "title": "Review Notes Finalized",
       "type": "boolean"
     },
     "runtime_version": {
-      "default": "mai-51.0.2-slice2",
+      "default": "mai-52.0.1-slice1",
       "title": "Runtime Version",
       "type": "string"
     },
@@ -188,6 +178,11 @@
       "title": "Specialist Signoff Status",
       "type": "string"
     },
+    "staff_assignment_applied": {
+      "default": false,
+      "title": "Staff Assignment Applied",
+      "type": "boolean"
+    },
     "unsupported_topics": {
       "default": [],
       "items": {
@@ -196,11 +191,6 @@
       "title": "Unsupported Topics",
       "type": "array"
     },
-    "user_document_released": {
-      "default": false,
-      "title": "User Document Released",
-      "type": "boolean"
-    },
     "warnings": {
       "default": [],
       "items": {
@@ -208,9 +198,19 @@
       },
       "title": "Warnings",
       "type": "array"
+    },
+    "workpaper_created": {
+      "default": false,
+      "title": "Workpaper Created",
+      "type": "boolean"
+    },
+    "workpaper_posted": {
+      "default": false,
+      "title": "Workpaper Posted",
+      "type": "boolean"
     }
   },
-  "title": "PrivateUserDocumentIntelligenceBundleV1",
+  "title": "CaFirmEngagementWorkpaperBundleV1",
   "type": "object",
   "x-mai-schema-version": "1.0.0"
 }

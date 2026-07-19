@@ -1196,6 +1196,34 @@ class CanonicalOipRequestAdapter:
                     "private_user_document_intelligence_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-52: CA-firm engagement / workpaper (never opens engagements).
+        if canonical.ca_firm_engagement_workpaper_bundle is not None:
+            try:
+                from ...modules.conversation.application.ca_firm_engagement_workpaper_service import (
+                    ca_firm_engagement_workpaper_to_metadata,
+                )
+
+                metadata["ca_firm_engagement_workpaper"] = (
+                    ca_firm_engagement_workpaper_to_metadata(
+                        canonical.ca_firm_engagement_workpaper_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                ca = canonical.ca_firm_engagement_workpaper_bundle
+                metadata["ca_firm_engagement_workpaper"] = {
+                    "analysis_status": ca.analysis_status.value,
+                    "runtime_version": ca.runtime_version,
+                    "ca_firm_engagement_workpaper_readiness": (
+                        ca.ca_firm_engagement_workpaper_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "ca_firm_workspace_enabled": False,
+                    "engagement_opened": False,
+                    "workpaper_posted": False,
+                    "production_approved": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

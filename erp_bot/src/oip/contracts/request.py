@@ -70,6 +70,9 @@ from .nepali_english_speech_channel import (
 from .private_user_document_intelligence import (
     PrivateUserDocumentIntelligenceBundleV1,
 )
+from .ca_firm_engagement_workpaper import (
+    CaFirmEngagementWorkpaperBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -294,6 +297,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-51: private user-document intelligence (never ingests docs).
     private_user_document_intelligence_bundle: (
         PrivateUserDocumentIntelligenceBundleV1 | None
+    ) = None
+    # MAI-52: CA-firm engagement / workpaper (never opens engagements).
+    ca_firm_engagement_workpaper_bundle: (
+        CaFirmEngagementWorkpaperBundleV1 | None
     ) = None
 
     @field_validator("schema_version")
