@@ -126,6 +126,21 @@ class ExecutionContextStage:
         response_register = policy_decisions.get("response_register")
         if not isinstance(response_register, dict):
             response_register = {}
+        context_assembly = policy_decisions.get("context_assembly")
+        if not isinstance(context_assembly, dict):
+            context_assembly = {}
+        context_assembly_recall = policy_decisions.get("context_assembly_recall")
+        if not isinstance(context_assembly_recall, dict):
+            context_assembly_recall = {}
+        exec_meta: dict = {
+            "estimated_tokens": route.estimated_tokens,
+            **grounding_meta,
+            "response_register": response_register,
+        }
+        if context_assembly:
+            exec_meta["context_assembly"] = context_assembly
+        if context_assembly_recall:
+            exec_meta["context_assembly_recall"] = context_assembly_recall
         context.context = ExecutionContext(
             context_id=str(uuid.uuid4()),
             execution_id=execution.execution_id,
@@ -142,11 +157,7 @@ class ExecutionContextStage:
             deployment_mode=route.deployment_mode,
             capability_token_id="",
             sandbox_id="",
-            metadata={
-                "estimated_tokens": route.estimated_tokens,
-                **grounding_meta,
-                "response_register": response_register,
-            },
+            metadata=exec_meta,
         )
         context.prompt = _resolve_provider_prompt(route=route, policy_decisions=policy_decisions)
         if _OIP_CHAT_DEBUG:

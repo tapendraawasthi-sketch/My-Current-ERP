@@ -217,7 +217,7 @@
       "type": "integer"
     },
     "runtime_version": {
-      "default": "mai-16.0.1-slice1",
+      "default": "mai-16.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

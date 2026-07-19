@@ -97,7 +97,7 @@ class ContextSliceCandidateV1(ContractBase):
 class ContextAssemblyBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: ContextAssemblyStatus = ContextAssemblyStatus.NOT_RUN
-    runtime_version: str = "mai-16.0.1-slice1"
+    runtime_version: str = "mai-16.0.2-slice2"
     source_authority: str = "REQUEST"
     memory_policy: MemoryPolicyV1 = Field(default_factory=MemoryPolicyV1)
     slices: tuple[ContextSliceCandidateV1, ...] = ()

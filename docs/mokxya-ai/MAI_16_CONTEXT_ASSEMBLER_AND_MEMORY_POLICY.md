@@ -1,9 +1,9 @@
 # MAI-16 — Context Assembler and Memory Policy
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0033](decisions/ADR_0033_CONTEXT_ASSEMBLY_AND_MEMORY_POLICY_AUTHORITY.md)  
-**Runtime:** `mai-16.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-16.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -19,11 +19,12 @@ memory or mutating drafts.
 3. Token/slice budget ranks include vs exclude; candidates stay `applied=false`
 4. `write_allowed=false`, `memory_writes=0`, no LLM prompt injection
 
-## Slice 2 (planned)
+## Slice 2
 
-1. Consume included slices into provider/orchestrator assembly
-2. Optional read-only recall under the same policy
-3. Still no silent draft / memory writes from ingress
+1. Forward `metadata.context_assembly` into `route.policy_decisions`
+2. Copy into `ExecutionContext.metadata`; DATA-ONLY system-prompt append
+3. Optional RO `memory.recall` → `context_assembly_recall` summaries
+4. Skip memory store/update/consolidate when `write_allowed=false`
 
 ## Gates
 
@@ -31,7 +32,9 @@ memory or mutating drafts.
 |------|--------|
 | Active draft FOUND + awaiting_clarification | `active_task` + unresolved slices included |
 | TrustedScope present | company/tenant echoed; TRUSTED_SCOPE included |
-| Policy `write_allowed=true` | ValidationError |
+| Policy `write_allowed=true` on contract | ValidationError |
+| Provider path with assembly | DATA-ONLY block present |
+| Memory store with assembly policy | SKIPPED (no content write) |
 | Any assembly run | `memory_writes=0`, not execution authority |
 
 ## Non-goals

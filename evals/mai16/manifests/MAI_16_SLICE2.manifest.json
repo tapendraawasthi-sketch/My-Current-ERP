@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai16-slice2-v1",
+  "dataset_hash": "3ee8075b31eef3ee45a1c6727761603165679c2b146481aba16d2062fb2b259b",
+  "phase": "MAI-16",
+  "slice": "SLICE2_PROVIDER_CONSUME_AND_MEMORY_GATE",
+  "runtime_version": "mai-16.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai16/frozen/context_assembly_consume_v1.jsonl",
+      "sha256": "3ee8075b31eef3ee45a1c6727761603165679c2b146481aba16d2062fb2b259b",
+      "case_count": 6,
+      "suite_id": "context_assembly_consume_v1"
+    }
+  ]
+}

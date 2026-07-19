@@ -40,6 +40,20 @@ def _fail(stage: str, error: str, retryable: bool = False) -> StageResult:
     )
 
 
+def _memory_content_writes_allowed(context: WorkflowContext) -> bool:
+    """MAI-16: gate content memory writes when policy.write_allowed is false."""
+    try:
+        from src.oip.modules.conversation.application.context_assembly_service import (
+            memory_content_writes_allowed,
+        )
+
+        return memory_content_writes_allowed(
+            context.metadata if isinstance(context.metadata, dict) else None
+        )
+    except Exception:  # noqa: BLE001
+        return True
+
+
 async def _resolve_execution_intent(ports: ModulePorts, context: WorkflowContext) -> ExecutionIntent | None:
     if not context.plan_ref:
         return None
@@ -398,6 +412,8 @@ class MemoryStoreStageAdapter(WorkflowStagePort):
         validation = await self.validate(context)
         if validation.status != StageRunStatus.COMPLETED:
             return context, validation
+        if not _memory_content_writes_allowed(context):
+            return context, _skip(self.name)
         try:
             memory = await self._ports.memory.store(  # type: ignore[union-attr]
                 tenant_id=context.tenant_id,
@@ -592,6 +608,55 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             pass
 
+        # MAI-16: forward context assembly into provider metadata; optional RO recall.
+        try:
+            from src.oip.modules.conversation.application.context_assembly_service import (
+                project_readonly_recall_summaries,
+                select_readonly_recall_query,
+            )
+
+            context_assembly: dict[str, Any] = {}
+            if isinstance(context.metadata, dict):
+                raw_ca = context.metadata.get("context_assembly")
+                if isinstance(raw_ca, dict):
+                    context_assembly = dict(raw_ca)
+            recall_meta: dict[str, Any] | None = None
+            if context_assembly and self._ports.memory is not None:
+                query = select_readonly_recall_query(
+                    {"context_assembly": context_assembly},
+                    context.message,
+                )
+                if query:
+                    try:
+                        memories = await self._ports.memory.recall(
+                            tenant_id=context.tenant_id,
+                            request_id=context.request_id,
+                            correlation_id=context.correlation_id,
+                            query=query,
+                            company_id=context.company_id,
+                            conversation_id=context.conversation_id,
+                            workflow_id=context.workflow_id,
+                            limit=5,
+                        )
+                        recall_meta = project_readonly_recall_summaries(memories)
+                    except Exception:  # noqa: BLE001
+                        recall_meta = {
+                            "result_count": 0,
+                            "summaries": [],
+                            "read_only": True,
+                            "memory_writes": 0,
+                            "warning": "RECALL_SOFT_FAIL",
+                        }
+            if context_assembly or recall_meta:
+                pd = dict(route.policy_decisions or {})
+                if context_assembly:
+                    pd["context_assembly"] = context_assembly
+                if recall_meta is not None:
+                    pd["context_assembly_recall"] = recall_meta
+                route = route.model_copy(update={"policy_decisions": pd})
+        except Exception:  # noqa: BLE001
+            pass
+
         model_ev = _mai03_safe_stage("MODEL_REQUEST_STARTED")
         try:
             execution = await self._ports.provider_runtime.start_execution(route=route)  # type: ignore[union-attr]
@@ -657,6 +722,8 @@ class MemoryUpdateStageAdapter(WorkflowStagePort):
         validation = await self.validate(context)
         if validation.status != StageRunStatus.COMPLETED:
             return context, validation
+        if not _memory_content_writes_allowed(context):
+            return context, _skip(self.name)
         memory_id = (context.memory_store_ref or {}).get("memory_id")
         if not memory_id:
             return context, _skip(self.name)
@@ -820,6 +887,8 @@ class MemoryConsolidationStageAdapter(WorkflowStagePort):
         validation = await self.validate(context)
         if validation.status != StageRunStatus.COMPLETED:
             return context, validation
+        if not _memory_content_writes_allowed(context):
+            return context, _skip(self.name)
         try:
             memories = await self._ports.memory.consolidate(  # type: ignore[union-attr]
                 tenant_id=context.tenant_id,

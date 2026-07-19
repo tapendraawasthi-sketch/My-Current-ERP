@@ -198,6 +198,15 @@ class HttpProviderAdapter(ProviderAdapterPort):
             )
         except Exception:
             pass
+        # MAI-16: append DATA-ONLY context assembly (+ optional RO recall).
+        try:
+            from src.oip.modules.conversation.application.context_assembly_service import (
+                append_context_assembly_to_system_prompt,
+            )
+
+            base = append_context_assembly_to_system_prompt(base, meta)
+        except Exception:
+            pass
         grounding = meta.get("grounding_block") or ""
         if grounding:
             try:
