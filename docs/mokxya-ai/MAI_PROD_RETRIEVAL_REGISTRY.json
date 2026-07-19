@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_PROD_RETRIEVAL_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0081",
+  "step": "NEXT-14",
+  "decision": "PROD_LEXICAL_ONLY_RETRIEVAL",
+  "gap_p2_001": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "runtime_status_reason": "Production forces LEXICAL_ONLY; Ollama/Chroma optional non-prod DX only. CLOSED needs staging deploy proof + review."
+  },
+  "honesty": {
+    "production_approved": false,
+    "ollama_required_for_prod": false,
+    "chroma_required_for_prod": false,
+    "vector_required_for_prod": false,
+    "is_execution_authority": false
+  },
+  "policies": {
+    "prod_retrieval_mode": "LEXICAL_ONLY",
+    "semantic_enabled_in_production": false,
+    "allow_non_prod_semantic_break_glass_in_production": false,
+    "missing_evidence_no_answer": true
+  },
+  "deploy_evidence": {
+    "render_skips_ollama_chroma_ingest": true,
+    "primary_chat_provider": "GROQ",
+    "notes": "DEPLOYMENT.md / render.yaml: ORBIX_NP_KB_LEXICAL=true; semantic not required"
+  },
+  "gate_owners": [
+    "erp_bot/src/nlu/np_kb_adapter.py::NpKbConfig.from_env",
+    "erp_bot/src/nlu/np_kb_adapter.py::interpret_user_text",
+    "erp_bot/src/oip/modules/conversation/application/vector_index_service.py::env_allows_non_prod_semantic"
+  ],
+  "forbidden_claims": [
+    "production_approved=true",
+    "ollama_required_for_prod=true",
+    "vector_required_for_prod=true",
+    "gap_p2_001_closed=true",
+    "semantic_enabled_in_production=true"
+  ]
+}

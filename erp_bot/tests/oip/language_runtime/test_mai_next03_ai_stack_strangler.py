@@ -78,7 +78,7 @@ def test_adr_gap_ledger_updated() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "NEXT-14"
+    assert ledger["recommended_next_step"] == "NEXT-08"
     assert ledger["ai_stack_strangler"]["authority"] == "ADR_0073"
     assert ledger["ai_stack_strangler"]["primary_chat_route"] == (
         PRIMARY_CHAT_ROUTE

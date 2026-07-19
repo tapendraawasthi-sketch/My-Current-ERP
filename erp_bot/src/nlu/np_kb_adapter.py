@@ -82,11 +82,20 @@ class NpKbConfig:
         policy = os.environ.get("ORBIX_NP_KB_REVIEW_POLICY", "development_all").strip()
         if policy not in {"reviewed_only", "reviewed_and_generated", "development_all"}:
             policy = "development_all"
+        semantic_enabled = _bool_env("ORBIX_NP_KB_SEMANTIC_ENABLED", False)
+        # NEXT-14 / ADR_0081: production never requires or enables Ollama semantic.
+        try:
+            from src.oip.domain.constitution.config_guard import is_production_environment
+
+            if is_production_environment():
+                semantic_enabled = False
+        except Exception:  # noqa: BLE001
+            pass
         return cls(
             enabled=_bool_env("ORBIX_NP_KB_ENABLED", True),
             root=root,
             lexical_enabled=_bool_env("ORBIX_NP_KB_LEXICAL_ENABLED", True),
-            semantic_enabled=_bool_env("ORBIX_NP_KB_SEMANTIC_ENABLED", False),
+            semantic_enabled=semantic_enabled,
             lexical_top_k=int(os.environ.get("ORBIX_NP_KB_LEXICAL_TOP_K", "8")),
             semantic_top_k=int(os.environ.get("ORBIX_NP_KB_SEMANTIC_TOP_K", "8")),
             min_quality_score=float(os.environ.get("ORBIX_NP_KB_MIN_QUALITY_SCORE", "0.35")),
@@ -583,6 +592,21 @@ def interpret_user_text(
             skipped_reason="ORBIX_NP_KB_ENABLED is false",
             observability=obs,
         )
+
+    # NEXT-14 / ADR_0081: prod path is lexical-only even when annotation bundles
+    # are missing (closes bare enrich_nlu_context / stream-metadata holes).
+    try:
+        from src.oip.domain.constitution.config_guard import is_production_environment
+
+        if is_production_environment():
+            cfg = replace(cfg, lexical_enabled=True, semantic_enabled=False)
+            obs["prod_retrieval_mode"] = "LEXICAL_ONLY"
+            obs["semantic_forced_off"] = True
+            obs["ollama_required"] = False
+            obs["vector_required_for_prod"] = False
+            obs["next14_adr"] = "ADR_0081"
+    except Exception:  # noqa: BLE001
+        pass
 
     gov = (
         knowledge_source_governance

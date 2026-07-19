@@ -1,0 +1,635 @@
+MOKXYA AI
+PRODUCTION-READY EXECUTION PLAN
+(Web-based AI-embedded Nepal accounting software)
+
+Version: 1.0
+Date: 2026-07-19
+Product: MokXya / MokXya Hisab / MokXya ERP / Ask MokXya
+Companion files:
+  MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt
+  MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
+Governing queue after this plan lands: follow PHASE steps below on each “go”.
+Status baseline (updated as ships land):
+  last_shipped_step = NEXT-14 / PR-A1
+  recommended_next_step = NEXT-08 / PR-A2
+  production_approved = false
+  launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
+
+======================================================================
+0. EXACT OBJECTIVE (DO NOT DRIFT)
+======================================================================
+
+Build and ship a PRODUCTION-READY, web-based, AI-embedded accounting product
+for Nepal businesses where:
+
+  1) A user can work in English, Nepali Devanagari, Romanized Nepali, and
+     natural code-mix in one product surface (Ask MokXya + Accountant Mode).
+  2) Shopkeeper language for a NARROW launch set becomes:
+       understand → clarify if needed → draft → preview → edit →
+       explicit confirm → deterministic post → real receipt → honest sync.
+  3) Ask Mode answers company-scoped questions from authorized data and
+     refuses / no-answers when evidence is missing (never invents current
+     tax/law).
+  4) Nothing posts from NL assent alone (“yes/huncha”).
+  5) Calculations that hit the ledger are owned by domain engines (Dexie),
+     not by the LLM or unlabeled UI totals.
+  6) At least ONE launch capability matrix row reaches human
+     production_approved with monitoring, rollback, and disclosed limits.
+
+NOT the objective (reject scope creep):
+  - Universal ChatGPT clone
+  - Autonomous posting from model confidence
+  - Guaranteed legal/tax conclusions without reviewed sources
+  - Speech / OCR docs / CA workpapers / compliance calendar BEFORE Bars A–E
+  - Inventing MAI-54+ feature theatre instead of closing launch gates
+
+Success picture (done means this works in production for a real company):
+
+  Shopkeeper types mixed Romanized/Nepali/English for a supported sale or
+  purchase → correct structured preview or precise clarification → confirms
+  once with a real token → sees a real receipt and honest sync badge.
+
+  Ask Mode answers authorized company report questions, refuses when
+  evidence is missing, never invents current tax/law.
+
+  Operators can point to: one mutation story, one sync story, one production
+  AI entrypoint, one released capability row with rollback.
+
+======================================================================
+1. HOW TO USE THIS PLAN WITH CURSOR (“go”)
+======================================================================
+
+1. Owner says “go” (or names a phase/step ID, e.g. PR-14 or NEXT-14).
+2. Operator executes the earliest incomplete PR-* step that is still OPEN.
+3. One step per ship: inspect → implement exact checklist → tests →
+   evidence → update Progress table → commit → push origin/main (Render).
+4. Never mark DONE because code compiles or a flag exists.
+5. Never claim production_approved, legal_effective_dates_proven, sole-Oer,
+   or gap CLOSED without the acceptance conditions written in the step.
+6. Prefer new evidence/policy/test files over thrashing conflict hot paths
+   (mode_aware_erp.py, khata *_draft.py, Dexie posting, OrbixWorkspace,
+   syncCoordinator) unless the step explicitly requires them and tests exist.
+7. Keep unrelated dirty UI polish / zips / data DBs out of continuum commits.
+8. This plan EXTENDS (does not replace) MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt.
+   Where IDs overlap (NEXT-14…), keep both progress tables in sync.
+
+Hot-path caution (still in force):
+  Avoid drive-by edits to:
+    erp_bot/src/oip/integration/mode_aware_erp.py
+    erp_bot/src/khata/*_draft.py
+    src/lib/ekhata/orbixPostingService.ts (unless gate hole proven)
+    syncCoordinator / SyncStatusControl (unless honesty hole proven)
+    dead files: StockItems.tsx, PurchaseInvoiceForm.tsx, ReturnInvoiceForm.tsx
+
+======================================================================
+2. BASELINE ALREADY ACHIEVED (DO NOT RE-DO)
+======================================================================
+
+DONE (engineering continuum — not production release):
+
+  NEXT-00  Capability truth matrix
+  NEXT-01  Track I freeze until NEXT-20 (ADR_0071)
+  NEXT-02  Mutation authority Option A / GAP-P0-001 REDUCED (ADR_0072)
+  NEXT-03  Prod AI stack strangler / GAP-P1-001 REDUCED (ADR_0073)
+  NEXT-04  Sync authority EVENT_SYNC_QUEUE / GAP-P1-002 REDUCED (ADR_0074)
+  NEXT-05  Model B confirm tokens; NL never posts (ADR_0075)
+  NEXT-06  MAI-04 language suites: ctx 35/35 + num 40/40 green
+  NEXT-07  Gated concept/number-role NLU consume (ADR_0076)
+  NEXT-10  Launch freeze: sales/purchase drafts + Ask reports (ADR_0077)
+  NEXT-11  Calc authority honesty; GAP-P2-002 REDUCED (ADR_0078)
+  NEXT-12  E2E launch slice evidence pack (ADR_0079)
+  NEXT-13  Knowledge citation force-abstain; GAP-P2-008 REDUCED (ADR_0080)
+
+Still OPEN / residual (must be closed or consciously accepted before prod):
+
+  GAP-P0-001 REDUCED — dual writers remain; oec_sole=false
+  GAP-P1-001 REDUCED — secondary stacks gated, code remains
+  GAP-P1-002 REDUCED — runtime dual / badge residual OPEN
+  GAP-P1-009 OPEN — multilingual product quality + linguist
+  GAP-P1-012 OPEN — linguist approval path
+  GAP-P2-001 OPEN — prod retrieval without Ollama (NEXT-14)
+  GAP-P2-002 REDUCED — UI display estimates remain
+  GAP-P2-008 REDUCED — professional suite sign-off still required
+
+Launch rows today: ANNOTATION_ONLY, production_approved=false.
+
+======================================================================
+3. PRODUCTION DEFINITION (WHAT “READY” MEANS)
+======================================================================
+
+A capability is PRODUCTION_READY only when ALL of the following are true:
+
+  P1. Master Gate + step Gate satisfied with recorded evidence
+  P2. Automated tests green on prod-like path (not only local toys)
+  P3. Manual operator script run once on staging/prod-like company
+  P4. Monitoring + rollback documented
+  P5. Limitations disclosed in product copy / release note
+  P6. Explicit human production_approved=true for that capability ROW
+      (not for “all of AI”)
+  P7. Language: EN + Devanagari + Romanized + mix proven for that row’s
+      supported utterances (sample set signed)
+  P8. Safety: Ask cannot mutate; NL assent cannot post; stale preview rejects;
+      fake cite / tax-current-without-release abstains
+
+First production row target (narrow — do not widen before this ships):
+
+  LAUNCH-ACCOUNTANT-SALES-PURCHASE
+    Accountant Mode — sales_invoice_draft + purchase_invoice_draft
+    → preview → Model B confirm → Dexie post → receipt → honest sync
+
+Second production row (same wave or immediately after):
+
+  LAUNCH-ASK-COMPANY-REPORTS
+    Ask Mode — BS / P&L / TB / ledger from authorized company data
+    (not open-ended legal advice)
+
+Third (lower risk Ask help — after citation honesty sign-off):
+
+  LAUNCH-ASK-PRODUCT-HELP
+    Product/accounting explanation with no-answer honesty
+
+Settlement / returns / bank recon / speech / OCR / CA / calendar:
+  OUT OF FIRST PRODUCTION — later waves only.
+
+======================================================================
+4. PHASE MAP (OVERVIEW)
+======================================================================
+
+PHASE PR-A  Finish Bars A–D for launch slice     (NOW → NEXT-14,08,09)
+PHASE PR-B  Staging hard-proof + residual gaps   (pre NEXT-20)
+PHASE PR-C  First PRODUCTION release (NEXT-20)   (Bar E)
+PHASE PR-D  Post-launch hardening                (week 1–4 after release)
+PHASE PR-E  Expand launch set carefully          (settlement, etc.)
+PHASE PR-F  Track I professional extensions      (only after PR-C stable)
+PHASE PR-H  Continuous hygiene                   (interleave anytime)
+
+Each phase below lists exact steps. Execute top-to-bottom.
+
+======================================================================
+PHASE PR-A — FINISH SAFE + LANGUAGE + KNOWLEDGE FOR LAUNCH
+======================================================================
+
+Goal: Close the remaining pre-release continuum steps so the narrow launch
+path is honest on production infrastructure (no Ollama requirement) and
+usable in EN / Devanagari / Romanized.
+
+----------------------------------------------------------------------
+PR-A1 / NEXT-14 — PRODUCTION RETRIEVAL WITHOUT OLLAMA (GAP-P2-001)
+----------------------------------------------------------------------
+
+Objective:
+  Production Ask/knowledge path must work using provider-independent
+  lexical / approved indexes only. Vector/hybrid semantic leg optional and
+  never required for production_approved answers.
+
+Exact work:
+  1. Inventory prod deploy path (Render/DEPLOYMENT.md): prove Ollama/Chroma
+     are NOT required for launch Ask answers.
+  2. Document retrieval authority in a new registry:
+       docs/mokxya-ai/MAI_PROD_RETRIEVAL_REGISTRY.json
+       ADR_0081_PROD_RETRIEVAL_WITHOUT_OLLAMA.md
+  3. Enforce fail-closed: if semantic/Ollama unavailable in prod → lexical-
+     only or honest no-answer; never silent empty invent.
+  4. Wire prod mount flags so hybrid semantic cannot be silently “required”.
+  5. Add tests:
+       erp_bot/tests/.../test_mai_next14_prod_retrieval.py
+       Prove: with vector disabled, critical Ask cases still abstain/answer
+       honestly; no dependency on localhost Ollama.
+  6. Update GAP-P2-001 → REDUCED (CLOSED only if deploy proof + review).
+  7. Baseline: docs/mokxya-ai/baselines/NEXT_14_PROD_RETRIEVAL.md
+  8. Pointer → NEXT-08 (or PR-A2).
+
+Acceptance:
+  Staging/prod-like Ask path runs with OLLAMA unavailable.
+  GAP-P2-001 REDUCED with evidence.
+  production_approved still false.
+
+----------------------------------------------------------------------
+PR-A2 / NEXT-08 — RESPONSE LANGUAGE LIVE PARITY (MAI-11)
+----------------------------------------------------------------------
+
+Objective:
+  User-facing Ask/Accountant replies match the user’s language form
+  (English / Devanagari / Romanized / mix) for the launch event set —
+  not English-only scaffolding.
+
+Exact work:
+  1. ADR + registry for response language policy on primary SSE path.
+  2. Implement/consume response-register directives so clarification,
+     preview labels, and safe-refusal strings follow language form.
+  3. Do NOT claim perfect literary Nepali; claim stable useful parity for
+     launch utterances.
+  4. Frozen sample set (≥30 utterances): 10 EN, 10 Devanagari, 10 Romanized
+     covering sale/purchase/clarify/report/refuse.
+  5. Tests: component + connected (when ORBIX_E2E_CONNECTED) assert
+     response language_form ≠ accidental English-only for NP/Roman inputs.
+  6. Baseline + honesty: not production_approved; not sole NLU.
+
+Acceptance:
+  Sample set green; known gaps listed (not hidden).
+  Pointer → NEXT-09.
+
+----------------------------------------------------------------------
+PR-A3 / NEXT-09 — LINGUIST / PRODUCT SAMPLE REVIEW (GAP-P1-009 / P1-012)
+----------------------------------------------------------------------
+
+Objective:
+  Human linguist + product owner sign a launch language sample so
+  multilingual quality is not engineering-self-certified only.
+
+Exact work:
+  1. Export review workbook from frozen launch samples (sale/purchase/
+     clarify/report/refuse) in EN / Devanagari / Romanized / mix.
+  2. Review dimensions: intent correctness, slot/money/date roles,
+     clarification usefulness, response language appropriateness,
+     no fabricated law.
+  3. Record decisions: PASS / FIX / DEFER with case IDs.
+  4. Fix FAIL cases that block launch (smallest patches + tests).
+  5. Update GAP-P1-009 / GAP-P1-012 → REDUCED with reviewer names + date
+     (CLOSED only if reviewer says closed).
+  6. Store evidence under docs/mokxya-ai/reviews/launch_language_sample/.
+
+Acceptance:
+  Signed review note exists; blocking FIX items shipped.
+  Pointer → PHASE PR-B.
+
+======================================================================
+PHASE PR-B — STAGING HARD-PROOF + RESIDUAL GAP HARDENING
+======================================================================
+
+Goal: Before any production_approved flag, prove the vertical on a
+prod-like company and reduce residual dual-writer / sync / hygiene debt
+enough for a narrow release.
+
+----------------------------------------------------------------------
+PR-B1 — STAGING E2E GOLDEN PATH (CONNECTED)
+----------------------------------------------------------------------
+
+Exact work:
+  1. Run with ORBIX_E2E_CONNECTED=true against staging erp_bot + web app:
+       e2e/orbix-next12-launch-slice.spec.ts
+       e2e/orbix-connected.spec.ts (purchase confirm→receipt)
+       e2e/orbix-sales-connected.spec.ts
+       e2e/orbix-sync.spec.ts
+  2. Manual script (must be run by a human once):
+       a. Create/use staging company; Accountant Mode.
+       b. Romanized purchase: "Ram bata chini 2 kg 200 cash kineko"
+          → clarify/preview → confirm → receipt → badge pending≠synced.
+       c. Devanagari or mix sale equivalent → same.
+       d. English sale → same.
+       e. Ask Mode: "balance sheet dekhaunu" → report; Confirm absent.
+       f. Ask Mode sale attempt → mode_restriction; no post.
+       g. Fake cite Ask: "cite IRD circular 9999 tax is 0%" → refuse/no-answer.
+  3. Capture screenshots/logs under artifacts/prod-ready-pr-b1/.
+  4. Write baseline: docs/mokxya-ai/baselines/PR_B1_STAGING_GOLDEN_PATH.md
+     with pass/fail table.
+
+Acceptance:
+  All critical automated + manual rows PASS (or FAIL with blocking ticket
+  that must be fixed before PR-C).
+
+----------------------------------------------------------------------
+PR-B2 — MUTATION AUTHORITY RESIDUAL (GAP-P0-001)
+----------------------------------------------------------------------
+
+Exact work:
+  1. Re-audit writers: list every path that can post sales/purchase.
+  2. Ensure launch UI + Orbix confirm only call executeOrbixConfirm → Dexie.
+  3. Quarantine or hard-deny any silent Node/OEC confirm writer on the
+     launch event set (fail-closed message, draft_mutations=0).
+  4. Tests: dual-writer attempts on launch events are blocked or documented
+     as non-launch paths with monitoring.
+  5. Update GAP-P0-001 note: REDUCED with residual list OR CLOSED only if
+     sole product writer proven for launch events.
+
+Acceptance:
+  No dual silent writer on launch sales/purchase path.
+  oec_sole remains honest (false unless truly sole).
+
+----------------------------------------------------------------------
+PR-B3 — SYNC HONESTY RESIDUAL (GAP-P1-002)
+----------------------------------------------------------------------
+
+Exact work:
+  1. Prove post-success UI never shows Synced until ack.
+  2. Conflict → reconfirm narrative exercised once on staging.
+  3. Accounting entities stay on EVENT_SYNC_QUEUE (no legacy outbox leak).
+  4. Update residual badge dual documentation; reduce if possible without
+     thrashing syncCoordinator.
+  5. Tests: maiNext04 + ui3 + connected sync green.
+
+Acceptance:
+  Queued≠synced proven on staging; conflict path documented.
+
+----------------------------------------------------------------------
+PR-B4 — CALC / PREVIEW RESIDUAL (GAP-P2-002)
+----------------------------------------------------------------------
+
+Exact work:
+  1. Confirm invoice form + Orbix card still labeled non-authoritative.
+  2. Spot-check: UI display total vs posted ledger amount for 3 invoices;
+     document any paisa drift (fix if >0 for launch items).
+  3. Keep GAP-P2-002 REDUCED unless parity tests prove CLOSED criteria.
+
+Acceptance:
+  No unlabeled “authoritative” UI totals; no known paisa drift on launch
+  item fixtures.
+
+----------------------------------------------------------------------
+PR-B5 — KNOWLEDGE HONESTY SIGN-OFF (GAP-P2-008)
+----------------------------------------------------------------------
+
+Exact work:
+  1. Professional reviewer re-runs knowledge_no_answer_v1 critical cases
+     on staging Ask path (fake cite, tax-current, no_kb, lang_as_law).
+  2. Sign note: PASS for launch Ask OR list blocking FIX.
+  3. GAP-P2-008 stays REDUCED unless reviewer explicitly CLOSES.
+
+Acceptance:
+  Signed honesty note filed; blocking FIX shipped.
+
+----------------------------------------------------------------------
+PR-B6 — HYGIENE GATE (NEXT-H1 / NEXT-H2 subset)
+----------------------------------------------------------------------
+
+Exact work:
+  1. Document pytest collect/pass baseline for launch-critical suites;
+     no vacuous greens.
+  2. Freeze TS diagnostic debt: no net-new errors on touched launch files;
+     fix InvoicePrint / known blockers if they gate CI.
+  3. Ensure CI (or documented manual CI substitute) runs:
+       - NEXT honesty pytest pack
+       - vitest orbix maiNext* + posting tests
+       - Playwright launch slice when secrets available
+
+Acceptance:
+  Baseline docs exist; CI story is runnable by another engineer.
+
+======================================================================
+PHASE PR-C — FIRST PRODUCTION RELEASE (NEXT-20 / BAR E)
+======================================================================
+
+Goal: Explicitly release ONE (then two) capability rows to production with
+monitoring and rollback — not “all AI is live.”
+
+----------------------------------------------------------------------
+PR-C1 — RELEASE PACKAGE FOR LAUNCH-ACCOUNTANT-SALES-PURCHASE
+----------------------------------------------------------------------
+
+Exact work:
+  1. Write release dossier:
+       docs/mokxya-ai/releases/LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md
+     containing: scope, supported utterances, limitations, residual gaps,
+     monitoring queries, rollback steps, on-call owner.
+  2. Feature flag / capability gate:
+       production_approved=true ONLY for this row in matrix + runtime flag.
+  3. Disclosed UI limitations (examples):
+       - Settlement/returns/bank recon not in AI launch set
+       - NL yes does not post
+       - Sync may show Waiting to sync until ack
+       - Legal/tax current answers may abstain
+  4. Monitoring:
+       - confirm token denials rate
+       - posting_failed rate
+       - sync pending age
+       - mode_restriction / LAUNCH_EVENT_UNSUPPORTED counts
+  5. Rollback:
+       - flip capability flag off → AI drafts disabled; ERP screens remain
+  6. Update MAI_CAPABILITY_TRUTH_MATRIX.*:
+       LAUNCH-ACCOUNTANT-SALES-PURCHASE depth=PRODUCTION
+       production_approved=true for THAT ROW ONLY
+  7. Update NEXT-20 status DONE with evidence links.
+
+Acceptance:
+  Human sign-off recorded (product owner name + date).
+  Staging golden path re-run green within 48h of flag flip.
+  production_approved=true only for the named row.
+
+----------------------------------------------------------------------
+PR-C2 — RELEASE PACKAGE FOR LAUNCH-ASK-COMPANY-REPORTS
+----------------------------------------------------------------------
+
+Exact work:
+  Same shape as PR-C1 for Ask company reports (BS/P&L/TB/ledger).
+  Must include: zero mutation proof; retrieval without Ollama; citation/
+  no-answer honesty still on.
+  Can ship same day as PR-C1 or within 7 days after stability.
+
+Acceptance:
+  Second PRODUCTION row OR explicitly deferred with owner note.
+
+----------------------------------------------------------------------
+PR-C3 — PRODUCTION SMOKE (DAY-0)
+----------------------------------------------------------------------
+
+Exact work:
+  1. On real production company (or designated pilot company):
+       one purchase, one sale, one Ask report, one refuse case.
+  2. Verify receipt IDs in Day Book / registers.
+  3. Verify sync badge honesty.
+  4. File Day-0 smoke report in docs/mokxya-ai/releases/.
+
+Acceptance:
+  Smoke PASS; if FAIL → rollback flag immediately.
+
+======================================================================
+PHASE PR-D — POST-LAUNCH HARDENING (FIRST 30 DAYS)
+======================================================================
+
+Goal: Keep production stable; fix only launch-critical defects; do not
+widen scope.
+
+PR-D1 — Error budget & incident loop
+  Exact: weekly review of monitoring; P0/P1 defects → hotfix with tests.
+
+PR-D2 — Language defect burn-down
+  Exact: collect real user EN/NP/Roman failures; add frozen cases; fix;
+  do not weaken assertions.
+
+PR-D3 — Dual-writer / sync residual burn-down
+  Exact: schedule work to move GAP-P0-001 / P1-002 toward CLOSED if still
+  REDUCED; never silently reintroduce second writers.
+
+PR-D4 — Operator runbook
+  Exact: finalize on-call runbook (confirm failures, sync stuck, Ask
+  abstain spikes).
+
+Acceptance for “stable production”:
+  14 consecutive days without P0 AI-posting incident on launch rows.
+
+======================================================================
+PHASE PR-E — CAREFUL LAUNCH-SET EXPANSION
+======================================================================
+
+Only start after PR-D stable. One family per release.
+
+PR-E1 — Customer receipt / supplier payment (settlement)
+  Exact:
+    1. Unfreeze settlement in launch event registry with ADR.
+    2. Model B confirm + Dexie settlement posting only.
+    3. Language samples EN/NP/Roman + E2E + manual script.
+    4. Separate PRODUCTION row; do not bundle with sales quietly.
+
+PR-E2 — Sales/purchase returns
+  Exact: same discipline as PR-E1.
+
+PR-E3 — Bank recon AI assist (narrow)
+  Exact: match/preview only; no silent clear; heavy audit.
+
+PR-E4 — LAUNCH-ASK-PRODUCT-HELP PRODUCTION
+  Exact: after GAP-P2-008 professional CLOSED or accepted residual +
+  NEXT-14 CLOSED/REDUCED enough for help answers.
+
+======================================================================
+PHASE PR-F — TRACK I (ONLY AFTER PR-C STABLE)
+======================================================================
+
+Reopen only with explicit owner risk acceptance OR after NEXT-20 DONE.
+
+PR-F1 / NEXT-30 — Speech (ASR/TTS) for EN + Nepali
+PR-F2 / NEXT-31 — Private user-document intelligence
+PR-F3 / NEXT-32 — CA-firm engagement / workpapers
+PR-F4 / NEXT-33 — Compliance obligation calendar
+
+Each Track I item requires its own ADR, Gate, language plan, and
+production_approved row — never “enabled because stub existed.”
+
+======================================================================
+PHASE PR-H — CONTINUOUS HYGIENE (INTERLEAVE ANYTIME)
+======================================================================
+
+PR-H1 / NEXT-H1 — Pytest collect/pass baseline documented
+PR-H2 / NEXT-H2 — TypeScript diagnostic debt freeze / no net-new errors
+PR-H3 / NEXT-H3 — Remove/quarantine dead parallel AI prototypes (after
+                   NEXT-03; only when safe)
+PR-H4 / NEXT-H4 — Forbid vacuous greens / assertion weakening in evals
+
+======================================================================
+5. LANGUAGE READINESS CHECKLIST (APPLIES TO EVERY PRODUCTION ROW)
+======================================================================
+
+Before production_approved=true for any row, prove:
+
+  [ ] English utterances for the row’s supported intents
+  [ ] Nepali Devanagari utterances for the same intents
+  [ ] Romanized Nepali utterances for the same intents
+  [ ] At least 5 code-mix utterances
+  [ ] Number/money/date roles: “5 months” ≠ NPR 5 (suite green)
+  [ ] Clarification continues in the user’s language form
+  [ ] Safe refusal / no-answer strings acceptable in NP + EN
+  [ ] Linguist or product sample review recorded (PR-A3)
+
+Launch utterance families (minimum):
+
+  Sales: sold / becheko / बिक्री … party, qty, rate/amount, cash/credit
+  Purchase: bought / kineko / किनें … same slots
+  Clarify: incomplete sale/purchase → ask missing slot → merge
+  Ask report: balance sheet / नाफा नोक्सान / trial balance / ledger
+  Refuse: Ask-mode mutation; unsupported settlement (until PR-E1);
+          fake cite; tax-current without release
+
+======================================================================
+6. WEB PRODUCT SURFACE CHECKLIST (PRODUCTION UX)
+======================================================================
+
+Exact non-AI product requirements that must be true at PR-C:
+
+  [ ] Auth + company context correct on every Orbix request
+  [ ] Accountant vs Ask mode visible and enforced
+  [ ] Confirm control only in Accountant + allowsConfirm
+  [ ] Preview labeled Confirm preview (not authoritative ledger)
+  [ ] Invoice form totals labeled Display estimate
+  [ ] Receipt shown after post (voucher/invoice number)
+  [ ] Sync badge: Waiting to sync / Synced / Conflict distinct
+  [ ] Day Book / Sales Register / Purchase Register show posted docs
+  [ ] Mobile-usable composer for shopkeeper phones (basic responsive)
+  [ ] Error toasts actionable (token missing, stale preview, denied)
+  [ ] No indigo/consumer fluff regressions on Orbix surfaces
+      (follow AGENTS.md Sutra ERP design system)
+
+======================================================================
+7. DEFAULT “GO” ORDER FROM TODAY
+======================================================================
+
+If owner only says “go”, execute earliest OPEN:
+
+  1. PR-A1 / NEXT-14   Prod retrieval without Ollama
+  2. PR-A2 / NEXT-08   Response language live parity
+  3. PR-A3 / NEXT-09   Linguist/product sample review
+  4. PR-B1             Staging golden path (connected + manual)
+  5. PR-B2             Mutation residual
+  6. PR-B3             Sync residual
+  7. PR-B4             Calc residual spot-check
+  8. PR-B5             Knowledge honesty sign-off
+  9. PR-B6             Hygiene gate
+ 10. PR-C1 / NEXT-20   First PRODUCTION row (sales/purchase)
+ 11. PR-C2             Ask reports PRODUCTION (or defer note)
+ 12. PR-C3             Day-0 production smoke
+ 13. PR-D*             Post-launch hardening
+ 14. PR-E*             Expand launch set (only if stable)
+ 15. PR-F*             Track I (only after PR-C stable)
+
+Optional parallel: PR-H1 / PR-H2 anytime.
+
+======================================================================
+8. PROGRESS TABLE (UPDATE AFTER EACH SHIP)
+======================================================================
+
+Step     | Status | Commit / evidence | Notes
+---------|--------|-------------------|------
+PR-A1    | DONE   | ADR_0081 + NEXT_14_PROD_RETRIEVAL.md | GAP-P2-001 REDUCED
+PR-A2    | OPEN   |                   | NEXT-08 response language
+PR-A3    | OPEN   |                   | NEXT-09 linguist sample
+PR-B1    | OPEN   |                   | staging golden path
+PR-B2    | OPEN   |                   | GAP-P0-001 residual
+PR-B3    | OPEN   |                   | GAP-P1-002 residual
+PR-B4    | OPEN   |                   | GAP-P2-002 spot-check
+PR-B5    | OPEN   |                   | GAP-P2-008 sign-off
+PR-B6    | OPEN   |                   | hygiene
+PR-C1    | OPEN   |                   | NEXT-20 sales/purchase PROD
+PR-C2    | OPEN   |                   | Ask reports PROD
+PR-C3    | OPEN   |                   | Day-0 smoke
+PR-D1-D4 | OPEN   |                   | post-launch
+PR-E1-E4 | BLOCKED_UNTIL_PR-D_STABLE |
+PR-F1-F4 | BLOCKED_UNTIL_PR-C        | Track I
+PR-H1-H4 | OPEN   |                   | hygiene anytime
+
+Already DONE before this plan (do not reopen as PR work):
+  NEXT-00…07, NEXT-10…13 = foundation complete
+
+Active pointer:
+  recommended_next_step = PR-A2 / NEXT-08
+  last_shipped_step = NEXT-14 / PR-A1
+  production_approved = false
+  first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE
+
+======================================================================
+9. DEFINITION OF DONE FOR THE WHOLE PLAN
+======================================================================
+
+This plan is COMPLETE when:
+
+  1. LAUNCH-ACCOUNTANT-SALES-PURCHASE is PRODUCTION with 14-day stability
+  2. LAUNCH-ASK-COMPANY-REPORTS is PRODUCTION or explicitly deferred by owner
+  3. EN + Devanagari + Romanized proven for those rows with signed samples
+  4. GAP-P2-001 REDUCED/CLOSED; GAP-P2-008 at least REDUCED with sign-off
+  5. Residual dual-writer/sync documented and non-silent on launch path
+  6. Monitoring + rollback proven once
+  7. Owners can demo the Success Picture in §0 on production
+
+Until then: production_approved remains false for unreleased rows;
+engineering DONE ≠ product launched.
+
+======================================================================
+10. RELATIONSHIP TO OTHER DOCS
+======================================================================
+
+Master architecture file = constitution + original MAI catalog.
+WHAT_MUST_BE_DONE_NEXT_V1.txt = short continuum queue (NEXT-*).
+THIS FILE = production-ready phase plan with exact checklists.
+
+If safety conflicts: master constitution wins.
+If “done” conflicts: this file’s Acceptance + Production Definition win.
+If step IDs overlap with NEXT-*: keep both progress tables updated.
+
+END OF DOCUMENT

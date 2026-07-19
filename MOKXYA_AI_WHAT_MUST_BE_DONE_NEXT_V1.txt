@@ -27,13 +27,17 @@ Do not invent MAI-54+ feature theatre until the waves below say so.
 
 HOW TO USE WITH CURSOR
 
-1. Owner says “go” (or names a step ID, e.g. NEXT-03).
-2. Operator picks the earliest incomplete NEXT-* step that is still OPEN.
+1. Owner says “go” (or names a step ID, e.g. NEXT-03 or PR-A1).
+2. Operator picks the earliest incomplete step from:
+     MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt (PR-* production plan)
+   which maps onto NEXT-* IDs in this file when they overlap.
 3. One step per ship: inspect → tests → smallest change → evidence → push.
-4. Update the Progress table at the bottom of this file after each ship.
+4. Update Progress tables in BOTH this file and the production plan after each ship.
 5. Never mark a step DONE because code compiles or because a policy flag exists.
 6. Never claim production_approved, legal proof, sole-OEC, or gap CLOSED without
    the acceptance conditions written in the step.
+7. Production-ready objective and phase checklists live in:
+     MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt
 
 ======================================================================
 1. WHAT WE ARE BUILDING (REMINDER)
@@ -512,7 +516,15 @@ Objective:
 Gate:
   Deploy path proven without Ollama/Chroma; GAP-P2-001 REDUCED/CLOSED.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_14_PROD_RETRIEVAL.md
+  docs/mokxya-ai/decisions/ADR_0081_PROD_RETRIEVAL_WITHOUT_OLLAMA.md
+  docs/mokxya-ai/MAI_PROD_RETRIEVAL_REGISTRY.json
+  erp_bot/src/oip/modules/conversation/application/prod_retrieval_policy.py
+  erp_bot/src/nlu/np_kb_adapter.py (prod LEXICAL_ONLY force)
+  erp_bot/tests/oip/language_runtime/test_mai_next14_prod_retrieval.py
+  GAP-P2-001 REDUCED (not CLOSED; staging proof residual)
 Depends on: NEXT-13 recommended
 
 
@@ -665,7 +677,7 @@ NEXT-10  | DONE   | ADR_0077 + NEXT_10_LAUNCH_EVENT_SPEC_FREEZE.md | sales/purch
 NEXT-11  | DONE   | ADR_0078 + NEXT_11_CALC_AUTHORITY_HONESTY.md | GAP-P2-002 REDUCED
 NEXT-12  | DONE   | ADR_0079 + NEXT_12_E2E_LAUNCH_SLICE.md | launch verticals evidenced
 NEXT-13  | DONE   | ADR_0080 + NEXT_13_KNOWLEDGE_CITATION_HONESTY.md | GAP-P2-008 REDUCED
-NEXT-14  | OPEN   |                   | GAP-P2-001
+NEXT-14  | DONE   | ADR_0081 + NEXT_14_PROD_RETRIEVAL.md | GAP-P2-001 REDUCED
 NEXT-15  | OPEN   |                   | optional tax pilot
 NEXT-20  | OPEN   |                   | first prod release
 NEXT-30  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-50
@@ -676,8 +688,8 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-14
-  last_shipped_step = NEXT-13
+  recommended_next_step = NEXT-08
+  last_shipped_step = NEXT-14
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -689,6 +701,7 @@ Active pointer (update on each go):
   calc_authority = ADR_0078 Dexie on confirm; GAP-P2-002 REDUCED (not CLOSED)
   e2e_launch_slice = ADR_0079 sales/purchase/Ask verticals; not production_approved
   knowledge_citation = ADR_0080 force-abstain; GAP-P2-008 REDUCED (not CLOSED)
+  prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

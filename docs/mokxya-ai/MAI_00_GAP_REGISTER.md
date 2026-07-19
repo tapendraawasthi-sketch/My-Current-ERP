@@ -452,8 +452,8 @@ Severity legend:
 - **Recommended MAI phase:** MAI-27–30
 - **Dependencies:** knowledge governance
 - **Acceptance condition:** Prod retrieval does not require Ollama
-- **Status:** OPEN
-- **Progress (2026-07-19):** MAI-27/28 `PASSED_ENGINEERING`. MAI-29 slice 2 assembles unverified evidence candidates (`LEXICAL_ONLY` default; optional `RRF_APPLIED`). Does **not** close the gap (claim/citation verification still MAI-30; hybrid semantic leg still Ollama-tied).
+- **Status:** REDUCED
+- **Progress (2026-07-19):** MAI-27–29 engineering. NEXT-14 / ADR_0081 forces production `LEXICAL_ONLY` (`semantic_enabled=false` even if env mis-set; non-prod semantic break-glass denied in prod). Does **not** mark CLOSED (staging deploy proof + reviewer sign-off still required).
 
 ### GAP-P2-002 — Frontend calculates authoritative-looking totals
 

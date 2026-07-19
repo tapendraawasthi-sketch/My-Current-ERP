@@ -206,6 +206,14 @@ def _as_vector_meta(
 
 
 def env_allows_non_prod_semantic() -> bool:
+    """Never true in production (NEXT-14 / ADR_0081) — Ollama/Chroma optional DX only."""
+    try:
+        from src.oip.domain.constitution.config_guard import is_production_environment
+
+        if is_production_environment():
+            return False
+    except Exception:  # noqa: BLE001
+        pass
     raw = os.environ.get("ORBIX_NP_KB_ALLOW_NON_PROD_SEMANTIC", "").strip().lower()
     return raw in {"1", "true", "yes", "on"}
 
@@ -217,6 +225,13 @@ def should_allow_non_prod_semantic_consume(
     allow_non_prod_semantic: bool | None = None,
 ) -> bool:
     """Optional Chroma filler: explicit allow + COMPLETE + chroma; never prod."""
+    try:
+        from src.oip.domain.constitution.config_guard import is_production_environment
+
+        if is_production_environment():
+            return False
+    except Exception:  # noqa: BLE001
+        pass
     data = _as_vector_meta(vector_index)
     if data is None:
         return False
