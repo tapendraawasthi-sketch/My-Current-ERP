@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-36",
-  "active_phase_note": "MAI-36 slice 2 IN_PROGRESS (ADR_0053); legal research-frame consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-37",
+  "active_phase_note": "MAI-37 slice 1 IN_PROGRESS (ADR_0054); core Nepal tax pilot scope annotation; GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2904,7 +2904,7 @@
     {
       "id": "MAI-36",
       "title": "LEGAL QUESTION FRAMER AND RESEARCH MODE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2915,6 +2915,7 @@
         "docs/mokxya-ai/decisions/ADR_0053_LEGAL_QUESTION_FRAMER_RESEARCH_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_36_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_36_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_36_ENGINEERING_CLOSURE.md",
         "evals/mai36/manifests/MAI_36_SLICE1.manifest.json",
         "evals/mai36/manifests/MAI_36_SLICE2.manifest.json"
       ],
@@ -2938,20 +2939,43 @@
         "MAI-35"
       ],
       "recommended_order": 36,
-      "closure_note": "Slice 2: CANDIDATE_ONLY research-frame candidates; never prove law; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-37. production_approved=false. GAP-P2-008 remains OPEN."
     },
     {
       "id": "MAI-37",
       "title": "CORE NEPAL TAX KNOWLEDGE PILOT",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-37.0.1-slice1",
+      "slice": "SLICE1_TAX_PILOT_SCOPE_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_37_CORE_NEPAL_TAX_KNOWLEDGE_PILOT.md",
+        "docs/mokxya-ai/decisions/ADR_0054_CORE_NEPAL_TAX_KNOWLEDGE_PILOT_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_37_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai37/manifests/MAI_37_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "core_nepal_tax_knowledge_pilot_service.py (policy annotation)",
+        "CoreNepalTaxKnowledgePilotBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress CORE_NEPAL_TAX_KNOWLEDGE_PILOT after LEGAL_QUESTION_RESEARCH",
+        "tax_calculator_invoked=false; specialist_signoff_status=NOT_SIGNED; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-36"
       ],
-      "recommended_order": 37
+      "recommended_order": 37,
+      "closure_note": "Slice 1: IT/VAT/TDS pilot scope annotation; never calculates; GAP-P2-008 open."
     },
     {
       "id": "MAI-38",

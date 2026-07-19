@@ -35,6 +35,7 @@ from .deterministic_preview_edit_loop import DeterministicPreviewEditLoopBundleV
 from .explicit_confirmation_oec_dispatch import ExplicitConfirmationOecDispatchBundleV1
 from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
 from .legal_question_research import LegalQuestionResearchBundleV1
+from .core_nepal_tax_knowledge_pilot import CoreNepalTaxKnowledgePilotBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -204,6 +205,10 @@ class CanonicalAIRequestV1(ContractBase):
     ) = None
     # MAI-36: legal question framer / research mode (never mutates / proves law).
     legal_question_research_bundle: LegalQuestionResearchBundleV1 | None = None
+    # MAI-37: core Nepal tax knowledge pilot (never calculates / proves law).
+    core_nepal_tax_knowledge_pilot_bundle: (
+        CoreNepalTaxKnowledgePilotBundleV1 | None
+    ) = None
 
     @field_validator("schema_version")
     @classmethod

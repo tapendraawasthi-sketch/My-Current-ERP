@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai37-slice1-v1",
+  "dataset_hash": "e7de2452e28a6aeb8dc28cdcecc4ecb645c5dd3993e233133cfc4ea36d0798ef",
+  "phase": "MAI-37",
+  "slice": "SLICE1_TAX_PILOT_SCOPE_ANNOTATION",
+  "runtime_version": "mai-37.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai37/frozen/core_nepal_tax_knowledge_pilot_v1.jsonl",
+      "sha256": "e7de2452e28a6aeb8dc28cdcecc4ecb645c5dd3993e233133cfc4ea36d0798ef",
+      "case_count": 6,
+      "suite_id": "core_nepal_tax_knowledge_pilot_v1"
+    }
+  ]
+}

@@ -74,6 +74,7 @@ from .deterministic_preview_edit_loop import DeterministicPreviewEditLoopBundleV
 from .explicit_confirmation_oec_dispatch import ExplicitConfirmationOecDispatchBundleV1
 from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
 from .legal_question_research import LegalQuestionResearchBundleV1
+from .core_nepal_tax_knowledge_pilot import CoreNepalTaxKnowledgePilotBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -130,6 +131,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
         OfflineSyncConflictReversalBundleV1,
     ),
     ("LegalQuestionResearchBundleV1", LegalQuestionResearchBundleV1),
+    (
+        "CoreNepalTaxKnowledgePilotBundleV1",
+        CoreNepalTaxKnowledgePilotBundleV1,
+    ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

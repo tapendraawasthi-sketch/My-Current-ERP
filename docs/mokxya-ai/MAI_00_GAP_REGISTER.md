@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36 slices 1–2 frame LEGAL_TAX cues and emit `CANDIDATE_ONLY` `legal_research_candidate` (`mutation_tools_allowed=false`, `current_law_definitive=false`, `legal_effective_dates_proven=false`, `gap_p2_008_status=OPEN`). Live `allow_research_planner` / `allow_kb_retrieval` forced false. Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36 `PASSED_ENGINEERING` (research-frame candidates). MAI-37 slice 1 annotates IT/VAT/TDS pilot scope (`tax_calculator_invoked=false`, `specialist_signoff_status=NOT_SIGNED`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 
