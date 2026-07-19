@@ -3281,6 +3281,87 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent SLO pass.
 
+    # MAI-46: backup/restore/disaster/lifecycle policy (never claims DR proven).
+    brdl_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.BACKUP_RESTORE_DISASTER_LIFECYCLE_STARTED,
+        component="conversation.backup_restore_disaster_lifecycle",
+    )
+    try:
+        from ..oip.modules.conversation.application.backup_restore_disaster_lifecycle_service import (
+            assert_backup_restore_disaster_lifecycle_authority,
+            attach_backup_restore_disaster_lifecycle_to_request,
+        )
+
+        updated = attach_backup_restore_disaster_lifecycle_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.backup_restore_disaster_lifecycle_bundle
+        assert_backup_restore_disaster_lifecycle_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            brdl_ev,
+            version_map={
+                "backup_restore_disaster_lifecycle": "mai-46.0.1-slice1",
+            },
+            safe_attributes={
+                "backup_restore_disaster_lifecycle_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "backup_restore_disaster_lifecycle_readiness": (
+                    bundle.backup_restore_disaster_lifecycle_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "BACKUP_RESTORE_DISASTER_LIFECYCLE_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "dr_authority_claimed": False,
+                "backup_proven": False,
+                "restore_proven": False,
+                "disaster_recovery_proven": False,
+                "rpo_rto_proven": False,
+                "data_lifecycle_applied": False,
+                "retention_enforced": False,
+                "archival_proven": False,
+                "silent_purge_allowed": False,
+                "purge_executed": False,
+                "production_dr_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.BACKUP_RESTORE_DISASTER_LIFECYCLE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            brdl_ev,
+            safe_error_code="BACKUP_RESTORE_DISASTER_LIFECYCLE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.BACKUP_RESTORE_DISASTER_LIFECYCLE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="BACKUP_RESTORE_DISASTER_LIFECYCLE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent DR proven.
+
     return canonical
 
 

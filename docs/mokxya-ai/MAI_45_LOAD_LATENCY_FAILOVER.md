@@ -1,7 +1,7 @@
 # MAI-45 — Load, Latency, Resource, and Failover
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0062](decisions/ADR_0062_LOAD_LATENCY_FAILOVER_AUTHORITY.md)  
 **Runtime:** `mai-45.0.2-slice2` (engineering; not production-approved)
 

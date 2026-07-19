@@ -978,6 +978,36 @@ class CanonicalOipRequestAdapter:
                     "load_latency_failover_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-46: backup/restore/disaster/lifecycle policy (never DR proven).
+        if canonical.backup_restore_disaster_lifecycle_bundle is not None:
+            try:
+                from ...modules.conversation.application.backup_restore_disaster_lifecycle_service import (
+                    backup_restore_disaster_lifecycle_to_metadata,
+                )
+
+                metadata["backup_restore_disaster_lifecycle"] = (
+                    backup_restore_disaster_lifecycle_to_metadata(
+                        canonical.backup_restore_disaster_lifecycle_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                brdl = canonical.backup_restore_disaster_lifecycle_bundle
+                metadata["backup_restore_disaster_lifecycle"] = {
+                    "analysis_status": brdl.analysis_status.value,
+                    "runtime_version": brdl.runtime_version,
+                    "backup_restore_disaster_lifecycle_readiness": (
+                        brdl.backup_restore_disaster_lifecycle_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "backup_proven": False,
+                    "restore_proven": False,
+                    "disaster_recovery_proven": False,
+                    "silent_purge_allowed": False,
+                    "purge_executed": False,
+                    "production_dr_approved": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

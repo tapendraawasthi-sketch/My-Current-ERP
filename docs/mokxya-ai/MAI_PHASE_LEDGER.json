@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-45",
-  "active_phase_note": "MAI-45 slice 2 IN_PROGRESS (ADR_0062); load/latency/failover CANDIDATE_ONLY (never SLOs met / never safety bypass); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-46",
+  "active_phase_note": "MAI-46 slice 1 IN_PROGRESS (ADR_0063); backup/restore/disaster/lifecycle policy (never DR proven / never silent purge); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3264,7 +3264,7 @@
     {
       "id": "MAI-45",
       "title": "LOAD, LATENCY, RESOURCE, AND FAILOVER",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3275,6 +3275,7 @@
         "docs/mokxya-ai/decisions/ADR_0062_LOAD_LATENCY_FAILOVER_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_45_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_45_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_45_ENGINEERING_CLOSURE.md",
         "evals/mai45/manifests/MAI_45_SLICE1.manifest.json",
         "evals/mai45/manifests/MAI_45_SLICE2.manifest.json"
       ],
@@ -3298,20 +3299,43 @@
         "MAI-44"
       ],
       "recommended_order": 45,
-      "closure_note": "Slice 2: load/latency/failover POLICY + CANDIDATE_ONLY candidates; never SLOs met / never safety bypass; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: load/latency POLICY + CANDIDATE_ONLY candidates; never SLOs met / never safety bypass; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-46",
       "title": "BACKUP, RESTORE, DISASTER, AND DATA LIFECYCLE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-46.0.1-slice1",
+      "slice": "SLICE1_BACKUP_RESTORE_DISASTER_LIFECYCLE_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_46_BACKUP_RESTORE_DISASTER_LIFECYCLE.md",
+        "docs/mokxya-ai/decisions/ADR_0063_BACKUP_RESTORE_DISASTER_LIFECYCLE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_46_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai46/manifests/MAI_46_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "backup_restore_disaster_lifecycle_service.py (policy annotation)",
+        "BackupRestoreDisasterLifecycleBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress BACKUP_RESTORE_DISASTER_LIFECYCLE after LOAD_LATENCY_FAILOVER",
+        "release_status=NOT_RELEASED; backup_proven=false; restore_proven=false; disaster_recovery_proven=false; silent_purge_allowed=false; purge_executed=false; production_dr_approved=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-45"
       ],
-      "recommended_order": 46
+      "recommended_order": 46,
+      "closure_note": "Slice 1: backup/restore/disaster/lifecycle POLICY_DECLARED; never DR proven / never silent purge; GAP-P2-008 open."
     },
     {
       "id": "MAI-47",

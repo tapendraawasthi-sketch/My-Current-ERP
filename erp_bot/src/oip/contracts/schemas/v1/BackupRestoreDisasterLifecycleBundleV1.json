@@ -1,0 +1,221 @@
+{
+  "$defs": {
+    "BackupRestoreDisasterLifecycleReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "SCOPE_PARTIAL"
+      ],
+      "title": "BackupRestoreDisasterLifecycleReadiness",
+      "type": "string"
+    },
+    "BackupRestoreDisasterLifecycleStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "BackupRestoreDisasterLifecycleStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/BackupRestoreDisasterLifecycleBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_status": {
+      "$ref": "#/$defs/BackupRestoreDisasterLifecycleStatus",
+      "default": "NOT_RUN"
+    },
+    "archival_proven": {
+      "default": false,
+      "title": "Archival Proven",
+      "type": "boolean"
+    },
+    "backup_proven": {
+      "default": false,
+      "title": "Backup Proven",
+      "type": "boolean"
+    },
+    "backup_restore_disaster_lifecycle_readiness": {
+      "$ref": "#/$defs/BackupRestoreDisasterLifecycleReadiness",
+      "default": "NOT_APPLICABLE"
+    },
+    "claims_verified": {
+      "default": false,
+      "title": "Claims Verified",
+      "type": "boolean"
+    },
+    "current_law_definitive": {
+      "default": false,
+      "title": "Current Law Definitive",
+      "type": "boolean"
+    },
+    "data_lifecycle_applied": {
+      "default": false,
+      "title": "Data Lifecycle Applied",
+      "type": "boolean"
+    },
+    "disaster_recovery_proven": {
+      "default": false,
+      "title": "Disaster Recovery Proven",
+      "type": "boolean"
+    },
+    "documents_retrieved": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Documents Retrieved",
+      "type": "integer"
+    },
+    "dr_authority_claimed": {
+      "default": false,
+      "title": "Dr Authority Claimed",
+      "type": "boolean"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "gap_p2_008_status": {
+      "default": "OPEN",
+      "title": "Gap P2 008 Status",
+      "type": "string"
+    },
+    "gold_questions_status": {
+      "default": "NOT_RELEASED",
+      "title": "Gold Questions Status",
+      "type": "string"
+    },
+    "in_scope_topics": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "In Scope Topics",
+      "type": "array"
+    },
+    "kb_retrieval_invoked": {
+      "default": false,
+      "title": "Kb Retrieval Invoked",
+      "type": "boolean"
+    },
+    "legal_effective_dates_proven": {
+      "default": false,
+      "title": "Legal Effective Dates Proven",
+      "type": "boolean"
+    },
+    "legal_proof_claimed": {
+      "default": false,
+      "title": "Legal Proof Claimed",
+      "type": "boolean"
+    },
+    "mutation_tools_allowed": {
+      "default": false,
+      "title": "Mutation Tools Allowed",
+      "type": "boolean"
+    },
+    "pilot_scope": {
+      "default": "BACKUP_RESTORE_DISASTER_LIFECYCLE_CANDIDATE_ONLY",
+      "title": "Pilot Scope",
+      "type": "string"
+    },
+    "posting_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Posting Mutations",
+      "type": "integer"
+    },
+    "production_dr_approved": {
+      "default": false,
+      "title": "Production Dr Approved",
+      "type": "boolean"
+    },
+    "purge_executed": {
+      "default": false,
+      "title": "Purge Executed",
+      "type": "boolean"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "release_status": {
+      "default": "NOT_RELEASED",
+      "title": "Release Status",
+      "type": "string"
+    },
+    "restore_proven": {
+      "default": false,
+      "title": "Restore Proven",
+      "type": "boolean"
+    },
+    "retention_enforced": {
+      "default": false,
+      "title": "Retention Enforced",
+      "type": "boolean"
+    },
+    "rpo_rto_proven": {
+      "default": false,
+      "title": "Rpo Rto Proven",
+      "type": "boolean"
+    },
+    "runtime_version": {
+      "default": "mai-46.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "silent_purge_allowed": {
+      "default": false,
+      "title": "Silent Purge Allowed",
+      "type": "boolean"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "specialist_signoff_status": {
+      "default": "NOT_SIGNED",
+      "title": "Specialist Signoff Status",
+      "type": "string"
+    },
+    "unsupported_topics": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Unsupported Topics",
+      "type": "array"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "BackupRestoreDisasterLifecycleBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}
