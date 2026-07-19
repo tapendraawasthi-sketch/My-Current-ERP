@@ -18,7 +18,7 @@ from ....contracts.governed_improvement_fine_tuning import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-48.0.1-slice1"
+RUNTIME_VERSION = "mai-48.0.2-slice2"
 AUTHORITY = "ADR_0065"
 
 _GOVERNED = re.compile(

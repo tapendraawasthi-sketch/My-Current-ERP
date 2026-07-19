@@ -3495,12 +3495,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent review complete.
 
-    # MAI-48: governed improvement / fine-tuning (never applies changes).
+    # MAI-48: governed improvement / fine-tuning + candidate consume.
     gift_ev = recorder.begin_stage(
         mai03_obs.TraceStage.GOVERNED_IMPROVEMENT_FINE_TUNING_STARTED,
         component="conversation.governed_improvement_fine_tuning",
     )
     try:
+        from ..oip.modules.conversation.application.governed_improvement_fine_tuning_consume_service import (
+            assert_governed_improvement_fine_tuning_consume_authority,
+            governed_improvement_fine_tuning_consume_observability,
+        )
         from ..oip.modules.conversation.application.governed_improvement_fine_tuning_service import (
             assert_governed_improvement_fine_tuning_authority,
             attach_governed_improvement_fine_tuning_to_request,
@@ -3511,11 +3515,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.governed_improvement_fine_tuning_bundle
         assert_governed_improvement_fine_tuning_authority(bundle)
+        consume_obs = governed_improvement_fine_tuning_consume_observability(
+            updated,
+            allow_fine_tune=False,
+            allow_model_swap=False,
+        )
+        assert_governed_improvement_fine_tuning_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             gift_ev,
             version_map={
-                "governed_improvement_fine_tuning": "mai-48.0.1-slice1",
+                "governed_improvement_fine_tuning": "mai-48.0.2-slice2",
             },
             safe_attributes={
                 "governed_improvement_fine_tuning_status": (
@@ -3531,6 +3541,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "governed_improvement_fine_tuning_consume_mode": (
+                    consume_obs.get(
+                        "governed_improvement_fine_tuning_consume_mode"
+                    )
+                ),
+                "governed_improvement_fine_tuning_consume_ready": bool(
+                    consume_obs.get(
+                        "governed_improvement_fine_tuning_consume_ready"
+                    )
+                ),
                 "fine_tune_authority_claimed": False,
                 "improvement_applied": False,
                 "fine_tuning_executed": False,
@@ -3544,6 +3564,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_fine_tune": False,
+                "allow_model_swap": False,
             },
         )
         recorder.record_event(
@@ -3559,6 +3581,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "governed_improvement_fine_tuning_consume_mode": (
+                    consume_obs.get(
+                        "governed_improvement_fine_tuning_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001

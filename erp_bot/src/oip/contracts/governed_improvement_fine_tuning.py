@@ -40,7 +40,7 @@ class GovernedImprovementFineTuningBundleV1(ContractBase):
     analysis_status: GovernedImprovementFineTuningStatus = (
         GovernedImprovementFineTuningStatus.NOT_RUN
     )
-    runtime_version: str = "mai-48.0.1-slice1"
+    runtime_version: str = "mai-48.0.2-slice2"
     source_authority: str = "REQUEST"
     governed_improvement_fine_tuning_readiness: (
         GovernedImprovementFineTuningReadiness

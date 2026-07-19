@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai48-slice2-v1",
+  "dataset_hash": "82150637cfff9d9f9ef39c2e67ee221dd9562b95bf955224114c0e9a9ff041c4",
+  "phase": "MAI-48",
+  "slice": "SLICE2_GOVERNED_IMPROVEMENT_FINE_TUNING_CANDIDATE_CONSUME",
+  "runtime_version": "mai-48.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai48/frozen/governed_improvement_fine_tuning_consume_v1.jsonl",
+      "sha256": "82150637cfff9d9f9ef39c2e67ee221dd9562b95bf955224114c0e9a9ff041c4",
+      "case_count": 6,
+      "suite_id": "governed_improvement_fine_tuning_consume_v1"
+    }
+  ]
+}

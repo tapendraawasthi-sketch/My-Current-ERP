@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-48",
-  "active_phase_note": "MAI-48 slice 1 IN_PROGRESS (ADR_0065); governed improvement / fine-tuning policy (never apply / never fine-tune / never model swap); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-48 slice 2 IN_PROGRESS (ADR_0065); governed improvement / fine-tuning CANDIDATE_ONLY (never apply / never fine-tune / never model swap); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3388,19 +3388,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-48.0.1-slice1",
-      "slice": "SLICE1_GOVERNED_IMPROVEMENT_FINE_TUNING_POLICY",
+      "runtime_version": "mai-48.0.2-slice2",
+      "slice": "SLICE2_GOVERNED_IMPROVEMENT_FINE_TUNING_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_48_GOVERNED_IMPROVEMENT_FINE_TUNING.md",
         "docs/mokxya-ai/decisions/ADR_0065_GOVERNED_IMPROVEMENT_FINE_TUNING_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_48_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai48/manifests/MAI_48_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_48_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai48/manifests/MAI_48_SLICE1.manifest.json",
+        "evals/mai48/manifests/MAI_48_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "governed_improvement_fine_tuning_service.py (policy annotation)",
+        "governed_improvement_fine_tuning_consume_service.py (CANDIDATE_ONLY governed_improvement_fine_tuning_candidate)",
         "GovernedImprovementFineTuningBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress GOVERNED_IMPROVEMENT_FINE_TUNING after HUMAN_REVIEW_PILOT_OPERATIONS",
-        "release_status=NOT_RELEASED; improvement_applied=false; fine_tuning_executed=false; production_model_swapped=false; governed_change_approved=false; gap_p2_008_status=OPEN"
+        "allow_fine_tune=false; allow_model_swap=false; release_status=NOT_RELEASED; improvement_applied=false; fine_tuning_executed=false; production_model_swapped=false; governed_change_approved=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3415,7 +3418,7 @@
         "MAI-47"
       ],
       "recommended_order": 48,
-      "closure_note": "Slice 1: governed improvement / fine-tuning POLICY_DECLARED; never apply / never fine-tune / never model swap; GAP-P2-008 open."
+      "closure_note": "Slice 2: governed improvement / fine-tuning POLICY + CANDIDATE_ONLY candidates; never apply / never fine-tune / never model swap; GAP-P2-008 open."
     },
     {
       "id": "MAI-49",

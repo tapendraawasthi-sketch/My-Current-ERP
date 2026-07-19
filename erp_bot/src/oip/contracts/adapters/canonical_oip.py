@@ -1050,17 +1050,21 @@ class CanonicalOipRequestAdapter:
                     "human_review_pilot_operations_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-48: governed improvement / fine-tuning (never applies).
+        # MAI-48: governed improvement / fine-tuning + candidate consume.
         if canonical.governed_improvement_fine_tuning_bundle is not None:
             try:
+                from ...modules.conversation.application.governed_improvement_fine_tuning_consume_service import (
+                    enrich_gift_metadata_with_consume,
+                )
                 from ...modules.conversation.application.governed_improvement_fine_tuning_service import (
                     governed_improvement_fine_tuning_to_metadata,
                 )
 
+                base_meta = governed_improvement_fine_tuning_to_metadata(
+                    canonical.governed_improvement_fine_tuning_bundle
+                )
                 metadata["governed_improvement_fine_tuning"] = (
-                    governed_improvement_fine_tuning_to_metadata(
-                        canonical.governed_improvement_fine_tuning_bundle
-                    )
+                    enrich_gift_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 gift = canonical.governed_improvement_fine_tuning_bundle
@@ -1076,6 +1080,10 @@ class CanonicalOipRequestAdapter:
                     "production_model_swapped": False,
                     "governed_change_approved": False,
                     "gap_p2_008_status": "OPEN",
+                    "governed_improvement_fine_tuning_consume_mode": (
+                        "UNCHANGED"
+                    ),
+                    "governed_improvement_fine_tuning_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

@@ -1,9 +1,9 @@
 # MAI-48 — Governed Improvement and Optional Fine-Tuning
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0065](decisions/ADR_0065_GOVERNED_IMPROVEMENT_FINE_TUNING_AUTHORITY.md)  
-**Runtime:** `mai-48.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-48.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -24,11 +24,23 @@ executing fine-tunes, or swapping production models.
    `production_model_swapped=false`; `governed_change_approved=false`
 7. GAP-P2-008 OPEN
 
+## Slice 2
+
+1. `resolve_governed_improvement_fine_tuning_consume_mode` /
+   `build_governed_improvement_fine_tuning_candidate`
+2. Default `CANDIDATE_ONLY` — improvement / fine-tune / eval / dataset /
+   prompt / model-swap / ablation plans / definitive = null
+3. Fake fine-tune claim → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_fine_tune=false` / `allow_model_swap=false`
+5. Metadata: `governed_improvement_fine_tuning_consume_ready` +
+   `governed_improvement_fine_tuning_candidate`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Governed improvement / fine-tune / eval / dataset / prompt / model-swap / ablation cues | COMPLETE → `POLICY_DECLARED` |
+| Governed improvement / fine-tune / eval / dataset / prompt / model-swap / ablation cues | COMPLETE → `CANDIDATE_ONLY` |
+| Fake fine_tuning_executed claim | `BLOCKED` |
 | Purchase / VAT / review-only without improvement cues | SKIP |
 | Any live path | never apply / never fine-tune / never swap; gap OPEN |
 
