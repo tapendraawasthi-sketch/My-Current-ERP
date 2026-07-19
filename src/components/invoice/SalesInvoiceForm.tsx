@@ -36,6 +36,7 @@ import { formatNumber, numberToWords } from "@/lib/utils";
 import { ADToBSString } from "@/lib/nepaliDate";
 import { generateSerialNumber } from "@/lib/accounting";
 import { computeInvoiceVAT } from "@/lib/taxUtils";
+import { INVOICE_FORM_TOTALS_DISCLAIMER } from "@/platform/calc/calcAuthorityPolicy";
 import { generateInvoicePDF } from "@/lib/printUtils";
 import { submitToCBMS } from "@/lib/cbmsApi";
 import {
@@ -1655,7 +1656,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             <div className="flex justify-end">
               <div className="totals-panel">
                 <p className="text-[11px] text-gray-500 mb-2 text-right">
-                  Display estimate — ledger amounts use the domain engine when posted.
+                  {INVOICE_FORM_TOTALS_DISCLAIMER}
                 </p>
                 <div className="totals-row">
                   <span className="font-medium">Subtotal</span>

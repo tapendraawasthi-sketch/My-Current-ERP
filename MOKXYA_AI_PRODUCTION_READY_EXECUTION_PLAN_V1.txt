@@ -10,8 +10,8 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-B3
-  recommended_next_step = PR-B4
+  last_shipped_step = PR-B4
+  recommended_next_step = PR-B5
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
   pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
@@ -585,7 +585,7 @@ PR-A3    | DONE   | ADR_0083 + NEXT_09_LAUNCH_LANGUAGE_SAMPLE_REVIEW.md | PRODUC
 PR-B1    | DONE   | ADR_0084 + PR_B1_STAGING_GOLDEN_PATH.md | pack landed; tickets OPEN→block PR-C
 PR-B2    | DONE   | ADR_0085 + PR_B2_MUTATION_AUTHORITY_RESIDUAL.md | launch Node/OEC hard-deny; GAP-P0-001 REDUCED
 PR-B3    | DONE   | ADR_0086 + PR_B3_SYNC_HONESTY_RESIDUAL.md | queued≠synced; conflict narrative; GAP-P1-002 REDUCED
-PR-B4    | OPEN   |                   | GAP-P2-002 spot-check
+PR-B4    | DONE   | ADR_0087 + PR_B4_CALC_PREVIEW_RESIDUAL.md | labels wired; 0 paisa drift; GAP-P2-002 REDUCED
 PR-B5    | OPEN   |                   | GAP-P2-008 sign-off
 PR-B6    | OPEN   |                   | hygiene
 PR-C1    | OPEN   |                   | NEXT-20 sales/purchase PROD
@@ -600,8 +600,8 @@ Already DONE before this plan (do not reopen as PR work):
   NEXT-00…07, NEXT-10…13 = foundation complete
 
 Active pointer:
-  recommended_next_step = PR-B4
-  last_shipped_step = PR-B3
+  recommended_next_step = PR-B5
+  last_shipped_step = PR-B4
   production_approved = false
   pr_b1_blocks_pr_c = true
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE

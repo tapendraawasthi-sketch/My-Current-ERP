@@ -74,7 +74,7 @@ def test_observability_and_pointer_next13() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B4"
+    assert ledger["recommended_next_step"] == "PR-B5"
     assert "NEXT-12" in ledger.get("completed_next_steps", [])
     assert ledger.get("e2e_launch_slice", {}).get("authority") == "ADR_0079"
 
@@ -83,5 +83,5 @@ def test_observability_and_pointer_next13() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-B4"
+    assert matrix["recommended_next_step"] == "PR-B5"
     assert "NEXT-12" in matrix.get("completed_steps", [])

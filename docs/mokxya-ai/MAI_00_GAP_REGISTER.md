@@ -467,6 +467,7 @@ Severity legend:
 - **Acceptance condition:** Documented single calc owner per flow with parity tests
 - **Status:** REDUCED
 - **Progress (2026-07-19):** MAI-33 annotated ownership. NEXT-11 / ADR_0078 documents owners in `MAI_CALC_AUTHORITY_REGISTRY.json`, labels form/Orbix totals non-authoritative, sets bundle `gap_p2_002_status=REDUCED`, and adds parity/honesty tests. Does **not** mark CLOSED (UI display estimates + voucherSlice dual-calc residual remain).
+- **Progress (2026-07-19, PR-B4):** ADR_0087 wires form/Orbix labels to policy constants; 3 launch fixtures prove 0 paisa drift (sale untaxed, purchase cash, sale VAT exclusive). Spot-check evidence under `artifacts/prod-ready-pr-b4/`. Does **not** mark CLOSED (UI display estimates + voucherSlice dual-calc residual remain).
 
 ### GAP-P2-003 — Default OEC/knowledge SQLite tenant-a seeds
 

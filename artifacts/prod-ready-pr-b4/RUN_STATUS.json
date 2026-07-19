@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-B4",
+  "authority": "ADR_0087",
+  "as_of": "2026-07-19",
+  "engineering_pack_ready": true,
+  "production_approved": false,
+  "gap_p2_002_closed": false,
+  "known_paisa_drift_on_launch_fixtures": false,
+  "unit_proofs": {
+    "status": "PASS",
+    "notes": "maiPrB4 + maiNext11 labels wired; 3 launch fixtures 0 paisa drift"
+  },
+  "residual": {
+    "ui_display_estimates": true,
+    "voucher_slice_dual_calc": true
+  }
+}

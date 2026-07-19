@@ -30,7 +30,7 @@
     {"id": "GAP-P1-009", "severity": "P1", "status": "REDUCED", "blocks": ["multilingual_product", "NEXT-20"], "note": "NEXT-09 ADR_0083 launch language PRODUCT_POLICY signed; MAI-04 multilingual_v1 still HR; not CLOSED"},
     {"id": "GAP-P1-012", "severity": "P1", "status": "REDUCED", "blocks": ["linguist_approval", "NEXT-20"], "note": "R3O LINGUIST_APPROVED CLOSED (ADR_0022); NEXT-09 launch-slice PRODUCT_POLICY signed; launch linguist flag false"},
     {"id": "GAP-P2-001", "severity": "P2", "status": "REDUCED", "blocks": ["prod_retrieval", "NEXT-20"], "note": "NEXT-14 ADR_0081 LEXICAL_ONLY in prod; staging deploy proof residual; not CLOSED"},
-    {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-20"], "note": "NEXT-11 ADR_0078 owners+labels; UI display estimates remain; not CLOSED"},
+    {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-20"], "note": "NEXT-11 ADR_0078 + PR-B4 ADR_0087 labels wired + 0 paisa drift spot-check; UI display estimates remain; not CLOSED"},
     {"id": "GAP-P2-008", "severity": "P2", "status": "REDUCED", "blocks": ["citation_honesty", "NEXT-20"], "note": "NEXT-13 ADR_0080 force-abstain gate; professional suite sign-off still required; not CLOSED"}
   ],
   "phases": [
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "PR-B4",
+  "recommended_next_step": "PR-B5",
   "next_file": "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4"]
 }

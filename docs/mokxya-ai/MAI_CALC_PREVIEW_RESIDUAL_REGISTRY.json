@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_CALC_PREVIEW_RESIDUAL_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0087",
+  "step": "PR-B4",
+  "decision": "CALC_PREVIEW_RESIDUAL_SPOTCHECK",
+  "extends": "ADR_0078",
+  "gap_p2_002": {
+    "register_status": "REDUCED",
+    "runtime_status": "OPEN",
+    "closed": false,
+    "runtime_status_reason": "Labels wired to policy constants; 3 launch fixtures 0 paisa drift; UI display estimates + voucherSlice dual-calc residual remain"
+  },
+  "policies": {
+    "calc_authority_on_confirm": "DEXIE_DOMAIN_ENGINE",
+    "ui_calculates_authoritative_totals": false,
+    "ai_journal_math_allowed": false,
+    "known_paisa_drift_on_launch_fixtures": false,
+    "labels_from_policy_constants": true
+  },
+  "fixtures": [
+    {
+      "id": "LAUNCH_SALE_CASH_UNTAXED",
+      "display_estimate": "qty*rate via UI/taxUtils",
+      "posted_owner": "postSalesTransaction",
+      "expected_paisa_drift": 0
+    },
+    {
+      "id": "LAUNCH_PURCHASE_CASH",
+      "display_estimate": "qty*rate",
+      "posted_owner": "postPurchaseTransaction",
+      "expected_paisa_drift": 0
+    },
+    {
+      "id": "LAUNCH_SALE_VAT_EXCLUSIVE",
+      "display_estimate": "computeInvoiceVAT exclusive 13%",
+      "posted_owner": "postSalesTransaction + salesVatEngine",
+      "expected_paisa_drift": 0
+    }
+  ],
+  "proofs": {
+    "labels_wired": [
+      "src/components/invoice/SalesInvoiceForm.tsx",
+      "src/components/ekhata/OrbixJournalCard.tsx",
+      "src/platform/calc/calcAuthorityPolicy.ts"
+    ],
+    "paisa_spotcheck": [
+      "src/__tests__/orbix/maiPrB4CalcPreviewResidual.test.ts",
+      "artifacts/prod-ready-pr-b4/PAISA_SPOTCHECK.md"
+    ]
+  },
+  "honesty": {
+    "production_approved": false,
+    "gap_p2_002_closed": false,
+    "ui_calculates_authoritative_totals": false,
+    "known_paisa_drift_on_launch_fixtures": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "gap_p2_002_closed=true",
+    "ui_calculates_authoritative_totals=true",
+    "known_paisa_drift_on_launch_fixtures=true_without_fix",
+    "production_approved=true"
+  ]
+}

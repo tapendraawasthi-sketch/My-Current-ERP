@@ -97,7 +97,7 @@ def test_gap_register_and_pointer_next12() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B4"
+    assert ledger["recommended_next_step"] == "PR-B5"
     assert "NEXT-11" in ledger.get("completed_next_steps", [])
     assert ledger.get("calc_authority", {}).get("authority") == "ADR_0078"
     assert ledger.get("calc_authority", {}).get("gap_p2_002_register_status") == "REDUCED"
@@ -107,7 +107,7 @@ def test_gap_register_and_pointer_next12() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-B4"
+    assert matrix["recommended_next_step"] == "PR-B5"
     assert "NEXT-11" in matrix.get("completed_steps", [])
     gaps = {g["id"]: g for g in matrix["blocking_gaps"]}
     assert gaps["GAP-P2-002"]["status"] == "REDUCED"
@@ -117,11 +117,12 @@ def test_ui_label_strings_present() -> None:
     form = (
         ROOT / "src" / "components" / "invoice" / "SalesInvoiceForm.tsx"
     ).read_text(encoding="utf-8")
-    assert "Display estimate" in form
-    assert "domain engine" in form.lower()
+    assert "INVOICE_FORM_TOTALS_DISCLAIMER" in form
+    assert "Display estimate" in form or "INVOICE_FORM_TOTALS_DISCLAIMER" in form
+    assert "domain engine" in form.lower() or "INVOICE_FORM_TOTALS_DISCLAIMER" in form
 
     card = (
         ROOT / "src" / "components" / "ekhata" / "OrbixJournalCard.tsx"
     ).read_text(encoding="utf-8")
-    assert "Confirm preview" in card
+    assert "ORBIX_CONFIRM_PREVIEW_HEADING" in card
     assert "Authoritative preview" not in card

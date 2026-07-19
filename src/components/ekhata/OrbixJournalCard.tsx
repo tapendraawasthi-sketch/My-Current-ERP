@@ -5,6 +5,10 @@ import type { KhataConfirmationCard } from "@/lib/ekhata/types";
 import type { KhataCompoundBatchCard } from "@/lib/ekhata/compoundBatch";
 import type { JournalLineDraft } from "@/lib/ekhata/types";
 import { KHATA_INTENT_LABELS } from "@/lib/ekhata/types";
+import {
+  ORBIX_CONFIRM_PREVIEW_HEADING,
+  ORBIX_CONFIRM_PREVIEW_HINT,
+} from "@/platform/calc/calcAuthorityPolicy";
 
 interface BalanceInfo {
   balanced: boolean;
@@ -207,10 +211,10 @@ const OrbixJournalCard: React.FC<OrbixJournalCardProps> = ({
         </div>
         <div>
           <p className="text-[14px] font-semibold text-[var(--ds-text-default)]">
-            Confirm preview
+            {ORBIX_CONFIRM_PREVIEW_HEADING}
           </p>
           <p className="text-[11px] text-[var(--ds-text-muted)] mt-0.5">
-            Amounts post via the domain engine on confirm — card totals are for review.
+            {ORBIX_CONFIRM_PREVIEW_HINT}
           </p>
           {pendingCard.primaryClass && (
             <span className="mt-0.5 inline-block rounded px-1.5 py-0.5 text-[12px] font-semibold uppercase text-[var(--ds-text-muted)]">

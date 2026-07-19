@@ -5,11 +5,13 @@
   "authority": "ADR_0078",
   "step": "NEXT-11",
   "decision": "DEXIE_DOMAIN_ENGINE_CALC_ON_CONFIRM",
+  "residual_step": "PR-B4",
+  "residual_authority": "ADR_0087",
   "gap_p2_002": {
     "register_status": "REDUCED",
     "closed": false,
     "runtime_ui_display_estimates_present": true,
-    "runtime_status_reason": "Invoice form and Orbix card may show display totals; confirm/post uses Dexie domain engines."
+    "runtime_status_reason": "Invoice form and Orbix card may show display totals; confirm/post uses Dexie domain engines. PR-B4 / ADR_0087 labels wired + 0 paisa drift on 3 launch fixtures; still not CLOSED."
   },
   "flows": [
     {

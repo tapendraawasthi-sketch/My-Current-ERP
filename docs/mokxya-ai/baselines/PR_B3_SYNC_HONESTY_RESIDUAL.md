@@ -33,4 +33,4 @@ Documented exception; must not label Synced while pending > 0.
 
 ## Pointer
 
-recommended_next_step → **PR-B4**
+recommended_next_step → **PR-B4** (shipped; active pointer now PR-B5)
