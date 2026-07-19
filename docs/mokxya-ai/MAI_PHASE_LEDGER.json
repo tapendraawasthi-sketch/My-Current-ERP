@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-32",
-  "active_phase_note": "MAI-32 slice 2 IN_PROGRESS (ADR_0049); DraftAggregate candidate consume (CANDIDATE_ONLY); no live save_*",
+  "recommended_next_phase": "MAI-33",
+  "active_phase_note": "MAI-33 slice 1 IN_PROGRESS (ADR_0050); preview/edit-loop policy annotation; MAI-32 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2747,7 +2747,7 @@
     {
       "id": "MAI-32",
       "title": "DURABLE VERSIONED DRAFTS",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2758,6 +2758,7 @@
         "docs/mokxya-ai/decisions/ADR_0049_DURABLE_VERSIONED_DRAFT_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_32_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_32_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_32_ENGINEERING_CLOSURE.md",
         "evals/mai32/manifests/MAI_32_SLICE1.manifest.json",
         "evals/mai32/manifests/MAI_32_SLICE2.manifest.json"
       ],
@@ -2780,22 +2781,42 @@
         "MAI-31"
       ],
       "recommended_order": 32,
-      "closure_note": "Slice 2: CANDIDATE_ONLY DraftAggregate candidates; never live save_*/khata/Dexie."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-33. production_approved=false. Gaps unchanged."
     },
     {
       "id": "MAI-33",
       "title": "DETERMINISTIC PREVIEW AND EDIT LOOP",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "preview_message / confirmation cards"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-33.0.1-slice1",
+      "slice": "SLICE1_PREVIEW_EDIT_LOOP_POLICY_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_33_DETERMINISTIC_PREVIEW_AND_EDIT_LOOP.md",
+        "docs/mokxya-ai/decisions/ADR_0050_DETERMINISTIC_PREVIEW_EDIT_LOOP_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_33_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai33/manifests/MAI_33_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "deterministic_preview_edit_loop_service.py (policy annotation)",
+        "DeterministicPreviewEditLoopBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress DETERMINISTIC_PREVIEW_EDIT_LOOP after DURABLE_VERSIONED_DRAFT",
+        "preview_generated=false; journal_calculated=false; gap_p2_002_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-002 remains OPEN",
+        "GAP-P0-001 must not worsen",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-32"
       ],
-      "recommended_order": 33
+      "recommended_order": 33,
+      "closure_note": "Slice 1: preview/edit-loop policy annotation only; never generates cards; GAP-P2-002 open."
     },
     {
       "id": "MAI-34",

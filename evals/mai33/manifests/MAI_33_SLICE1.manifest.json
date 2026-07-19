@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai33-slice1-v1",
+  "dataset_hash": "e7a0e044d9d535cb04ca21359fee687a6682e7758e2772c3ac3d66aa1cc9153c",
+  "phase": "MAI-33",
+  "slice": "SLICE1_PREVIEW_EDIT_LOOP_POLICY_ANNOTATION",
+  "runtime_version": "mai-33.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai33/frozen/deterministic_preview_edit_loop_v1.jsonl",
+      "sha256": "e7a0e044d9d535cb04ca21359fee687a6682e7758e2772c3ac3d66aa1cc9153c",
+      "case_count": 6,
+      "suite_id": "deterministic_preview_edit_loop_v1"
+    }
+  ]
+}

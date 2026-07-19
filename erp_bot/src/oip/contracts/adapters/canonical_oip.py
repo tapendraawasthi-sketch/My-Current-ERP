@@ -549,6 +549,30 @@ class CanonicalOipRequestAdapter:
                     "durable_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-33: deterministic preview / edit-loop policy (never generates).
+        if canonical.deterministic_preview_edit_loop_bundle is not None:
+            try:
+                from ...modules.conversation.application.deterministic_preview_edit_loop_service import (
+                    deterministic_preview_edit_loop_to_metadata,
+                )
+
+                metadata["deterministic_preview_edit_loop"] = (
+                    deterministic_preview_edit_loop_to_metadata(
+                        canonical.deterministic_preview_edit_loop_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                pel = canonical.deterministic_preview_edit_loop_bundle
+                metadata["deterministic_preview_edit_loop"] = {
+                    "analysis_status": pel.analysis_status.value,
+                    "runtime_version": pel.runtime_version,
+                    "preview_readiness": pel.preview_readiness.value,
+                    "preview_generated": False,
+                    "confirmation_card_generated": False,
+                    "journal_calculated": False,
+                    "gap_p2_002_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

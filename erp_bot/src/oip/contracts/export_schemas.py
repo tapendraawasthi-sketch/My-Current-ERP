@@ -70,6 +70,7 @@ from .domain_port_mapping import (
     DomainPortMappingCandidateV1,
 )
 from .durable_versioned_draft import DurableVersionedDraftBundleV1
+from .deterministic_preview_edit_loop import DeterministicPreviewEditLoopBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -116,6 +117,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("DomainPortMappingCandidateV1", DomainPortMappingCandidateV1),
     ("DomainPortFieldBindingV1", DomainPortFieldBindingV1),
     ("DurableVersionedDraftBundleV1", DurableVersionedDraftBundleV1),
+    ("DeterministicPreviewEditLoopBundleV1", DeterministicPreviewEditLoopBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

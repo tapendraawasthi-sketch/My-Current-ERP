@@ -178,6 +178,14 @@
       "title": "BooleanFieldValueV1",
       "type": "object"
     },
+    "CalcAuthorityOnConfirm": {
+      "enum": [
+        "DEXIE_DOMAIN_ENGINE",
+        "UNKNOWN"
+      ],
+      "title": "CalcAuthorityOnConfirm",
+      "type": "string"
+    },
     "CalibrationStatus": {
       "enum": [
         "UNCALIBRATED",
@@ -1092,6 +1100,229 @@
       "title": "DateValueV1",
       "type": "object"
     },
+    "DeterministicPreviewEditLoopBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ai_journal_math_allowed": {
+          "default": false,
+          "title": "Ai Journal Math Allowed",
+          "type": "boolean"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/DeterministicPreviewEditLoopStatus",
+          "default": "NOT_RUN"
+        },
+        "calc_authority_on_confirm": {
+          "$ref": "#/$defs/CalcAuthorityOnConfirm",
+          "default": "DEXIE_DOMAIN_ENGINE"
+        },
+        "confirmation_card_generated": {
+          "default": false,
+          "title": "Confirmation Card Generated",
+          "type": "boolean"
+        },
+        "draft_module_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Module Id"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "draft_version_bumped": {
+          "default": false,
+          "title": "Draft Version Bumped",
+          "type": "boolean"
+        },
+        "edit_loop_policy": {
+          "$ref": "#/$defs/EditLoopPolicy",
+          "default": "NOT_APPLICABLE"
+        },
+        "edit_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Edit Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "gap_p2_002_status": {
+          "default": "OPEN",
+          "title": "Gap P2 002 Status",
+          "type": "string"
+        },
+        "journal_calculated": {
+          "default": false,
+          "title": "Journal Calculated",
+          "type": "boolean"
+        },
+        "khata_preview_helpers_are_display_path": {
+          "default": true,
+          "title": "Khata Preview Helpers Are Display Path",
+          "type": "boolean"
+        },
+        "legacy_preview_path": {
+          "default": "KHATA_PREVIEW_MESSAGE_AND_CARD",
+          "title": "Legacy Preview Path",
+          "type": "string"
+        },
+        "mode_aware_invoked": {
+          "default": false,
+          "title": "Mode Aware Invoked",
+          "type": "boolean"
+        },
+        "preview_bound_to_draft_version": {
+          "default": true,
+          "title": "Preview Bound To Draft Version",
+          "type": "boolean"
+        },
+        "preview_compute_locus_candidates": {
+          "default": [
+            "DEXIE_DOMAIN_ENGINE",
+            "SERVER_PREVIEW_SERVICE_PENDING"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Preview Compute Locus Candidates",
+          "type": "array"
+        },
+        "preview_contract_shape": {
+          "default": "PREVIEW_V1_EFFECTS",
+          "title": "Preview Contract Shape",
+          "type": "string"
+        },
+        "preview_generated": {
+          "default": false,
+          "title": "Preview Generated",
+          "type": "boolean"
+        },
+        "preview_hash_minted": {
+          "default": false,
+          "title": "Preview Hash Minted",
+          "type": "boolean"
+        },
+        "preview_message_invoked": {
+          "default": false,
+          "title": "Preview Message Invoked",
+          "type": "boolean"
+        },
+        "preview_payload_ready": {
+          "default": false,
+          "title": "Preview Payload Ready",
+          "type": "boolean"
+        },
+        "preview_readiness": {
+          "$ref": "#/$defs/PreviewReadiness",
+          "default": "NOT_APPLICABLE"
+        },
+        "prior_preview_invalidated": {
+          "default": false,
+          "title": "Prior Preview Invalidated",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-33.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "save_invoked": {
+          "default": false,
+          "title": "Save Invoked",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "selected_port_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Port Id"
+        },
+        "server_preview_service_executed": {
+          "default": false,
+          "title": "Server Preview Service Executed",
+          "type": "boolean"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "stale_preview_on_confirm": {
+          "default": "REJECT",
+          "title": "Stale Preview On Confirm",
+          "type": "string"
+        },
+        "ui_calculates_authoritative_totals": {
+          "default": false,
+          "title": "Ui Calculates Authoritative Totals",
+          "type": "boolean"
+        },
+        "version_bump_on_edit": {
+          "default": true,
+          "title": "Version Bump On Edit",
+          "type": "boolean"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "DeterministicPreviewEditLoopBundleV1",
+      "type": "object"
+    },
+    "DeterministicPreviewEditLoopStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "DeterministicPreviewEditLoopStatus",
+      "type": "string"
+    },
     "DiscourseMentionV1": {
       "additionalProperties": false,
       "properties": {
@@ -1906,6 +2137,14 @@
       ],
       "title": "DurationV1",
       "type": "object"
+    },
+    "EditLoopPolicy": {
+      "enum": [
+        "INVALIDATE_PREVIEW_ON_EDIT",
+        "NOT_APPLICABLE"
+      ],
+      "title": "EditLoopPolicy",
+      "type": "string"
     },
     "EligibilityDecision": {
       "enum": [
@@ -4749,6 +4988,16 @@
       "title": "PlanV1",
       "type": "object"
     },
+    "PreviewReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "PENDING_ENGINE"
+      ],
+      "title": "PreviewReadiness",
+      "type": "string"
+    },
     "PromptRegistryAnalysisStatus": {
       "enum": [
         "NOT_RUN",
@@ -7346,6 +7595,17 @@
       "format": "date-time",
       "title": "Created At",
       "type": "string"
+    },
+    "deterministic_preview_edit_loop_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DeterministicPreviewEditLoopBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "domain_port_mapping_bundle": {
       "anyOf": [

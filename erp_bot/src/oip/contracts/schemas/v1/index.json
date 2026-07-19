@@ -42,6 +42,7 @@
     "DomainPortMappingCandidateV1",
     "DomainPortFieldBindingV1",
     "DurableVersionedDraftBundleV1",
+    "DeterministicPreviewEditLoopBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

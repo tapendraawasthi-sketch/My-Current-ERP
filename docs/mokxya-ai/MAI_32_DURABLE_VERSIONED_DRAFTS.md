@@ -1,7 +1,7 @@
 # MAI-32 — Durable Versioned Drafts
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0049](decisions/ADR_0049_DURABLE_VERSIONED_DRAFT_AUTHORITY.md)  
 **Runtime:** `mai-32.0.2-slice2` (engineering; not production-approved)
 

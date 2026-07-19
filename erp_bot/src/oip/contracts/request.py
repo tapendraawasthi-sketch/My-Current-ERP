@@ -31,6 +31,7 @@ from .hybrid_fusion import HybridFusionBundleV1
 from .claim_citation import ClaimCitationBundleV1
 from .domain_port_mapping import DomainPortMappingBundleV1
 from .durable_versioned_draft import DurableVersionedDraftBundleV1
+from .deterministic_preview_edit_loop import DeterministicPreviewEditLoopBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -186,6 +187,10 @@ class CanonicalAIRequestV1(ContractBase):
     domain_port_mapping_bundle: DomainPortMappingBundleV1 | None = None
     # MAI-32: durable versioned draft readiness (never save_*/aggregate write).
     durable_versioned_draft_bundle: DurableVersionedDraftBundleV1 | None = None
+    # MAI-33: deterministic preview / edit-loop policy (never generates cards).
+    deterministic_preview_edit_loop_bundle: (
+        DeterministicPreviewEditLoopBundleV1 | None
+    ) = None
 
     @field_validator("schema_version")
     @classmethod

@@ -2078,6 +2078,72 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent store/write success.
 
+    # MAI-33: deterministic preview / edit-loop policy (never generates cards).
+    pel_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.DETERMINISTIC_PREVIEW_EDIT_LOOP_STARTED,
+        component="conversation.deterministic_preview_edit_loop",
+    )
+    try:
+        from ..oip.modules.conversation.application.deterministic_preview_edit_loop_service import (
+            assert_deterministic_preview_edit_loop_authority,
+            attach_deterministic_preview_edit_loop_to_request,
+        )
+
+        updated = attach_deterministic_preview_edit_loop_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.deterministic_preview_edit_loop_bundle
+        assert_deterministic_preview_edit_loop_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            pel_ev,
+            version_map={
+                "deterministic_preview_edit_loop": "mai-33.0.1-slice1",
+            },
+            safe_attributes={
+                "preview_edit_loop_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "preview_readiness": (
+                    bundle.preview_readiness.value if bundle else None
+                ),
+                "edit_loop_policy": (
+                    bundle.edit_loop_policy.value if bundle else None
+                ),
+                "preview_generated": False,
+                "confirmation_card_generated": False,
+                "preview_message_invoked": False,
+                "journal_calculated": False,
+                "draft_mutations": 0,
+                "gap_p2_002_status": "OPEN",
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.DETERMINISTIC_PREVIEW_EDIT_LOOP_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "draft_module_id": (
+                    bundle.draft_module_id if bundle else None
+                ),
+                "calc_authority_on_confirm": (
+                    bundle.calc_authority_on_confirm.value if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            pel_ev, safe_error_code="DETERMINISTIC_PREVIEW_EDIT_LOOP_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.DETERMINISTIC_PREVIEW_EDIT_LOOP_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="DETERMINISTIC_PREVIEW_EDIT_LOOP_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent preview success.
+
     return canonical
 
 

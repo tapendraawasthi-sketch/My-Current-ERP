@@ -466,6 +466,7 @@ Severity legend:
 - **Dependencies:** authority decision
 - **Acceptance condition:** Documented single calc owner per flow with parity tests
 - **Status:** OPEN
+- **Progress (2026-07-19):** MAI-33 slice 1 annotates `ui_calculates_authoritative_totals=false`, `calc_authority_on_confirm=DEXIE_DOMAIN_ENGINE`, `gap_p2_002_status=OPEN`. Does **not** close the gap (UI/engine parity work still pending).
 
 ### GAP-P2-003 — Default OEC/knowledge SQLite tenant-a seeds
 

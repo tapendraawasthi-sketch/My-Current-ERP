@@ -1,0 +1,6 @@
+{"case_id": "mai33_pel__purchase", "suite_id": "deterministic_preview_edit_loop_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai33_pel__purchase_en", "suite_id": "deterministic_preview_edit_loop_v1", "text": "bought rice from Ram for Rs 500 cash", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai33_pel__sales", "suite_id": "deterministic_preview_edit_loop_v1", "text": "sold goods to Ram for Rs 500 cash", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai33_pel__report", "suite_id": "deterministic_preview_edit_loop_v1", "text": "show balance sheet", "expected_status": "SKIP", "expected_readiness": "NOT_APPLICABLE", "prohibited_for_training": true}
+{"case_id": "mai33_pel__ood", "suite_id": "deterministic_preview_edit_loop_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai33_pel__ledger", "suite_id": "deterministic_preview_edit_loop_v1", "text": "show ledger balance report for cash account", "expected_status": "SKIP", "prohibited_for_training": true}
