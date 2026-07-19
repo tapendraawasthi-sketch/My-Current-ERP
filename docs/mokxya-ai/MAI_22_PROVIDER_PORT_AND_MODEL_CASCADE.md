@@ -1,9 +1,9 @@
 # MAI-22 — Provider Port and Model Cascade
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0039](decisions/ADR_0039_PROVIDER_CASCADE_AUTHORITY.md)  
-**Runtime:** `mai-22.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-22.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -19,18 +19,24 @@ invoking models or mutating drafts.
 4. Clarification ASK / typed plan SKIP → SKIP
 5. `model_invocations=0`; `is_execution_authority=false`
 
+## Slice 2
+
+1. `apply_provider_cascade_to_route` overlays COMPLETE cascade onto RouteDecision
+2. Wired in ExecutionStageAdapter before `start_execution`
+3. SKIP / non-COMPLETE → keep router cascade (no-op)
+4. Bundle remains non-execution-authority; runtime invokes via existing provider path
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Complete purchase | COMPLETE; selected_provider_id set |
-| Incomplete (qty/amount missing) | SKIP |
+| Complete purchase | COMPLETE; route primary overridden |
+| Incomplete (qty/amount missing) | SKIP; route unchanged |
 | OOD gibberish | SKIP |
-| Any bundle | `model_invocations=0` |
+| Any bundle | `is_execution_authority=false` |
 
 ## Non-goals
 
-- Live adapter.invoke / start_execution consume (later slice)
 - Prompt registry (MAI-23)
 - Closing GAP-P1-004 / GAP-P1-008
 - Production approval

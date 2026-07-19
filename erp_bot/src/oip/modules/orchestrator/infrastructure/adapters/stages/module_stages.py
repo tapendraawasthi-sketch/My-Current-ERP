@@ -663,6 +663,19 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             pass
 
+        # MAI-22 slice 2: overlay annotated provider cascade onto the route.
+        try:
+            from src.oip.modules.conversation.application.provider_cascade_service import (
+                apply_provider_cascade_to_route,
+            )
+
+            raw_pc = meta.get("provider_cascade") if isinstance(meta, dict) else None
+            provider_cascade = raw_pc if isinstance(raw_pc, dict) else None
+            route = apply_provider_cascade_to_route(route, provider_cascade)
+        except Exception:  # noqa: BLE001
+            # Soft-fail: keep router cascade rather than blocking chat.
+            pass
+
         model_ev = _mai03_safe_stage("MODEL_REQUEST_STARTED")
         try:
             execution = await self._ports.provider_runtime.start_execution(route=route)  # type: ignore[union-attr]

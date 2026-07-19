@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-22",
-  "active_phase_note": "MAI-22 slice 1 IN_PROGRESS (ADR_0039); provider cascade annotation; MAI-21 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-22 slice 2 IN_PROGRESS (ADR_0039); cascade consume on route; MAI-21 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2381,19 +2381,21 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-22.0.1-slice1",
-      "slice": "SLICE1_PROVIDER_CASCADE_ANNOTATION",
+      "runtime_version": "mai-22.0.2-slice2",
+      "slice": "SLICE2_PROVIDER_CASCADE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_22_PROVIDER_PORT_AND_MODEL_CASCADE.md",
         "docs/mokxya-ai/decisions/ADR_0039_PROVIDER_CASCADE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_22_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai22/manifests/MAI_22_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_22_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai22/manifests/MAI_22_SLICE1.manifest.json",
+        "evals/mai22/manifests/MAI_22_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "provider_cascade_service.py",
         "ProviderCascadeBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress PROVIDER_CASCADE after MAI-21",
-        "provider_runtime adapters (execution deferred to slice 2)"
+        "apply_provider_cascade_to_route in ExecutionStageAdapter"
       ],
       "blockers": [
         "GAP-P1-004 / GAP-P1-008 remain REDUCED",
@@ -2403,7 +2405,7 @@
         "MAI-21"
       ],
       "recommended_order": 22,
-      "closure_note": "Slice 1: COMPLETE typed plan→provider cascade annotation; model_invocations=0; is_execution_authority=false."
+      "closure_note": "Slice 2: COMPLETE cascade overlays RouteDecision before start_execution; is_execution_authority=false."
     },
     {
       "id": "MAI-23",

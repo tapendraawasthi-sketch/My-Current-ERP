@@ -22,7 +22,7 @@ class ProviderCascadeBundleV1(ContractBase):
     analysis_status: ProviderCascadeAnalysisStatus = (
         ProviderCascadeAnalysisStatus.NOT_RUN
     )
-    runtime_version: str = "mai-22.0.1-slice1"
+    runtime_version: str = "mai-22.0.2-slice2"
     source_authority: str = "REQUEST"
     selected_provider_id: str | None = None
     selected_model_id: str | None = None

@@ -1367,7 +1367,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             pc_ev,
             version_map={
-                "provider_cascade": "mai-22.0.1-slice1",
+                "provider_cascade": "mai-22.0.2-slice2",
             },
             safe_attributes={
                 "provider_cascade_status": (

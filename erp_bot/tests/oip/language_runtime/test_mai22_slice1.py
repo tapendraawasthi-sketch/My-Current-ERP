@@ -60,7 +60,8 @@ def _pipeline(text: str):
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-22.0.1-slice1"
+    # Slice 2 bumps the shared runtime constant; slice-1 contracts still hold.
+    assert RUNTIME_VERSION.startswith("mai-22.")
 
 
 def test_complete_purchase_gets_cascade() -> None:

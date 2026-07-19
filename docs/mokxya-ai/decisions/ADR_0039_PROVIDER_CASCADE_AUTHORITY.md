@@ -1,7 +1,7 @@
 # ADR_0039 — Provider Cascade Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-22-PROVIDER-PORT-AND-MODEL-CASCADE (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-22-PROVIDER-PORT-AND-MODEL-CASCADE (slice 2)
 - **Extends:** ADR_0001, ADR_0038
 
 ## Context
@@ -20,8 +20,9 @@ silent model calls.
    COMPLETE and clarification is not ASK; `model_invocations=0`;
    `is_execution_authority=false`.
 3. Does not call `ProviderRuntimeService.start_execution` or adapter `invoke`.
-4. Slice 2 (later): consume annotated cascade in orchestrator/runtime under
-   constitution gates.
+4. Slice 2: consume annotated COMPLETE cascade in ExecutionStageAdapter via
+   `apply_provider_cascade_to_route` before `start_execution`; SKIP is a no-op;
+   cascade bundle stays `is_execution_authority=false`.
 5. Gaps GAP-P1-004 / GAP-P1-008 stay REDUCED.
 6. Engineering-gated: `production_approved=false`.
 
