@@ -199,6 +199,25 @@ class CanonicalOipRequestAdapter:
                     "memory_writes": 0,
                     "is_execution_authority": False,
                 }
+        # MAI-17: hierarchical router + OOD (annotation only).
+        if canonical.router_decision_bundle is not None:
+            try:
+                from ...modules.conversation.application.hierarchical_router_service import (
+                    router_decision_to_metadata,
+                )
+
+                metadata["router_decision"] = router_decision_to_metadata(
+                    canonical.router_decision_bundle
+                )
+            except Exception:  # noqa: BLE001
+                rd = canonical.router_decision_bundle
+                metadata["router_decision"] = {
+                    "analysis_status": rd.analysis_status.value,
+                    "runtime_version": rd.runtime_version,
+                    "domain": rd.domain.value,
+                    "intent_family": rd.intent_family.value,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

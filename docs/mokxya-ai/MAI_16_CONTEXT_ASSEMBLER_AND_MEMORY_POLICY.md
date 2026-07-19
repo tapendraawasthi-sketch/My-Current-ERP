@@ -1,7 +1,7 @@
 # MAI-16 — Context Assembler and Memory Policy
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0033](decisions/ADR_0033_CONTEXT_ASSEMBLY_AND_MEMORY_POLICY_AUTHORITY.md)  
 **Runtime:** `mai-16.0.2-slice2` (engineering; not production-approved)
 

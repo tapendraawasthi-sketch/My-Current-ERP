@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-16",
-  "active_phase_note": "MAI-16 slice 2 IN_PROGRESS (ADR_0033); provider consume + memory write gate; MAI-15 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-17",
+  "active_phase_note": "MAI-17 slice 1 IN_PROGRESS (ADR_0034); hierarchical router + OOD annotation; MAI-16 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2157,7 +2157,7 @@
     {
       "id": "MAI-16",
       "title": "CONTEXT ASSEMBLER AND MEMORY POLICY",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2168,6 +2168,7 @@
         "docs/mokxya-ai/decisions/ADR_0033_CONTEXT_ASSEMBLY_AND_MEMORY_POLICY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_16_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_16_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_16_ENGINEERING_CLOSURE.md",
         "evals/mai16/manifests/MAI_16_SLICE1.manifest.json",
         "evals/mai16/manifests/MAI_16_SLICE2.manifest.json"
       ],
@@ -2189,23 +2190,41 @@
         "MAI-15"
       ],
       "recommended_order": 16,
-      "closure_note": "Slice 2: provider consume + optional RO recall; memory content writes gated; write_allowed=false."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-17. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-17",
       "title": "HIERARCHICAL ROUTER AND OOD",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "oip router module",
-        "operation_classifier"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-17.0.1-slice1",
+      "slice": "SLICE1_ROUTER_OOD_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_17_HIERARCHICAL_ROUTER_AND_OOD.md",
+        "docs/mokxya-ai/decisions/ADR_0034_HIERARCHICAL_ROUTER_AND_OOD_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_17_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai17/manifests/MAI_17_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/contracts/router_decision.py",
+        "hierarchical_router_service.py",
+        "CanonicalAIRequestV1.router_decision_bundle",
+        "oip_chat_ingress ROUTING after MAI-16",
+        "canonical_oip metadata.router_decision",
+        "operation_classifier wrap (annotation only)"
+      ],
+      "blockers": [
+        "Slice 2 OOD consume gate not started",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-16"
       ],
-      "recommended_order": 17
+      "recommended_order": 17,
+      "closure_note": "Slice 1: hierarchical router + OOD annotation; is_execution_authority=false."
     },
     {
       "id": "MAI-18",

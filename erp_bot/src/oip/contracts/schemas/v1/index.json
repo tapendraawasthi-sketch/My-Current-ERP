@@ -16,6 +16,8 @@
     "AppliedCorrectionReceiptV1",
     "ContextAssemblyBundleV1",
     "MemoryPolicyV1",
+    "RouterDecisionBundleV1",
+    "OodSignalV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

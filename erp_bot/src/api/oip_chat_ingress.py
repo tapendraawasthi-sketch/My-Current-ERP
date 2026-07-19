@@ -1004,6 +1004,77 @@ async def build_canonical_ai_request(
         except Exception:  # noqa: BLE001
             pass
 
+    # MAI-17: hierarchical router + OOD (annotation only; never execution authority).
+    rt_ev = recorder.start_stage(
+        mai03_obs.TraceStage.ROUTING_STARTED,
+        component="conversation.hierarchical_router",
+    )
+    try:
+        from ..oip.modules.conversation.application.hierarchical_router_service import (
+            attach_router_decision_to_request,
+        )
+
+        updated = attach_router_decision_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.router_decision_bundle
+        if bundle is not None and (
+            bundle.silent_applications != 0
+            or bundle.draft_mutations != 0
+            or bundle.is_execution_authority
+        ):
+            raise RuntimeError("ROUTER_DECISION_MUTATION")
+        canonical = updated
+        recorder.complete_stage(
+            rt_ev,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            component_versions={
+                "hierarchical_router": (
+                    bundle.runtime_version if bundle else "mai-17.0.1-slice1"
+                ),
+            },
+            safe_attributes={
+                "router_domain": (bundle.domain.value if bundle else "UNKNOWN"),
+                "router_intent_family": (
+                    bundle.intent_family.value if bundle else "UNKNOWN"
+                ),
+                "router_ood_score": (bundle.ood.score if bundle else 0.0),
+                "router_is_ood": (bool(bundle.ood.is_ood) if bundle else False),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.ROUTING_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            safe_attributes={
+                "router_domain": (bundle.domain.value if bundle else "UNKNOWN"),
+                "router_is_ood": (bool(bundle.ood.is_ood) if bundle else False),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(rt_ev, safe_error_code="ROUTING_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.ROUTING_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="ROUTING_FAILED",
+        )
+        try:
+            from ..oip.contracts.router_decision import (
+                RouterAnalysisStatus,
+                RouterDecisionBundleV1,
+            )
+
+            fail_bundle = RouterDecisionBundleV1(
+                analysis_status=RouterAnalysisStatus.FAILED,
+                warnings=("ROUTING_FAILED",),
+                error_codes=("ROUTING_FAILED",),
+            )
+            canonical = canonical.model_copy(
+                update={"router_decision_bundle": fail_bundle}
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
     return canonical
 
 

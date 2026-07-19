@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai17-slice1-v1",
+  "dataset_hash": "5d7ba4b56f22eafc5618be575a97e91ff88941a54df5056c10244d0b482c300e",
+  "phase": "MAI-17",
+  "slice": "SLICE1_ROUTER_OOD_ANNOTATION",
+  "runtime_version": "mai-17.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai17/frozen/hierarchical_router_critical_v1.jsonl",
+      "sha256": "5d7ba4b56f22eafc5618be575a97e91ff88941a54df5056c10244d0b482c300e",
+      "case_count": 6,
+      "suite_id": "hierarchical_router_critical_v1"
+    }
+  ]
+}

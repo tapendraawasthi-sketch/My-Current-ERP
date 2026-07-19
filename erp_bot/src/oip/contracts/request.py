@@ -16,6 +16,7 @@ from .language import LanguageFrameV1
 from .object_reference import ObjectReferenceBundleV1
 from .reference_coreference import ReferenceCoreferenceBundleV1
 from .registry import get_contract_registry
+from .router_decision import RouterDecisionBundleV1
 
 
 class InteractionModeV1(str, Enum):
@@ -135,6 +136,8 @@ class CanonicalAIRequestV1(ContractBase):
     reference_coreference_bundle: ReferenceCoreferenceBundleV1 | None = None
     # MAI-16: context assembly candidates + memory policy (annotation only).
     context_assembly_bundle: ContextAssemblyBundleV1 | None = None
+    # MAI-17: hierarchical router + OOD (annotation only; never execution authority).
+    router_decision_bundle: RouterDecisionBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

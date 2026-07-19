@@ -680,6 +680,33 @@
       "title": "EligibilityDecision",
       "type": "string"
     },
+    "EvidenceReferenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "evidence_id"
+      ],
+      "title": "EvidenceReferenceV1",
+      "type": "object"
+    },
     "InputChannelV1": {
       "enum": [
         "text",
@@ -688,6 +715,105 @@
         "unknown"
       ],
       "title": "InputChannelV1",
+      "type": "string"
+    },
+    "IntentCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "classifier_version": {
+          "default": "none",
+          "title": "Classifier Version",
+          "type": "string"
+        },
+        "domain": {
+          "default": "unknown",
+          "title": "Domain",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceReferenceV1"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "evidence_spans": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceSpanV1"
+          },
+          "title": "Evidence Spans",
+          "type": "array"
+        },
+        "intent_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Intent Id",
+          "type": "string"
+        },
+        "missing_context": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Context",
+          "type": "array"
+        },
+        "out_of_distribution_score": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Out Of Distribution Score",
+          "type": "number"
+        },
+        "required_capability": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required Capability"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "score": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Score",
+          "type": "number"
+        },
+        "status": {
+          "$ref": "#/$defs/ContractStatus",
+          "default": "NOT_RUN"
+        }
+      },
+      "required": [
+        "intent_id"
+      ],
+      "title": "IntentCandidateV1",
+      "type": "object"
+    },
+    "IntentFamily": {
+      "enum": [
+        "TRANSACTION",
+        "QUERY",
+        "REPORT",
+        "MASTER",
+        "CLARIFY",
+        "CONFIRM",
+        "CANCEL",
+        "QA",
+        "UNKNOWN"
+      ],
+      "title": "IntentFamily",
       "type": "string"
     },
     "InteractionModeV1": {
@@ -1820,6 +1946,38 @@
       "title": "OffsetMapV1",
       "type": "object"
     },
+    "OodSignalV1": {
+      "additionalProperties": false,
+      "properties": {
+        "abstain_recommended": {
+          "default": false,
+          "title": "Abstain Recommended",
+          "type": "boolean"
+        },
+        "is_ood": {
+          "default": false,
+          "title": "Is Ood",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "score": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "title": "OodSignalV1",
+      "type": "object"
+    },
     "ProtectedSpanInteraction": {
       "enum": [
         "OUTSIDE_PROTECTED",
@@ -2140,6 +2298,144 @@
         "FAILED"
       ],
       "title": "ResponseRegisterStatus",
+      "type": "string"
+    },
+    "RouterAnalysisStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "RouterAnalysisStatus",
+      "type": "string"
+    },
+    "RouterDecisionBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/RouterAnalysisStatus",
+          "default": "NOT_RUN"
+        },
+        "candidates": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IntentCandidateV1"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "classifier_version": {
+          "default": "mai-17.0.1-slice1",
+          "title": "Classifier Version",
+          "type": "string"
+        },
+        "concept_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Concept Ids",
+          "type": "array"
+        },
+        "domain": {
+          "$ref": "#/$defs/RouterDomain",
+          "default": "UNKNOWN"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "intent_family": {
+          "$ref": "#/$defs/IntentFamily",
+          "default": "UNKNOWN"
+        },
+        "intent_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intent Hint"
+        },
+        "ood": {
+          "$ref": "#/$defs/OodSignalV1"
+        },
+        "operation_class": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Class"
+        },
+        "operation_confidence": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Operation Confidence",
+          "type": "number"
+        },
+        "runtime_version": {
+          "default": "mai-17.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "RouterDecisionBundleV1",
+      "type": "object"
+    },
+    "RouterDomain": {
+      "enum": [
+        "ACCOUNTING",
+        "ERP_OPS",
+        "REPORTING",
+        "MASTER_DATA",
+        "DIALOGUE",
+        "UNKNOWN"
+      ],
+      "title": "RouterDomain",
       "type": "string"
     },
     "SafetyClass": {
@@ -3101,6 +3397,17 @@
       "minLength": 1,
       "title": "Request Id",
       "type": "string"
+    },
+    "router_decision_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RouterDecisionBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "schema_version": {
       "title": "Schema Version",
