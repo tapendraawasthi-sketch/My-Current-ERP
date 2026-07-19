@@ -641,17 +641,21 @@ class CanonicalOipRequestAdapter:
                     "offline_sync_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-36: legal question framer / research mode (never mutates / proves law).
+        # MAI-36: legal question framer / research + candidate consume.
         if canonical.legal_question_research_bundle is not None:
             try:
+                from ...modules.conversation.application.legal_question_research_consume_service import (
+                    enrich_lqr_metadata_with_consume,
+                )
                 from ...modules.conversation.application.legal_question_research_service import (
                     legal_question_research_to_metadata,
                 )
 
+                base_meta = legal_question_research_to_metadata(
+                    canonical.legal_question_research_bundle
+                )
                 metadata["legal_question_research"] = (
-                    legal_question_research_to_metadata(
-                        canonical.legal_question_research_bundle
-                    )
+                    enrich_lqr_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 lqr = canonical.legal_question_research_bundle
@@ -664,6 +668,8 @@ class CanonicalOipRequestAdapter:
                     "legal_effective_dates_proven": False,
                     "legal_proof_claimed": False,
                     "gap_p2_008_status": "OPEN",
+                    "legal_research_consume_mode": "UNCHANGED",
+                    "legal_research_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

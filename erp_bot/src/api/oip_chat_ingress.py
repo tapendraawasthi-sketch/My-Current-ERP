@@ -2344,12 +2344,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent sync success.
 
-    # MAI-36: legal question framer / research mode (never mutates / proves law).
+    # MAI-36: legal question framer / research + candidate consume (never proves law).
     lqr_ev = recorder.begin_stage(
         mai03_obs.TraceStage.LEGAL_QUESTION_RESEARCH_STARTED,
         component="conversation.legal_question_research",
     )
     try:
+        from ..oip.modules.conversation.application.legal_question_research_consume_service import (
+            assert_legal_research_consume_authority,
+            legal_research_consume_observability,
+        )
         from ..oip.modules.conversation.application.legal_question_research_service import (
             assert_legal_question_research_authority,
             attach_legal_question_research_to_request,
@@ -2360,11 +2364,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.legal_question_research_bundle
         assert_legal_question_research_authority(bundle)
+        consume_obs = legal_research_consume_observability(
+            updated,
+            allow_research_planner=False,
+            allow_kb_retrieval=False,
+        )
+        assert_legal_research_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             lqr_ev,
             version_map={
-                "legal_question_research": "mai-36.0.1-slice1",
+                "legal_question_research": "mai-36.0.2-slice2",
             },
             safe_attributes={
                 "legal_research_status": (
@@ -2382,6 +2392,12 @@ async def build_canonical_ai_request(
                 "as_of_status": (
                     bundle.as_of_status.value if bundle else None
                 ),
+                "legal_research_consume_mode": consume_obs.get(
+                    "legal_research_consume_mode"
+                ),
+                "legal_research_consume_ready": bool(
+                    consume_obs.get("legal_research_consume_ready")
+                ),
                 "mutation_tools_allowed": False,
                 "current_law_definitive": False,
                 "legal_effective_dates_proven": False,
@@ -2389,6 +2405,8 @@ async def build_canonical_ai_request(
                 "gap_p2_008_status": "OPEN",
                 "draft_mutations": 0,
                 "research_mode_mutations": 0,
+                "allow_research_planner": False,
+                "allow_kb_retrieval": False,
             },
         )
         recorder.record_event(
@@ -2403,6 +2421,9 @@ async def build_canonical_ai_request(
                 ),
                 "escalation_policy": (
                     bundle.escalation_policy.value if bundle else None
+                ),
+                "legal_research_consume_mode": consume_obs.get(
+                    "legal_research_consume_mode"
                 ),
             },
         )

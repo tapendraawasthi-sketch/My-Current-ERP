@@ -48,7 +48,7 @@ class LegalQuestionResearchBundleV1(ContractBase):
     analysis_status: LegalQuestionResearchStatus = (
         LegalQuestionResearchStatus.NOT_RUN
     )
-    runtime_version: str = "mai-36.0.1-slice1"
+    runtime_version: str = "mai-36.0.2-slice2"
     source_authority: str = "REQUEST"
     research_mode_readiness: ResearchModeReadiness = (
         ResearchModeReadiness.NOT_APPLICABLE

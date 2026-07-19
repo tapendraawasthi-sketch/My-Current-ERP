@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai36-slice2-v1",
+  "dataset_hash": "8400f2e0333f9211dc9f89f99871bedb187a78cfbb8d646b905d30939866882d",
+  "phase": "MAI-36",
+  "slice": "SLICE2_LEGAL_RESEARCH_CANDIDATE_CONSUME",
+  "runtime_version": "mai-36.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai36/frozen/legal_research_consume_v1.jsonl",
+      "sha256": "8400f2e0333f9211dc9f89f99871bedb187a78cfbb8d646b905d30939866882d",
+      "case_count": 6,
+      "suite_id": "legal_research_consume_v1"
+    }
+  ]
+}

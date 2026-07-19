@@ -1,7 +1,7 @@
 # ADR_0053 — Legal Question Framer / Research Mode Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-36-LEGAL-QUESTION-FRAMER-AND-RESEARCH-MODE (slice 1)
+- **Phase:** MAI-36-LEGAL-QUESTION-FRAMER-AND-RESEARCH-MODE (slice 2)
 - **Extends:** ADR_0001, ADR_0047, ADR_0052
 
 ## Context
@@ -24,7 +24,13 @@ risk) before any research planner or definitive current-law answer.
 3. Missing jurisdiction or as-of → `research_mode_readiness=CLARIFY_REQUIRED`.
    Both present as candidates → `POLICY_DECLARED` (still unproven / unverified).
 4. Non-LEGAL_TAX / missing claim-citation → SKIP. Never invent law or mutate.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `legal_research_candidate` /
+   `legal_research_consume_mode` (`CANDIDATE_ONLY` default for
+   POLICY_DECLARED and CLARIFY_REQUIRED; `BLOCKED` for fake authority;
+   `SKIP` for non-legal). Live path forces `allow_research_planner=false` and
+   `allow_kb_retrieval=false` — does **not** execute planner, claim KB
+   authority, or definitive current law. GAP-P2-008 stays OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
@@ -32,12 +38,14 @@ risk) before any research planner or definitive current-law answer.
 |-------------|-----|
 | Gate off MAI-35 sync COMPLETE | Legal/report paths often SKIP Track E |
 | Definitive current-law in annotation | Needs approved evidence + review |
+| Live planner / KB in slice 2 | Authority / honesty risk |
 | Mutation tools in research mode | Roadmap separation from accounting |
-| Close GAP-P2-008 in slice 1 | Professional honesty review still required |
+| Close GAP-P2-008 in slice 1–2 | Professional honesty review still required |
 | Mark dates proven | `legal_effective_dates_proven` must stay false |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_36_LEGAL_QUESTION_FRAMER_AND_RESEARCH_MODE.md`
-- `docs/mokxya-ai/baselines/MAI_36_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_36_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/legal_question_research_service.py`
+- `erp_bot/src/oip/modules/conversation/application/legal_question_research_consume_service.py`
