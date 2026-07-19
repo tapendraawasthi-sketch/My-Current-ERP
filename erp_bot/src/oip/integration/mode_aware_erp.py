@@ -108,6 +108,7 @@ class ModeAwareResult:
     error: dict[str, Any] | None = None
     report_spec: dict[str, Any] | None = None
     draft_id: str | None = None
+    applied_correction: dict[str, Any] | None = None
 
 
 def handle_mode_aware_erp(
@@ -126,6 +127,7 @@ def handle_mode_aware_erp(
     last_party: str | None = None,
     recent_parties: list[str] | None = None,
     turn_relation: dict[str, Any] | None = None,
+    reference_coreference: dict[str, Any] | None = None,
 ) -> ModeAwareResult | None:
     """Return a deterministic result when mode/classification handles the turn.
 
@@ -305,6 +307,25 @@ def handle_mode_aware_erp(
         has_pending_confirmation=has_pending_confirmation,
     )
     op = classification.operation_class
+
+    # MAI-15 slice 2: amount correction overlay (CORRECT + parseable AMOUNT only).
+    correction_overlay: dict[str, Any] = {}
+    try:
+        from ..modules.conversation.application.reference_coreference_service import (
+            select_amount_correction_overlay,
+        )
+
+        if pending is not None:
+            correction_overlay = select_amount_correction_overlay(
+                reference_coreference=reference_coreference,
+                turn_relation=turn_relation,
+                pending_kind=pending_kind,
+            )
+    except Exception:  # noqa: BLE001
+        correction_overlay = {}
+    field_overrides: dict[str, Any] = {}
+    if correction_overlay.get("total_amount") is not None:
+        field_overrides = {"total_amount": correction_overlay["total_amount"]}
 
     # Phase 10 bank recon explanations - before settlement, never mutate
     if is_bank_recon_explanation_query(message):
@@ -496,9 +517,11 @@ def handle_mode_aware_erp(
             )
         return None
 
-    # Clarification merge into pending draft (financial, purchase return, sales return, sale, or purchase)
-    if pending and op == OperationClass.CLARIFICATION_REPLY:
-        if pending_kind == "bank_recon":
+    # Clarification / CORRECT merge into pending draft.
+    # MAI-15: amount overlays also force purchase/sale process when CORRECT.
+    force_amount_correct = bool(field_overrides) and pending_kind in {"purchase", "sale"}
+    if pending and (op == OperationClass.CLARIFICATION_REPLY or force_amount_correct):
+        if pending_kind == "bank_recon" and not force_amount_correct:
             return _process_bank_recon(
                 message,
                 mode=mode,
@@ -510,7 +533,7 @@ def handle_mode_aware_erp(
                 existing=pending,
                 operation_class=op,
             )
-        if pending_kind == "financial":
+        if pending_kind == "financial" and not force_amount_correct:
             return _process_financial(
                 message,
                 mode=mode,
@@ -522,7 +545,7 @@ def handle_mode_aware_erp(
                 existing=pending,
                 operation_class=op,
             )
-        if pending_kind == "purchase_return":
+        if pending_kind == "purchase_return" and not force_amount_correct:
             return _process_purchase_return(
                 message,
                 mode=mode,
@@ -534,7 +557,7 @@ def handle_mode_aware_erp(
                 existing=pending,
                 operation_class=op,
             )
-        if pending_kind == "return":
+        if pending_kind == "return" and not force_amount_correct:
             return _process_sales_return(
                 message,
                 mode=mode,
@@ -557,18 +580,23 @@ def handle_mode_aware_erp(
                 user_id=user_id,
                 existing=pending,
                 operation_class=op,
+                field_overrides=field_overrides or None,
+                correction_overlay=correction_overlay or None,
             )
-        return _process_purchase(
-            message,
-            mode=mode,
-            caps=caps,
-            session_id=session_id,
-            tenant_id=tenant_id,
-            company_id=company_id,
-            user_id=user_id,
-            existing=pending,
-            operation_class=op,
-        )
+        if pending_kind == "purchase" or force_amount_correct:
+            return _process_purchase(
+                message,
+                mode=mode,
+                caps=caps,
+                session_id=session_id,
+                tenant_id=tenant_id,
+                company_id=company_id,
+                user_id=user_id,
+                existing=pending,
+                operation_class=op,
+                field_overrides=field_overrides or None,
+                correction_overlay=correction_overlay or None,
+            )
 
     purchase_return_signal = (
         is_purchase_return_message(message) or is_financial_supplier_debit_note_message(message)
@@ -815,6 +843,8 @@ def _process_purchase(
     user_id: str,
     existing,
     operation_class: OperationClass,
+    field_overrides: dict[str, Any] | None = None,
+    correction_overlay: dict[str, Any] | None = None,
 ) -> ModeAwareResult:
     draft = start_or_merge_purchase(
         message,
@@ -823,8 +853,19 @@ def _process_purchase(
         company_id=company_id,
         user_id=user_id,
         existing=existing,
+        field_overrides=field_overrides,
     )
     save_purchase_draft(draft)
+    applied_correction = None
+    if correction_overlay and field_overrides:
+        from ..modules.conversation.application.reference_coreference_service import (
+            build_applied_correction_receipt,
+        )
+
+        applied_correction = build_applied_correction_receipt(
+            overlay=correction_overlay,
+            draft_id=draft.draft_id,
+        )
 
     if draft.status == "awaiting_clarification":
         captured: list[dict[str, Any]] = []
@@ -876,6 +917,7 @@ def _process_purchase(
                 "nothing_posted": True,
             },
             draft_id=draft.draft_id,
+            applied_correction=applied_correction,
         )
 
     card = purchase_to_confirmation_card(draft)
@@ -889,6 +931,7 @@ def _process_purchase(
         orbix_mode=mode,
         capabilities=caps.to_dict(),
         draft_id=draft.draft_id,
+        applied_correction=applied_correction,
     )
 
 
@@ -903,6 +946,8 @@ def _process_sale(
     user_id: str,
     existing,
     operation_class: OperationClass,
+    field_overrides: dict[str, Any] | None = None,
+    correction_overlay: dict[str, Any] | None = None,
 ) -> ModeAwareResult:
     draft = start_or_merge_sale(
         message,
@@ -911,8 +956,19 @@ def _process_sale(
         company_id=company_id,
         user_id=user_id,
         existing=existing,
+        field_overrides=field_overrides,
     )
     save_sales_draft(draft)
+    applied_correction = None
+    if correction_overlay and field_overrides:
+        from ..modules.conversation.application.reference_coreference_service import (
+            build_applied_correction_receipt,
+        )
+
+        applied_correction = build_applied_correction_receipt(
+            overlay=correction_overlay,
+            draft_id=draft.draft_id,
+        )
 
     if draft.status == "awaiting_clarification":
         captured: list[dict[str, Any]] = []
@@ -964,6 +1020,7 @@ def _process_sale(
                 "nothing_posted": True,
             },
             draft_id=draft.draft_id,
+            applied_correction=applied_correction,
         )
 
     card = sales_to_confirmation_card(draft)
@@ -977,6 +1034,7 @@ def _process_sale(
         orbix_mode=mode,
         capabilities=caps.to_dict(),
         draft_id=draft.draft_id,
+        applied_correction=applied_correction,
     )
 
 

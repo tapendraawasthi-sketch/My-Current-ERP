@@ -1,0 +1,51 @@
+{
+  "$id": "https://mokxya.local/contracts/v1/AppliedCorrectionReceiptV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "applied": {
+      "default": true,
+      "title": "Applied",
+      "type": "boolean"
+    },
+    "correction_id": {
+      "title": "Correction Id",
+      "type": "string"
+    },
+    "cue_kind": {
+      "title": "Cue Kind",
+      "type": "string"
+    },
+    "draft_id": {
+      "title": "Draft Id",
+      "type": "string"
+    },
+    "field_name": {
+      "title": "Field Name",
+      "type": "string"
+    },
+    "pending_kind": {
+      "title": "Pending Kind",
+      "type": "string"
+    },
+    "runtime_version": {
+      "default": "mai-15.0.2-slice2",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "value_surface": {
+      "title": "Value Surface",
+      "type": "string"
+    }
+  },
+  "required": [
+    "correction_id",
+    "draft_id",
+    "field_name",
+    "value_surface",
+    "cue_kind",
+    "pending_kind"
+  ],
+  "title": "AppliedCorrectionReceiptV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

@@ -636,8 +636,11 @@ def start_or_merge_purchase(
     company_id: str = "",
     user_id: str = "",
     existing: PurchaseDraft | None = None,
+    field_overrides: dict[str, Any] | None = None,
 ) -> PurchaseDraft:
     fields = extract_purchase_fields(message)
+    if field_overrides:
+        fields.update(field_overrides)
     if existing is None:
         draft = PurchaseDraft(
             draft_id=str(uuid.uuid4()),

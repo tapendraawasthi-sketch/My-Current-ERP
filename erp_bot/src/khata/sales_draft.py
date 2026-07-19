@@ -595,8 +595,11 @@ def start_or_merge_sale(
     company_id: str = "",
     user_id: str = "",
     existing: SalesDraft | None = None,
+    field_overrides: dict[str, Any] | None = None,
 ) -> SalesDraft:
     fields = extract_sale_fields(message)
+    if field_overrides:
+        fields.update(field_overrides)
     if existing is None:
         draft = SalesDraft(
             draft_id=str(uuid.uuid4()),

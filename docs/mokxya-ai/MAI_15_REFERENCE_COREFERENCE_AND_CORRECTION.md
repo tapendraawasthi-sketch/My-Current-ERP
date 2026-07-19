@@ -1,35 +1,42 @@
 # MAI-15 — Reference, Coreference, and Correction
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0032](decisions/ADR_0032_REFERENCE_COREFERENCE_CORRECTION_AUTHORITY.md)  
-**Runtime:** `mai-15.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-15.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
-Expose typed discourse mention and correction candidates so later slices can
-fill slots / refine turn-relation — without applying mutations in slice 1.
+Expose typed discourse mention and correction candidates, then consume
+parseable amount corrections into pending purchase/sale drafts under a
+strict CORRECT gate.
 
 ## Slice 1
 
 1. `ReferenceCoreferenceBundleV1` on `CanonicalAIRequestV1` after MAI-14
-2. Lexicon: negate-replace amounts, `make it N`, prior cues (`tyo` / `pahile ko`)
-3. Bind FOUND draft when available; else AMBIGUOUS / UNRESOLVED
-4. Metadata + ingress stages; never `applied=true`
-5. `evals/mai15` + baseline
+2. Lexicon: negate-replace amounts, `make it N`, prior cues
+3. Never `applied=true` on candidates
+
+## Slice 2
+
+1. Project correction payloads in `metadata.reference_coreference`
+2. Thread into `mode_aware` via preprocess
+3. `select_amount_correction_overlay` → `field_overrides` on purchase/sale
+4. Emit `AppliedCorrectionReceipt` after save; candidates stay `applied=false`
+5. Only when `turn_relation == CORRECT_ACTIVE_DRAFT`
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| `500 hoina 600` + FOUND draft | amount correction candidate |
-| `tyo` without draft | AMBIGUOUS prior mention |
-| confirm-only | no corrections |
-| Bundle | `silent_applications=0`; raw_text unchanged |
+| CORRECT + `500 hoina 600` + pending purchase | `total_amount=600` + receipt |
+| CONFIRMATION | no amount write |
+| ANSWER_CLARIFICATION + amount meta | no MAI-15 overlay |
+| GENERIC_CORRECT (no value) | no write |
 
 ## Non-goals
 
-- Applying corrections into pending drafts (slice 2)
+- Party/field corrections beyond amount
 - Changing `allows_pending_merge`
 - Closing GAP-P1-004 / GAP-P1-008
 - Production approval

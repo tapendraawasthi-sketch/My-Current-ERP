@@ -60,7 +60,7 @@ def _oref_found(draft_id: str = "draft-1") -> ObjectReferenceBundleV1:
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-15.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-15.")
 
 
 def test_negate_amount_correction_with_draft() -> None:

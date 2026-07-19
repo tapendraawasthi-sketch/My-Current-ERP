@@ -26,7 +26,10 @@ from ....contracts.reference_coreference import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-15.0.1-slice1"
+RUNTIME_VERSION = "mai-15.0.2-slice2"
+
+_AMOUNT_CUE_KINDS = frozenset({"NEGATE_REPLACE", "REPLACE_AMOUNT"})
+_CORRECTABLE_PENDING_KINDS = frozenset({"purchase", "sale"})
 
 _NEGATE_AMOUNT_RE = re.compile(
     r"(?P<a>\d+(?:[.,]\d+)?)\s*(?:hoina|hoina\s*|होइन|isn'?t|not)\s*(?P<b>\d+(?:[.,]\d+)?)",
@@ -335,4 +338,109 @@ def reference_coreference_to_metadata(
         "ambiguous_count": bundle.ambiguous_count,
         "silent_applications": bundle.silent_applications,
         "draft_mutations": bundle.draft_mutations,
+        "corrections": [
+            {
+                "correction_id": c.correction_id,
+                "target_kind": c.target_kind.value,
+                "cue_kind": c.cue_kind.value,
+                "proposed_value_surface": c.proposed_value_surface,
+                "applied": False,
+            }
+            for c in bundle.corrections
+        ],
+    }
+
+
+def _relation_value(turn_relation: Any) -> str | None:
+    if turn_relation is None:
+        return None
+    if isinstance(turn_relation, TurnRelationV1):
+        return turn_relation.relation.value
+    if isinstance(turn_relation, dict):
+        rel = turn_relation.get("relation")
+        return str(rel) if rel is not None else None
+    return None
+
+
+def _parse_amount_surface(raw: str | None) -> Any:
+    from decimal import Decimal, InvalidOperation
+
+    if raw is None:
+        return None
+    text = str(raw).strip().replace(",", "")
+    if not text:
+        return None
+    try:
+        return Decimal(text)
+    except (InvalidOperation, ValueError):
+        return None
+
+
+def select_amount_correction_overlay(
+    *,
+    reference_coreference: Any,
+    turn_relation: Any,
+    pending_kind: str | None,
+) -> dict[str, Any]:
+    """Return field overlay + receipt seed when CORRECT + parseable AMOUNT.
+
+    Never applies on CONFIRMATION. Candidates remain applied=false.
+    """
+    if pending_kind not in _CORRECTABLE_PENDING_KINDS:
+        return {}
+    if _relation_value(turn_relation) != TurnRelationKind.CORRECT_ACTIVE_DRAFT.value:
+        return {}
+
+    corrections: list[Any] = []
+    if isinstance(reference_coreference, ReferenceCoreferenceBundleV1):
+        corrections = list(reference_coreference.corrections)
+    elif isinstance(reference_coreference, dict):
+        raw = reference_coreference.get("corrections") or []
+        if isinstance(raw, list):
+            corrections = raw
+
+    for item in corrections:
+        if isinstance(item, CorrectionCandidateV1):
+            target = item.target_kind.value
+            cue = item.cue_kind.value
+            value_surface = item.proposed_value_surface
+            correction_id = item.correction_id
+        elif isinstance(item, dict):
+            target = str(item.get("target_kind") or "")
+            cue = str(item.get("cue_kind") or "")
+            value_surface = item.get("proposed_value_surface")
+            correction_id = str(item.get("correction_id") or "")
+        else:
+            continue
+        if target != "AMOUNT" or cue not in _AMOUNT_CUE_KINDS:
+            continue
+        amount = _parse_amount_surface(
+            value_surface if isinstance(value_surface, str) else None
+        )
+        if amount is None:
+            continue
+        return {
+            "total_amount": amount,
+            "correction_id": correction_id or "cor-unknown",
+            "cue_kind": cue,
+            "value_surface": str(value_surface),
+            "pending_kind": pending_kind,
+        }
+    return {}
+
+
+def build_applied_correction_receipt(
+    *,
+    overlay: dict[str, Any],
+    draft_id: str,
+) -> dict[str, Any]:
+    return {
+        "correction_id": overlay.get("correction_id"),
+        "draft_id": draft_id,
+        "field_name": "total_amount",
+        "value_surface": overlay.get("value_surface"),
+        "cue_kind": overlay.get("cue_kind"),
+        "pending_kind": overlay.get("pending_kind"),
+        "runtime_version": RUNTIME_VERSION,
+        "applied": True,
     }

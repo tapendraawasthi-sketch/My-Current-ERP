@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai15-slice2-v1",
+  "dataset_hash": "8a7b81cafedaa2e1c3b10b2a33f4175cc9ba754974e09986c577e38d304490f0",
+  "phase": "MAI-15",
+  "slice": "SLICE2_AMOUNT_CORRECTION_OVERLAY",
+  "runtime_version": "mai-15.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai15/frozen/correction_apply_gate_v1.jsonl",
+      "sha256": "8a7b81cafedaa2e1c3b10b2a33f4175cc9ba754974e09986c577e38d304490f0",
+      "case_count": 8,
+      "suite_id": "correction_apply_gate_v1"
+    }
+  ]
+}

@@ -32,7 +32,10 @@ from .domain_lexicon import DomainLexiconBundleV1
 from .response_register import ResponseRegisterBundleV1
 from .language_data_governance import LanguageDataCatalogV1, KbRebuildabilityReportV1
 from .object_reference import ObjectReferenceBundleV1
-from .reference_coreference import ReferenceCoreferenceBundleV1
+from .reference_coreference import (
+    AppliedCorrectionReceiptV1,
+    ReferenceCoreferenceBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -50,6 +53,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("KbRebuildabilityReportV1", KbRebuildabilityReportV1),
     ("ObjectReferenceBundleV1", ObjectReferenceBundleV1),
     ("ReferenceCoreferenceBundleV1", ReferenceCoreferenceBundleV1),
+    ("AppliedCorrectionReceiptV1", AppliedCorrectionReceiptV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

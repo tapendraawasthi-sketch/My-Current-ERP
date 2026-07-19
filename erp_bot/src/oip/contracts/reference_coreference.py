@@ -83,10 +83,30 @@ class CorrectionCandidateV1(ContractBase):
         return v
 
 
+class AppliedCorrectionReceiptV1(ContractBase):
+    """Proof of a draft field write driven by MAI-15 (not candidate.applied)."""
+
+    correction_id: str
+    draft_id: str
+    field_name: str
+    value_surface: str
+    cue_kind: str
+    pending_kind: str
+    runtime_version: str = "mai-15.0.2-slice2"
+    applied: bool = True
+
+    @field_validator("applied")
+    @classmethod
+    def _must_be_applied(cls, v: bool) -> bool:
+        if not v:
+            raise ValueError("APPLIED_CORRECTION_RECEIPT_MUST_BE_APPLIED")
+        return v
+
+
 class ReferenceCoreferenceBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: ReferenceCoreferenceStatus = ReferenceCoreferenceStatus.NOT_RUN
-    runtime_version: str = "mai-15.0.1-slice1"
+    runtime_version: str = "mai-15.0.2-slice2"
     source_authority: str = "REQUEST"
     turn_relation_echo: TurnRelationKind | None = None
     mentions: tuple[DiscourseMentionV1, ...] = ()

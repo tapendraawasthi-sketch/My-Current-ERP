@@ -48,6 +48,7 @@ class ErpPreprocessResult:
     report_spec: dict[str, Any] | None = None
     draft_id: str | None = None
     party: str | None = None
+    applied_correction: dict[str, Any] | None = None
 
 
 def preprocess_erp_message(
@@ -66,6 +67,7 @@ def preprocess_erp_message(
     last_party: str | None = None,
     recent_parties: list[str] | None = None,
     turn_relation: dict[str, Any] | None = None,
+    reference_coreference: dict[str, Any] | None = None,
 ) -> ErpPreprocessResult | None:
     """Parse ERP transactions deterministically. Returns None for non-ERP chat."""
     stripped = (text or "").strip()
@@ -105,6 +107,7 @@ def preprocess_erp_message(
         last_party=last_party,
         recent_parties=recent_parties,
         turn_relation=turn_relation,
+        reference_coreference=reference_coreference,
     )
     if mode_result is not None and mode_result.skip_llm:
         return ErpPreprocessResult(
@@ -119,6 +122,7 @@ def preprocess_erp_message(
             error=mode_result.error,
             report_spec=mode_result.report_spec,
             draft_id=mode_result.draft_id,
+            applied_correction=mode_result.applied_correction,
         )
 
     if not is_erp_transaction_message(stripped):
