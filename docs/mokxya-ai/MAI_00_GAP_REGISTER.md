@@ -356,7 +356,7 @@ Severity legend:
 - **Dependencies:** MAI-05–09 language foundations preferred
 - **Acceptance condition:** New-topic turns do not silently merge into pending purchase drafts (tests)
 - **Status:** REDUCED (not closed)
-- **Progress (2026-07-19):** MAI-14 slice 2 gates pending merge on `TurnRelationV1` (`allows_pending_merge`). Does **not** claim full MAI-04 `context_turn_relation_v1` green or production approval.
+- **Progress (2026-07-19):** MAI-14 slice 2 gates pending merge on `TurnRelationV1` (`allows_pending_merge`). **NEXT-06:** MAI-04 `context_turn_relation_v1` component suite **35/35 PASSED**. Does **not** claim production approval.
 
 ### GAP-P1-005 — Python test suite largely ENVIRONMENT-BLOCKED in this checkout
 
@@ -395,7 +395,7 @@ Severity legend:
 - **Required remediation:** Dedicated number-role pipeline
 - **Recommended MAI phase:** MAI-09
 - **Status:** REDUCED (not closed)
-- **Progress (2026-07-19):** MAI-09 `PASSED_ENGINEERING` — duration/ID/unknown defaults, word numerals, BS/AD candidates on LanguageFrame. Does **not** claim full MAI-04 `number_roles_v1` suite green or production approval.
+- **Progress (2026-07-19):** MAI-09 `PASSED_ENGINEERING` — duration/ID/unknown defaults, word numerals, BS/AD candidates on LanguageFrame. **NEXT-06:** MAI-04 `number_roles_v1` component suite **40/40 PASSED** after scorer/parser harden (`evals/mai04/baselines/next06_component_reproof/…`). Does **not** claim production approval or full MAI-04 quality gate.
 
 ### GAP-P1-008 — Turn-relation / stale-draft topic change weak (MAI-04 baseline)
 
@@ -408,7 +408,7 @@ Severity legend:
 - **Required remediation:** Broader classifier coverage; prove MAI-04 suite
 - **Recommended MAI phase:** MAI-14 (related GAP-P1-004)
 - **Status:** REDUCED (not closed)
-- **Progress (2026-07-19):** Merge gate + critical evals; full frozen suite not claimed green.
+- **Progress (2026-07-19):** Merge gate + critical evals. **NEXT-06:** MAI-04 `context_turn_relation_v1` component suite **35/35 PASSED**. Broader product stale-draft risk still monitored; not production-approved.
 
 ### GAP-P1-009 — Multilingual / Romanized / code-mix understanding incomplete (MAI-04 baseline)
 
@@ -422,7 +422,7 @@ Severity legend:
 - **Recommended MAI phase:** MAI-08
 - **Status:** REDUCED (not closed)
 - **Status:** OPEN (normalization foundation landed; multilingual product weakness not closed)
-- **Progress (2026-07-19):** MAI-08 `PASSED_ENGINEERING`; MAI-10 `PASSED_ENGINEERING`; MAI-11 slice 1 `IN_PROGRESS` (response language/register policy). Does **not** close this gap.
+- **Progress (2026-07-19):** MAI-08/10/11 `PASSED_ENGINEERING`. **NEXT-06:** MAI-04 `multilingual_v1` remains **40/40 HUMAN_REVIEW_REQUIRED** — automation waived pending linguist/product-policy sample review (NEXT-09). Does **not** close this gap.
 
 ---
 

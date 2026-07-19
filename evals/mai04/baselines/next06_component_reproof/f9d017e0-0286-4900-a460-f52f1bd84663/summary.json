@@ -1,0 +1,203 @@
+{
+  "blocked": 0,
+  "by_status": {
+    "BLOCKED": 0,
+    "ERROR": 0,
+    "FAILED": 60,
+    "HUMAN_REVIEW_REQUIRED": 40,
+    "PASSED": 145,
+    "SKIPPED": 0
+  },
+  "by_suite_prefix": {
+    "mai04_acct": {
+      "FAILED": 20,
+      "PASSED": 20
+    },
+    "mai04_crit": {
+      "FAILED": 25,
+      "PASSED": 5
+    },
+    "mai04_ctx": {
+      "PASSED": 35
+    },
+    "mai04_know": {
+      "FAILED": 2,
+      "PASSED": 13
+    },
+    "mai04_multi": {
+      "HUMAN_REVIEW_REQUIRED": 40
+    },
+    "mai04_num": {
+      "PASSED": 40
+    },
+    "mai04_resp": {
+      "FAILED": 9,
+      "PASSED": 6
+    },
+    "mai04_safe": {
+      "FAILED": 4,
+      "PASSED": 26
+    }
+  },
+  "classification": {
+    "accuracy": 0.7647058823529411,
+    "confusion_matrix": {
+      "bank": {
+        "sale": 1
+      },
+      "cash": {
+        "sale": 1
+      },
+      "credit": {
+        "sale": 1
+      },
+      "expense": {
+        "payment": 1
+      },
+      "inventory_loss": {
+        "inventory_loss": 2
+      },
+      "ledger": {
+        "report": 1
+      },
+      "occurred": {
+        "purchase": 1
+      },
+      "partial": {
+        "payment": 1
+      },
+      "payment": {
+        "payment": 14
+      },
+      "purchase": {
+        "purchase": 1
+      },
+      "receipt": {
+        "receipt": 1
+      },
+      "report": {
+        "report": 3
+      },
+      "sale": {
+        "sale": 5
+      },
+      "theft": {
+        "inventory_loss": 1
+      }
+    },
+    "macro_f1": 0.3590266875981162,
+    "note": "Overall accuracy is non-authoritative; prefer macro-F1 and per-class",
+    "per_class": {
+      "bank": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "cash": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "credit": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "expense": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "inventory_loss": {
+        "f1": 0.8,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "support": 2
+      },
+      "ledger": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "occurred": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "partial": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      },
+      "payment": {
+        "f1": 0.9333333333333333,
+        "precision": 0.875,
+        "recall": 1.0,
+        "support": 14
+      },
+      "purchase": {
+        "f1": 0.6666666666666666,
+        "precision": 0.5,
+        "recall": 1.0,
+        "support": 1
+      },
+      "receipt": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 1
+      },
+      "report": {
+        "f1": 0.8571428571428571,
+        "precision": 0.75,
+        "recall": 1.0,
+        "support": 3
+      },
+      "sale": {
+        "f1": 0.7692307692307693,
+        "precision": 0.625,
+        "recall": 1.0,
+        "support": 5
+      },
+      "theft": {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 1
+      }
+    }
+  },
+  "critical_safety_verdict": "RED",
+  "dataset_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+  "dataset_manifest_id": "MAI_04_FROZEN_V1",
+  "error": 0,
+  "failed": 60,
+  "harness_valid": true,
+  "human_review_required": 40,
+  "informational_overall_score_formula": "mean(scorer.score for scored scorers); NON-AUTHORITATIVE",
+  "latency_ms": {
+    "max": 371,
+    "mean": 1.5183673469387755,
+    "min": 0,
+    "note": "Not an SLO; small-sample observational only",
+    "sample_count": 245
+  },
+  "mode": "component",
+  "passed": 145,
+  "quality_baseline_recorded": true,
+  "quality_failures_affect_exit": false,
+  "quality_gate_passed": false,
+  "run_id": "f9d017e0-0286-4900-a460-f52f1bd84663",
+  "runner_version": "mai-04.1.0",
+  "semantic_hash": "3f24db73445fc772457eb9d61332c7bb21c120f12f6091314982e8c9016a9cf4",
+  "skipped": 0,
+  "successful_mutations": 0,
+  "total": 245
+}

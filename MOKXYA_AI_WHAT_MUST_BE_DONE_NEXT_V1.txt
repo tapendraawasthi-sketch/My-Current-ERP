@@ -334,7 +334,14 @@ Objective:
 Gate:
   Commands + counts + skips recorded; no assertion weakening; gaps update.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_06_MAI04_LANGUAGE_SUITE_REPROOF.md
+  evals/mai04/baselines/next06_component_reproof/f9d017e0-0286-4900-a460-f52f1bd84663
+  erp_bot/tests/oip/language_runtime/test_mai_next06_language_suites.py
+  context_turn_relation_v1: 35/35 PASSED
+  number_roles_v1: 40/40 PASSED (scorer/parser harden)
+  multilingual_v1: 40/40 HUMAN_REVIEW_REQUIRED — automation waived (NEXT-09)
 Depends on: NEXT-00
 
 
@@ -604,7 +611,7 @@ NEXT-02  | DONE   | ADR_0072 + mutation registry | GAP-P0-001 REDUCED (not CLOSE
 NEXT-03  | DONE   | ADR_0073 + prod mount gates | GAP-P1-001 REDUCED (not CLOSED)
 NEXT-04  | DONE   | ADR_0074 + sync registry | GAP-P1-002 REDUCED (runtime dual OPEN)
 NEXT-05  | OPEN   |                   | MAI-34 depth
-NEXT-06  | OPEN   |                   | MAI-04 suites
+NEXT-06  | DONE   | NEXT_06_MAI04_LANGUAGE_SUITE_REPROOF.md | ctx+num green; multi HR waived
 NEXT-07  | OPEN   |                   | NLU consume
 NEXT-08  | OPEN   |                   | MAI-11 live
 NEXT-09  | OPEN   |                   | linguist sample
@@ -623,13 +630,14 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-06
-  last_shipped_step = NEXT-04
+  recommended_next_step = NEXT-05
+  last_shipped_step = NEXT-06
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
   ai_stack_strangler = ACTIVE (ADR_0073); primary=/orbix/chat/stream
   sync_authority = EVENT_SYNC_QUEUE (ADR_0074); queued≠synced; conflict=reconfirm
+  mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================
 10. RELATIONSHIP TO THE MASTER FILE

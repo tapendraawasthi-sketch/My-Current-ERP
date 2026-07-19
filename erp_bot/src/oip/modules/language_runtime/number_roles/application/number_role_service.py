@@ -30,6 +30,11 @@ _MONEY_CTX = re.compile(
 )
 _INV_CTX = re.compile(r"(?i)\b(invoice|bill|inv|बिल)\b")
 _ID_CTX = re.compile(r"(?i)\b(pan|vat|प्यान|भ्याट|phone|mobile|नम्बर)\b")
+_INST_CTX = re.compile(r"(?i)\b(\d+)\s*installments?\b")
+_FY_CTX = re.compile(r"(?i)\bFY\s*(\d{4})\s*/\s*(\d{2,4})\b")
+_UNIT_PRICE_CTX = re.compile(
+    r"(?i)\b(unit\s*price|rate|मूल्य)\b",
+)
 
 _PROTECTED_ID_KINDS = {
     ProtectedKind.PHONE_CANDIDATE.value,
@@ -140,7 +145,7 @@ def parse_number_roles(
             normalized_value=w.get("normalized_value"),
         )
 
-    # 3) Duration / percent
+    # 3) Duration / percent / installment / FY (claim before bare numerals)
     for m in _DURATION.finditer(text):
         _add(
             m.group(1),
@@ -158,6 +163,26 @@ def parse_number_roles(
             m.start(1),
             m.end(1),
             reasons=("PERCENT_LITERAL",),
+        )
+
+    for m in _INST_CTX.finditer(text):
+        _add(
+            m.group(1),
+            NumberRoleKind.UNKNOWN,
+            m.start(1),
+            m.end(1),
+            reasons=("INSTALLMENT_COUNT_CUE",),
+            ambiguous=False,
+        )
+
+    for m in _FY_CTX.finditer(text):
+        _add(
+            m.group(1),
+            NumberRoleKind.UNKNOWN,
+            m.start(1),
+            m.end(1),
+            reasons=("FISCAL_YEAR_CUE",),
+            ambiguous=False,
         )
 
     # 4) Remaining bare numerals
@@ -185,6 +210,9 @@ def parse_number_roles(
         local = f"{left_near} {surface} {right_near}"
 
         money_hit = bool(_MONEY_CTX.search(local))
+        unit_price_hit = bool(_UNIT_PRICE_CTX.search(left_near)) or bool(
+            _UNIT_PRICE_CTX.search(local)
+        )
         inv_hit = bool(_INV_CTX.search(left_near))
         id_hit = bool(_ID_CTX.search(left_near)) or (
             bool(_ID_CTX.search(local)) and len(surface.replace(".", "")) >= 8
@@ -206,8 +234,18 @@ def parse_number_roles(
         if qty_hit:
             _add(surface, NumberRoleKind.QUANTITY, start, end, reasons=("QUANTITY_CONTEXT_CUE",))
             continue
-        if money_hit:
-            _add(surface, NumberRoleKind.AMOUNT, start, end, reasons=("MONEY_CONTEXT_CUE",))
+        if unit_price_hit or money_hit:
+            _add(
+                surface,
+                NumberRoleKind.AMOUNT,
+                start,
+                end,
+                reasons=(
+                    ("UNIT_PRICE_CONTEXT_CUE",)
+                    if unit_price_hit
+                    else ("MONEY_CONTEXT_CUE",)
+                ),
+            )
             continue
         _add(surface, NumberRoleKind.UNKNOWN, start, end, reasons=("NO_ROLE_CUE",))
 

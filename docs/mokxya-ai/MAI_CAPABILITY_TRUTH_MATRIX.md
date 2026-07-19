@@ -16,7 +16,7 @@
 | Track I (MAI-50…53) | **Dormant / FREEZE ACTIVE** ([ADR_0071](decisions/ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md)) until **NEXT-20** |
 | `production_approved` (product) | **false** |
 | `legal_effective_dates_proven` | **false** |
-| Recommended next step | **NEXT-06** (MAI-04 language suites) |
+| Recommended next step | **NEXT-05** (confirm path honesty) |
 
 **PASSED_ENGINEERING ≠ master Gate proven ≠ production released.**
 
@@ -37,9 +37,9 @@
 | GAP-P0-001 | REDUCED | Dual writers remain; sole-OEC still false (ADR_0072) |
 | GAP-P1-001 | REDUCED | Prod secondary mounts gated (ADR_0073); code remains |
 | GAP-P1-002 | REDUCED | Accounting EVENT_SYNC_QUEUE (ADR_0074); residual dual OPEN |
-| GAP-P1-004 / P1-008 | REDUCED | Stale-draft / turn-relation suites |
-| GAP-P1-007 | REDUCED | Number-role suite green |
-| GAP-P1-009 | OPEN | Multilingual product quality |
+| GAP-P1-004 / P1-008 | REDUCED | NEXT-06 turn-relation suite 35/35 component green |
+| GAP-P1-007 | REDUCED | NEXT-06 number_roles suite 40/40 component green |
+| GAP-P1-009 | OPEN | NEXT-06 multilingual 40/40 HR — automation waived |
 | GAP-P1-012 | OPEN | Linguist approval path |
 | GAP-P2-001 | OPEN | Prod retrieval without Ollama |
 | GAP-P2-002 | OPEN | UI vs engine calc authority |
@@ -53,7 +53,7 @@
 | MAI-01 | GATE_PROVEN | primary path partial | false | P1-001, P1-006 |
 | MAI-02 | GATE_PROVEN | contracts | false | — |
 | MAI-03 | GATE_PROVEN | observability | false | — |
-| MAI-04 | GATE_PROVEN | harness (suites still open) | false | P1-007/008/009, P2-008 |
+| MAI-04 | GATE_PROVEN | harness (ctx+num green; multi HR) | false | P1-007/008/009, P2-008 |
 | MAI-05 | GATE_PROVEN | pipeline active | false | P1-009 |
 | MAI-06 | GATE_PROVEN | pipeline active | false | P1-009 |
 | MAI-07 | GATE_PROVEN | runtime active (transliteration) | false* | P1-009, P1-012 |
@@ -105,7 +105,8 @@ Per `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` default order:
 2. ~~NEXT-02~~ — Mutation authority Option A / GAP-P0-001 REDUCED (ADR_0072)  
 3. ~~NEXT-03~~ — Production AI stack strangler / GAP-P1-001 REDUCED (ADR_0073)  
 4. ~~NEXT-04~~ — Sync authority / GAP-P1-002 REDUCED (ADR_0074)  
-5. **NEXT-06** — Reprove MAI-04 critical language suites
+5. ~~NEXT-06~~ — MAI-04 language suites reproof (ctx+num green; multi HR waived)  
+6. **NEXT-05** — Confirm path honesty depth
 
 ## Explicit non-claims
 

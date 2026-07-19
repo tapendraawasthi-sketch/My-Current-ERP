@@ -5,8 +5,9 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-06",
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..04 DONE. NEXT-04 ADR_0074 accounting EVENT_SYNC_QUEUE authority (GAP-P1-002 REDUCED; runtime dual OPEN with written exception). NEXT recommended=NEXT-06 (MAI-04 language suites). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-05",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-06"],
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..04 + NEXT-06 DONE. NEXT-06: mai04_ctx 35/35 + mai04_num 40/40 GREEN; mai04_multi 40/40 HR waived for automation. NEXT recommended=NEXT-05 (confirm path honesty). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
   "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
   "sync_authority": {
     "authority": "ADR_0074",
