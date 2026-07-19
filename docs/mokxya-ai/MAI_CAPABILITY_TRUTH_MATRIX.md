@@ -1,0 +1,111 @@
+# MAI Capability Truth Matrix
+
+**Date:** 2026-07-19  
+**Authority:** `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` → **NEXT-00**  
+**Machine copy:** [`MAI_CAPABILITY_TRUTH_MATRIX.json`](MAI_CAPABILITY_TRUTH_MATRIX.json)  
+**Master:** `MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt`
+
+## Verdict
+
+| Field | Value |
+|-------|-------|
+| Master phase IDs | Exhausted at **MAI-53** |
+| MAI-08…53 ledger | `PASSED_ENGINEERING` |
+| Any continuum row `PRODUCTION` | **0** |
+| Any continuum row `PILOT` | **0** |
+| Track I (MAI-50…53) | **Dormant** — deepen only after **NEXT-20** |
+| `production_approved` (product) | **false** |
+| `legal_effective_dates_proven` | **false** |
+
+**PASSED_ENGINEERING ≠ master Gate proven ≠ production released.**
+
+## Depth legend
+
+| Depth | Meaning |
+|-------|---------|
+| `ANNOTATION_ONLY` | Policy/bundle only; no consume |
+| `CANDIDATE_CONSUMED` | Policy + `CANDIDATE_ONLY` consume; live `allow_*=false`; master Gate not proven |
+| `GATE_PROVEN` | Master Gate satisfied for stated scope |
+| `PILOT` | Limited human-reviewed cohort |
+| `PRODUCTION` | Explicit human `production_approved` for a capability row |
+
+## Blocking gaps (still open / reduced)
+
+| Gap | Status | Blocks |
+|-----|--------|--------|
+| GAP-P0-001 | OPEN | Mutation authority, confirm/OEC depth |
+| GAP-P1-001 | OPEN | Single AI entrypoint |
+| GAP-P1-002 | OPEN | Sync authority |
+| GAP-P1-004 / P1-008 | REDUCED | Stale-draft / turn-relation suites |
+| GAP-P1-007 | REDUCED | Number-role suite green |
+| GAP-P1-009 | OPEN | Multilingual product quality |
+| GAP-P1-012 | OPEN | Linguist approval path |
+| GAP-P2-001 | OPEN | Prod retrieval without Ollama |
+| GAP-P2-002 | OPEN | UI vs engine calc authority |
+| GAP-P2-008 | OPEN | Knowledge/no-answer & citation honesty |
+
+## Phase matrix (MAI-00 … MAI-53)
+
+| Phase | Depth | Live effect | Prod approved | Linked gaps |
+|-------|-------|-------------|---------------|-------------|
+| MAI-00 | GATE_PROVEN | docs | false | — |
+| MAI-01 | GATE_PROVEN | primary path partial | false | P1-001, P1-006 |
+| MAI-02 | GATE_PROVEN | contracts | false | — |
+| MAI-03 | GATE_PROVEN | observability | false | — |
+| MAI-04 | GATE_PROVEN | harness (suites still open) | false | P1-007/008/009, P2-008 |
+| MAI-05 | GATE_PROVEN | pipeline active | false | P1-009 |
+| MAI-06 | GATE_PROVEN | pipeline active | false | P1-009 |
+| MAI-07 | GATE_PROVEN | runtime active (transliteration) | false* | P1-009, P1-012 |
+| MAI-08 | CANDIDATE_CONSUMED | pipeline partial | false | P1-009 |
+| MAI-09 | CANDIDATE_CONSUMED | pipeline partial | false | P1-007 |
+| MAI-10 | CANDIDATE_CONSUMED | pipeline partial | false | P1-009 |
+| MAI-11 | CANDIDATE_CONSUMED | pipeline partial | false | P1-009 |
+| MAI-12 | CANDIDATE_CONSUMED | tooling | false | P2-005 REDUCED |
+| MAI-13 | CANDIDATE_CONSUMED | pipeline partial | false | — |
+| MAI-14 | CANDIDATE_CONSUMED | pipeline partial | false | P1-004, P1-008 |
+| MAI-15 | CANDIDATE_CONSUMED | pipeline partial | false | — |
+| MAI-16 | CANDIDATE_CONSUMED | pipeline partial | false | P1-001 |
+| MAI-17…23 | CANDIDATE_CONSUMED | scaffold / partial | false | — |
+| MAI-24…30 | CANDIDATE_CONSUMED | scaffold (knowledge) | false | P2-008, P2-001 |
+| MAI-31…35 | CANDIDATE_CONSUMED | scaffold (action/sync) | false | P0-001, P1-002, P2-002 |
+| MAI-36…43 | CANDIDATE_CONSUMED | scaffold (legal/tax) | false | P2-008 |
+| MAI-44…49 | CANDIDATE_CONSUMED | scaffold (ops/release) | false | — |
+| **MAI-50…53** | **CANDIDATE_CONSUMED** | **DORMANT Track I** | **false** | (no deepen until NEXT-20) |
+
+\*MAI-07 R3S cut over an active transliteration runtime/pack. That is **not** product-wide `production_approved` for Ask/Accountant capabilities.
+
+## Launch capability candidates (master §32)
+
+| Launch row | Depth | Prod approved | Blocked by |
+|------------|-------|---------------|------------|
+| Ask — company report questions | ANNOTATION_ONLY | false | P1-001, P2-008, P2-001, NEXT-12/13/20 |
+| Accountant — sales/purchase draft+confirm | ANNOTATION_ONLY | false | P0-001, P1-002, P1-007/008, P2-002, NEXT-02/12/20 |
+| Ask — product/accounting explanation | ANNOTATION_ONLY | false | P2-008, NEXT-13/20 |
+
+**None are PRODUCTION. None are PILOT.**
+
+## Counts
+
+| Depth | Count |
+|-------|------:|
+| GATE_PROVEN | 8 (MAI-00…07) |
+| CANDIDATE_CONSUMED | 46 (MAI-08…53) |
+| ANNOTATION_ONLY (phases) | 0 |
+| PILOT | 0 |
+| PRODUCTION | 0 |
+| Track I dormant | 4 |
+| Launch rows PRODUCTION | 0 |
+
+## What this unlocks next
+
+Per `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` default order:
+
+1. **NEXT-01** — freeze Track I deepening until NEXT-20  
+2. **NEXT-02** — GAP-P0-001 mutation authority convergence  
+3. Then language suite reproof, sync/confirm depth, launch E2E, citation honesty, first real release
+
+## Explicit non-claims
+
+- Does not close any gap  
+- Does not authorize speech, document ingest, CA engagement, calendar arm, cutover, or traffic  
+- Does not mark any MAI-08…53 row GATE_PROVEN or PRODUCTION  

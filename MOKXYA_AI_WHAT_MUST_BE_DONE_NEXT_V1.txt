@@ -1,0 +1,620 @@
+MOKXYA AI
+WHAT MUST BE DONE NEXT
+(After Master Roadmap MAI-00 … MAI-53)
+
+Version: 1.0
+Date: 2026-07-19
+Companion to:
+  MOKXYA_AI_MASTER_ARCHITECTURE_AND_CURSOR_ROADMAP_V1.txt
+Product family: MokXya / MokXya Hisab / MokXya ERP / Ask MokXya
+Status of companion ledger: MAI-08 … MAI-53 = PASSED_ENGINEERING
+  (production_approved=false for the continuum; GAP-P2-008 still OPEN)
+
+======================================================================
+0. PURPOSE OF THIS FILE
+======================================================================
+
+The master file defines the full architecture and the original 54 phases
+(MAI-00 through MAI-53). That roadmap is now exhausted as a *phase ID list*.
+
+This file answers the only useful question left:
+
+  What must be done next so MokXya actually becomes the advanced Nepal
+  accounting AI we set out to build — not another layer of annotation stubs?
+
+Use this file as the governing “continue / go” queue after MAI-53.
+Do not invent MAI-54+ feature theatre until the waves below say so.
+
+HOW TO USE WITH CURSOR
+
+1. Owner says “go” (or names a step ID, e.g. NEXT-03).
+2. Operator picks the earliest incomplete NEXT-* step that is still OPEN.
+3. One step per ship: inspect → tests → smallest change → evidence → push.
+4. Update the Progress table at the bottom of this file after each ship.
+5. Never mark a step DONE because code compiles or because a policy flag exists.
+6. Never claim production_approved, legal proof, sole-OEC, or gap CLOSED without
+   the acceptance conditions written in the step.
+
+======================================================================
+1. WHAT WE ARE BUILDING (REMINDER)
+======================================================================
+
+Public product: Ask MokXya inside MokXya Hisab / MokXya ERP.
+
+Target (from master §1 — still correct):
+
+  ChatGPT-like conversation quality inside a controlled Nepal accounting,
+  financial-reporting, legal, tax, and business domain — and *better than*
+  a general assistant for:
+    - company-scoped answers
+    - informal shopkeeper language → structured accounting previews
+    - deterministic calculations and safe posting
+    - evidence-based Nepal law/tax research (with uncertainty)
+
+Not the target:
+
+  Universal ChatGPT clone
+  Autonomous posting from model confidence
+  Guaranteed legal conclusions without reviewed sources
+  “Fully automatic CA / lawyer” marketing
+
+Core UX that must work end-to-end for launch:
+
+  User types/speaks EN / Nepali Devanagari / Romanized / mix
+  → MokXya understands in context
+  → retrieves authorized facts
+  → answers, clarifies, or prepares a typed preview
+  → user reviews/edits
+  → nothing posts until explicit scoped confirmation
+  → deterministic services validate and execute
+  → real receipt + honest sync state
+
+======================================================================
+2. HOW ADVANCED IT SHOULD BE (HONEST BAR)
+======================================================================
+
+“Advanced” for MokXya means these bars, in order:
+
+BAR A — SAFE
+  Wrong mutation, cross-tenant leak, or false legal current-law claim is blocked.
+  Ask Mode cannot mutate. NL “yes/huncha” alone cannot post.
+
+BAR B — USEFUL IN SHOP LANGUAGE
+  English + Devanagari + Romanized + code-mix produce stable slots for supported
+  events. Number/date/money roles do not treat “5 months” as NPR 5.
+  New topics do not silently merge into stale drafts.
+
+BAR C — USEFUL FOR BOOKKEEPING
+  Supported purchase/sales/payment-class events go draft → preview → confirm →
+  receipt on one documented write authority, with idempotency and audit.
+
+BAR D — HONEST KNOWLEDGE
+  No-answer when evidence is missing. Citations entail claims. Legal/tax
+  currentness is never invented. Prod retrieval does not depend on a local-only
+  Ollama/Chroma stack the cloud never runs.
+
+BAR E — NARROW RELEASE
+  One capability matrix row can be PRODUCTION_APPROVED with monitoring,
+  rollback, and disclosed limitations — not “all of AI is live.”
+
+BAR F — PROFESSIONAL EXTENSIONS (LATER)
+  Speech, private documents, CA workpapers, compliance calendars — only after
+  Bars A–E for the launch slice. Track I in the master file remains future work;
+  current MAI-50…53 engineering stubs are *not* those capabilities.
+
+======================================================================
+3. HONEST STATUS AFTER MAI-00 … MAI-53
+======================================================================
+
+3.1 What the continuum achieved (valuable)
+
+  - Authority map, contracts, traces, frozen eval harness foundations
+  - Language runtime spine (spans, normalization, transliteration cutover,
+    code-mix/typo abstention, number/date roles, lexicon, response register)
+  - Context / turn-relation / planning / provider / prompt registry scaffolding
+  - Knowledge governance → lexical/vector/hybrid → claim-citation *policy*
+  - Accounting action integration *policy* (EventFrame→draft→preview→confirm→sync)
+  - Legal/tax/NFRS/close/judicial/change *policy* continuum
+  - Hardening / learning / release / Track I *policy* continuum
+  - Fail-closed honesty flags almost everywhere (allow_*=false on live paths)
+
+3.2 What “PASSED_ENGINEERING” does NOT mean
+
+  For most of MAI-08…MAI-53 it means:
+    typed bundles + cue/policy annotation + CANDIDATE_ONLY consume + tests
+    + docs/ADR + ledger row
+
+  It does NOT mean the master file’s phase Gate is satisfied.
+  It does NOT mean production_approved.
+  It does NOT mean GAP-P0-001 / GAP-P1-002 / GAP-P2-008 are closed.
+  It does NOT mean speech/docs/CA/calendar are live product features.
+
+3.3 Critical open gaps that still block “advanced product”
+
+  P0 OPEN
+    GAP-P0-001  OEC is not the sole mutation authority (dual writers)
+
+  P1 OPEN / REDUCED (launch-relevant)
+    GAP-P1-001  Multiple parallel AI stacks still HTTP-reachable
+    GAP-P1-002  Dual sync authorities
+    GAP-P1-004 / GAP-P1-008  Turn-relation / stale-draft (REDUCED, not suite-green)
+    GAP-P1-007  Number roles (REDUCED, not suite-green)
+    GAP-P1-009  Multilingual product weakness (still OPEN/REDUCED)
+    GAP-P1-012  Professional linguist approval path still material
+
+  P2 OPEN (truth / parity)
+    GAP-P2-008  Knowledge/no-answer & citation honesty
+    GAP-P2-001  Chroma/Ollama RAG vs Groq production mismatch
+    GAP-P2-002  Frontend calculates authoritative-looking totals
+
+3.4 Master roadmap tracks — completion truth
+
+  Track A (00–04)     Foundations present; keep baselines honest
+  Track B (05–12)     Runtime present; product quality suites not fully green
+  Track C (13–16)     Stores/policies present; full multi-turn product proof incomplete
+  Track D (17–23)     Router/planner/provider scaffolding; not sole production NLU
+  Track E (24–30)     Policy/index path; citation honesty + prod retrieval still OPEN
+  Track F (31–35)     Policy/candidates; dual write + dual sync still OPEN
+  Track G (36–43)     Research/tax/reporting *policy*; legal dates not proven
+  Track H (44–49)     Ops/release *policy*; no production capability released
+  Track I (50–53)     Future channels *policy only*; do not deepen until Bars A–E
+
+======================================================================
+4. GOVERNING RULE FOR THE NEXT CONTINUUM
+======================================================================
+
+STOP adding new MAI-5x “capability policy” phases.
+
+START deepening the earliest incomplete *product* bar:
+
+  Safety → Shop language quality → Bookkeeping loop → Knowledge honesty
+  → One narrow production release → only then Track I real work
+
+Every NEXT step must:
+  - name the gap or master gate it advances
+  - keep fail-closed defaults
+  - add/prove tests the master would recognize
+  - refuse false authority claims
+  - leave production_approved=false unless the step explicitly is a release decision
+    owned by a human release approver
+
+Conflict-register caution (still in force):
+  Prefer not to thrash mode_aware_erp.py, khata *_draft.py, Dexie posting,
+  Node confirm writers, OrbixWorkspace, syncCoordinator / badge UI unless the
+  active NEXT step explicitly requires it and acceptance tests are ready.
+
+======================================================================
+5. ORDERED WORK QUEUE (USE THESE STEP IDs)
+======================================================================
+
+----------------------------------------------------------------------
+WAVE 0 — TRUTH AND CONTROL PLANE
+----------------------------------------------------------------------
+
+NEXT-00 — CAPABILITY TRUTH MATRIX (do first; short; no product UX change)
+
+Objective:
+  Publish one matrix that, for every MAI-08…MAI-53 capability and for launch
+  candidates in master §32, states:
+    ANNOTATION_ONLY | CANDIDATE_CONSUMED | GATE_PROVEN | PILOT | PRODUCTION
+  plus production_approved=false/true and linked gaps.
+
+Deliverables:
+  docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.md (or .json)
+  pointer from this file and MAI_PHASE_LEDGER.json active_phase_note
+
+Gate:
+  No capability overstated vs code; Track I rows marked ANNOTATION_ONLY;
+  open P0/P1/P2 gaps listed beside blocked capabilities.
+
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.md
+  docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json
+  erp_bot/tests/oip/language_runtime/test_mai_capability_truth_matrix.py
+
+
+NEXT-01 — FREEZE “NO NEW TRACK-I UNTIL BAR E”
+
+Objective:
+  Ledger + this file rule: MAI-50…53 remain PASSED_ENGINEERING / dormant.
+  No speech ASR, document ingest, engagement open, or calendar arm work until
+  NEXT-20 (first narrow production capability) is either DONE or explicitly
+  deferred by owner with written risk acceptance.
+
+Gate:
+  Ledger note + ADR or decision line records the freeze.
+
+Status: OPEN
+
+
+----------------------------------------------------------------------
+WAVE 1 — BAR A: LAUNCH-CRITICAL SAFETY
+----------------------------------------------------------------------
+
+NEXT-02 — MUTATION AUTHORITY CONVERGENCE PLAN (GAP-P0-001)
+
+Objective:
+  Stop architectural lying. Choose and document ONE of:
+    (A) Model B Dexie remains product mutation authority; OEC is future/async;
+        all public docs and AI claims match; alternate paths classified/gated.
+    (B) Strangler plan with milestones to sole-OEC; interim dual-write forbidden
+        or explicitly dual-write with reconciliation tests.
+  Implement the *policy enforcement* chosen — not a fake “OEC-only” claim.
+
+Gate:
+  ADR accepted; tests prove alternate mutation paths are denied or classified;
+  GAP-P0-001 moves to REDUCED only if acceptance conditions met; never CLOSED
+  by annotation alone.
+
+Status: OPEN
+Depends on: NEXT-00
+
+
+NEXT-03 — PRODUCTION STACK STRANGLER (GAP-P1-001)
+
+Objective:
+  In production config, non-canonical AI HTTP stacks (NIOS / Orbix-v2 / legacy
+  chat) are auth-blocked, capability-flagged off, or retired. Primary Ask path
+  remains the single user-facing intelligence entry.
+
+Gate:
+  Production matrix test: secondary stacks cannot mutate or serve as default;
+  GAP-P1-001 REDUCED or CLOSED with evidence.
+
+Status: OPEN
+Depends on: NEXT-02 recommended (or parallel if owner approves)
+
+
+NEXT-04 — SYNC AUTHORITY HARDENING (GAP-P1-002 / MAI-35 depth)
+
+Objective:
+  One authoritative accounting sync narrative. Conflict = reconfirm.
+  Queued ≠ synced. No silent dual outbox for same voucher class.
+
+Gate:
+  Two-device / conflict tests; dual_sync_status no longer OPEN without written
+  exception; GAP-P1-002 REDUCED with evidence (CLOSED only when single path proven).
+
+Status: OPEN
+Depends on: NEXT-02
+
+
+NEXT-05 — CONFIRM PATH HONESTY DEPTH (MAI-34 depth, still fail-closed)
+
+Objective:
+  Explicit short-lived confirm token semantics on the *actual* product mutation
+  path (whatever NEXT-02 chose). NL assent still never posts.
+  AI confirm_oec_candidate remains non-authority unless product path is OEC.
+
+Gate:
+  Tests: NL yes does not post; token reuse fails; wrong tenant denied;
+  receipt required for success claims.
+
+Status: OPEN
+Depends on: NEXT-02
+
+
+----------------------------------------------------------------------
+WAVE 2 — BAR B: SHOP LANGUAGE THAT ACTUALLY WORKS
+----------------------------------------------------------------------
+
+NEXT-06 — REPROVE MAI-04 CRITICAL LANGUAGE SUITES
+
+Objective:
+  Run and harden until these frozen suites are honestly green or explicitly
+  waived with owner + linguist note:
+    number_roles_v1 (GAP-P1-007)
+    context_turn_relation_v1 (GAP-P1-004 / GAP-P1-008)
+    multilingual / romanized critical shards (GAP-P1-009)
+
+Gate:
+  Commands + counts + skips recorded; no assertion weakening; gaps update.
+
+Status: OPEN
+Depends on: NEXT-00
+
+
+NEXT-07 — CONSUME LANGUAGE CANDIDATES INTO PRIMARY NLU (gated)
+
+Objective:
+  Where safe, let LanguageFrame / transliteration / number-role / concept
+  candidates affect intent/event extraction on the primary Orbix/OIP path —
+  still never silent master-data bind, never silent draft write.
+
+Gate:
+  Before/after on frozen cases; protected spans preserved; fuzzy party/item
+  still abstains under ambiguity.
+
+Status: OPEN
+Depends on: NEXT-06
+
+
+NEXT-08 — RESPONSE LANGUAGE LIVE PARITY
+
+Objective:
+  User-facing replies on the primary path actually follow MAI-11 register/
+  language policy for EN / Devanagari / Romanized (no mechanical rewrite of
+  names, IDs, citations).
+
+Gate:
+  Focused evals + spot pilot samples; applied_response_rewrite remains false
+  unless a reviewed rewrite policy is accepted.
+
+Status: OPEN
+Depends on: NEXT-07 optional; may run after NEXT-06
+
+
+NEXT-09 — NEPALI LINGUIST / PRODUCT-POLICY SAMPLE REVIEW
+
+Objective:
+  Human sample review of Romanized/code-mix/shop utterances and response
+  register. Record LINGUIST_APPROVED or PRODUCT_POLICY_APPROVED for the
+  launch language slice only (not “all Nepali forever”).
+
+Gate:
+  Signed review note + residual risk list; GAP-P1-012 progress updated.
+
+Status: OPEN
+Depends on: NEXT-06
+
+
+----------------------------------------------------------------------
+WAVE 3 — BAR C: BOOKKEEPING LOOP FOR LAUNCH SLICE
+----------------------------------------------------------------------
+
+NEXT-10 — LAUNCH EVENT SPEC FREEZE (narrow)
+
+Objective:
+  Freeze a tiny supported event set for first public AI assistance, e.g.:
+    sales invoice draft, purchase invoice draft, receipt/payment (if ready),
+    and Ask Mode company report Q&A.
+  Everything else stays unsupported/clarify/escalate.
+
+Gate:
+  Event Spec Registry rows with authority owners; unsupported → safe message.
+
+Status: OPEN
+Depends on: NEXT-02, NEXT-06
+
+
+NEXT-11 — DRAFT → PREVIEW → EDIT LOOP DEPTH (MAI-32/33)
+
+Objective:
+  Versioned drafts + deterministic preview for the launch event set.
+  UI totals labeled non-authoritative where engine owns calc (GAP-P2-002).
+
+Gate:
+  Parity tests engine vs UI display; edit loop does not invent parties/amounts;
+  GAP-P2-002 REDUCED with documented calc owner.
+
+Status: OPEN
+Depends on: NEXT-10, NEXT-05
+
+
+NEXT-12 — END-TO-END LAUNCH SLICE (language → receipt)
+
+Objective:
+  One vertical E2E path per launch event:
+    mixed-language utterance → clarify if needed → draft → preview → confirm
+    → receipt → honest sync badge.
+
+Gate:
+  Automated E2E + manual script; no dual silent writers; audit lineage present.
+
+Status: OPEN
+Depends on: NEXT-04, NEXT-11, NEXT-07
+
+
+----------------------------------------------------------------------
+WAVE 4 — BAR D: KNOWLEDGE HONESTY
+----------------------------------------------------------------------
+
+NEXT-13 — KNOWLEDGE NO-ANSWER + CLAIM CITATION GATE (GAP-P2-008)
+
+Objective:
+  Make MAI-30 real for the launch Ask/knowledge path:
+    fake cite fails; missing evidence → no-answer; tax-current without release
+    → abstain.
+
+Gate:
+  knowledge_no_answer_v1 (or successor) green on prod-like path;
+  professional honesty review note; GAP-P2-008 REDUCED (CLOSED only with
+  reviewer sign-off).
+
+Status: OPEN
+Depends on: NEXT-00
+
+
+NEXT-14 — PRODUCTION RETRIEVAL WITHOUT OLLAMA (GAP-P2-001)
+
+Objective:
+  Production retrieval uses provider-independent lexical / approved indexes.
+  Vector/hybrid semantic leg remains optional and never required for
+  production_approved knowledge answers.
+
+Gate:
+  Deploy path proven without Ollama/Chroma; GAP-P2-001 REDUCED/CLOSED.
+
+Status: OPEN
+Depends on: NEXT-13 recommended
+
+
+NEXT-15 — NARROW TAX/LEGAL PILOT (optional after NEXT-13)
+
+Objective:
+  One reviewed Nepal tax (or VAT) pilot domain with effective-date discipline.
+  legal_effective_dates_proven remains false until sources + review prove it.
+
+Gate:
+  Immutable knowledge release + as-of answers + conflict/no-answer tests;
+  no judicial/compliance automation claims.
+
+Status: OPEN
+Depends on: NEXT-13, NEXT-14
+
+
+----------------------------------------------------------------------
+WAVE 5 — BAR E: ONE NARROW PRODUCTION CAPABILITY RELEASE
+----------------------------------------------------------------------
+
+NEXT-20 — FIRST PRODUCTION CAPABILITY RELEASE (MAI-49 for real)
+
+Objective:
+  Release exactly one capability row from master §32, e.g.:
+    “Ask Mode — authorized company report questions”
+  OR
+    “Accountant Mode — sales/purchase draft+confirm for launch events”
+  with code/model/prompt/knowledge IDs, monitoring, rollback, disclosures.
+
+Gate (from master MAI-49 — must be real this time):
+  critical invariants zero-failure for that row;
+  launch-scope E2E passes;
+  backup/restore/rollback story exists;
+  no unresolved P0/P1 for *enabled* capability;
+  production_approved is an explicit human decision recorded in ledger;
+  everything outside the row stays disabled.
+
+Status: OPEN
+Depends on: NEXT-03, NEXT-12, NEXT-13 (and NEXT-14 if knowledge-enabled)
+
+
+----------------------------------------------------------------------
+WAVE 6 — BAR F: ONLY AFTER NEXT-20
+----------------------------------------------------------------------
+
+Do not start these until NEXT-20 is DONE or owner writes a risk acceptance
+that explicitly reopens Track I early.
+
+NEXT-30 — SPEECH CHANNEL (real MAI-50 deliverables)
+NEXT-31 — PRIVATE USER-DOCUMENT INTELLIGENCE (real MAI-51)
+NEXT-32 — CA-FIRM WORKSPACE (real MAI-52)
+NEXT-33 — COMPLIANCE OBLIGATION/CALENDAR (real MAI-53)
+
+Until then, MAI-50…53 remain engineering policy history only.
+
+----------------------------------------------------------------------
+WAVE H — CONTINUOUS HYGIENE (can interleave)
+----------------------------------------------------------------------
+
+NEXT-H1 — Pytest collect/pass baseline subset documented (GAP-P1-005)
+NEXT-H2 — TypeScript diagnostic debt freeze / no net-new errors
+NEXT-H3 — Remove or quarantine dead parallel AI prototypes (after NEXT-03)
+NEXT-H4 — Evaluation harness: forbid vacuous greens / assertion weakening
+
+======================================================================
+6. RECOMMENDED IMMEDIATE SEQUENCE (DEFAULT “GO” ORDER)
+======================================================================
+
+If the owner only says “go” with no step ID, execute the earliest OPEN step
+in this default sequence:
+
+  NEXT-00  Capability truth matrix
+  NEXT-01  Freeze Track I deepening
+  NEXT-02  Mutation authority convergence (GAP-P0-001)
+  NEXT-03  Production stack strangler (GAP-P1-001)
+  NEXT-06  Reprove MAI-04 critical language suites
+  NEXT-04  Sync authority hardening (GAP-P1-002)
+  NEXT-05  Confirm path honesty depth
+  NEXT-07  Consume language candidates into primary NLU
+  NEXT-10  Launch event spec freeze
+  NEXT-11  Draft/preview/edit depth + GAP-P2-002
+  NEXT-12  E2E launch slice
+  NEXT-13  Knowledge no-answer / citation (GAP-P2-008)
+  NEXT-14  Prod retrieval without Ollama (GAP-P2-001)
+  NEXT-08  Response language live parity
+  NEXT-09  Linguist/sample review
+  NEXT-20  First production capability release
+  NEXT-30+ Track I real work (only after NEXT-20)
+
+Optional parallel (owner-approved): NEXT-H1 / NEXT-H2 anytime.
+
+======================================================================
+7. WHAT NOT TO DO NEXT
+======================================================================
+
+1. Invent MAI-54 / MAI-55 “policy-only” phases for new buzzwords.
+2. Deepen speech / OCR / CA / calendar automation before Bars A–E.
+3. Fine-tune models before language suites + data governance proofs.
+4. Claim sole-OEC, legal_effective_dates_proven, or production_approved from
+   cue detection or CANDIDATE_ONLY bundles.
+5. Close GAP-P2-008 / GAP-P0-001 / GAP-P1-002 by documentation alone.
+6. Enable production traffic for capabilities whose master Gate is unmet.
+7. Mass-rename Orbix/OIP/Khata legacy names.
+8. Let coding-AI narrative replace gate evidence.
+
+======================================================================
+8. SUCCESS PICTURE (WHEN THIS FILE IS MOSTLY DONE)
+======================================================================
+
+MokXya will feel advanced when a Nepal shopkeeper can:
+
+  type mixed Romanized/Nepali/English for a supported sale or purchase,
+  get a correct structured preview (or a precise clarification),
+  confirm once with a real token,
+  see a real receipt and honest sync,
+
+and when Ask Mode can:
+
+  answer company questions from authorized data,
+  refuse or escalate when evidence is missing,
+  never invent current tax/law,
+
+and operators can:
+
+  point to one mutation authority story,
+  one sync story,
+  one production AI entrypoint,
+  one released capability row with rollback.
+
+That is the product. Everything else waits.
+
+======================================================================
+9. PROGRESS TABLE (UPDATE AFTER EACH SHIP)
+======================================================================
+
+Step     | Status | Commit / evidence | Notes
+---------|--------|-------------------|------
+NEXT-00  | DONE   | MAI_CAPABILITY_TRUTH_MATRIX.* | honest depths; Track I dormant
+NEXT-01  | OPEN   |                   |
+NEXT-02  | OPEN   |                   | GAP-P0-001
+NEXT-03  | OPEN   |                   | GAP-P1-001
+NEXT-04  | OPEN   |                   | GAP-P1-002
+NEXT-05  | OPEN   |                   | MAI-34 depth
+NEXT-06  | OPEN   |                   | MAI-04 suites
+NEXT-07  | OPEN   |                   | NLU consume
+NEXT-08  | OPEN   |                   | MAI-11 live
+NEXT-09  | OPEN   |                   | linguist sample
+NEXT-10  | OPEN   |                   | event freeze
+NEXT-11  | OPEN   |                   | GAP-P2-002
+NEXT-12  | OPEN   |                   | E2E launch
+NEXT-13  | OPEN   |                   | GAP-P2-008
+NEXT-14  | OPEN   |                   | GAP-P2-001
+NEXT-15  | OPEN   |                   | optional tax pilot
+NEXT-20  | OPEN   |                   | first prod release
+NEXT-30  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-50
+NEXT-31  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-51
+NEXT-32  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-52
+NEXT-33  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-53
+NEXT-H1  | OPEN   |                   | pytest hygiene
+NEXT-H2  | OPEN   |                   | TS hygiene
+
+Active pointer (update on each go):
+  recommended_next_step = NEXT-01
+  last_shipped_step = NEXT-00
+  master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
+
+======================================================================
+10. RELATIONSHIP TO THE MASTER FILE
+======================================================================
+
+Master file remains the architecture constitution and original phase catalog.
+This file is the post-MAI-53 execution queue.
+
+If this file and the master disagree on safety:
+  constitution (master §3) wins.
+
+If this file and a coding agent’s enthusiasm disagree on “done”:
+  this file’s Gate + gap acceptance conditions win.
+
+END OF DOCUMENT

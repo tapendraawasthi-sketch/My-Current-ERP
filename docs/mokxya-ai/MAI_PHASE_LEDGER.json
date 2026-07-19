@@ -5,7 +5,9 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "active_phase_note": "MAI-08–53 PASSED_ENGINEERING; continuum paused pending next phase definition; never arm automation / never submit filing; GAP-P2-008 remains OPEN; production_approved=false",
+  "recommended_next_step": "NEXT-01",
+  "active_phase_note": "Post-MAI-53 queue active (MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt). NEXT-00 DONE: capability truth matrix. NEXT recommended=NEXT-01 (freeze Track I). MAI-08–53 PASSED_ENGINEERING / CANDIDATE_CONSUMED; Track I dormant; production_approved=false; GAP-P2-008 OPEN",
+  "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
   "phases": [
     {
       "id": "MAI-00",
