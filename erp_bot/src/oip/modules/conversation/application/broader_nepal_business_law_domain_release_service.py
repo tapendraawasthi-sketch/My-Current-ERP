@@ -21,7 +21,7 @@ from ....contracts.legal_question_research import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-41.0.1-slice1"
+RUNTIME_VERSION = "mai-41.0.2-slice2"
 AUTHORITY = "ADR_0058"
 
 _COMPANY = re.compile(

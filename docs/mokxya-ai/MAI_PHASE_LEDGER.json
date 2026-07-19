@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-41",
-  "active_phase_note": "MAI-41 slice 1 IN_PROGRESS (ADR_0058); broader Nepal business-law domain-release policy (never releases); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-41 slice 2 IN_PROGRESS (ADR_0058); domain-release-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3108,19 +3108,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-41.0.1-slice1",
-      "slice": "SLICE1_DOMAIN_RELEASE_POLICY",
+      "runtime_version": "mai-41.0.2-slice2",
+      "slice": "SLICE2_DOMAIN_RELEASE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_41_BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASES.md",
         "docs/mokxya-ai/decisions/ADR_0058_BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_41_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai41/manifests/MAI_41_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_41_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai41/manifests/MAI_41_SLICE1.manifest.json",
+        "evals/mai41/manifests/MAI_41_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "broader_nepal_business_law_domain_release_service.py (policy annotation)",
+        "broader_nepal_business_law_domain_release_consume_service.py (CANDIDATE_ONLY domain_release_candidate)",
         "BroaderNepalBusinessLawDomainReleaseBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE after FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE",
-        "release_status=NOT_RELEASED; domain_authority_claimed=false; domain_released=false; production_domain_eligible=false; gap_p2_008_status=OPEN"
+        "allow_domain_release=false; allow_production_eligible=false; release_status=NOT_RELEASED; domain_released=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3135,7 +3138,7 @@
         "MAI-40"
       ],
       "recommended_order": 41,
-      "closure_note": "Slice 1: business-law domain-release POLICY_DECLARED; never release; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY domain-release candidates; never release; GAP-P2-008 open."
     },
     {
       "id": "MAI-42",

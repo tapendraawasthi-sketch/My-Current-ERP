@@ -800,20 +800,26 @@ class CanonicalOipRequestAdapter:
                     "close_assist_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-41: broader Nepal business-law domain release (never releases).
+        # MAI-41: broader Nepal business-law domain release + candidate consume.
         if (
             canonical.broader_nepal_business_law_domain_release_bundle
             is not None
         ):
             try:
+                from ...modules.conversation.application.broader_nepal_business_law_domain_release_consume_service import (
+                    enrich_bnbl_metadata_with_consume,
+                )
                 from ...modules.conversation.application.broader_nepal_business_law_domain_release_service import (
                     broader_nepal_business_law_domain_release_to_metadata,
                 )
 
-                metadata["broader_nepal_business_law_domain_release"] = (
+                base_meta = (
                     broader_nepal_business_law_domain_release_to_metadata(
                         canonical.broader_nepal_business_law_domain_release_bundle
                     )
+                )
+                metadata["broader_nepal_business_law_domain_release"] = (
+                    enrich_bnbl_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 bnbl = (
@@ -830,6 +836,8 @@ class CanonicalOipRequestAdapter:
                     "domain_released": False,
                     "production_domain_eligible": False,
                     "gap_p2_008_status": "OPEN",
+                    "domain_release_consume_mode": "UNCHANGED",
+                    "domain_release_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

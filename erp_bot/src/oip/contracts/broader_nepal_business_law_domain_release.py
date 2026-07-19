@@ -38,7 +38,7 @@ class BroaderNepalBusinessLawDomainReleaseBundleV1(ContractBase):
     analysis_status: BroaderNepalBusinessLawDomainReleaseStatus = (
         BroaderNepalBusinessLawDomainReleaseStatus.NOT_RUN
     )
-    runtime_version: str = "mai-41.0.1-slice1"
+    runtime_version: str = "mai-41.0.2-slice2"
     source_authority: str = "REQUEST"
     domain_release_readiness: DomainReleaseReadiness = (
         DomainReleaseReadiness.NOT_APPLICABLE

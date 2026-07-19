@@ -2800,12 +2800,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent close success.
 
-    # MAI-41: broader Nepal business-law domain release (never releases).
+    # MAI-41: broader Nepal business-law domain release + candidate consume.
     bnbl_ev = recorder.begin_stage(
         mai03_obs.TraceStage.BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_STARTED,
         component="conversation.broader_nepal_business_law_domain_release",
     )
     try:
+        from ..oip.modules.conversation.application.broader_nepal_business_law_domain_release_consume_service import (
+            assert_domain_release_consume_authority,
+            domain_release_consume_observability,
+        )
         from ..oip.modules.conversation.application.broader_nepal_business_law_domain_release_service import (
             assert_broader_nepal_business_law_domain_release_authority,
             attach_broader_nepal_business_law_domain_release_to_request,
@@ -2818,11 +2822,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.broader_nepal_business_law_domain_release_bundle
         assert_broader_nepal_business_law_domain_release_authority(bundle)
+        consume_obs = domain_release_consume_observability(
+            updated,
+            allow_domain_release=False,
+            allow_production_eligible=False,
+        )
+        assert_domain_release_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             bnbl_ev,
             version_map={
-                "broader_nepal_business_law_domain_release": "mai-41.0.1-slice1",
+                "broader_nepal_business_law_domain_release": "mai-41.0.2-slice2",
             },
             safe_attributes={
                 "domain_release_status": (
@@ -2834,6 +2844,12 @@ async def build_canonical_ai_request(
                 "pilot_scope": "BROADER_NEPAL_BUSINESS_LAW_CANDIDATE_ONLY",
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "domain_release_consume_mode": consume_obs.get(
+                    "domain_release_consume_mode"
+                ),
+                "domain_release_consume_ready": bool(
+                    consume_obs.get("domain_release_consume_ready")
+                ),
                 "domain_authority_claimed": False,
                 "domain_released": False,
                 "production_domain_eligible": False,
@@ -2844,6 +2860,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_domain_release": False,
+                "allow_production_eligible": False,
             },
         )
         recorder.record_event(
@@ -2859,6 +2877,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "domain_release_consume_mode": consume_obs.get(
+                    "domain_release_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

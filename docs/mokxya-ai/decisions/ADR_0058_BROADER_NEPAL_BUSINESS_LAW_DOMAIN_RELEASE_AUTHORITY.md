@@ -1,7 +1,7 @@
 # ADR_0058 — Broader Nepal Business-Law Domain Release Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-41-BROADER-NEPAL-BUSINESS-LAW-DOMAIN-RELEASES (slice 1)
+- **Phase:** MAI-41-BROADER-NEPAL-BUSINESS-LAW-DOMAIN-RELEASES (slice 2)
 - **Extends:** ADR_0001, ADR_0053, ADR_0047
 
 ## Context
@@ -29,19 +29,27 @@ domain cutover. GAP-P2-008 and unproven effective dates remain open.
    `legal_effective_dates_proven=false`,
    `gap_p2_008_status=OPEN`.
 4. Never invent domain authority or expand to all Nepal law.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `domain_release_candidate` /
+   `domain_release_consume_mode` (`CANDIDATE_ONLY` default for
+   POLICY_DECLARED / SCOPE_PARTIAL; `BLOCKED` for fake authority;
+   `SKIP` for non-pilot). Live path forces `allow_domain_release=false`
+   and `allow_production_eligible=false` — does **not** release domains
+   or claim production eligibility. GAP-P2-008 stays OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-40 close-assist | Too narrow; business-law ≠ close |
-| Production domain release in slice 1 | Honesty / specialist review required |
+| Production domain release in slice 1–2 | Honesty / specialist review required |
+| Live domain release in slice 2 | Authority / honesty risk |
 | Close GAP-P2-008 | Honesty review still required |
 | Prove effective dates | Must stay false |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_41_BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASES.md`
-- `docs/mokxya-ai/baselines/MAI_41_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_41_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/broader_nepal_business_law_domain_release_service.py`
+- `erp_bot/src/oip/modules/conversation/application/broader_nepal_business_law_domain_release_consume_service.py`

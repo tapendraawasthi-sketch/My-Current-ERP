@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai41-slice2-v1",
+  "dataset_hash": "bed1478c72aec78033aa771c57e90695a8a7afec457f889df5e7f5c2cb2fe357",
+  "phase": "MAI-41",
+  "slice": "SLICE2_DOMAIN_RELEASE_CANDIDATE_CONSUME",
+  "runtime_version": "mai-41.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai41/frozen/domain_release_consume_v1.jsonl",
+      "sha256": "bed1478c72aec78033aa771c57e90695a8a7afec457f889df5e7f5c2cb2fe357",
+      "case_count": 6,
+      "suite_id": "domain_release_consume_v1"
+    }
+  ]
+}
