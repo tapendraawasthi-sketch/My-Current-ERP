@@ -1,9 +1,10 @@
 # MAI-10 — Domain Lexicon and Concept Ontology
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0027](decisions/ADR_0027_DOMAIN_LEXICON_AND_CONCEPT_ONTOLOGY_AUTHORITY.md)  
-**Runtime:** `mai-10.0.2-slice2` (engineering; not production-approved)
+**Runtime:** `mai-10.0.2-slice2` (engineering; not production-approved)  
+**Closure:** [MAI_10_ENGINEERING_CLOSURE.md](baselines/MAI_10_ENGINEERING_CLOSURE.md)
 
 ## Objective
 

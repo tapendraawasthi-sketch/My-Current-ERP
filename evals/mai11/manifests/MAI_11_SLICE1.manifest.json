@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai11-slice1-v1",
+  "dataset_hash": "7182c351d6c07a9f1493ad385aacf87575f595a34478cc81d59e6b8205254375",
+  "phase": "MAI-11",
+  "slice": "SLICE1_RESPONSE_REGISTER_POLICY",
+  "runtime_version": "mai-11.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai11/frozen/response_register_critical_v1.jsonl",
+      "sha256": "7182c351d6c07a9f1493ad385aacf87575f595a34478cc81d59e6b8205254375",
+      "case_count": 8,
+      "suite_id": "response_register_critical_v1"
+    }
+  ]
+}

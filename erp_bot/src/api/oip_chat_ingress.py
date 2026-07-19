@@ -632,6 +632,86 @@ async def build_canonical_ai_request(
             except Exception:  # noqa: BLE001
                 pass
 
+    # MAI-11: response language / register policy (annotation only; no rewrite).
+    frame = canonical.language_frame
+    if frame is not None:
+        rr_ev = recorder.start_stage(
+            mai03_obs.TraceStage.RESPONSE_REGISTER_STARTED,
+            component="language_runtime.response_register",
+        )
+        try:
+            from ..oip.modules.language_runtime.response_register.application.response_register_service import (
+                attach_response_register_to_frame,
+            )
+
+            updated = attach_response_register_to_frame(frame)
+            if updated.raw_text != canonical.raw_text:
+                raise RuntimeError("RAW_TEXT_MUTATION")
+            bundle = updated.response_register_bundle
+            if bundle is not None and (
+                bundle.silent_applications != 0 or bundle.applied_response_rewrite
+            ):
+                raise RuntimeError("SILENT_APPLICATIONS_OR_REWRITE")
+            canonical = canonical.model_copy(update={"language_frame": updated})
+            recorder.complete_stage(
+                rr_ev,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                component_versions={
+                    "response_register": (
+                        bundle.runtime_version if bundle else "mai-11.0.1-slice1"
+                    ),
+                },
+                safe_attributes={
+                    "response_register_status": bundle.analysis_status.value if bundle else "FAILED",
+                    "response_language": (
+                        bundle.response_language.value if bundle else "UNKNOWN"
+                    ),
+                    "linguistic_register": (
+                        bundle.linguistic_register.value if bundle else "UNKNOWN"
+                    ),
+                },
+            )
+            recorder.record_event(
+                mai03_obs.TraceStage.RESPONSE_REGISTER_COMPLETED,
+                mai03_obs.TraceStatus.COMPLETED,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                safe_attributes={
+                    "response_language": (
+                        bundle.response_language.value if bundle else "UNKNOWN"
+                    ),
+                    "mirror_user_language": bool(bundle.mirror_user_language)
+                    if bundle
+                    else False,
+                },
+            )
+        except Exception:  # noqa: BLE001
+            recorder.fail_stage(rr_ev, safe_error_code="RESPONSE_REGISTER_FAILED")
+            recorder.record_event(
+                mai03_obs.TraceStage.RESPONSE_REGISTER_FAILED,
+                mai03_obs.TraceStatus.FAILED,
+                safe_error_code="RESPONSE_REGISTER_FAILED",
+            )
+            try:
+                from ..oip.contracts.response_register import (
+                    ResponseRegisterBundleV1,
+                    ResponseRegisterStatus,
+                )
+
+                fail_bundle = ResponseRegisterBundleV1(
+                    analysis_status=ResponseRegisterStatus.FAILED,
+                    warnings=("RESPONSE_REGISTER_FAILED",),
+                    error_codes=("RESPONSE_REGISTER_FAILED",),
+                )
+                canonical = canonical.model_copy(
+                    update={
+                        "language_frame": frame.model_copy(
+                            update={"response_register_bundle": fail_bundle}
+                        )
+                    }
+                )
+            except Exception:  # noqa: BLE001
+                pass
+
     return canonical
 
 

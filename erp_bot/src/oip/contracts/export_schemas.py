@@ -29,6 +29,7 @@ from .transliteration import TransliterationBundleV1
 from .typo_code_mix import TypoCodeMixBundleV1
 from .number_roles import NumberRoleBundleV1
 from .domain_lexicon import DomainLexiconBundleV1
+from .response_register import ResponseRegisterBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -41,6 +42,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("TypoCodeMixBundleV1", TypoCodeMixBundleV1),
     ("NumberRoleBundleV1", NumberRoleBundleV1),
     ("DomainLexiconBundleV1", DomainLexiconBundleV1),
+    ("ResponseRegisterBundleV1", ResponseRegisterBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

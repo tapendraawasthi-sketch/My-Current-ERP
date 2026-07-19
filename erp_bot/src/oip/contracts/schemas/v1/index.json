@@ -8,6 +8,7 @@
     "TypoCodeMixBundleV1",
     "NumberRoleBundleV1",
     "DomainLexiconBundleV1",
+    "ResponseRegisterBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

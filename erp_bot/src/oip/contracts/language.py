@@ -14,6 +14,7 @@ from .transliteration import TransliterationBundleV1
 from .typo_code_mix import TypoCodeMixBundleV1
 from .number_roles import NumberRoleBundleV1
 from .domain_lexicon import DomainLexiconBundleV1
+from .response_register import ResponseRegisterBundleV1
 
 
 class AnalysisStatus(str, Enum):
@@ -76,6 +77,8 @@ class LanguageFrameV1(ContractBase):
     number_role_bundle: NumberRoleBundleV1 | None = None
     # MAI-10: domain concept lexicon candidates
     domain_lexicon_bundle: DomainLexiconBundleV1 | None = None
+    # MAI-11: response language / register policy
+    response_register_bundle: ResponseRegisterBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

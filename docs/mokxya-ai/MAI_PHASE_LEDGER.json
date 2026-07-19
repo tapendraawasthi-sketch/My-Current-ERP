@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-10",
-  "active_phase_note": "MAI-10 slice 2 IN_PROGRESS (ADR_0027); concept→intent bridge; MAI-09 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-11",
+  "active_phase_note": "MAI-11 slice 1 IN_PROGRESS (ADR_0028); response language/register; MAI-10 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -1935,7 +1935,7 @@
     {
       "id": "MAI-10",
       "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -1946,6 +1946,7 @@
         "docs/mokxya-ai/decisions/ADR_0027_DOMAIN_LEXICON_AND_CONCEPT_ONTOLOGY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_10_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_10_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_10_ENGINEERING_CLOSURE.md",
         "evals/mai10/manifests/MAI_10_SLICE1.manifest.json",
         "evals/mai10/manifests/MAI_10_SLICE2.manifest.json"
       ],
@@ -1964,22 +1965,37 @@
         "MAI-09"
       ],
       "recommended_order": 10,
-      "closure_note": "Slice 2: concept→intent bridge evidence-gated; keyword fallback retained; no draft writes."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-11. production_approved=false."
     },
     {
       "id": "MAI-11",
       "title": "RESPONSE LANGUAGE AND REGISTER POLICY",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "conversation tone in prompts — no versioned register policy"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-11.0.1-slice1",
+      "slice": "SLICE1_RESPONSE_REGISTER_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_11_RESPONSE_LANGUAGE_AND_REGISTER_POLICY.md",
+        "docs/mokxya-ai/decisions/ADR_0028_RESPONSE_LANGUAGE_AND_REGISTER_POLICY_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_11_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai11/manifests/MAI_11_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/response_register/",
+        "erp_bot/src/oip/contracts/response_register.py",
+        "oip_chat_ingress RESPONSE_REGISTER after MAI-10",
+        "LanguageFrame.dominant_response_language + linguistic_register filled"
+      ],
+      "blockers": [
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-10"
       ],
-      "recommended_order": 11
+      "recommended_order": 11,
+      "closure_note": "Slice 1 IN_PROGRESS: policy annotation only; prompt consumption deferred."
     },
     {
       "id": "MAI-12",

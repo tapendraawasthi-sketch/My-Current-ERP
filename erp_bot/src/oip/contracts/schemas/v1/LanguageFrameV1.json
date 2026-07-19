@@ -311,6 +311,16 @@
       "title": "EligibilityDecision",
       "type": "string"
     },
+    "LinguisticRegisterKind": {
+      "enum": [
+        "SHOP_INFORMAL",
+        "ACCOUNTING_FORMAL",
+        "NEUTRAL",
+        "UNKNOWN"
+      ],
+      "title": "LinguisticRegisterKind",
+      "type": "string"
+    },
     "MappingKind": {
       "enum": [
         "IDENTITY",
@@ -934,6 +944,117 @@
       ],
       "title": "ReconstructionIntegrityV1",
       "type": "object"
+    },
+    "ResponseLanguageKind": {
+      "enum": [
+        "NEPALI_DEVANAGARI",
+        "ROMANIZED_NEPALI",
+        "ENGLISH",
+        "MIXED",
+        "UNKNOWN"
+      ],
+      "title": "ResponseLanguageKind",
+      "type": "string"
+    },
+    "ResponseRegisterBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/ResponseRegisterStatus",
+          "default": "NOT_RUN"
+        },
+        "applied_response_rewrite": {
+          "default": false,
+          "title": "Applied Response Rewrite",
+          "type": "boolean"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "honorific_cue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Honorific Cue"
+        },
+        "linguistic_register": {
+          "$ref": "#/$defs/LinguisticRegisterKind",
+          "default": "UNKNOWN"
+        },
+        "mirror_user_language": {
+          "default": false,
+          "title": "Mirror User Language",
+          "type": "boolean"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "response_language": {
+          "$ref": "#/$defs/ResponseLanguageKind",
+          "default": "UNKNOWN"
+        },
+        "runtime_version": {
+          "default": "mai-11.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "RAW",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "ResponseRegisterBundleV1",
+      "type": "object"
+    },
+    "ResponseRegisterStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "ResponseRegisterStatus",
+      "type": "string"
     },
     "SafetyClass": {
       "enum": [
@@ -1771,6 +1892,17 @@
       "minLength": 1,
       "title": "Raw Text",
       "type": "string"
+    },
+    "response_register_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ResponseRegisterBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "schema_version": {
       "title": "Schema Version",
