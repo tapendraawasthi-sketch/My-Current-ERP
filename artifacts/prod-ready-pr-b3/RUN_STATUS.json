@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-B3",
+  "authority": "ADR_0086",
+  "as_of": "2026-07-19",
+  "engineering_pack_ready": true,
+  "staging_conflict_attested": false,
+  "production_approved": false,
+  "dual_sync_closed": false,
+  "unit_proofs": {
+    "status": "PASS",
+    "notes": "maiNext04 + ui3 + ui6 + maiPrB3 + noDoubleSync (queued≠synced / accounting outbox block)"
+  },
+  "staging": {
+    "conflict_reconfirm": "PENDING",
+    "connected_sync": "PENDING",
+    "ticket": "TICKET-PR-B3-001"
+  },
+  "blocks_pr_c_with_pr_b1_tickets": true
+}

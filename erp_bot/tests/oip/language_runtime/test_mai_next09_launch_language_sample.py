@@ -100,7 +100,7 @@ def test_gap_register_and_pointer_pr_b1() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B3"
+    assert ledger["recommended_next_step"] == "PR-B4"
     assert "NEXT-09" in ledger.get("completed_next_steps", [])
     assert ledger.get("launch_language_sample", {}).get("authority") == "ADR_0083"
 
@@ -109,7 +109,7 @@ def test_gap_register_and_pointer_pr_b1() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-B3"
+    assert matrix["recommended_next_step"] == "PR-B4"
     assert "NEXT-09" in matrix.get("completed_steps", [])
     gaps = {g["id"]: g for g in matrix["blocking_gaps"]}
     assert gaps["GAP-P1-009"]["status"] == "REDUCED"

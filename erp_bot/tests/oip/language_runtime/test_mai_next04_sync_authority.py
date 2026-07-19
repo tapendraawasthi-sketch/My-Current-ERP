@@ -104,7 +104,7 @@ def test_adr_gap_ledger() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B3"
+    assert ledger["recommended_next_step"] == "PR-B4"
     assert ledger["sync_authority"]["decision"] == (
         "ACCOUNTING_EVENT_SYNC_QUEUE_AUTHORITY"
     )

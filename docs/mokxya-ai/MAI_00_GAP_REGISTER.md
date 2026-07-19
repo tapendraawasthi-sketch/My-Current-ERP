@@ -331,7 +331,7 @@ Severity legend:
 - **Dependencies:** posting authority decision
 - **Acceptance condition:** One authoritative sync path for accounting events; tests for two-device conflict
 - **Status:** REDUCED
-- **Progress (2026-07-19):** NEXT-04 / ADR_0074 — accounting sync authority = `EVENT_SYNC_QUEUE`; legacy outbox **blocked** for accounting entity types (`syncEnqueueRouter` + `noDoubleSync` evidence); conflict = reconfirm; queued ≠ synced; AI sync dispatch fail-closed via `sync_authority_policy.py`. Written exception: residual non-accounting legacy outbox + badge aggregation → runtime `dual_sync_status` / `gap_p1_002_status` remain OPEN. Does **not** CLOSE (full single-worker / two-device proof still pending).
+- **Progress (2026-07-19):** NEXT-04 / ADR_0074 EVENT_SYNC_QUEUE + accounting outbox block. **PR-B3 / ADR_0086:** queued≠synced presentation hardened (`queued`/`waiting_to_sync` → Waiting to sync); aggregate pending≠synced documented; conflict→reconfirm narrative + TICKET-PR-B3-001; `syncCoordinator` not rewritten. Residual dual badge exception remains; staging conflict attestation PENDING. Does **not** CLOSE.
 
 - **Severity:** P1
 - **Affected capability:** security

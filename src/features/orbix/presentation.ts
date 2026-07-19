@@ -149,8 +149,11 @@ export function syncStatusPresentation(sync?: string | null): {
     case "conflict":
       return { label: "Conflict detected — review required", testId: "conflict" };
     case "pending":
+    case "queued":
+    case "waiting_to_sync":
     case "syncing":
     case "retry_scheduled":
+      // PR-B3 / ADR_0086 — queued/pending must never present as Synced.
       return { label: "Waiting to sync", testId: "pending" };
     default:
       if (typeof navigator !== "undefined" && navigator.onLine === false) {

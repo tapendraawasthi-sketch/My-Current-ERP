@@ -704,14 +704,15 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = PR-B3
-  last_shipped_step = PR-B2
+  recommended_next_step = PR-B4
+  last_shipped_step = PR-B3
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
   launch_mutation_residual = ADR_0085 Node/OEC launch hard-deny; GAP-P0-001 REDUCED
   ai_stack_strangler = ACTIVE (ADR_0073); primary=/orbix/chat/stream
   sync_authority = EVENT_SYNC_QUEUE (ADR_0074); queued≠synced; conflict=reconfirm
+  sync_honesty_residual = ADR_0086 presentation+narrative; TICKET-PR-B3-001 OPEN
   confirm_path = ADR_0075 Model B short-lived tokens; nl_assent_posts=false
   nlu_language_consume = ADR_0076 concept+number-role; no silent bind/draft
   launch_event_freeze = ADR_0077 sales/purchase drafts + Ask reports; settlement deferred

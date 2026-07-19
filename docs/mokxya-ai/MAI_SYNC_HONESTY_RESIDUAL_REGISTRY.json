@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_SYNC_HONESTY_RESIDUAL_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0086",
+  "step": "PR-B3",
+  "decision": "SYNC_HONESTY_RESIDUAL_PACK",
+  "extends": "ADR_0074",
+  "gap_p1_002": {
+    "register_status": "REDUCED",
+    "runtime_status": "OPEN",
+    "closed": false,
+    "dual_sync_written_exception": "NON_ACCOUNTING_LEGACY_OUTBOX_AND_AGGREGATE_BADGE_RESIDUAL",
+    "runtime_status_reason": "Queued≠synced + accounting outbox block proven in unit/UI tests; staging conflict attestation may remain PENDING; dual badge residual OPEN"
+  },
+  "policies": {
+    "accounting_sync_authority": "EVENT_SYNC_QUEUE",
+    "queued_must_not_label_synced": true,
+    "conflict_policy": "REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT",
+    "conflict_auto_overwrite": false,
+    "sync_coordinator_rewritten": false
+  },
+  "proofs": {
+    "post_success_pending_not_synced": [
+      "src/features/orbix/presentation.ts",
+      "src/__tests__/orbix/ui6OrbixPresentation.test.ts",
+      "src/__tests__/orbix/maiPrB3SyncHonesty.test.ts"
+    ],
+    "accounting_legacy_outbox_blocked": [
+      "src/store/syncEnqueueRouter.ts",
+      "src/__tests__/orbix/noDoubleSync.test.ts",
+      "src/__tests__/orbix/maiNext04SyncAuthority.test.ts"
+    ],
+    "aggregate_pending_not_synced": [
+      "src/platform/sync/syncStatusAggregate.ts",
+      "src/__tests__/orbix/ui3SyncPresentation.test.ts"
+    ],
+    "conflict_reconfirm_narrative": [
+      "artifacts/prod-ready-pr-b3/CONFLICT_RECONFIRM_NARRATIVE.md"
+    ]
+  },
+  "honesty": {
+    "production_approved": false,
+    "dual_sync_closed": false,
+    "queued_labeled_synced": false,
+    "conflict_auto_overwrite": false,
+    "staging_conflict_attested": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "dual_sync_closed=true",
+    "gap_p1_002_closed=true",
+    "queued_labeled_synced=true",
+    "conflict_auto_overwrite=true",
+    "production_approved=true",
+    "staging_conflict_attested=true_without_evidence"
+  ]
+}
