@@ -427,6 +427,79 @@ async def build_canonical_ai_request(
             except Exception:  # noqa: BLE001
                 pass
 
+    # MAI-08: typo / abbreviation / code-mix candidates (annotation only — never applied).
+    frame = canonical.language_frame
+    if frame is not None:
+        tcm_ev = recorder.start_stage(
+            mai03_obs.TraceStage.TYPO_CODE_MIX_STARTED,
+            component="language_runtime.typo_robustness",
+        )
+        try:
+            from ..oip.modules.language_runtime.typo_robustness.application.typo_code_mix_service import (
+                attach_typo_code_mix_to_frame,
+            )
+
+            updated = attach_typo_code_mix_to_frame(frame)
+            if updated.raw_text != canonical.raw_text:
+                raise RuntimeError("RAW_TEXT_MUTATION")
+            bundle = updated.typo_code_mix_bundle
+            if bundle is not None and bundle.silent_applications != 0:
+                raise RuntimeError("SILENT_APPLICATIONS_NONZERO")
+            canonical = canonical.model_copy(update={"language_frame": updated})
+            recorder.complete_stage(
+                tcm_ev,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                component_versions={
+                    "typo_code_mix": (bundle.runtime_version if bundle else "mai-08.0.1-slice1"),
+                    "typo_code_mix_resources": (
+                        bundle.resource_version if bundle else "mai-08.0.1-slice1"
+                    ),
+                },
+                safe_attributes={
+                    "typo_code_mix_status": bundle.analysis_status.value if bundle else "FAILED",
+                    "typo_code_mix_candidate_count": bundle.candidate_count if bundle else 0,
+                    "typo_code_mix_silent_applications": (
+                        bundle.silent_applications if bundle else 0
+                    ),
+                },
+            )
+            recorder.record_event(
+                mai03_obs.TraceStage.TYPO_CODE_MIX_COMPLETED,
+                mai03_obs.TraceStatus.COMPLETED,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                safe_attributes={
+                    "typo_code_mix_status": bundle.analysis_status.value if bundle else "FAILED",
+                    "typo_code_mix_candidate_count": bundle.candidate_count if bundle else 0,
+                },
+            )
+        except Exception:  # noqa: BLE001 — preserve raw; do not alter routing
+            recorder.fail_stage(tcm_ev, safe_error_code="TYPO_CODE_MIX_FAILED")
+            recorder.record_event(
+                mai03_obs.TraceStage.TYPO_CODE_MIX_FAILED,
+                mai03_obs.TraceStatus.FAILED,
+                safe_error_code="TYPO_CODE_MIX_FAILED",
+            )
+            try:
+                from ..oip.contracts.typo_code_mix import (
+                    TypoCodeMixBundleV1,
+                    TypoCodeMixStatus,
+                )
+
+                fail_bundle = TypoCodeMixBundleV1(
+                    analysis_status=TypoCodeMixStatus.FAILED,
+                    warnings=("TYPO_CODE_MIX_FAILED",),
+                    error_codes=("TYPO_CODE_MIX_FAILED",),
+                )
+                canonical = canonical.model_copy(
+                    update={
+                        "language_frame": frame.model_copy(
+                            update={"typo_code_mix_bundle": fail_bundle}
+                        )
+                    }
+                )
+            except Exception:  # noqa: BLE001
+                pass
+
     return canonical
 
 

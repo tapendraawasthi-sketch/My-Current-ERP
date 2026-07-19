@@ -195,6 +195,7 @@ export async function resolveInventoryItemForPurchase(
     return e2e;
   }
 
+  // MAI-08 slice 2: exact name only — no silent substring auto-pick
   const exact = items.filter(
     (i) =>
       i.isActive !== false &&
@@ -203,15 +204,6 @@ export async function resolveInventoryItemForPurchase(
       (i.name || "").toLowerCase() === needle,
   );
   if (exact.length === 1) return exact[0];
-
-  const fuzzy = items.filter(
-    (i) =>
-      i.isActive !== false &&
-      i.type !== "service" &&
-      i.type !== "fixed-asset" &&
-      (i.name || "").toLowerCase().includes(needle),
-  );
-  if (fuzzy.length === 1) return fuzzy[0];
   return null;
 }
 

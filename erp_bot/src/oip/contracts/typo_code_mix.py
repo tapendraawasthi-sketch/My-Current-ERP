@@ -46,7 +46,7 @@ class TypoCodeMixCandidateV1(ContractBase):
 class TypoCodeMixBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: TypoCodeMixStatus = TypoCodeMixStatus.NOT_RUN
-    runtime_version: str = "mai-08.0.1-slice1"
+    runtime_version: str = "mai-08.0.2-slice2"
     resource_version: str = "mai-08.0.1-slice1"
     offset_unit: str = "UNICODE_CODE_POINT"
     source_authority: str = "RAW"

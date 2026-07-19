@@ -7,8 +7,8 @@ import type {
   IntentClassification,
   LanguageCode,
 } from "../types";
-import { erpRagRetriever } from "./ErpRagRetriever";
 import { phoneFromPartyRef } from "../context/PartyPhoneResolver";
+import { resolveUniqueParty } from "./mai08MasterResolve";
 import { overdueReceivableEngine } from "../intelligence/OverdueReceivableEngine";
 import {
   formatPayableReminder,
@@ -81,10 +81,10 @@ export class ReminderQueryHandler {
     const partyQuery = extractParty(text, entities);
     if (!partyQuery || !ctx?.parties?.length) return null;
 
-    const hit = erpRagRetriever.findParties(partyQuery, ctx.parties, 1)[0];
-    if (!hit || hit.score < 0.55) return null;
+    const resolved = resolveUniqueParty(partyQuery, ctx.parties);
+    if (resolved.status !== "bound") return null;
 
-    const party = hit.ref;
+    const party = resolved.hit.ref;
     const balance = party.balance ?? 0;
     const payable = isPayableReminder(text, party.type) || balance < 0;
     const amount = Math.abs(balance);

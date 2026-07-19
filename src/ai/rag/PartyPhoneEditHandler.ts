@@ -8,8 +8,8 @@ import type {
   LanguageCode,
   SutraAiAction,
 } from "../types";
-import { erpRagRetriever } from "./ErpRagRetriever";
 import { normalizeWhatsAppPhone } from "../context/PartyPhoneResolver";
+import { resolveUniqueParty } from "./mai08MasterResolve";
 
 const EDIT_PATTERNS = [
   /^\/setphone\s+(\S+)\s+(\d[\d\s-]{8,14})/i,
@@ -66,10 +66,10 @@ export class PartyPhoneEditHandler {
     const query = extractParty(text, entities);
     if (!query || !ctx?.parties?.length) return null;
 
-    const hit = erpRagRetriever.findParties(query, ctx.parties, 1)[0];
-    if (!hit || hit.score < 0.55) return null;
+    const resolved = resolveUniqueParty(query, ctx.parties);
+    if (resolved.status !== "bound") return null;
 
-    const party = hit.ref;
+    const party = resolved.hit.ref;
     const display = phoneRaw;
     const action: SutraAiAction = {
       id: `setph-${Date.now().toString(36)}`,

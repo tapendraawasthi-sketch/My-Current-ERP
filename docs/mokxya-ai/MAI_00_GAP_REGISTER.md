@@ -418,7 +418,7 @@ Severity legend:
 - **Recommended MAI phase:** MAI-08
 - **Status:** REDUCED (not closed)
 - **Status:** OPEN (normalization foundation landed; multilingual product weakness not closed)
-- **Progress (2026-07-19):** MAI-08 slice 1 `IN_PROGRESS` — candidate-only `TypoCodeMixBundleV1` + EntityEnricher abstention floors (party 0.75 / item 0.78 / gap 0.12). Does **not** close this gap.
+- **Progress (2026-07-19):** MAI-08 slice 2 `IN_PROGRESS` — live TypoCodeMix attach + EntityEnricher floors + deferred path abstention (phone/posting/autoCorrect). Does **not** close this gap.
 
 ---
 

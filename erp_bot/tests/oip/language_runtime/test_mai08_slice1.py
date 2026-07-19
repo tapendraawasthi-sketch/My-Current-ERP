@@ -39,7 +39,7 @@ def test_runtime_version_and_candidates_never_applied():
     assert updated.raw_text == frame.raw_text
     bundle = updated.typo_code_mix_bundle
     assert bundle is not None
-    assert bundle.runtime_version == RUNTIME_VERSION == "mai-08.0.1-slice1"
+    assert bundle.runtime_version == RUNTIME_VERSION == "mai-08.0.2-slice2"
     assert bundle.silent_applications == 0
     assert bundle.candidate_count == len(bundle.candidates)
     assert all(not c.applied for c in bundle.candidates)
@@ -129,5 +129,21 @@ def test_slot_stable_typo_abbr_family_gold():
 def test_manifest_exists():
     manifest = REPO / "evals" / "mai08" / "manifests" / "MAI_08_SLICE1.manifest.json"
     data = json.loads(manifest.read_text(encoding="utf-8"))
-    assert data["runtime_version"] == "mai-08.0.1-slice1"
+    assert data["runtime_version"] in {"mai-08.0.1-slice1", "mai-08.0.2-slice2"}
     assert len(data["files"]) == 4
+
+
+def test_ingress_wires_typo_code_mix_stage():
+    from oip.infrastructure.observability.mai03_stages import TraceStage
+
+    assert TraceStage.TYPO_CODE_MIX_STARTED.value == "TYPO_CODE_MIX_STARTED"
+    assert TraceStage.TYPO_CODE_MIX_COMPLETED.value == "TYPO_CODE_MIX_COMPLETED"
+    src = (
+        REPO
+        / "erp_bot"
+        / "src"
+        / "api"
+        / "oip_chat_ingress.py"
+    ).read_text(encoding="utf-8")
+    assert "attach_typo_code_mix_to_frame" in src
+    assert "TYPO_CODE_MIX_STARTED" in src

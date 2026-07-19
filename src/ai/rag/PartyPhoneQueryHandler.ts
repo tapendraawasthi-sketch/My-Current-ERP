@@ -7,10 +7,10 @@ import type {
   IntentClassification,
   LanguageCode,
 } from "../types";
-import { erpRagRetriever } from "./ErpRagRetriever";
 import { buildSetPhoneHandoffQuery } from "../actions/chatQueryDraft";
 import { normalizeWhatsAppPhone, phoneFromPartyRef } from "../context/PartyPhoneResolver";
 import { agingWaButtonLabel } from "../intelligence/DigestPinPreference";
+import { resolveUniqueParty } from "./mai08MasterResolve";
 
 const PHONE_PATTERNS = [
   /^\/phone\s+(.+)/i,
@@ -61,10 +61,10 @@ export class PartyPhoneQueryHandler {
     const query = extractParty(text, entities);
     if (!query || !ctx?.parties?.length) return null;
 
-    const hit = erpRagRetriever.findParties(query, ctx.parties, 1)[0];
-    if (!hit || hit.score < 0.55) return null;
+    const resolved = resolveUniqueParty(query, ctx.parties);
+    if (resolved.status !== "bound") return null;
 
-    const party = hit.ref;
+    const party = resolved.hit.ref;
     const phone = phoneFromPartyRef(party);
     const display = party.phone ?? "—";
 

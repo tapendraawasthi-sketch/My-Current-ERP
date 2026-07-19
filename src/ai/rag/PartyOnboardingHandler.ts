@@ -7,7 +7,7 @@ import type {
   IntentClassification,
   LanguageCode,
 } from "../types";
-import { erpRagRetriever } from "./ErpRagRetriever";
+import { resolveUniqueParty } from "./mai08MasterResolve";
 
 export class PartyOnboardingHandler {
   shouldOffer(
@@ -20,8 +20,9 @@ export class PartyOnboardingHandler {
     }
     if (!ctx?.parties?.length) return true;
 
-    const hits = erpRagRetriever.findParties(entities.party, ctx.parties, 1);
-    if (hits[0] && hits[0].score >= 0.55) return false;
+    // MAI-08 slice 2: treat as known party only under unique floor/gap policy
+    const partyHit = resolveUniqueParty(entities.party, ctx.parties);
+    if (partyHit.status === "bound") return false;
 
     const isTxn =
       intent?.intent === "SALES_ENTRY" ||

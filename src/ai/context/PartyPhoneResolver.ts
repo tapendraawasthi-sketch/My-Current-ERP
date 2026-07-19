@@ -1,7 +1,7 @@
 /** SUTRA AI — resolve party mobile for WhatsApp deep links */
 
 import type { ErpPartyRef, ErpRagContext } from "../types";
-import { erpRagRetriever } from "../rag/ErpRagRetriever";
+import { resolveUniqueParty } from "../rag/mai08MasterResolve";
 
 export function normalizeWhatsAppPhone(raw?: string): string | undefined {
   if (!raw) return undefined;
@@ -18,9 +18,10 @@ export function resolvePartyPhone(
   ctx?: ErpRagContext,
 ): string | undefined {
   if (!partyQuery || !ctx?.parties?.length) return undefined;
-  const hit = erpRagRetriever.findParties(partyQuery, ctx.parties, 1)[0];
-  if (!hit || hit.score < 0.55) return undefined;
-  return normalizeWhatsAppPhone(hit.ref.phone);
+  // MAI-08 slice 2: no silent top-1 bind below party floor / gap policy
+  const resolved = resolveUniqueParty(partyQuery, ctx.parties);
+  if (resolved.status !== "bound") return undefined;
+  return normalizeWhatsAppPhone(resolved.hit.ref.phone);
 }
 
 export function phoneFromPartyRef(party?: ErpPartyRef): string | undefined {

@@ -9,7 +9,7 @@ import type {
   LanguageCode,
   SutraAiAction,
 } from "../types";
-import { erpRagRetriever } from "./ErpRagRetriever";
+import { resolveUniqueParty } from "./mai08MasterResolve";
 
 function formatAmount(n: number): string {
   return `Rs. ${n.toLocaleString("en-NP")}`;
@@ -37,8 +37,9 @@ export class CompoundTransactionHandler {
       if (!line.party || !line.amount) continue;
       let name = line.party;
       if (ctx?.parties?.length) {
-        const hit = erpRagRetriever.findParties(line.party, ctx.parties, 1)[0];
-        if (hit && hit.score >= 0.6) name = hit.ref.name;
+        // MAI-08 slice 2: rename only on unique confident bind
+        const partyHit = resolveUniqueParty(line.party, ctx.parties);
+        if (partyHit.status === "bound") name = partyHit.hit.ref.name;
       }
       resolved.push({ partyName: name, amount: line.amount });
     }

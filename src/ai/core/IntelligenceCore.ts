@@ -237,7 +237,17 @@ export class IntelligenceCore {
       reasoning.dimensions,
     );
 
-    if (suggestions.autoCorrect && suggestions.suggestions[0]) {
+    // MAI-08 slice 2: never silently rewrite inputs that carry write-path slots
+    const writePathRisk = Boolean(
+      entities.party ||
+        entities.product ||
+        entities.productEnglish ||
+        entities.amount != null ||
+        entities.quantity != null ||
+        entities.itemId ||
+        entities.partyId,
+    );
+    if (suggestions.autoCorrect && suggestions.suggestions[0] && !writePathRisk) {
       const auto = suggestions.suggestions[0];
       autoCorrected = { from: input, to: auto.correctedText };
       const autoEntities = entityExtractor.extract(auto.correctedText, hints.commonProducts);
@@ -255,6 +265,10 @@ export class IntelligenceCore {
       response.confidence = auto.confidence;
       response.needs_clarification = false;
       entities = { ...entities, ...autoEntities };
+    } else if (suggestions.autoCorrect && writePathRisk) {
+      // Keep original text; force clarification instead of silent rewrite
+      response.needs_clarification = true;
+      response.confidence = Math.min(response.confidence ?? 0.5, 0.55);
     }
 
     // Sprint 9–11: ERP query handlers (batch, stock, report, balance, khata)
