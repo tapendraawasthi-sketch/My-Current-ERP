@@ -95,8 +95,8 @@
       "title": "Ask Mode — authorized company report questions",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "PR-B1", "NEXT-20"],
-      "note": "NEXT-08/09/10/12/13/14 Ask + citation + lexical + language sample; still ANNOTATION_ONLY / not production."
+      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "TICKET-PR-B1-001", "TICKET-PR-B1-002", "NEXT-20"],
+      "note": "PR-B1 pack landed; staging tickets OPEN; still ANNOTATION_ONLY / not production."
     },
     {
       "id": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "PR-B1",
+  "recommended_next_step": "PR-B2",
   "next_file": "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1"]
 }

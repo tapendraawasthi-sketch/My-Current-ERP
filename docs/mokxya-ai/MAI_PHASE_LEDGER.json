@@ -5,9 +5,20 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "PR-B1",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14"],
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..14 foundation DONE incl. NEXT-09 ADR_0083 launch language PRODUCT_POLICY. NEXT recommended=PR-B1 staging golden path. Track I freeze ACTIVE; production_approved=false",
+  "recommended_next_step": "PR-B2",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1"],
+  "active_phase_note": "Post-MAI-53 queue. PR-B1 ADR_0084 staging golden pack landed; connected FAIL + manual PENDING tickets block PR-C. NEXT recommended=PR-B2 mutation residual. Track I freeze ACTIVE; production_approved=false",
+  "staging_golden_path": {
+    "authority": "ADR_0084",
+    "decision": "STAGING_GOLDEN_PATH_EVIDENCE_PACK",
+    "engineering_pack_ready": true,
+    "staging_attestation_complete": false,
+    "connected_run_status": "FAIL",
+    "manual_run_status": "PENDING",
+    "blocks_pr_c": true,
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_STAGING_GOLDEN_PATH_REGISTRY.json"
+  },
   "launch_language_sample": {
     "authority": "ADR_0083",
     "decision": "LAUNCH_LANGUAGE_SAMPLE_PRODUCT_POLICY_REVIEW",

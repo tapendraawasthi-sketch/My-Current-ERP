@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_STAGING_GOLDEN_PATH_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0084",
+  "step": "PR-B1",
+  "decision": "STAGING_GOLDEN_PATH_EVIDENCE_PACK",
+  "honesty": {
+    "production_approved": false,
+    "is_execution_authority": false,
+    "oec_sole_mutation_authority": false,
+    "staging_attestation_complete": false,
+    "connected_run_status": "FAIL",
+    "manual_run_status": "PENDING",
+    "engineering_pack_ready": true,
+    "local_connected_attempt_recorded": true
+  },
+  "acceptance": {
+    "mode": "PASS_OR_BLOCKING_TICKET",
+    "blocks_pr_c_until_cleared": true,
+    "allows_pr_b_residual_parallel": true
+  },
+  "automated_specs": [
+    "e2e/orbix-next12-launch-slice.spec.ts",
+    "e2e/orbix-connected.spec.ts",
+    "e2e/orbix-sales-connected.spec.ts",
+    "e2e/orbix-sync.spec.ts"
+  ],
+  "manual_critical_rows": [
+    "romanized_purchase_confirm_receipt_sync",
+    "devanagari_or_mix_sale_confirm_receipt_sync",
+    "english_sale_confirm_receipt_sync",
+    "ask_balance_sheet_no_confirm",
+    "ask_sale_mode_restriction_no_post",
+    "ask_fake_cite_abstain"
+  ],
+  "artifacts_root": "artifacts/prod-ready-pr-b1",
+  "blocking_tickets": [
+    "TICKET-PR-B1-001",
+    "TICKET-PR-B1-002"
+  ],
+  "baseline": "docs/mokxya-ai/baselines/PR_B1_STAGING_GOLDEN_PATH.md",
+  "forbidden_claims": [
+    "production_approved=true",
+    "staging_attestation_complete=true_without_evidence",
+    "connected_run_status=PASS_without_logs",
+    "manual_run_status=PASS_without_attestation",
+    "oec_sole_mutation_authority=true"
+  ]
+}

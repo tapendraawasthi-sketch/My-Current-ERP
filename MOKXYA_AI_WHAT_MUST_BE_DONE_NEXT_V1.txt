@@ -704,8 +704,8 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = PR-B1
-  last_shipped_step = NEXT-09
+  recommended_next_step = PR-B2
+  last_shipped_step = PR-B1
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -720,6 +720,7 @@ Active pointer (update on each go):
   prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
   response_language_live = ADR_0082 scaffold parity; applied_response_rewrite=false
   launch_language_sample = ADR_0083 PRODUCT_POLICY launch slice; GAP-P1-009 REDUCED
+  staging_golden_path = ADR_0084 pack ready; TICKET-PR-B1-001/002 OPEN (block PR-C)
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================
