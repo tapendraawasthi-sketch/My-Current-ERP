@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_MUTATION_AUTHORITY_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0072",
+  "step": "NEXT-02",
+  "decision": "OPTION_A_MODEL_B_PRODUCT_AUTHORITY",
+  "gap_p0_001": {
+    "register_status": "REDUCED",
+    "runtime_status": "OPEN",
+    "runtime_status_reason": "Dual writers still exist; runtime honesty keeps OPEN until sole path proven.",
+    "closed": false
+  },
+  "product_mutation_authority": {
+    "id": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+    "role": "PRODUCT_AUTHORITY",
+    "entry": "src/lib/ekhata/orbixPostingService.ts::executeOrbixConfirm",
+    "calc_engines": "src/domains/* post*Transaction",
+    "model": "Model B local-first Dexie",
+    "oec_required": false,
+    "ai_may_invoke": false,
+    "nl_assent_posts": false
+  },
+  "paths": [
+    {
+      "id": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+      "classification": "PRODUCT_AUTHORITY",
+      "status": "ACTIVE",
+      "gated_for_ai": true,
+      "notes": "Sole product confirm entry for Orbix UI ledger writes."
+    },
+    {
+      "id": "NODE_KHATA_CONFIRM",
+      "classification": "ALTERNATE_WRITER",
+      "status": "ACTIVE",
+      "entry": "packages/backend/src/routes/khata.ts::executeKhataConfirm",
+      "gated_for_ai": true,
+      "notes": "Parallel Postgres path; not denied in NEXT-02; must not be claimed as OEC."
+    },
+    {
+      "id": "VOUCHER_SLICE_UI",
+      "classification": "ALTERNATE_WRITER",
+      "status": "ACTIVE",
+      "entry": "voucherSlice / invoice forms",
+      "gated_for_ai": true,
+      "notes": "Manual UI writes; calc ownership tracked under GAP-P2-002."
+    },
+    {
+      "id": "OEC_ACTION_RUNTIME",
+      "classification": "TARGET_NOT_PRODUCT_PATH",
+      "status": "PARTIAL",
+      "entry": "OIP Action Runtime / OEC (aspirational)",
+      "gated_for_ai": true,
+      "notes": "NOT sole mutation authority. action_to_oec_status=NOT_PRODUCT_PATH."
+    },
+    {
+      "id": "AI_CONFIRM_OEC_CANDIDATE",
+      "classification": "ANNOTATION_ONLY",
+      "status": "CANDIDATE_ONLY",
+      "entry": "explicit_confirmation_oec_dispatch_*",
+      "gated_for_ai": true,
+      "allow_confirm_dispatch": false,
+      "allow_oec_dispatch": false,
+      "notes": "Never posts; never mints confirm tokens on live ingress."
+    }
+  ],
+  "forbidden_claims": [
+    "oec_is_sole_mutation_authority=true",
+    "sole_oec=true",
+    "product_mutation_path=OEC",
+    "action_to_oec_status=PRODUCT_PATH",
+    "nl_assent_posts=true",
+    "allow_oec_dispatch=true on live AI ingress",
+    "allow_confirm_dispatch=true on live AI ingress"
+  ],
+  "strangler_deferred": {
+    "option_b": "SOLE_OEC_STRANGLER",
+    "status": "NOT_STARTED",
+    "requires": "Future ADR + reconciliation tests + dual-write ban or dual-write with proofs"
+  },
+  "honesty": {
+    "production_approved": false,
+    "oec_is_sole_mutation_authority": false,
+    "dual_writers_present": true
+  }
+}

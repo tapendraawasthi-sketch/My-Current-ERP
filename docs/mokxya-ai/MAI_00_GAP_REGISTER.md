@@ -22,8 +22,8 @@ Severity legend:
 - **Recommended MAI phase:** MAI-01 (policy) then MAI-34 (confirm/OEC dispatch) / MAI-35 (sync)
 - **Dependencies:** ADR-0001 acceptance; sync map
 - **Acceptance condition:** Single documented write authority enforced by tests; alternate paths classified and gated
-- **Status:** OPEN
-- **Progress (2026-07-19):** MAI-34 slices 1–2 annotate confirm/OEC policy and emit `CANDIDATE_ONLY` `confirm_oec_candidate` (`nl_assent_posts=false`, `product_mutation_path=DEXIE_EXECUTE_ORBIX_CONFIRM`, `action_to_oec_status=NOT_PRODUCT_PATH`, `gap_p0_001_status=OPEN`). Live `allow_confirm_dispatch` / `allow_oec_dispatch` forced false. MAI-44 slices 1–2 declare security/tenant red-team policy and emit `CANDIDATE_ONLY` `security_red_team_candidate` (`allow_pen_review=false`, `allow_zero_critical_claim=false`, `isolation_proven=false`, `pen_review_passed=false`, `production_security_approved=false`, `gap_p0_001_status=OPEN`). Does **not** close the gap (dual writers still active; no token mint / OEC / Dexie post; no pen-test pass).
+- **Status:** REDUCED
+- **Progress (2026-07-19):** NEXT-02 / ADR_0072 accepts **Option A**: product mutation authority = Model B `DEXIE_EXECUTE_ORBIX_CONFIRM`; OEC is target/not product path; alternate writers (`NODE_KHATA_CONFIRM`, `VOUCHER_SLICE_UI`, `OEC_ACTION_RUNTIME`) classified in `MAI_MUTATION_AUTHORITY_REGISTRY.json`; AI claims of sole-OEC / NL assent / live dispatch fail-closed via `mutation_authority_policy.py`. Runtime bundles keep `gap_p0_001_status=OPEN` while dual writers remain. Does **not** CLOSE the gap (Dexie + Node writers still active; sole-OEC strangler deferred).
 
 ### GAP-P1-010 — Transliteration V1 target labels contradict English/name identity safety
 

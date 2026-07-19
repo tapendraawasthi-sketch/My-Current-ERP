@@ -199,6 +199,9 @@ def confirm_oec_consume_observability(
         allow_confirm_dispatch=False,  # live path force
         allow_oec_dispatch=False,
     )
+    from .mutation_authority_policy import mutation_authority_observability
+
+    auth = mutation_authority_observability()
     return {
         "confirm_oec_consume_mode": built["confirm_oec_consume_mode"],
         "confirm_oec_consume_ready": bool(built["confirm_oec_consume_ready"]),
@@ -207,6 +210,11 @@ def confirm_oec_consume_observability(
         "confirm_token_minted": False,
         "confirm_accepted": False,
         "oec_dispatch_invoked": False,
+        "oec_is_sole_mutation_authority": False,
+        "mutation_authority_adr": auth["mutation_authority_adr"],
+        "mutation_authority_decision": auth["mutation_authority_decision"],
+        "product_mutation_path": auth["product_mutation_path"],
+        "gap_p0_001_register_status": auth["gap_p0_001_register_status"],
         "action_runtime_invoked": False,
         "erp_command_posted": False,
         "dexie_post_invoked": False,
@@ -223,8 +231,12 @@ def confirm_oec_consume_observability(
 def assert_confirm_oec_consume_authority(
     obs: Mapping[str, Any] | None,
 ) -> None:
+    from .mutation_authority_policy import assert_mutation_authority_honesty
+
     if not obs:
+        assert_mutation_authority_honesty()
         return
+    assert_mutation_authority_honesty(obs)
     if (
         obs.get("is_execution_authority") is True
         or obs.get("nl_assent_posts") is True
@@ -239,6 +251,7 @@ def assert_confirm_oec_consume_authority(
         or obs.get("allow_confirm_dispatch") is True
         or obs.get("allow_oec_dispatch") is True
         or str(obs.get("gap_p0_001_status") or "OPEN") != "OPEN"
+        or obs.get("oec_is_sole_mutation_authority") is True
     ):
         raise RuntimeError("CONFIRM_OEC_CONSUME_AUTHORITY")
 

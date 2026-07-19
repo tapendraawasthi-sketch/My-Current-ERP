@@ -251,8 +251,14 @@ Gate:
   GAP-P0-001 moves to REDUCED only if acceptance conditions met; never CLOSED
   by annotation alone.
 
-Status: OPEN
-Depends on: NEXT-00
+Status: DONE (2026-07-19)
+Decision: OPTION_A_MODEL_B_PRODUCT_AUTHORITY (ADR_0072)
+Evidence:
+  docs/mokxya-ai/decisions/ADR_0072_MUTATION_AUTHORITY_CONVERGENCE.md
+  docs/mokxya-ai/MAI_MUTATION_AUTHORITY_REGISTRY.json
+  erp_bot/.../mutation_authority_policy.py
+  erp_bot/tests/oip/language_runtime/test_mai_next02_mutation_authority.py
+  GAP-P0-001 register status REDUCED (runtime still OPEN; dual writers remain)
 
 
 NEXT-03 — PRODUCTION STACK STRANGLER (GAP-P1-001)
@@ -581,7 +587,7 @@ Step     | Status | Commit / evidence | Notes
 ---------|--------|-------------------|------
 NEXT-00  | DONE   | MAI_CAPABILITY_TRUTH_MATRIX.* | honest depths; Track I dormant
 NEXT-01  | DONE   | ADR_0071 + ledger track_i_freeze | freeze until NEXT-20
-NEXT-02  | OPEN   |                   | GAP-P0-001
+NEXT-02  | DONE   | ADR_0072 + mutation registry | GAP-P0-001 REDUCED (not CLOSED)
 NEXT-03  | OPEN   |                   | GAP-P1-001
 NEXT-04  | OPEN   |                   | GAP-P1-002
 NEXT-05  | OPEN   |                   | MAI-34 depth
@@ -604,10 +610,11 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-02
-  last_shipped_step = NEXT-01
+  recommended_next_step = NEXT-03
+  last_shipped_step = NEXT-02
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
+  mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
 
 ======================================================================
 10. RELATIONSHIP TO THE MASTER FILE

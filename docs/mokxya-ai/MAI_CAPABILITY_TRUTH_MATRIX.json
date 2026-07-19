@@ -21,7 +21,7 @@
     "legal_effective_dates_proven": false
   },
   "blocking_gaps": [
-    {"id": "GAP-P0-001", "severity": "P0", "status": "OPEN", "blocks": ["mutation_authority", "MAI-34_depth", "NEXT-02"]},
+    {"id": "GAP-P0-001", "severity": "P0", "status": "REDUCED", "blocks": ["sole_oec_strangler", "MAI-34_depth", "NEXT-05"], "note": "ADR_0072 Option A; dual writers remain; runtime gap OPEN"},
     {"id": "GAP-P1-001", "severity": "P1", "status": "OPEN", "blocks": ["single_ai_entrypoint", "NEXT-03"]},
     {"id": "GAP-P1-002", "severity": "P1", "status": "OPEN", "blocks": ["sync_authority", "MAI-35_depth", "NEXT-04"]},
     {"id": "GAP-P1-004", "severity": "P1", "status": "REDUCED", "blocks": ["stale_draft_merge", "NEXT-06"]},
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-02",
+  "recommended_next_step": "NEXT-03",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02"]
 }

@@ -5,9 +5,18 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-02",
-  "active_phase_note": "Post-MAI-53 queue (WHAT_MUST_BE_DONE_NEXT_V1). NEXT-00 DONE; NEXT-01 DONE (ADR_0071 Track I freeze until NEXT-20). NEXT recommended=NEXT-02 (GAP-P0-001 mutation authority). MAI-50–53 dormant; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-03",
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00/01 DONE; NEXT-02 DONE (ADR_0072 Option A Model B product mutation authority; GAP-P0-001 REDUCED not CLOSED). NEXT recommended=NEXT-03 (GAP-P1-001 stack strangler). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
   "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
+  "mutation_authority": {
+    "authority": "ADR_0072",
+    "decision": "OPTION_A_MODEL_B_PRODUCT_AUTHORITY",
+    "product_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+    "oec_is_sole_mutation_authority": false,
+    "registry": "docs/mokxya-ai/MAI_MUTATION_AUTHORITY_REGISTRY.json",
+    "gap_p0_001_register_status": "REDUCED",
+    "gap_p0_001_runtime_status": "OPEN"
+  },
   "track_i_freeze": {
     "status": "ACTIVE",
     "authority": "ADR_0071",
