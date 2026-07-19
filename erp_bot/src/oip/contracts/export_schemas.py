@@ -73,6 +73,7 @@ from .durable_versioned_draft import DurableVersionedDraftBundleV1
 from .deterministic_preview_edit_loop import DeterministicPreviewEditLoopBundleV1
 from .explicit_confirmation_oec_dispatch import ExplicitConfirmationOecDispatchBundleV1
 from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
+from .legal_question_research import LegalQuestionResearchBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -128,6 +129,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
         "OfflineSyncConflictReversalBundleV1",
         OfflineSyncConflictReversalBundleV1,
     ),
+    ("LegalQuestionResearchBundleV1", LegalQuestionResearchBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

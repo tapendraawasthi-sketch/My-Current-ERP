@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai36-slice1-v1",
+  "dataset_hash": "d305b9087916cb6fb4a1060be62d4f2a3770d32571cfcea2141e94862faf7c51",
+  "phase": "MAI-36",
+  "slice": "SLICE1_LEGAL_RESEARCH_POLICY_ANNOTATION",
+  "runtime_version": "mai-36.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai36/frozen/legal_question_research_v1.jsonl",
+      "sha256": "d305b9087916cb6fb4a1060be62d4f2a3770d32571cfcea2141e94862faf7c51",
+      "case_count": 6,
+      "suite_id": "legal_question_research_v1"
+    }
+  ]
+}

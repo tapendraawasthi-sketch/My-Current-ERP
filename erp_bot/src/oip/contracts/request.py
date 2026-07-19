@@ -34,6 +34,7 @@ from .durable_versioned_draft import DurableVersionedDraftBundleV1
 from .deterministic_preview_edit_loop import DeterministicPreviewEditLoopBundleV1
 from .explicit_confirmation_oec_dispatch import ExplicitConfirmationOecDispatchBundleV1
 from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
+from .legal_question_research import LegalQuestionResearchBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -201,6 +202,8 @@ class CanonicalAIRequestV1(ContractBase):
     offline_sync_conflict_reversal_bundle: (
         OfflineSyncConflictReversalBundleV1 | None
     ) = None
+    # MAI-36: legal question framer / research mode (never mutates / proves law).
+    legal_question_research_bundle: LegalQuestionResearchBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

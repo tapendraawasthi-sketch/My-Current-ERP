@@ -1,0 +1,6 @@
+{"case_id": "mai36_lqr__vat_as_of_clarify", "suite_id": "legal_question_research_v1", "text": "show VAT rate as of 2024-07-16 under VAT Act", "expected_status": "COMPLETE", "expected_readiness": "CLARIFY_REQUIRED", "prohibited_for_training": true}
+{"case_id": "mai36_lqr__vat_nepal_declared", "suite_id": "legal_question_research_v1", "text": "show current VAT rate in Nepal under VAT Act as of 2024", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai36_lqr__vat_missing_both", "suite_id": "legal_question_research_v1", "text": "show VAT rate under VAT Act", "expected_status": "COMPLETE", "expected_readiness": "CLARIFY_REQUIRED", "prohibited_for_training": true}
+{"case_id": "mai36_lqr__purchase_skip", "suite_id": "legal_question_research_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "SKIP", "expected_readiness": "NOT_APPLICABLE", "prohibited_for_training": true}
+{"case_id": "mai36_lqr__report_skip", "suite_id": "legal_question_research_v1", "text": "show balance sheet", "expected_status": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai36_lqr__ood_skip", "suite_id": "legal_question_research_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "prohibited_for_training": true}

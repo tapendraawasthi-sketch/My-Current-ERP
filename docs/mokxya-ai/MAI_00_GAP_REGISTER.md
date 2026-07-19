@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–29 engineering path landed (governance → lexical → hybrid candidates). MAI-30 slice 2 consumes `ABSTAIN_WHEN_UNGROUNDED` into prompt grounding / `SAFE_NO_ANSWER_BLOCK` when claim-like queries lack evidence (`claims_verified=false`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36 slice 1 frames LEGAL_TAX cues into research mode (`mutation_tools_allowed=false`, `current_law_definitive=false`, `legal_effective_dates_proven=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

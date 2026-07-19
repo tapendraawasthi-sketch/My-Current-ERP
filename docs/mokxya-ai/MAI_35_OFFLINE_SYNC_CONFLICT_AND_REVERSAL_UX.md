@@ -1,7 +1,7 @@
 # MAI-35 — Offline, Sync, Conflict, and Reversal UX
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0052](decisions/ADR_0052_OFFLINE_SYNC_CONFLICT_REVERSAL_AUTHORITY.md)  
 **Runtime:** `mai-35.0.2-slice2` (engineering; not production-approved)
 

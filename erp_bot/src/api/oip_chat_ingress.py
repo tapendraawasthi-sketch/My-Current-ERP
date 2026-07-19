@@ -2344,6 +2344,79 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent sync success.
 
+    # MAI-36: legal question framer / research mode (never mutates / proves law).
+    lqr_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.LEGAL_QUESTION_RESEARCH_STARTED,
+        component="conversation.legal_question_research",
+    )
+    try:
+        from ..oip.modules.conversation.application.legal_question_research_service import (
+            assert_legal_question_research_authority,
+            attach_legal_question_research_to_request,
+        )
+
+        updated = attach_legal_question_research_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.legal_question_research_bundle
+        assert_legal_question_research_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            lqr_ev,
+            version_map={
+                "legal_question_research": "mai-36.0.1-slice1",
+            },
+            safe_attributes={
+                "legal_research_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "research_mode_readiness": (
+                    bundle.research_mode_readiness.value if bundle else None
+                ),
+                "research_mode_active": bool(
+                    bundle.research_mode_active if bundle else False
+                ),
+                "jurisdiction_status": (
+                    bundle.jurisdiction_status.value if bundle else None
+                ),
+                "as_of_status": (
+                    bundle.as_of_status.value if bundle else None
+                ),
+                "mutation_tools_allowed": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "legal_proof_claimed": False,
+                "gap_p2_008_status": "OPEN",
+                "draft_mutations": 0,
+                "research_mode_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.LEGAL_QUESTION_RESEARCH_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "risk_class": (
+                    bundle.risk_class.value if bundle else None
+                ),
+                "escalation_policy": (
+                    bundle.escalation_policy.value if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            lqr_ev, safe_error_code="LEGAL_QUESTION_RESEARCH_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.LEGAL_QUESTION_RESEARCH_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="LEGAL_QUESTION_RESEARCH_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent legal research success.
+
     return canonical
 
 

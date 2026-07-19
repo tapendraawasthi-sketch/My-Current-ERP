@@ -1,0 +1,241 @@
+{
+  "$defs": {
+    "EscalationPolicy": {
+      "enum": [
+        "PROFESSIONAL_REVIEW_RECOMMENDED",
+        "NOT_APPLICABLE"
+      ],
+      "title": "EscalationPolicy",
+      "type": "string"
+    },
+    "LegalQuestionResearchStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "LegalQuestionResearchStatus",
+      "type": "string"
+    },
+    "LegalRiskClass": {
+      "enum": [
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ],
+      "title": "LegalRiskClass",
+      "type": "string"
+    },
+    "ResearchModeReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "CLARIFY_REQUIRED"
+      ],
+      "title": "ResearchModeReadiness",
+      "type": "string"
+    },
+    "SlotStatus": {
+      "enum": [
+        "PRESENT",
+        "MISSING",
+        "NOT_APPLICABLE"
+      ],
+      "title": "SlotStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/LegalQuestionResearchBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "accounting_action_separated": {
+      "default": true,
+      "title": "Accounting Action Separated",
+      "type": "boolean"
+    },
+    "amendment_applied": {
+      "default": false,
+      "title": "Amendment Applied",
+      "type": "boolean"
+    },
+    "analysis_status": {
+      "$ref": "#/$defs/LegalQuestionResearchStatus",
+      "default": "NOT_RUN"
+    },
+    "as_of_candidate": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "As Of Candidate"
+    },
+    "as_of_status": {
+      "$ref": "#/$defs/SlotStatus",
+      "default": "NOT_APPLICABLE"
+    },
+    "citations_verified": {
+      "default": false,
+      "title": "Citations Verified",
+      "type": "boolean"
+    },
+    "claim_kinds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Claim Kinds",
+      "type": "array"
+    },
+    "claims_verified": {
+      "default": false,
+      "title": "Claims Verified",
+      "type": "boolean"
+    },
+    "clarification_policy": {
+      "default": "CLARIFY_MISSING_JURISDICTION_OR_TIME",
+      "title": "Clarification Policy",
+      "type": "string"
+    },
+    "current_law_definitive": {
+      "default": false,
+      "title": "Current Law Definitive",
+      "type": "boolean"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "escalation_policy": {
+      "$ref": "#/$defs/EscalationPolicy",
+      "default": "NOT_APPLICABLE"
+    },
+    "gap_p2_008_status": {
+      "default": "OPEN",
+      "title": "Gap P2 008 Status",
+      "type": "string"
+    },
+    "jurisdiction_candidate": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Jurisdiction Candidate"
+    },
+    "jurisdiction_status": {
+      "$ref": "#/$defs/SlotStatus",
+      "default": "NOT_APPLICABLE"
+    },
+    "kb_retrieval_invoked": {
+      "default": false,
+      "title": "Kb Retrieval Invoked",
+      "type": "boolean"
+    },
+    "legal_effective_dates_proven": {
+      "default": false,
+      "title": "Legal Effective Dates Proven",
+      "type": "boolean"
+    },
+    "legal_proof_claimed": {
+      "default": false,
+      "title": "Legal Proof Claimed",
+      "type": "boolean"
+    },
+    "mutation_tools_allowed": {
+      "default": false,
+      "title": "Mutation Tools Allowed",
+      "type": "boolean"
+    },
+    "posting_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Posting Mutations",
+      "type": "integer"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "research_mode_active": {
+      "default": false,
+      "title": "Research Mode Active",
+      "type": "boolean"
+    },
+    "research_mode_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Research Mode Mutations",
+      "type": "integer"
+    },
+    "research_mode_readiness": {
+      "$ref": "#/$defs/ResearchModeReadiness",
+      "default": "NOT_APPLICABLE"
+    },
+    "research_planner_executed": {
+      "default": false,
+      "title": "Research Planner Executed",
+      "type": "boolean"
+    },
+    "risk_class": {
+      "$ref": "#/$defs/LegalRiskClass",
+      "default": "NOT_APPLICABLE"
+    },
+    "runtime_version": {
+      "default": "mai-36.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "source_authority_policy": {
+      "default": "APPROVED_EVIDENCE_REQUIRED",
+      "title": "Source Authority Policy",
+      "type": "string"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "LegalQuestionResearchBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}
