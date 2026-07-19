@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36/37/38 `PASSED_ENGINEERING`. MAI-39 slices 1–2 declare NFRS/NAS pilot and emit `CANDIDATE_ONLY` `nfrs_nas_candidate` (`mapping_status=CANDIDATE_MAPPINGS_ONLY`, `disclosure_status=NOT_FILED`, `allow_mapping_execute=false`, `allow_disclosure_file=false`, `standards_authority_claimed=false`, `filing_ready=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36/37/38/39 `PASSED_ENGINEERING`. MAI-40 slice 1 declares financial-close / adjustment assistance policy only (`adjustment_status=CANDIDATE_ASSISTANCE_ONLY`, `close_posted=false`, `adjustments_posted=false`, `books_locked=false`, `period_closed=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

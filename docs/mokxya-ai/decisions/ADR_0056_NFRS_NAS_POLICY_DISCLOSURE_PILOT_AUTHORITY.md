@@ -1,7 +1,7 @@
 # ADR_0056 — NFRS/NAS Policy, Mapping, and Disclosure Pilot Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-39-NFRS-NAS-POLICY-MAPPING-DISCLOSURE-PILOT (slice 2)
+- **Phase:** MAI-39-NFRS-NAS-POLICY-MAPPING-DISCLOSURE-PILOT (PASSED_ENGINEERING; not production-approved)
 - **Extends:** ADR_0001, ADR_0053, ADR_0047
 
 ## Context

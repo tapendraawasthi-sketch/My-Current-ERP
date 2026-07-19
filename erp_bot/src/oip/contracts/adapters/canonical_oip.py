@@ -768,6 +768,32 @@ class CanonicalOipRequestAdapter:
                     "nfrs_nas_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-40: financial close / adjustment assistance (never posts).
+        if canonical.financial_close_adjustment_assistance_bundle is not None:
+            try:
+                from ...modules.conversation.application.financial_close_adjustment_assistance_service import (
+                    financial_close_adjustment_assistance_to_metadata,
+                )
+
+                metadata["financial_close_adjustment_assistance"] = (
+                    financial_close_adjustment_assistance_to_metadata(
+                        canonical.financial_close_adjustment_assistance_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                fcaa = canonical.financial_close_adjustment_assistance_bundle
+                metadata["financial_close_adjustment_assistance"] = {
+                    "analysis_status": fcaa.analysis_status.value,
+                    "runtime_version": fcaa.runtime_version,
+                    "close_assist_readiness": fcaa.close_assist_readiness.value,
+                    "adjustment_status": "CANDIDATE_ASSISTANCE_ONLY",
+                    "close_posted": False,
+                    "adjustments_posted": False,
+                    "books_locked": False,
+                    "period_closed": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

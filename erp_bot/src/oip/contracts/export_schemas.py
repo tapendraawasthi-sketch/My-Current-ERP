@@ -77,6 +77,9 @@ from .legal_question_research import LegalQuestionResearchBundleV1
 from .core_nepal_tax_knowledge_pilot import CoreNepalTaxKnowledgePilotBundleV1
 from .tax_calculator_rule_integration import TaxCalculatorRuleIntegrationBundleV1
 from .nfrs_nas_policy_disclosure_pilot import NfrsNasPolicyDisclosurePilotBundleV1
+from .financial_close_adjustment_assistance import (
+    FinancialCloseAdjustmentAssistanceBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -144,6 +147,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "NfrsNasPolicyDisclosurePilotBundleV1",
         NfrsNasPolicyDisclosurePilotBundleV1,
+    ),
+    (
+        "FinancialCloseAdjustmentAssistanceBundleV1",
+        FinancialCloseAdjustmentAssistanceBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-39",
-  "active_phase_note": "MAI-39 slice 2 IN_PROGRESS (ADR_0056); NFRS/NAS-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-40",
+  "active_phase_note": "MAI-40 slice 1 IN_PROGRESS (ADR_0057); financial close/adjustment assistance policy (never posts); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3024,7 +3024,7 @@
     {
       "id": "MAI-39",
       "title": "NFRS/NAS POLICY, MAPPING, AND DISCLOSURE PILOT",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3035,6 +3035,7 @@
         "docs/mokxya-ai/decisions/ADR_0056_NFRS_NAS_POLICY_DISCLOSURE_PILOT_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_39_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_39_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_39_ENGINEERING_CLOSURE.md",
         "evals/mai39/manifests/MAI_39_SLICE1.manifest.json",
         "evals/mai39/manifests/MAI_39_SLICE2.manifest.json"
       ],
@@ -3058,20 +3059,43 @@
         "MAI-38"
       ],
       "recommended_order": 39,
-      "closure_note": "Slice 2: CANDIDATE_ONLY NFRS/NAS candidates; never map/file; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: NFRS/NAS pilot + CANDIDATE_ONLY candidates; never map/file; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-40",
       "title": "FINANCIAL CLOSE AND ADJUSTMENT ASSISTANCE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-40.0.1-slice1",
+      "slice": "SLICE1_CLOSE_ASSIST_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_40_FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE.md",
+        "docs/mokxya-ai/decisions/ADR_0057_FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_40_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai40/manifests/MAI_40_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "financial_close_adjustment_assistance_service.py (policy annotation)",
+        "FinancialCloseAdjustmentAssistanceBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE after NFRS_NAS_POLICY_DISCLOSURE_PILOT",
+        "adjustment_status=CANDIDATE_ASSISTANCE_ONLY; close_posted=false; adjustments_posted=false; books_locked=false; period_closed=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-39"
       ],
-      "recommended_order": 40
+      "recommended_order": 40,
+      "closure_note": "Slice 1: close/adjustment POLICY_DECLARED; never post/lock; GAP-P2-008 open."
     },
     {
       "id": "MAI-41",

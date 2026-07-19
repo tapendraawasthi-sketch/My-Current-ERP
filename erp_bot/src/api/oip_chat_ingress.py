@@ -2706,6 +2706,79 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent NFRS/NAS success.
 
+    # MAI-40: financial close / adjustment assistance (never posts).
+    fcaa_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_STARTED,
+        component="conversation.financial_close_adjustment_assistance",
+    )
+    try:
+        from ..oip.modules.conversation.application.financial_close_adjustment_assistance_service import (
+            assert_financial_close_adjustment_assistance_authority,
+            attach_financial_close_adjustment_assistance_to_request,
+        )
+
+        updated = attach_financial_close_adjustment_assistance_to_request(
+            canonical
+        )
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.financial_close_adjustment_assistance_bundle
+        assert_financial_close_adjustment_assistance_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            fcaa_ev,
+            version_map={
+                "financial_close_adjustment_assistance": "mai-40.0.1-slice1",
+            },
+            safe_attributes={
+                "close_assist_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "close_assist_readiness": (
+                    bundle.close_assist_readiness.value if bundle else None
+                ),
+                "pilot_scope": "FINANCIAL_CLOSE_ADJUSTMENT_ONLY",
+                "adjustment_status": "CANDIDATE_ASSISTANCE_ONLY",
+                "close_posted": False,
+                "adjustments_posted": False,
+                "books_locked": False,
+                "period_closed": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            fcaa_ev,
+            safe_error_code="FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent close success.
+
     return canonical
 
 

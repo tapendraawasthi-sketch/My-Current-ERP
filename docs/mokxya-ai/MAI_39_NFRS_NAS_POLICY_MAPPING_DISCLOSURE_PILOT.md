@@ -1,9 +1,10 @@
 # MAI-39 — NFRS/NAS Policy, Mapping, and Disclosure Pilot
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0056](decisions/ADR_0056_NFRS_NAS_POLICY_DISCLOSURE_PILOT_AUTHORITY.md)  
-**Runtime:** `mai-39.0.2-slice2` (engineering; not production-approved)
+**Runtime:** `mai-39.0.2-slice2` (engineering; not production-approved)  
+**Closure:** [MAI_39_ENGINEERING_CLOSURE.md](baselines/MAI_39_ENGINEERING_CLOSURE.md)
 
 ## Objective
 

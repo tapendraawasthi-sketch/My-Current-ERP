@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai40-slice1-v1",
+  "dataset_hash": "20583cd6f30a29e9fa88a1037f944e6122976a33c38a9ebeabc7d7d4aa9fa335",
+  "phase": "MAI-40",
+  "slice": "SLICE1_CLOSE_ASSIST_POLICY",
+  "runtime_version": "mai-40.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai40/frozen/financial_close_adjustment_assistance_v1.jsonl",
+      "sha256": "20583cd6f30a29e9fa88a1037f944e6122976a33c38a9ebeabc7d7d4aa9fa335",
+      "case_count": 6,
+      "suite_id": "financial_close_adjustment_assistance_v1"
+    }
+  ]
+}
