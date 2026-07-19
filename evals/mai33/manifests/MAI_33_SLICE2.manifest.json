@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai33-slice2-v1",
+  "dataset_hash": "35c200313707edcc18b78eee42ad28c4af1b3961c7b6d4a88d8da7d1e2f345e3",
+  "phase": "MAI-33",
+  "slice": "SLICE2_PREVIEW_CANDIDATE_CONSUME",
+  "runtime_version": "mai-33.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai33/frozen/preview_edit_loop_consume_v1.jsonl",
+      "sha256": "35c200313707edcc18b78eee42ad28c4af1b3961c7b6d4a88d8da7d1e2f345e3",
+      "case_count": 6,
+      "suite_id": "preview_edit_loop_consume_v1"
+    }
+  ]
+}

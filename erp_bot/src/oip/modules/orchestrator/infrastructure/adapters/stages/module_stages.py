@@ -788,6 +788,35 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             durable_versioned_draft = {}
 
+        # MAI-33: forward preview/edit-loop candidate (never generates cards).
+        deterministic_preview_edit_loop: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_pel = context.metadata.get("deterministic_preview_edit_loop")
+                if isinstance(raw_pel, dict):
+                    deterministic_preview_edit_loop = dict(raw_pel)
+            if deterministic_preview_edit_loop:
+                deterministic_preview_edit_loop["preview_generated"] = False
+                deterministic_preview_edit_loop["confirmation_card_generated"] = False
+                deterministic_preview_edit_loop["preview_message_invoked"] = False
+                deterministic_preview_edit_loop["journal_calculated"] = False
+                deterministic_preview_edit_loop["draft_mutations"] = 0
+                deterministic_preview_edit_loop["gap_p2_002_status"] = "OPEN"
+                deterministic_preview_edit_loop["allow_preview_generate"] = False
+                deterministic_preview_edit_loop["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "deterministic_preview_edit_loop": (
+                                deterministic_preview_edit_loop
+                            ),
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            deterministic_preview_edit_loop = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding

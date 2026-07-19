@@ -2078,12 +2078,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent store/write success.
 
-    # MAI-33: deterministic preview / edit-loop policy (never generates cards).
+    # MAI-33: deterministic preview / edit-loop + candidate consume.
     pel_ev = recorder.begin_stage(
         mai03_obs.TraceStage.DETERMINISTIC_PREVIEW_EDIT_LOOP_STARTED,
         component="conversation.deterministic_preview_edit_loop",
     )
     try:
+        from ..oip.modules.conversation.application.deterministic_preview_edit_loop_consume_service import (
+            assert_preview_edit_loop_consume_authority,
+            preview_edit_loop_consume_observability,
+        )
         from ..oip.modules.conversation.application.deterministic_preview_edit_loop_service import (
             assert_deterministic_preview_edit_loop_authority,
             attach_deterministic_preview_edit_loop_to_request,
@@ -2094,11 +2098,15 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.deterministic_preview_edit_loop_bundle
         assert_deterministic_preview_edit_loop_authority(bundle)
+        consume_obs = preview_edit_loop_consume_observability(
+            updated, allow_preview_generate=False
+        )
+        assert_preview_edit_loop_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             pel_ev,
             version_map={
-                "deterministic_preview_edit_loop": "mai-33.0.1-slice1",
+                "deterministic_preview_edit_loop": "mai-33.0.2-slice2",
             },
             safe_attributes={
                 "preview_edit_loop_status": (
@@ -2110,12 +2118,17 @@ async def build_canonical_ai_request(
                 "edit_loop_policy": (
                     bundle.edit_loop_policy.value if bundle else None
                 ),
+                "preview_consume_mode": consume_obs.get("preview_consume_mode"),
+                "preview_consume_ready": bool(
+                    consume_obs.get("preview_consume_ready")
+                ),
                 "preview_generated": False,
                 "confirmation_card_generated": False,
                 "preview_message_invoked": False,
                 "journal_calculated": False,
                 "draft_mutations": 0,
                 "gap_p2_002_status": "OPEN",
+                "allow_preview_generate": False,
             },
         )
         recorder.record_event(
@@ -2131,6 +2144,7 @@ async def build_canonical_ai_request(
                 "calc_authority_on_confirm": (
                     bundle.calc_authority_on_confirm.value if bundle else None
                 ),
+                "preview_consume_mode": consume_obs.get("preview_consume_mode"),
             },
         )
     except Exception:  # noqa: BLE001

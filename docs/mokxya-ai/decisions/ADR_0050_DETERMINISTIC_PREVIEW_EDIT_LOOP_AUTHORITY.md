@@ -1,7 +1,7 @@
 # ADR_0050 — Deterministic Preview / Edit-Loop Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-33-DETERMINISTIC-PREVIEW-AND-EDIT-LOOP (slice 1)
+- **Phase:** MAI-33-DETERMINISTIC-PREVIEW-AND-EDIT-LOOP (slice 2)
 - **Extends:** ADR_0001, ADR_0049
 
 ## Context
@@ -28,8 +28,12 @@ mode_aware / OrbixWorkspace / invoice UI off the heavy Cursor lane for now.
    zero; `is_execution_authority=false`.
 4. Aggregate-pending durable drafts → `preview_readiness=BLOCKED`; missing
    durable draft → SKIP. Do not invent preview success.
-5. Slice 2+ may consume into preview candidates / gates; still no AI
-   authoritative balancing; Dexie remains calc authority on confirm.
+5. Slice 2: consume builds `preview_candidate` / `preview_consume_mode`
+   (`CANDIDATE_ONLY` default; `BLOCKED` for blocked readiness / fake
+   authority; `SKIP` for read-only). Live path forces
+   `allow_preview_generate=false` — does **not** call `preview_message` or
+   emit cards. Still no AI journal math; Dexie remains calc authority on
+   confirm; GAP-P2-002 stays OPEN.
 6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
@@ -37,11 +41,14 @@ mode_aware / OrbixWorkspace / invoice UI off the heavy Cursor lane for now.
 | Alternative | Why |
 |-------------|-----|
 | Call preview_message in annotation | Side effects / wrong slice |
+| Live cards in slice 2 | CR-33-01; GAP-P2-002 risk |
 | UI authoritative totals | GAP-P2-002 / dual calc |
 | AI journal math for preview | Authority violation |
-| Close GAP-P2-002 in slice 1 | Needs UI/engine work + review |
+| Close GAP-P2-002 in slice 1–2 | Needs UI/engine work + review |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_33_DETERMINISTIC_PREVIEW_AND_EDIT_LOOP.md`
+- `docs/mokxya-ai/baselines/MAI_33_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/deterministic_preview_edit_loop_service.py`
+- `erp_bot/src/oip/modules/conversation/application/deterministic_preview_edit_loop_consume_service.py`

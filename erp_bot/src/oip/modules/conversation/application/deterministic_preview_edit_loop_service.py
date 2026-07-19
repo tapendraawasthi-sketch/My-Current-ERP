@@ -3,6 +3,8 @@
 Slice 1: declare preview readiness, edit→invalidate policy, and calc-ownership
 flags from MAI-32 durable draft state. Never preview_message, confirmation
 cards, journal math, or draft mutations.
+Slice 2: consume helpers build preview candidates (CANDIDATE_ONLY); still
+never generate cards on the annotation path.
 """
 
 from __future__ import annotations
@@ -22,7 +24,7 @@ from ....contracts.durable_versioned_draft import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-33.0.1-slice1"
+RUNTIME_VERSION = "mai-33.0.2-slice2"
 AUTHORITY = "ADR_0050"
 
 
