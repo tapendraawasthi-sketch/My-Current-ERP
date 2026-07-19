@@ -1,7 +1,7 @@
 # MAI-18 — Event Specification Registry
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0035](decisions/ADR_0035_EVENT_SPECIFICATION_REGISTRY_AUTHORITY.md)  
 **Runtime:** `mai-18.0.2-slice2` (engineering; not production-approved)
 

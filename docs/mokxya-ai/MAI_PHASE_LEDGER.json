@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-18",
-  "active_phase_note": "MAI-18 slice 2 IN_PROGRESS (ADR_0035); EventFrame skeleton from selected spec; MAI-17 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-19",
+  "active_phase_note": "MAI-19 slice 1 IN_PROGRESS (ADR_0036); structured EventFrame extraction; MAI-18 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2233,7 +2233,7 @@
     {
       "id": "MAI-18",
       "title": "EVENT SPECIFICATION REGISTRY",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2244,6 +2244,7 @@
         "docs/mokxya-ai/decisions/ADR_0035_EVENT_SPECIFICATION_REGISTRY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_18_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_18_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_18_ENGINEERING_CLOSURE.md",
         "evals/mai18/manifests/MAI_18_SLICE1.manifest.json",
         "evals/mai18/manifests/MAI_18_SLICE2.manifest.json"
       ],
@@ -2258,7 +2259,6 @@
         "canonical_oip metadata.event_frame"
       ],
       "blockers": [
-        "MAI-19 structured value extraction not started",
         "GAP-P1-004 / GAP-P1-008 remain REDUCED",
         "production_approved=false"
       ],
@@ -2266,22 +2266,39 @@
         "MAI-17"
       ],
       "recommended_order": 18,
-      "closure_note": "Slice 2: EventFrame skeleton from selected spec; values empty; authorizes_posting=false."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-19. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-19",
       "title": "STRUCTURED EVENT EXTRACTION",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "shop NLU + draft extractors deterministic"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-19.0.1-slice1",
+      "slice": "SLICE1_DETERMINISTIC_FRAME_FILL",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_19_STRUCTURED_EVENT_EXTRACTION.md",
+        "docs/mokxya-ai/decisions/ADR_0036_STRUCTURED_EVENT_EXTRACTION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_19_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai19/manifests/MAI_19_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "event_frame_extraction_service.py",
+        "oip_chat_ingress EVENT_FRAME_EXTRACTION after MAI-18",
+        "purchase/sales extractors + Nepali party/amount cues",
+        "canonical_oip metadata.event_frame value_count"
+      ],
+      "blockers": [
+        "Slice 2 richer fields not started",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-18"
       ],
-      "recommended_order": 19
+      "recommended_order": 19,
+      "closure_note": "Slice 1: deterministic party/amount/report_type fill; authorizes_posting=false."
     },
     {
       "id": "MAI-20",

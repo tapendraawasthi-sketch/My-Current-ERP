@@ -499,6 +499,7 @@ def event_spec_registry_to_metadata(
 def event_frame_to_metadata(frame: EventFrameV1 | None) -> dict[str, Any]:
     if frame is None:
         return {}
+    ctx = frame.inherited_context or {}
     return {
         "frame_id": frame.frame_id,
         "event_type": frame.event_type,
@@ -506,9 +507,12 @@ def event_frame_to_metadata(frame: EventFrameV1 | None) -> dict[str, Any]:
         "missing_required_fields": list(frame.missing_required_fields),
         "prohibited_assumptions": list(frame.prohibited_assumptions),
         "ontology_version": frame.ontology_version,
-        "selected_spec_id": (frame.inherited_context or {}).get("selected_spec_id"),
-        "runtime_version": (frame.inherited_context or {}).get("runtime_version"),
+        "selected_spec_id": ctx.get("selected_spec_id"),
+        "runtime_version": ctx.get("runtime_version"),
+        "extraction_runtime": ctx.get("extraction_runtime"),
+        "filled_fields": list(ctx.get("filled_fields") or frame.explicit_values or ()),
         "authorizes_posting": False,
         "value_count": len(frame.values),
         "explicit_value_count": len(frame.explicit_values),
+        "party_count": len(frame.parties),
     }

@@ -1168,6 +1168,59 @@ async def build_canonical_ai_request(
         except Exception:  # noqa: BLE001
             pass
 
+    # MAI-19: structured EventFrame value extraction (deterministic; never posts).
+    ef_ev = recorder.start_stage(
+        mai03_obs.TraceStage.EVENT_FRAME_EXTRACTION_STARTED,
+        component="conversation.event_frame_extraction",
+    )
+    try:
+        from ..oip.modules.conversation.application.event_frame_extraction_service import (
+            attach_event_frame_extraction_to_request,
+        )
+
+        updated = attach_event_frame_extraction_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        frame = updated.event_frame
+        if frame is not None and (
+            frame.authorizes_posting
+            or frame.receipt_id is not None
+            or frame.execution_success is not None
+        ):
+            raise RuntimeError("EVENT_FRAME_EXTRACTION_AUTHORITY")
+        canonical = updated
+        recorder.complete_stage(
+            ef_ev,
+            outcome_code=(frame.status.value if frame else "FAILED"),
+            component_versions={
+                "event_frame_extraction": "mai-19.0.1-slice1",
+            },
+            safe_attributes={
+                "event_frame_status": (frame.status.value if frame else None),
+                "event_frame_value_count": (len(frame.values) if frame else 0),
+                "event_frame_missing_count": (
+                    len(frame.missing_required_fields) if frame else 0
+                ),
+                "event_frame_type": (frame.event_type if frame else None),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.EVENT_FRAME_EXTRACTION_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(frame.status.value if frame else "FAILED"),
+            safe_attributes={
+                "event_frame_value_count": (len(frame.values) if frame else 0),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(ef_ev, safe_error_code="EVENT_FRAME_EXTRACTION_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.EVENT_FRAME_EXTRACTION_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="EVENT_FRAME_EXTRACTION_FAILED",
+        )
+        # Fail closed: keep skeleton frame; do not invent values.
+
     return canonical
 
 
