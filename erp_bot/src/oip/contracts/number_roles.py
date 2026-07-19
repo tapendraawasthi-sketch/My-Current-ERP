@@ -51,7 +51,7 @@ class NumberRoleCandidateV1(ContractBase):
 class NumberRoleBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: NumberRoleStatus = NumberRoleStatus.NOT_RUN
-    runtime_version: str = "mai-09.0.1-slice1"
+    runtime_version: str = "mai-09.0.2-slice2"
     offset_unit: str = "UNICODE_CODE_POINT"
     source_authority: str = "RAW"
     candidates: tuple[NumberRoleCandidateV1, ...] = ()

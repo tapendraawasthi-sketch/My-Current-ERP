@@ -59,23 +59,42 @@ export class EntityExtractor {
       if (pattern.fields.verb) entities.verb = VERB_MAP[pattern.fields.verb.toLowerCase()] ?? pattern.fields.verb;
     }
 
-    // MAI-09: duration before money — "5 maina ko" is not amount
+    // MAI-09 slice 2: word numerals (hajar/lakh/crore) before bare "N ko"
+    if (!entities.amount) {
+      const wordAmt = lower.match(
+        /\b(\d+(?:\.\d+)?)\s*(hajar|hajaar|thousand|lakh|lac|lakhs|crore|karod|k)\b/,
+      );
+      if (wordAmt) {
+        const n = parseFloat(wordAmt[1]);
+        const mult: Record<string, number> = {
+          hajar: 1000,
+          hajaar: 1000,
+          thousand: 1000,
+          k: 1000,
+          lakh: 100000,
+          lac: 100000,
+          lakhs: 100000,
+          crore: 10000000,
+          karod: 10000000,
+        };
+        entities.amount = Math.round(n * (mult[wordAmt[2]] ?? 1));
+      }
+    }
+
+    // MAI-09: duration before money — "5 maina ko" is not amount (but word numerals ok)
     const durationMatch = lower.match(
       /\b(\d+)\s*(maina|mahina|month|months)\b/,
     );
     const durationDeva = text.match(/([०-९]+)\s*महिना/);
-    if (durationMatch || durationDeva) {
-      // Leave amount unset; duration handled as non-money cue
-    } else {
+    const hasDuration = Boolean(durationMatch || durationDeva);
+    if (!entities.amount && !hasDuration) {
       // Amount: "500 ko" pattern (only when not a duration unit)
-      if (!entities.amount) {
-        const amountKo = lower.match(/(\d+)\s*ko\b/);
-        if (amountKo) entities.amount = parseInt(amountKo[1], 10);
-      }
-
-      // Nepali digits
+      const amountKo = lower.match(/(\d+)\s*ko\b/);
+      if (amountKo) entities.amount = parseInt(amountKo[1], 10);
+    }
+    if (!entities.amount && !hasDuration) {
       const devaAmount = text.match(/([०-९]+)\s*को/);
-      if (devaAmount && !entities.amount) {
+      if (devaAmount) {
         const latin = [...devaAmount[1]].map((c) => NEPALI_DIGIT_MAP[c] ?? c).join("");
         entities.amount = parseInt(latin, 10);
       }

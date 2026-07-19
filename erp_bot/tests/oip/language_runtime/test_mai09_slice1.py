@@ -11,7 +11,7 @@ from oip.modules.language_runtime.number_roles.application.number_role_service i
 
 
 def test_runtime_version():
-    assert RUNTIME_VERSION == "mai-09.0.1-slice1"
+    assert RUNTIME_VERSION == "mai-09.0.2-slice2"
 
 
 def test_five_maina_is_duration_not_amount():

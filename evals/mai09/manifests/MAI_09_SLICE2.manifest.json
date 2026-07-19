@@ -1,0 +1,21 @@
+{
+  "dataset_version": "mai09-slice2-v1",
+  "dataset_hash": "7aaba12341492f63c0c4f2b3e4ec7ad6bec626787114e5343141b0a6e806e122",
+  "phase": "MAI-09",
+  "slice": "SLICE2_WORD_NUMERALS_AND_BS_AD",
+  "runtime_version": "mai-09.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai09/frozen/number_roles_critical_v1.jsonl",
+      "sha256": "22c0e387167b891c24bbf348b7b62d2ea29491425709131b175513c935927575",
+      "case_count": 8,
+      "suite_id": "number_roles_critical_v1"
+    },
+    {
+      "path": "evals/mai09/frozen/word_numerals_and_dates_v1.jsonl",
+      "sha256": "015e005069ec060eb0e4964e072ab6d3f8d9d5dc0ba0fa39786bd1e69f57cf02",
+      "case_count": 8,
+      "suite_id": "word_numerals_and_dates_v1"
+    }
+  ]
+}

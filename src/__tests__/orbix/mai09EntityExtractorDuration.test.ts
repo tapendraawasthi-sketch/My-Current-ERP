@@ -13,4 +13,14 @@ describe("MAI-09 EntityExtractor duration before money", () => {
     const entities = extractor.extract("ram lai 500 ko tiryo");
     expect(entities.amount).toBe(500);
   });
+
+  it("expands '5 hajar' and '2 lakh' to amounts", () => {
+    expect(extractor.extract("ram lai 5 hajar tiryo").amount).toBe(5000);
+    expect(extractor.extract("sale 2 lakh cash").amount).toBe(200000);
+  });
+
+  it("keeps duration and word-numeral amount together", () => {
+    const entities = extractor.extract("5 maina ko rent 2 lakh due");
+    expect(entities.amount).toBe(200000);
+  });
 });

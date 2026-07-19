@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-09",
-  "active_phase_note": "MAI-09 slice 1 IN_PROGRESS (ADR_0026); MAI-08 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-09 slice 2 IN_PROGRESS (ADR_0026); word numerals + BS/AD; MAI-08 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -1903,30 +1903,32 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-09.0.1-slice1",
-      "slice": "SLICE1_DURATION_AND_ID_PROTECTION",
+      "runtime_version": "mai-09.0.2-slice2",
+      "slice": "SLICE2_WORD_NUMERALS_AND_BS_AD",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_09_NUMBER_DATE_MONEY_QUANTITY_DURATION_ID_ROLES.md",
         "docs/mokxya-ai/decisions/ADR_0026_NUMBER_ROLE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_09_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai09/manifests/MAI_09_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_09_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai09/manifests/MAI_09_SLICE1.manifest.json",
+        "evals/mai09/manifests/MAI_09_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "erp_bot/src/oip/modules/language_runtime/number_roles/",
+        "word_numerals.py + bs_ad_service.py",
         "erp_bot/src/oip/contracts/number_roles.py",
         "oip_chat_ingress NUMBER_ROLES after MAI-08",
-        "EntityExtractor duration-before-amount",
+        "EntityExtractor duration-before-amount + hajar/lakh/crore",
         "evaluation pipeline_adapter uses parse_number_roles"
       ],
       "blockers": [
-        "BS/AD and lakh/crore deferred to later slices",
         "production_approved=false"
       ],
       "dependencies": [
         "MAI-08"
       ],
       "recommended_order": 9,
-      "closure_note": "Slice 1 kickoff. Duration + ID protection; default unknown not amount. MAI-10 NOT_STARTED."
+      "closure_note": "Slice 2: word numerals + BS/AD conversion. MAI-10 NOT_STARTED."
     },
     {
       "id": "MAI-10",

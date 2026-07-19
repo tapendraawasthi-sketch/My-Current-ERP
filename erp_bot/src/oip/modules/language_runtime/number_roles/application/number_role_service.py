@@ -1,11 +1,10 @@
-"""MAI-09 number-role parser — duration and IDs before money; default unknown."""
+"""MAI-09 number-role parser — duration/IDs/dates/word-numerals before bare money."""
 
 from __future__ import annotations
 
 import re
 from typing import Iterable
 
-from .....contracts.common import SourceSpanV1
 from .....contracts.language import LanguageFrameV1
 from .....contracts.number_roles import (
     NumberRoleBundleV1,
@@ -15,6 +14,8 @@ from .....contracts.number_roles import (
 )
 from ...domain.taxonomy import ProtectedKind
 from .. import OFFSET_UNIT, RUNTIME_VERSION
+from .bs_ad_service import parse_date_role_candidates
+from .word_numerals import expand_word_numeral_phrases
 
 _NUM = re.compile(r"(?<!\w)(\d+(?:[.,]\d+)?)(?!\w)")
 _DURATION = re.compile(
@@ -53,6 +54,13 @@ def _overlaps(start: int, end: int, spans: Iterable[tuple[int, int, str]]) -> st
     return None
 
 
+def _range_claimed(start: int, end: int, claimed: set[tuple[int, int]]) -> bool:
+    for a, b in claimed:
+        if start < b and end > a:
+            return True
+    return False
+
+
 def _protected_tuples(frame: LanguageFrameV1 | None) -> list[tuple[int, int, str]]:
     out: list[tuple[int, int, str]] = []
     if not frame:
@@ -82,27 +90,57 @@ def parse_number_roles(
         *,
         unit: str | None = None,
         reasons: tuple[str, ...] = (),
+        normalized_value: str | None = None,
+        ambiguous: bool | None = None,
     ) -> None:
         nonlocal cid
-        key = (start, end)
-        if key in claimed:
+        if _range_claimed(start, end, claimed):
             return
-        claimed.add(key)
+        claimed.add((start, end))
         cid += 1
+        amb = bool(ambiguous) if ambiguous is not None else (role == NumberRoleKind.UNKNOWN)
         roles.append(
             {
                 "candidate_id": f"nr-{cid:04d}",
-                "surface": surface.replace(",", ""),
+                "surface": surface.replace(",", "") if role != NumberRoleKind.DATE else surface,
                 "role": role.value,
-                "normalized_value": surface.replace(",", ""),
+                "normalized_value": normalized_value
+                if normalized_value is not None
+                else surface.replace(",", ""),
                 "unit": unit,
                 "raw_start": start,
                 "raw_end": end,
                 "reason_codes": list(reasons),
-                "ambiguous": role == NumberRoleKind.UNKNOWN,
+                "ambiguous": amb,
             }
         )
 
+    # 1) Dates (claim whole date span so component digits are not re-roled)
+    for d in parse_date_role_candidates(text):
+        _add(
+            d["surface"],
+            NumberRoleKind.DATE,
+            d["raw_start"],
+            d["raw_end"],
+            unit=d.get("unit"),
+            reasons=tuple(d.get("reason_codes") or ()),
+            normalized_value=d.get("normalized_value"),
+            ambiguous=d.get("ambiguous"),
+        )
+
+    # 2) Word numerals (5 hajar / 2 lakh / 1 crore)
+    for w in expand_word_numeral_phrases(text):
+        _add(
+            w["surface"],
+            NumberRoleKind.AMOUNT,
+            w["raw_start"],
+            w["raw_end"],
+            unit=w.get("unit"),
+            reasons=tuple(w.get("reason_codes") or ()),
+            normalized_value=w.get("normalized_value"),
+        )
+
+    # 3) Duration / percent
     for m in _DURATION.finditer(text):
         _add(
             m.group(1),
@@ -122,10 +160,11 @@ def parse_number_roles(
             reasons=("PERCENT_LITERAL",),
         )
 
+    # 4) Remaining bare numerals
     for m in _NUM.finditer(text):
         surface = m.group(1)
         start, end = m.start(1), m.end(1)
-        if (start, end) in claimed:
+        if _range_claimed(start, end, claimed):
             continue
         kind = _overlaps(start, end, protected)
         if kind and kind in _PROTECTED_ID_KINDS:
@@ -141,7 +180,6 @@ def parse_number_roles(
             )
             continue
 
-        # Local windows — prefer immediate left for invoice/ID so later money digits win
         left_near = text[max(0, start - 16) : start]
         right_near = text[end : min(len(text), end + 16)]
         local = f"{left_near} {surface} {right_near}"
@@ -153,7 +191,6 @@ def parse_number_roles(
         )
         qty_hit = bool(_QTY_CTX.search(local))
 
-        # Immediate-left invoice/id wins for that digit; later money digits use money cues.
         if inv_hit:
             _add(
                 surface,
@@ -172,7 +209,6 @@ def parse_number_roles(
         if money_hit:
             _add(surface, NumberRoleKind.AMOUNT, start, end, reasons=("MONEY_CONTEXT_CUE",))
             continue
-        # Default: unknown — never first-number-as-money
         _add(surface, NumberRoleKind.UNKNOWN, start, end, reasons=("NO_ROLE_CUE",))
 
     return roles
@@ -217,7 +253,6 @@ def attach_number_roles_to_frame(frame: LanguageFrameV1) -> LanguageFrameV1:
         raise RuntimeError("RAW_TEXT_MUTATION")
     if bundle.silent_applications != 0:
         raise RuntimeError("SILENT_APPLICATIONS_NONZERO")
-    # Also populate legacy tuple field for consumers that read number_candidates
     legacy = tuple(
         {
             "surface": c.surface,
@@ -235,6 +270,9 @@ def attach_number_roles_to_frame(frame: LanguageFrameV1) -> LanguageFrameV1:
         update={
             "number_role_bundle": bundle,
             "number_candidates": legacy,
+            "date_candidates": tuple(
+                x for x in legacy if x.get("role") == "date"
+            ),
             "analyzer_versions": versions,
         }
     )
