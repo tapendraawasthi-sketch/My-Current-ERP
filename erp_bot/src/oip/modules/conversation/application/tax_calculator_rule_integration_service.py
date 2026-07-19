@@ -20,7 +20,7 @@ from ....contracts.tax_calculator_rule_integration import (
     TaxCalculatorRuleIntegrationStatus,
 )
 
-RUNTIME_VERSION = "mai-38.0.1-slice1"
+RUNTIME_VERSION = "mai-38.0.2-slice2"
 AUTHORITY = "ADR_0055"
 
 _CALC_INTENT = re.compile(

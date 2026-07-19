@@ -7209,7 +7209,7 @@
           "type": "boolean"
         },
         "runtime_version": {
-          "default": "mai-38.0.1-slice1",
+          "default": "mai-38.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },

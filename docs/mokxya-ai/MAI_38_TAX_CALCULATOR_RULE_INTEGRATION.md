@@ -1,9 +1,9 @@
 # MAI-38 — Tax Calculator / Rule Integration
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0055](decisions/ADR_0055_TAX_CALCULATOR_RULE_INTEGRATION_AUTHORITY.md)  
-**Runtime:** `mai-38.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-38.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -21,18 +21,27 @@ production calculator authority.
 6. Calc-intent cues documented only (`CALC_INTENT_DETECTED_NOT_EXECUTED`)
 7. Dates unproven; GAP-P2-008 OPEN
 
+## Slice 2
+
+1. `resolve_calculator_consume_mode` / `build_calculator_rule_candidate`
+2. Default `CANDIDATE_ONLY` — rule refs / computed amount / definitive null
+3. Fake calculation claim → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_rule_table_load=false` / `allow_live_calculation=false`
+5. Metadata: `calculator_consume_ready` + `calculator_rule_candidate`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| VAT / TDS pilot | COMPLETE → `POLICY_DECLARED` (or `RULE_TABLE_PENDING` if SCOPE_PARTIAL) |
+| VAT / TDS pilot | COMPLETE → `CANDIDATE_ONLY` |
 | Calc-intent text | still no execution |
+| Fake calculation claim | `BLOCKED` |
 | purchase / no pilot | SKIP |
 | Any live path | never calculate; GAP-P2-008 OPEN |
 
 ## Non-goals
 
-- Live tax calculation (slice 2+ may candidate only)
+- Live tax calculation
 - Closing GAP-P2-008
 - Production calculator eligibility
 - Production approval

@@ -2525,12 +2525,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent tax pilot success.
 
-    # MAI-38: tax calculator / rule integration policy (never executes).
+    # MAI-38: tax calculator / rule integration + candidate consume (never executes).
     tcri_ev = recorder.begin_stage(
         mai03_obs.TraceStage.TAX_CALCULATOR_RULE_INTEGRATION_STARTED,
         component="conversation.tax_calculator_rule_integration",
     )
     try:
+        from ..oip.modules.conversation.application.tax_calculator_rule_integration_consume_service import (
+            assert_calculator_consume_authority,
+            calculator_consume_observability,
+        )
         from ..oip.modules.conversation.application.tax_calculator_rule_integration_service import (
             assert_tax_calculator_rule_integration_authority,
             attach_tax_calculator_rule_integration_to_request,
@@ -2541,11 +2545,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.tax_calculator_rule_integration_bundle
         assert_tax_calculator_rule_integration_authority(bundle)
+        consume_obs = calculator_consume_observability(
+            updated,
+            allow_rule_table_load=False,
+            allow_live_calculation=False,
+        )
+        assert_calculator_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             tcri_ev,
             version_map={
-                "tax_calculator_rule_integration": "mai-38.0.1-slice1",
+                "tax_calculator_rule_integration": "mai-38.0.2-slice2",
             },
             safe_attributes={
                 "calculator_status": (
@@ -2555,6 +2565,12 @@ async def build_canonical_ai_request(
                     bundle.calculator_readiness.value if bundle else None
                 ),
                 "rule_integration_status": "POLICY_ONLY",
+                "calculator_consume_mode": consume_obs.get(
+                    "calculator_consume_mode"
+                ),
+                "calculator_consume_ready": bool(
+                    consume_obs.get("calculator_consume_ready")
+                ),
                 "tax_calculator_invoked": False,
                 "calculation_executed": False,
                 "amount_computed": False,
@@ -2567,6 +2583,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_rule_table_load": False,
+                "allow_live_calculation": False,
             },
         )
         recorder.record_event(
@@ -2580,6 +2598,9 @@ async def build_canonical_ai_request(
                     bundle.calc_intent_detected if bundle else False
                 ),
                 "pilot_bound": bool(bundle.pilot_bound if bundle else False),
+                "calculator_consume_mode": consume_obs.get(
+                    "calculator_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

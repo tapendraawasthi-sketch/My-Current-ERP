@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-38",
-  "active_phase_note": "MAI-38 slice 1 IN_PROGRESS (ADR_0055); tax calculator/rule policy (never executes); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-38 slice 2 IN_PROGRESS (ADR_0055); calculator/rule-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2988,19 +2988,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-38.0.1-slice1",
-      "slice": "SLICE1_CALCULATOR_RULE_POLICY",
+      "runtime_version": "mai-38.0.2-slice2",
+      "slice": "SLICE2_CALCULATOR_RULE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_38_TAX_CALCULATOR_RULE_INTEGRATION.md",
         "docs/mokxya-ai/decisions/ADR_0055_TAX_CALCULATOR_RULE_INTEGRATION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_38_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai38/manifests/MAI_38_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_38_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai38/manifests/MAI_38_SLICE1.manifest.json",
+        "evals/mai38/manifests/MAI_38_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "tax_calculator_rule_integration_service.py (policy annotation)",
+        "tax_calculator_rule_integration_consume_service.py (CANDIDATE_ONLY calculator_rule_candidate)",
         "TaxCalculatorRuleIntegrationBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress TAX_CALCULATOR_RULE_INTEGRATION after CORE_NEPAL_TAX_KNOWLEDGE_PILOT",
-        "calculation_executed=false; amount_computed=false; rule_table_loaded=false; calculator_production_eligible=false; gap_p2_008_status=OPEN"
+        "allow_rule_table_load=false; allow_live_calculation=false; calculation_executed=false; calculator_production_eligible=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3015,7 +3018,7 @@
         "MAI-37"
       ],
       "recommended_order": 38,
-      "closure_note": "Slice 1: calculator/rule POLICY_ONLY; never executes; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY calculator/rule candidates; never calculate; GAP-P2-008 open."
     },
     {
       "id": "MAI-39",

@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai38-slice2-v1",
+  "dataset_hash": "cbeeb63ebb24e7caa8c162a347ac588c156bdcde536f17790f244b3b2ebbaf02",
+  "phase": "MAI-38",
+  "slice": "SLICE2_CALCULATOR_RULE_CANDIDATE_CONSUME",
+  "runtime_version": "mai-38.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai38/frozen/calculator_rule_consume_v1.jsonl",
+      "sha256": "cbeeb63ebb24e7caa8c162a347ac588c156bdcde536f17790f244b3b2ebbaf02",
+      "case_count": 6,
+      "suite_id": "calculator_rule_consume_v1"
+    }
+  ]
+}

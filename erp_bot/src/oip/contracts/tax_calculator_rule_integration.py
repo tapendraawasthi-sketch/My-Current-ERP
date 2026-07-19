@@ -29,7 +29,7 @@ class TaxCalculatorRuleIntegrationBundleV1(ContractBase):
     analysis_status: TaxCalculatorRuleIntegrationStatus = (
         TaxCalculatorRuleIntegrationStatus.NOT_RUN
     )
-    runtime_version: str = "mai-38.0.1-slice1"
+    runtime_version: str = "mai-38.0.2-slice2"
     source_authority: str = "REQUEST"
     calculator_readiness: CalculatorReadiness = CalculatorReadiness.NOT_APPLICABLE
     rule_integration_status: str = "POLICY_ONLY"
