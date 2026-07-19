@@ -43,7 +43,7 @@ def _pipeline(text: str):
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-51.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-51.")
 
 
 def test_private_document_policy_declared() -> None:

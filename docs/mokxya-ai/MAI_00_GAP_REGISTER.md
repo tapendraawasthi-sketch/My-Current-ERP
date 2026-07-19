@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–50 `PASSED_ENGINEERING`. MAI-51 slice 1 declares private user-document intelligence policy only (`release_status=NOT_RELEASED`, `private_document_intelligence_enabled=false`, `document_ingested=false`, `document_indexed=false`, `document_qa_live=false`, `retention_policy_applied=false`, `access_control_enforced=false`, `cross_tenant_isolation_proven=false`, `user_document_released=false`, `documents_retrieved=0`, `production_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–50 `PASSED_ENGINEERING`. MAI-51 slice 2 consumes private user-document intelligence into `CANDIDATE_ONLY` candidates (`allow_ingest=false`, `allow_qa=false`, `release_status=NOT_RELEASED`, `private_document_intelligence_enabled=false`, `document_ingested=false`, `document_indexed=false`, `document_qa_live=false`, `retention_policy_applied=false`, `access_control_enforced=false`, `cross_tenant_isolation_proven=false`, `user_document_released=false`, `documents_retrieved=0`, `production_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

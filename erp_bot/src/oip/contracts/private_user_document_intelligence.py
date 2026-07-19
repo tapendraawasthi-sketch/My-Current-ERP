@@ -40,7 +40,7 @@ class PrivateUserDocumentIntelligenceBundleV1(ContractBase):
     analysis_status: PrivateUserDocumentIntelligenceStatus = (
         PrivateUserDocumentIntelligenceStatus.NOT_RUN
     )
-    runtime_version: str = "mai-51.0.1-slice1"
+    runtime_version: str = "mai-51.0.2-slice2"
     source_authority: str = "REQUEST"
     private_user_document_intelligence_readiness: (
         PrivateUserDocumentIntelligenceReadiness

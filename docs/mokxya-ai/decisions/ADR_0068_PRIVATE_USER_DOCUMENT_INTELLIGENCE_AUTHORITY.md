@@ -1,7 +1,7 @@
 # ADR_0068 — Private User-Document Intelligence Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-51-PRIVATE-USER-DOCUMENT-INTELLIGENCE (slice 1)
+- **Phase:** MAI-51-PRIVATE-USER-DOCUMENT-INTELLIGENCE (slice 2)
 - **Extends:** ADR_0001, ADR_0003
 
 ## Context
@@ -33,9 +33,13 @@ before any document ingest, index, QA live path, or retention apply.
    `production_approved=false`,
    `documents_retrieved=0`,
    `gap_p2_008_status=OPEN`.
-4. Never invent document ingest, index, QA live, or isolation proof from
+4. Slice 2: consume into `CANDIDATE_ONLY`
+   `private_user_document_intelligence_candidate` with null plans; live
+   ingress forces `allow_ingest=false` and `allow_qa=false`. Label-only
+   `INVOKE_INGEST` / `INVOKE_QA` modes exist for unit tests only.
+5. Never invent document ingest, index, QA live, or isolation proof from
    cue detection alone.
-5. Engineering-gated: ledger `production_approved=false` remains false.
+6. Engineering-gated: ledger `production_approved=false` remains false.
 
 ## Rejected
 
@@ -46,9 +50,12 @@ before any document ingest, index, QA live path, or retention apply.
 | Claim cross-tenant isolation proven | Security review still required |
 | Close GAP-P2-008 / GAP-P0-001 | Honesty + security review still required |
 | Silent document retrieval | Fail-closed; documents_retrieved must stay 0 |
+| Live allow_ingest / allow_qa | Would invent document authority |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_51_PRIVATE_USER_DOCUMENT_INTELLIGENCE.md`
 - `docs/mokxya-ai/baselines/MAI_51_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_51_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/private_user_document_intelligence_service.py`
+- `erp_bot/src/oip/modules/conversation/application/private_user_document_intelligence_consume_service.py`

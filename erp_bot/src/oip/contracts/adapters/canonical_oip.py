@@ -1159,17 +1159,21 @@ class CanonicalOipRequestAdapter:
                     "nepali_english_speech_channel_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-51: private user-document intelligence (never ingests docs).
+        # MAI-51: private user-document intelligence + candidate consume.
         if canonical.private_user_document_intelligence_bundle is not None:
             try:
+                from ...modules.conversation.application.private_user_document_intelligence_consume_service import (
+                    enrich_pudi_metadata_with_consume,
+                )
                 from ...modules.conversation.application.private_user_document_intelligence_service import (
                     private_user_document_intelligence_to_metadata,
                 )
 
+                base_meta = private_user_document_intelligence_to_metadata(
+                    canonical.private_user_document_intelligence_bundle
+                )
                 metadata["private_user_document_intelligence"] = (
-                    private_user_document_intelligence_to_metadata(
-                        canonical.private_user_document_intelligence_bundle
-                    )
+                    enrich_pudi_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 pudi = canonical.private_user_document_intelligence_bundle
@@ -1186,6 +1190,10 @@ class CanonicalOipRequestAdapter:
                     "cross_tenant_isolation_proven": False,
                     "production_approved": False,
                     "gap_p2_008_status": "OPEN",
+                    "private_user_document_intelligence_consume_mode": (
+                        "UNCHANGED"
+                    ),
+                    "private_user_document_intelligence_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

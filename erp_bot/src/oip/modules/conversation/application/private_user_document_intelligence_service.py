@@ -1,6 +1,7 @@
 """MAI-51 — private user-document intelligence policy (never ingests docs).
 
 Slice 1: declare candidate private-document policy from cue detection.
+Slice 2 consume is in private_user_document_intelligence_consume_service.
 Never claims document ingested, indexed, QA live, or cross-tenant isolation proven.
 """
 
@@ -17,7 +18,7 @@ from ....contracts.private_user_document_intelligence import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-51.0.1-slice1"
+RUNTIME_VERSION = "mai-51.0.2-slice2"
 AUTHORITY = "ADR_0068"
 
 _PRIVATE_DOC = re.compile(

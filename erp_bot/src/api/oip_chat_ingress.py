@@ -3809,12 +3809,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent live speech.
 
-    # MAI-51: private user-document intelligence (never ingests docs).
+    # MAI-51: private user-document intelligence + candidate consume.
     pudi_ev = recorder.begin_stage(
         mai03_obs.TraceStage.PRIVATE_USER_DOCUMENT_INTELLIGENCE_STARTED,
         component="conversation.private_user_document_intelligence",
     )
     try:
+        from ..oip.modules.conversation.application.private_user_document_intelligence_consume_service import (
+            assert_private_user_document_intelligence_consume_authority,
+            private_user_document_intelligence_consume_observability,
+        )
         from ..oip.modules.conversation.application.private_user_document_intelligence_service import (
             assert_private_user_document_intelligence_authority,
             attach_private_user_document_intelligence_to_request,
@@ -3827,11 +3831,19 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.private_user_document_intelligence_bundle
         assert_private_user_document_intelligence_authority(bundle)
+        consume_obs = private_user_document_intelligence_consume_observability(
+            updated,
+            allow_ingest=False,
+            allow_qa=False,
+        )
+        assert_private_user_document_intelligence_consume_authority(
+            consume_obs
+        )
         canonical = updated
         recorder.complete_stage(
             pudi_ev,
             version_map={
-                "private_user_document_intelligence": "mai-51.0.1-slice1",
+                "private_user_document_intelligence": "mai-51.0.2-slice2",
             },
             safe_attributes={
                 "private_user_document_intelligence_status": (
@@ -3847,6 +3859,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "private_user_document_intelligence_consume_mode": (
+                    consume_obs.get(
+                        "private_user_document_intelligence_consume_mode"
+                    )
+                ),
+                "private_user_document_intelligence_consume_ready": bool(
+                    consume_obs.get(
+                        "private_user_document_intelligence_consume_ready"
+                    )
+                ),
                 "document_authority_claimed": False,
                 "private_document_intelligence_enabled": False,
                 "document_ingested": False,
@@ -3877,6 +3899,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "private_user_document_intelligence_consume_mode": (
+                    consume_obs.get(
+                        "private_user_document_intelligence_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001
