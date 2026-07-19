@@ -211,6 +211,181 @@
       "title": "CandidateScript",
       "type": "string"
     },
+    "ClaimCitationBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/ClaimCitationStatus",
+          "default": "NOT_RUN"
+        },
+        "citation_required": {
+          "default": true,
+          "title": "Citation Required",
+          "type": "boolean"
+        },
+        "citations_verified": {
+          "default": false,
+          "title": "Citations Verified",
+          "type": "boolean"
+        },
+        "claim_cues": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ClaimCueV1"
+          },
+          "title": "Claim Cues",
+          "type": "array"
+        },
+        "claims_verified": {
+          "default": false,
+          "title": "Claims Verified",
+          "type": "boolean"
+        },
+        "documents_retrieved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Retrieved",
+          "type": "integer"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "fake_citation_allowed": {
+          "default": false,
+          "title": "Fake Citation Allowed",
+          "type": "boolean"
+        },
+        "grounded_answer_policy": {
+          "$ref": "#/$defs/GroundedAnswerPolicy",
+          "default": "ABSTAIN_WHEN_UNGROUNDED"
+        },
+        "legal_proof_claimed": {
+          "default": false,
+          "title": "Legal Proof Claimed",
+          "type": "boolean"
+        },
+        "model_invocations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Invocations",
+          "type": "integer"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-30.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "verification_status": {
+          "$ref": "#/$defs/ClaimCitationVerificationStatus",
+          "default": "UNVERIFIED"
+        },
+        "verifier_executed": {
+          "default": false,
+          "title": "Verifier Executed",
+          "type": "boolean"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "ClaimCitationBundleV1",
+      "type": "object"
+    },
+    "ClaimCitationStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "ClaimCitationStatus",
+      "type": "string"
+    },
+    "ClaimCitationVerificationStatus": {
+      "enum": [
+        "UNVERIFIED",
+        "INSUFFICIENT"
+      ],
+      "title": "ClaimCitationVerificationStatus",
+      "type": "string"
+    },
+    "ClaimCueKind": {
+      "enum": [
+        "LEGAL_TAX",
+        "ACCOUNTING_RULE",
+        "ERP_FACT",
+        "PRODUCT_CAPABILITY",
+        "UNKNOWN"
+      ],
+      "title": "ClaimCueKind",
+      "type": "string"
+    },
+    "ClaimCueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Cue Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ClaimCueKind",
+          "default": "UNKNOWN"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "surface": {
+          "default": "",
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cue_id"
+      ],
+      "title": "ClaimCueV1",
+      "type": "object"
+    },
     "ClarificationPlanBundleV1": {
       "additionalProperties": false,
       "properties": {
@@ -1886,6 +2061,14 @@
         "NOT_RUN"
       ],
       "title": "FrameStatus",
+      "type": "string"
+    },
+    "GroundedAnswerPolicy": {
+      "enum": [
+        "ABSTAIN_WHEN_UNGROUNDED",
+        "UNKNOWN"
+      ],
+      "title": "GroundedAnswerPolicy",
       "type": "string"
     },
     "HybridFusionBundleV1": {
@@ -6585,6 +6768,17 @@
       "additionalProperties": true,
       "title": "Active Ui Context",
       "type": "object"
+    },
+    "claim_citation_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ClaimCitationBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "clarification_plan_bundle": {
       "anyOf": [

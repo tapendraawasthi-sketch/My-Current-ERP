@@ -1,0 +1,48 @@
+{
+  "$defs": {
+    "ClaimCueKind": {
+      "enum": [
+        "LEGAL_TAX",
+        "ACCOUNTING_RULE",
+        "ERP_FACT",
+        "PRODUCT_CAPABILITY",
+        "UNKNOWN"
+      ],
+      "title": "ClaimCueKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ClaimCueV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "cue_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Cue Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/ClaimCueKind",
+      "default": "UNKNOWN"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "surface": {
+      "default": "",
+      "title": "Surface",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cue_id"
+  ],
+  "title": "ClaimCueV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

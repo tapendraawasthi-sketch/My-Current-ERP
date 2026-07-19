@@ -36,6 +36,8 @@
     "LexicalIndexBundleV1",
     "VectorIndexBundleV1",
     "HybridFusionBundleV1",
+    "ClaimCitationBundleV1",
+    "ClaimCueV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

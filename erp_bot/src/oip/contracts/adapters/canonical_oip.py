@@ -467,6 +467,27 @@ class CanonicalOipRequestAdapter:
                     "hybrid_production_eligible": False,
                     "is_execution_authority": False,
                 }
+        # MAI-30: claim-citation / grounded-answer policy (never verified).
+        if canonical.claim_citation_bundle is not None:
+            try:
+                from ...modules.conversation.application.claim_citation_service import (
+                    claim_citation_to_metadata,
+                )
+
+                metadata["claim_citation"] = claim_citation_to_metadata(
+                    canonical.claim_citation_bundle
+                )
+            except Exception:  # noqa: BLE001
+                cc = canonical.claim_citation_bundle
+                metadata["claim_citation"] = {
+                    "analysis_status": cc.analysis_status.value,
+                    "runtime_version": cc.runtime_version,
+                    "claims_verified": False,
+                    "citations_verified": False,
+                    "verifier_executed": False,
+                    "legal_proof_claimed": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

@@ -28,6 +28,7 @@ from .temporal_cross_ref import TemporalCrossRefBundleV1
 from .lexical_index import LexicalIndexBundleV1
 from .vector_index import VectorIndexBundleV1
 from .hybrid_fusion import HybridFusionBundleV1
+from .claim_citation import ClaimCitationBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -177,6 +178,8 @@ class CanonicalAIRequestV1(ContractBase):
     vector_index_bundle: VectorIndexBundleV1 | None = None
     # MAI-29: hybrid fusion / evidence policy (no RRF execute / no rerank).
     hybrid_fusion_bundle: HybridFusionBundleV1 | None = None
+    # MAI-30: claim-citation / grounded-answer policy (never verified in annotation).
+    claim_citation_bundle: ClaimCitationBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

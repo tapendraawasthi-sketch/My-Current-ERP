@@ -1,0 +1,6 @@
+{"case_id": "mai30_cc__vat_report", "suite_id": "claim_citation_v1", "text": "show VAT report for this month", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai30_cc__vat_act", "suite_id": "claim_citation_v1", "text": "show VAT rate as of 2024-07-16 under VAT Act", "expected_status": "COMPLETE", "expected_has_legal_tax": true, "prohibited_for_training": true}
+{"case_id": "mai30_cc__purchase", "suite_id": "claim_citation_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai30_cc__ledger", "suite_id": "claim_citation_v1", "text": "show ledger balance report for cash account", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai30_cc__ood", "suite_id": "claim_citation_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai30_cc__nfrs", "suite_id": "claim_citation_v1", "text": "show NFRS report pursuant to section 5", "expected_status": "COMPLETE", "expected_has_legal_tax": true, "prohibited_for_training": true}

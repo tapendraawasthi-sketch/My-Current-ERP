@@ -1,7 +1,7 @@
 # MAI-29 — Hybrid Fusion, Reranking, and Evidence Bundles
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0046](decisions/ADR_0046_HYBRID_FUSION_AUTHORITY.md)  
 **Runtime:** `mai-29.0.2-slice2` (engineering; not production-approved)
 

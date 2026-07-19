@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-29",
-  "active_phase_note": "MAI-29 slice 2 IN_PROGRESS (ADR_0046); evidence candidates + optional RRF consume; MAI-28 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-30",
+  "active_phase_note": "MAI-30 slice 1 IN_PROGRESS (ADR_0047); claim-citation / abstain-when-ungrounded annotation; MAI-29 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2633,7 +2633,7 @@
     {
       "id": "MAI-29",
       "title": "HYBRID FUSION, RERANKING, AND EVIDENCE BUNDLES",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2644,6 +2644,7 @@
         "docs/mokxya-ai/decisions/ADR_0046_HYBRID_FUSION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_29_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_29_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_29_ENGINEERING_CLOSURE.md",
         "evals/mai29/manifests/MAI_29_SLICE1.manifest.json",
         "evals/mai29/manifests/MAI_29_SLICE2.manifest.json"
       ],
@@ -2665,22 +2666,40 @@
         "MAI-28"
       ],
       "recommended_order": 29,
-      "closure_note": "Slice 2: evidence candidates via LEXICAL_ONLY/RRF_APPLIED; annotation unexecuted; claims unverified."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-30. production_approved=false. Gaps unchanged."
     },
     {
       "id": "MAI-30",
       "title": "GROUNDED ANSWER AND CLAIM-CITATION VERIFICATION",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "ORBIX_NP_KB_CITATIONS — claim verifier incomplete"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-30.0.1-slice1",
+      "slice": "SLICE1_CLAIM_CITATION_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_30_GROUNDED_ANSWER_AND_CLAIM_CITATION.md",
+        "docs/mokxya-ai/decisions/ADR_0047_CLAIM_CITATION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_30_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai30/manifests/MAI_30_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "claim_citation_service.py (cues + ABSTAIN_WHEN_UNGROUNDED)",
+        "ClaimCitationBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress CLAIM_CITATION after HYBRID_FUSION",
+        "claims_verified=false; verifier_executed=false; fake_citation_allowed=false"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-29"
       ],
-      "recommended_order": 30
+      "recommended_order": 30,
+      "closure_note": "Slice 1: grounded-answer/claim-citation policy annotation only; never VERIFIED; GAP-P2-008 open."
     },
     {
       "id": "MAI-31",

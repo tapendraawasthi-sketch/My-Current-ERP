@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai30-slice1-v1",
+  "dataset_hash": "8ab79acd5eed6c56d1c4d20557451752c1f2b34a2436807b30ae34a48b010670",
+  "phase": "MAI-30",
+  "slice": "SLICE1_CLAIM_CITATION_ANNOTATION",
+  "runtime_version": "mai-30.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai30/frozen/claim_citation_v1.jsonl",
+      "sha256": "8ab79acd5eed6c56d1c4d20557451752c1f2b34a2436807b30ae34a48b010670",
+      "case_count": 6,
+      "suite_id": "claim_citation_v1"
+    }
+  ]
+}

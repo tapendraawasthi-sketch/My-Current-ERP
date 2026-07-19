@@ -1859,6 +1859,68 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent fusion claims.
 
+    # MAI-30: claim-citation / grounded-answer policy (never verifies).
+    cc_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.CLAIM_CITATION_STARTED,
+        component="conversation.claim_citation",
+    )
+    try:
+        from ..oip.modules.conversation.application.claim_citation_service import (
+            assert_claim_citation_authority,
+            attach_claim_citation_to_request,
+        )
+
+        updated = attach_claim_citation_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.claim_citation_bundle
+        assert_claim_citation_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            cc_ev,
+            version_map={
+                "claim_citation": "mai-30.0.1-slice1",
+            },
+            safe_attributes={
+                "claim_citation_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "verification_status": (
+                    bundle.verification_status.value if bundle else None
+                ),
+                "grounded_answer_policy": (
+                    bundle.grounded_answer_policy.value if bundle else None
+                ),
+                "claims_verified": False,
+                "citations_verified": False,
+                "verifier_executed": False,
+                "legal_proof_claimed": False,
+                "fake_citation_allowed": False,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CLAIM_CITATION_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "claim_cue_count": (
+                    len(bundle.claim_cues) if bundle else 0
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            cc_ev, safe_error_code="CLAIM_CITATION_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CLAIM_CITATION_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="CLAIM_CITATION_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent verification.
+
     return canonical
 
 
