@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai30-slice2-v1",
+  "dataset_hash": "11215f9c8ded70f98f6a612d7fb62471eaf64a87eee1153de374b517ddecfa55",
+  "phase": "MAI-30",
+  "slice": "SLICE2_GROUNDED_ANSWER_GATE_CONSUME",
+  "runtime_version": "mai-30.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai30/frozen/claim_citation_consume_v1.jsonl",
+      "sha256": "11215f9c8ded70f98f6a612d7fb62471eaf64a87eee1153de374b517ddecfa55",
+      "case_count": 6,
+      "suite_id": "claim_citation_consume_v1"
+    }
+  ]
+}

@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-30",
-  "active_phase_note": "MAI-30 slice 1 IN_PROGRESS (ADR_0047); claim-citation / abstain-when-ungrounded annotation; MAI-29 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-30 slice 2 IN_PROGRESS (ADR_0047); grounded-answer gate / safe no-answer consume; GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2675,18 +2675,21 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-30.0.1-slice1",
-      "slice": "SLICE1_CLAIM_CITATION_ANNOTATION",
+      "runtime_version": "mai-30.0.2-slice2",
+      "slice": "SLICE2_GROUNDED_ANSWER_GATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_30_GROUNDED_ANSWER_AND_CLAIM_CITATION.md",
         "docs/mokxya-ai/decisions/ADR_0047_CLAIM_CITATION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_30_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai30/manifests/MAI_30_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_30_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai30/manifests/MAI_30_SLICE1.manifest.json",
+        "evals/mai30/manifests/MAI_30_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
-        "claim_citation_service.py (cues + ABSTAIN_WHEN_UNGROUNDED)",
+        "claim_citation_service.py (cues + ABSTAIN_WHEN_UNGROUNDED + gate consume)",
         "ClaimCitationBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress CLAIM_CITATION after HYBRID_FUSION",
+        "prompt_grounding + module/provider stages: SAFE_NO_ANSWER_BLOCK on abstain",
         "claims_verified=false; verifier_executed=false; fake_citation_allowed=false"
       ],
       "blockers": [
@@ -2699,7 +2702,7 @@
         "MAI-29"
       ],
       "recommended_order": 30,
-      "closure_note": "Slice 1: grounded-answer/claim-citation policy annotation only; never VERIFIED; GAP-P2-008 open."
+      "closure_note": "Slice 2: gate ungrounded claim-like answers with safe no-answer; never VERIFIED; GAP-P2-008 open."
     },
     {
       "id": "MAI-31",

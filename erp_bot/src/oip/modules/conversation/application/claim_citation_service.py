@@ -1,14 +1,14 @@
-"""MAI-30 — grounded answer / claim-citation verification annotation.
+"""MAI-30 — grounded answer / claim-citation annotation + consume.
 
-Slice 1: detect claim-like cues and declare ABSTAIN_WHEN_UNGROUNDED policy.
-Never verifies claims/citations, never allows fake citations, never grants
-legal proof or execution authority.
+Slice 1: detect claim-like cues; ABSTAIN_WHEN_UNGROUNDED; never verifies.
+Slice 2: gate grounding / force safe no-answer when ungrounded claim-like
+queries lack evidence candidates. Never marks VERIFIED or legal proof.
 """
 
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.claim_citation import (
     ClaimCitationBundleV1,
@@ -22,7 +22,7 @@ from ....contracts.hybrid_fusion import HybridFusionMode, HybridFusionStatus
 from ....contracts.knowledge_source_governance import KnowledgeSourceGovernanceStatus
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-30.0.1-slice1"
+RUNTIME_VERSION = "mai-30.0.2-slice2"
 AUTHORITY = "ADR_0047"
 
 _LEGAL_TAX = re.compile(
@@ -45,6 +45,20 @@ _PRODUCT = re.compile(
     r"feature|support|MokXya|Ask\s+MokXya)\b",
     re.IGNORECASE,
 )
+
+SAFE_NO_ANSWER_BLOCK = """## GROUNDED ANSWER GATE (MAI-30)
+Policy: ABSTAIN_WHEN_UNGROUNDED
+Decision: ABSTAIN_UNGROUNDED
+Do NOT invent legal, tax, accounting, or product authority.
+Do NOT invent citations or claim that claims/citations are verified.
+Respond with a safe refusal / no-answer. Ask the user for an authoritative
+source or confirmable ERP fact if they need a definitive answer.
+claims_verified=false
+citations_verified=false
+legal_proof_claimed=false
+fake_citation_allowed=false
+verifier_executed=false
+is_execution_authority=false"""
 
 
 def _add_cues(
@@ -193,4 +207,102 @@ def claim_citation_to_metadata(
         "reason_codes": list(bundle.reason_codes),
         "warnings": list(bundle.warnings),
         "is_execution_authority": False,
+    }
+
+
+def _as_claim_meta(
+    claim_citation: Mapping[str, Any] | ClaimCitationBundleV1 | None,
+) -> dict[str, Any] | None:
+    if claim_citation is None:
+        return None
+    if isinstance(claim_citation, ClaimCitationBundleV1):
+        return claim_citation_to_metadata(claim_citation)
+    if isinstance(claim_citation, Mapping):
+        return dict(claim_citation)
+    return None
+
+
+def _authority_blocks(data: Mapping[str, Any]) -> bool:
+    return (
+        data.get("is_execution_authority") is True
+        or data.get("claims_verified") is True
+        or data.get("citations_verified") is True
+        or data.get("verifier_executed") is True
+        or data.get("legal_proof_claimed") is True
+        or data.get("fake_citation_allowed") is True
+        or str(data.get("grounded_answer_policy") or "")
+        not in {
+            "",
+            GroundedAnswerPolicy.ABSTAIN_WHEN_UNGROUNDED.value,
+        }
+    )
+
+
+def resolve_grounded_answer_gate(
+    claim_citation: Mapping[str, Any] | ClaimCitationBundleV1 | None,
+    *,
+    citation_count: int = 0,
+    evidence_candidate_count: int = 0,
+) -> str:
+    """Return gate mode for consume (never implies claims verified)."""
+    data = _as_claim_meta(claim_citation)
+    if data is None:
+        return "UNCHANGED"
+    if _authority_blocks(data):
+        return "BLOCKED"
+    status = str(data.get("analysis_status") or "")
+    if status != ClaimCitationStatus.COMPLETE.value:
+        return "SKIP"
+    if str(data.get("verification_status") or "") == (
+        ClaimCitationVerificationStatus.INSUFFICIENT.value
+    ):
+        return "ABSTAIN_UNGROUNDED"
+
+    kinds = {str(k) for k in (data.get("claim_cue_kinds") or [])}
+    grounded = citation_count > 0 or evidence_candidate_count > 0
+    if grounded:
+        return "ALLOW_WITH_CANDIDATES"
+
+    # Ungrounded claim-like / legal questions must abstain.
+    if "LEGAL_TAX" in kinds or kinds:
+        return "ABSTAIN_UNGROUNDED"
+    return "ALLOW_PROCEED_UNVERIFIED"
+
+
+def should_emit_safe_no_answer(
+    claim_citation: Mapping[str, Any] | ClaimCitationBundleV1 | None,
+    *,
+    citation_count: int = 0,
+    evidence_candidate_count: int = 0,
+) -> bool:
+    return resolve_grounded_answer_gate(
+        claim_citation,
+        citation_count=citation_count,
+        evidence_candidate_count=evidence_candidate_count,
+    ) in {"ABSTAIN_UNGROUNDED", "BLOCKED"}
+
+
+def grounded_answer_gate_metadata(
+    claim_citation: Mapping[str, Any] | ClaimCitationBundleV1 | None,
+    *,
+    citation_count: int = 0,
+    evidence_candidate_count: int = 0,
+) -> dict[str, Any]:
+    gate = resolve_grounded_answer_gate(
+        claim_citation,
+        citation_count=citation_count,
+        evidence_candidate_count=evidence_candidate_count,
+    )
+    return {
+        "grounded_answer_gate": gate,
+        "abstain_ungrounded": gate in {"ABSTAIN_UNGROUNDED", "BLOCKED"},
+        "safe_no_answer": gate in {"ABSTAIN_UNGROUNDED", "BLOCKED"},
+        "claims_verified": False,
+        "citations_verified": False,
+        "verifier_executed": False,
+        "legal_proof_claimed": False,
+        "fake_citation_allowed": False,
+        "is_execution_authority": False,
+        "citation_count_for_gate": citation_count,
+        "evidence_candidate_count_for_gate": evidence_candidate_count,
     }

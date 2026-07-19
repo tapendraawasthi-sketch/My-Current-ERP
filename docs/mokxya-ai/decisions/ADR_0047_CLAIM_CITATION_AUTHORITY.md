@@ -1,7 +1,7 @@
 # ADR_0047 — Grounded Answer / Claim-Citation Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-30-GROUNDED-ANSWER-AND-CLAIM-CITATION (slice 1)
+- **Phase:** MAI-30-GROUNDED-ANSWER-AND-CLAIM-CITATION (slice 2)
 - **Extends:** ADR_0001, ADR_0041, ADR_0046
 
 ## Context
@@ -24,10 +24,14 @@ claim-citation gates before any consume that forces abstain/no-answer.
    `is_execution_authority=false`.
 3. Slice 1 never runs a verifier model, never marks VERIFIED, never mutates
    drafts.
-4. Slice 2+ may consume policy into response gating / safe no-answer; still
-   must not invent legal proof.
-5. GAP-P2-008 stays OPEN until consume + eval gates prove honesty;
-   GAP-P2-001 / GAP-P1-004 / GAP-P1-008 unchanged.
+4. Slice 2: consume into `build_prompt_grounding` via
+   `resolve_grounded_answer_gate` —
+   ungrounded claim-like / INSUFFICIENT → `ABSTAIN_UNGROUNDED` +
+   `SAFE_NO_ANSWER_BLOCK`; grounded candidates → `ALLOW_WITH_CANDIDATES`
+   (still unverified); false verify/legal/fake flags → `BLOCKED`.
+   Still must not invent legal proof or mark VERIFIED.
+5. GAP-P2-008 stays OPEN (consume progress only; professional honesty review
+   still required); GAP-P2-001 / GAP-P1-004 / GAP-P1-008 unchanged.
 6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
@@ -38,8 +42,10 @@ claim-citation gates before any consume that forces abstain/no-answer.
 | Allow ungrounded legal answers | Hallucinated authority risk |
 | Allow fake citations | Explicit honesty failure |
 | Run verifier LLM in annotation | Side effects / wrong slice |
+| Close GAP-P2-008 on consume alone | Needs professional review / honesty eval |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_30_GROUNDED_ANSWER_AND_CLAIM_CITATION.md`
+- `docs/mokxya-ai/baselines/MAI_30_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/claim_citation_service.py`

@@ -711,6 +711,31 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             hybrid_fusion = {}
 
+        # MAI-30: forward claim-citation / grounded-answer gate (never verifies).
+        claim_citation: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_cc = context.metadata.get("claim_citation")
+                if isinstance(raw_cc, dict):
+                    claim_citation = dict(raw_cc)
+            if claim_citation:
+                claim_citation["claims_verified"] = False
+                claim_citation["citations_verified"] = False
+                claim_citation["verifier_executed"] = False
+                claim_citation["legal_proof_claimed"] = False
+                claim_citation["fake_citation_allowed"] = False
+                claim_citation["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "claim_citation": claim_citation,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            claim_citation = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding
@@ -728,6 +753,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 lexical_index=lexical_index or None,
                 vector_index=vector_index or None,
                 hybrid_fusion=hybrid_fusion or None,
+                claim_citation=claim_citation or None,
             )
             grounded_meta = grounding.to_metadata()
             route = route.model_copy(

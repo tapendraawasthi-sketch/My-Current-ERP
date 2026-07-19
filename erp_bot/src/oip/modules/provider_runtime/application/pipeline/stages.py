@@ -89,6 +89,9 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
         hyb = policy_decisions.get("hybrid_fusion")
         if not isinstance(hyb, dict):
             hyb = None
+        cc = policy_decisions.get("claim_citation")
+        if not isinstance(cc, dict):
+            cc = None
         grounding = build_prompt_grounding(
             user_message,
             knowledge_snippets=snippets,
@@ -97,6 +100,7 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
             lexical_index=lex,
             vector_index=vec,
             hybrid_fusion=hyb,
+            claim_citation=cc,
         )
         return grounding.to_metadata()
     except Exception:

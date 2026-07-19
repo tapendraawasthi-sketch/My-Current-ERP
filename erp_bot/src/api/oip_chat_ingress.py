@@ -1879,7 +1879,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             cc_ev,
             version_map={
-                "claim_citation": "mai-30.0.1-slice1",
+                "claim_citation": "mai-30.0.2-slice2",
             },
             safe_attributes={
                 "claim_citation_status": (

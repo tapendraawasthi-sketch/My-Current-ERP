@@ -36,6 +36,9 @@ class PromptGrounding:
     np_kb_payload: dict[str, Any] = field(default_factory=dict)
     oip_snippet_count: int = 0
     used_sources: list[str] = field(default_factory=list)
+    grounded_answer_gate: str = "UNCHANGED"
+    abstain_ungrounded: bool = False
+    safe_no_answer: bool = False
 
     def to_metadata(self) -> dict[str, Any]:
         return {
@@ -47,6 +50,13 @@ class PromptGrounding:
             "grounding_oip_snippet_count": self.oip_snippet_count,
             "grounding_sources": list(self.used_sources),
             "np_kb": self.np_kb_payload,
+            "grounded_answer_gate": self.grounded_answer_gate,
+            "abstain_ungrounded": self.abstain_ungrounded,
+            "safe_no_answer": self.safe_no_answer,
+            "claims_verified": False,
+            "citations_verified": False,
+            "legal_proof_claimed": False,
+            "is_execution_authority": False,
         }
 
 
@@ -140,6 +150,7 @@ def build_prompt_grounding(
     lexical_index: dict[str, Any] | None = None,
     vector_index: dict[str, Any] | None = None,
     hybrid_fusion: dict[str, Any] | None = None,
+    claim_citation: dict[str, Any] | None = None,
     allow_non_prod_semantic: bool | None = None,
 ) -> PromptGrounding:
     """Retrieve NP KB (+ optional OIP snippets) and format a provider grounding block.
@@ -149,6 +160,7 @@ def build_prompt_grounding(
     MAI-27: when lexical_index is COMPLETE + fts_ready, prefer SQLITE FTS only.
     MAI-28: optional non-prod semantic filler only when explicitly allow-listed.
     MAI-29: optional RRF / evidence candidates from hybrid_fusion policy.
+    MAI-30: gate ungrounded claim-like answers to safe no-answer (never VERIFIED).
     """
     message = (user_message or "").strip()
     if not message:
@@ -162,6 +174,7 @@ def build_prompt_grounding(
     lex = lexical_index if isinstance(lexical_index, dict) else None
     vec = vector_index if isinstance(vector_index, dict) else None
     hyb = hybrid_fusion if isinstance(hybrid_fusion, dict) else None
+    cc = claim_citation if isinstance(claim_citation, dict) else None
     np_payload: dict[str, Any] = {"enabled": False, "reason": "not_retrieved"}
     try:
         from .np_kb_adapter import enrich_nlu_context
@@ -217,6 +230,53 @@ def build_prompt_grounding(
     if oip_count:
         sources.append("oip_knowledge")
 
+    evidence_count = 0
+    obs = np_payload.get("observability") if isinstance(np_payload, dict) else None
+    if isinstance(obs, dict):
+        evidence_count = int(obs.get("evidence_candidate_count") or 0)
+        if not evidence_count and isinstance(obs.get("evidence_candidates"), list):
+            evidence_count = len(obs.get("evidence_candidates") or [])
+
+    gate = "UNCHANGED"
+    abstain = False
+    safe_no = False
+    if cc is not None:
+        try:
+            from src.oip.modules.conversation.application.claim_citation_service import (
+                SAFE_NO_ANSWER_BLOCK,
+                grounded_answer_gate_metadata,
+                resolve_grounded_answer_gate,
+            )
+
+            gate = resolve_grounded_answer_gate(
+                cc,
+                citation_count=np_count,
+                evidence_candidate_count=evidence_count,
+            )
+            gate_meta = grounded_answer_gate_metadata(
+                cc,
+                citation_count=np_count,
+                evidence_candidate_count=evidence_count,
+            )
+            abstain = bool(gate_meta.get("abstain_ungrounded"))
+            safe_no = bool(gate_meta.get("safe_no_answer"))
+            if safe_no:
+                block = SAFE_NO_ANSWER_BLOCK
+                np_count = 0
+                oip_count = 0
+                sources = []
+                np_payload = {
+                    "enabled": False,
+                    "reason": "ABSTAIN_UNGROUNDED",
+                    "execution_allowed": False,
+                    "claims_verified": False,
+                    "citations_verified": False,
+                    "grounded_answer_gate": gate,
+                    "safe_no_answer": True,
+                }
+        except Exception:  # noqa: BLE001
+            gate = "UNCHANGED"
+
     return PromptGrounding(
         block=block,
         citation_count=np_count,
@@ -226,6 +286,9 @@ def build_prompt_grounding(
         np_kb_payload=np_payload,
         oip_snippet_count=oip_count,
         used_sources=sources,
+        grounded_answer_gate=gate,
+        abstain_ungrounded=abstain,
+        safe_no_answer=safe_no,
     )
 
 
