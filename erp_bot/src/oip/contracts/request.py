@@ -50,6 +50,7 @@ from .judicial_decision_intelligence import (
 from .continuous_change_intelligence import (
     ContinuousChangeIntelligenceBundleV1,
 )
+from .security_tenant_red_team import SecurityTenantRedTeamBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -247,6 +248,8 @@ class CanonicalAIRequestV1(ContractBase):
     continuous_change_intelligence_bundle: (
         ContinuousChangeIntelligenceBundleV1 | None
     ) = None
+    # MAI-44: security/tenant red team (never pen-test pass claim).
+    security_tenant_red_team_bundle: SecurityTenantRedTeamBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

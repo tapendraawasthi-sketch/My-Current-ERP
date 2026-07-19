@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-43",
-  "active_phase_note": "MAI-43 slice 2 IN_PROGRESS (ADR_0060); continuous-change-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-44",
+  "active_phase_note": "MAI-44 slice 1 IN_PROGRESS (ADR_0061); security/tenant red-team policy (never pen-test pass); GAP-P0-001 / GAP-P2-008 remain OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3184,7 +3184,7 @@
     {
       "id": "MAI-43",
       "title": "CONTINUOUS CHANGE INTELLIGENCE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3195,6 +3195,7 @@
         "docs/mokxya-ai/decisions/ADR_0060_CONTINUOUS_CHANGE_INTELLIGENCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_43_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_43_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_43_ENGINEERING_CLOSURE.md",
         "evals/mai43/manifests/MAI_43_SLICE1.manifest.json",
         "evals/mai43/manifests/MAI_43_SLICE2.manifest.json"
       ],
@@ -3218,20 +3219,43 @@
         "MAI-42"
       ],
       "recommended_order": 43,
-      "closure_note": "Slice 2: CANDIDATE_ONLY continuous-change candidates; never apply; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: continuous-change POLICY + CANDIDATE_ONLY candidates; never apply; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-44",
       "title": "SECURITY AND TENANT RED TEAM",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-44.0.1-slice1",
+      "slice": "SLICE1_SECURITY_TENANT_RED_TEAM_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_44_SECURITY_TENANT_RED_TEAM.md",
+        "docs/mokxya-ai/decisions/ADR_0061_SECURITY_TENANT_RED_TEAM_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_44_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai44/manifests/MAI_44_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "security_tenant_red_team_service.py (policy annotation)",
+        "SecurityTenantRedTeamBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress SECURITY_TENANT_RED_TEAM after CONTINUOUS_CHANGE_INTELLIGENCE",
+        "release_status=NOT_RELEASED; isolation_proven=false; zero_critical_findings_claimed=false; pen_review_passed=false; production_security_approved=false; gap_p0_001_status=OPEN; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-43"
       ],
-      "recommended_order": 44
+      "recommended_order": 44,
+      "closure_note": "Slice 1: security/tenant red-team POLICY_DECLARED; never pen-test pass / zero-critical claim; gaps open."
     },
     {
       "id": "MAI-45",

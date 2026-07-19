@@ -3086,6 +3086,82 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent change apply.
 
+    # MAI-44: security/tenant red-team policy (never pen-test pass claim).
+    strt_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.SECURITY_TENANT_RED_TEAM_STARTED,
+        component="conversation.security_tenant_red_team",
+    )
+    try:
+        from ..oip.modules.conversation.application.security_tenant_red_team_service import (
+            assert_security_tenant_red_team_authority,
+            attach_security_tenant_red_team_to_request,
+        )
+
+        updated = attach_security_tenant_red_team_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.security_tenant_red_team_bundle
+        assert_security_tenant_red_team_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            strt_ev,
+            version_map={
+                "security_tenant_red_team": "mai-44.0.1-slice1",
+            },
+            safe_attributes={
+                "security_red_team_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "security_red_team_readiness": (
+                    bundle.security_red_team_readiness.value if bundle else None
+                ),
+                "pilot_scope": "SECURITY_TENANT_RED_TEAM_CANDIDATE_ONLY",
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "security_authority_claimed": False,
+                "isolation_proven": False,
+                "zero_critical_findings_claimed": False,
+                "confirmation_attacks_blocked_proven": False,
+                "injection_capability_broadening_blocked_proven": False,
+                "pen_review_passed": False,
+                "remediation_closed": False,
+                "production_security_approved": False,
+                "secrets_scanned_clean": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p0_001_status": "OPEN",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.SECURITY_TENANT_RED_TEAM_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            strt_ev,
+            safe_error_code="SECURITY_TENANT_RED_TEAM_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.SECURITY_TENANT_RED_TEAM_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="SECURITY_TENANT_RED_TEAM_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent security pass.
+
     return canonical
 
 

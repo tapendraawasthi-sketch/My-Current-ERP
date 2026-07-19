@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai44-slice1-v1",
+  "dataset_hash": "3f13ff1cb27d2871e05b7c4c0c6d1476db92f26dd1b630ebf9437127e4a55027",
+  "phase": "MAI-44",
+  "slice": "SLICE1_SECURITY_TENANT_RED_TEAM_POLICY",
+  "runtime_version": "mai-44.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai44/frozen/security_tenant_red_team_v1.jsonl",
+      "sha256": "3f13ff1cb27d2871e05b7c4c0c6d1476db92f26dd1b630ebf9437127e4a55027",
+      "case_count": 6,
+      "suite_id": "security_tenant_red_team_v1"
+    }
+  ]
+}

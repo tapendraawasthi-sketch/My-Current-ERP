@@ -1,7 +1,7 @@
 # MAI-43 — Continuous Change Intelligence
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0060](decisions/ADR_0060_CONTINUOUS_CHANGE_INTELLIGENCE_AUTHORITY.md)  
 **Runtime:** `mai-43.0.2-slice2` (engineering; not production-approved)
 

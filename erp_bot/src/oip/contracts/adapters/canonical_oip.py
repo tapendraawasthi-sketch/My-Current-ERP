@@ -909,6 +909,35 @@ class CanonicalOipRequestAdapter:
                     "continuous_change_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-44: security/tenant red-team policy (never pen-test pass claim).
+        if canonical.security_tenant_red_team_bundle is not None:
+            try:
+                from ...modules.conversation.application.security_tenant_red_team_service import (
+                    security_tenant_red_team_to_metadata,
+                )
+
+                metadata["security_tenant_red_team"] = (
+                    security_tenant_red_team_to_metadata(
+                        canonical.security_tenant_red_team_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                strt = canonical.security_tenant_red_team_bundle
+                metadata["security_tenant_red_team"] = {
+                    "analysis_status": strt.analysis_status.value,
+                    "runtime_version": strt.runtime_version,
+                    "security_red_team_readiness": (
+                        strt.security_red_team_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "isolation_proven": False,
+                    "zero_critical_findings_claimed": False,
+                    "pen_review_passed": False,
+                    "production_security_approved": False,
+                    "gap_p0_001_status": "OPEN",
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

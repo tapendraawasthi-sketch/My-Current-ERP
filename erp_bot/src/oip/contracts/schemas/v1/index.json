@@ -53,6 +53,7 @@
     "BroaderNepalBusinessLawDomainReleaseBundleV1",
     "JudicialDecisionIntelligenceBundleV1",
     "ContinuousChangeIntelligenceBundleV1",
+    "SecurityTenantRedTeamBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

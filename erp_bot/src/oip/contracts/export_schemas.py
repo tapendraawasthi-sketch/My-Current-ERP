@@ -89,6 +89,7 @@ from .judicial_decision_intelligence import (
 from .continuous_change_intelligence import (
     ContinuousChangeIntelligenceBundleV1,
 )
+from .security_tenant_red_team import SecurityTenantRedTeamBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -172,6 +173,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "ContinuousChangeIntelligenceBundleV1",
         ContinuousChangeIntelligenceBundleV1,
+    ),
+    (
+        "SecurityTenantRedTeamBundleV1",
+        SecurityTenantRedTeamBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
