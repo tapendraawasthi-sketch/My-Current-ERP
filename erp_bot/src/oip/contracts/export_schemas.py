@@ -44,6 +44,7 @@ from .clarification_plan import (
     ClarificationTargetV1,
 )
 from .typed_plan import TypedPlanBundleV1
+from .provider_cascade import ProviderCascadeBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -71,6 +72,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("ClarificationPlanBundleV1", ClarificationPlanBundleV1),
     ("ClarificationTargetV1", ClarificationTargetV1),
     ("TypedPlanBundleV1", TypedPlanBundleV1),
+    ("ProviderCascadeBundleV1", ProviderCascadeBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

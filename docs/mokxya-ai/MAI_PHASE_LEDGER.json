@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-21",
-  "active_phase_note": "MAI-21 slice 2 IN_PROGRESS (ADR_0038); constitution-gated tool proposals; MAI-20 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-22",
+  "active_phase_note": "MAI-22 slice 1 IN_PROGRESS (ADR_0039); provider cascade annotation; MAI-21 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2342,7 +2342,7 @@
     {
       "id": "MAI-21",
       "title": "TYPED PLANNER AND TOOL LOOP",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2353,6 +2353,7 @@
         "docs/mokxya-ai/decisions/ADR_0038_TYPED_PLANNER_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_21_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_21_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_21_ENGINEERING_CLOSURE.md",
         "evals/mai21/manifests/MAI_21_SLICE1.manifest.json",
         "evals/mai21/manifests/MAI_21_SLICE2.manifest.json"
       ],
@@ -2371,22 +2372,38 @@
         "MAI-20"
       ],
       "recommended_order": 21,
-      "closure_note": "Slice 2: READ tool proposals AUTHORIZED/DENIED; no execution; confirm_draft never proposed."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-22. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-22",
       "title": "PROVIDER PORT AND MODEL CASCADE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "provider_runtime adapters groq/ollama/openai/..."
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-22.0.1-slice1",
+      "slice": "SLICE1_PROVIDER_CASCADE_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_22_PROVIDER_PORT_AND_MODEL_CASCADE.md",
+        "docs/mokxya-ai/decisions/ADR_0039_PROVIDER_CASCADE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_22_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai22/manifests/MAI_22_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "provider_cascade_service.py",
+        "ProviderCascadeBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress PROVIDER_CASCADE after MAI-21",
+        "provider_runtime adapters (execution deferred to slice 2)"
+      ],
+      "blockers": [
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-21"
       ],
-      "recommended_order": 22
+      "recommended_order": 22,
+      "closure_note": "Slice 1: COMPLETE typed plan→provider cascade annotation; model_invocations=0; is_execution_authority=false."
     },
     {
       "id": "MAI-23",

@@ -290,6 +290,24 @@ class CanonicalOipRequestAdapter:
                     "runtime_version": tp.runtime_version,
                     "is_execution_authority": False,
                 }
+        # MAI-22: provider cascade annotation (no model invocation).
+        if canonical.provider_cascade_bundle is not None:
+            try:
+                from ...modules.conversation.application.provider_cascade_service import (
+                    provider_cascade_to_metadata,
+                )
+
+                metadata["provider_cascade"] = provider_cascade_to_metadata(
+                    canonical.provider_cascade_bundle
+                )
+            except Exception:  # noqa: BLE001
+                pc = canonical.provider_cascade_bundle
+                metadata["provider_cascade"] = {
+                    "analysis_status": pc.analysis_status.value,
+                    "runtime_version": pc.runtime_version,
+                    "selected_provider_id": pc.selected_provider_id,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

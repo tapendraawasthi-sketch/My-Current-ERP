@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai22-slice1-v1",
+  "dataset_hash": "e0ba3e7c79ded6549300cdba6b126ecac57454d6cec214e7fa57f38185d97404",
+  "phase": "MAI-22",
+  "slice": "SLICE1_PROVIDER_CASCADE_ANNOTATION",
+  "runtime_version": "mai-22.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai22/frozen/provider_cascade_v1.jsonl",
+      "sha256": "e0ba3e7c79ded6549300cdba6b126ecac57454d6cec214e7fa57f38185d97404",
+      "case_count": 6,
+      "suite_id": "provider_cascade_v1"
+    }
+  ]
+}

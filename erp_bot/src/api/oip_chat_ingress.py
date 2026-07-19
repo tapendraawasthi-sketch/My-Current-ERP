@@ -1347,6 +1347,64 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent a plan.
 
+    # MAI-22: provider cascade annotation (no model invocation).
+    pc_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.PROVIDER_CASCADE_STARTED,
+        component="conversation.provider_cascade",
+    )
+    try:
+        from ..oip.modules.conversation.application.provider_cascade_service import (
+            assert_provider_cascade_authority,
+            attach_provider_cascade_to_request,
+        )
+
+        updated = attach_provider_cascade_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.provider_cascade_bundle
+        assert_provider_cascade_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            pc_ev,
+            version_map={
+                "provider_cascade": "mai-22.0.1-slice1",
+            },
+            safe_attributes={
+                "provider_cascade_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "selected_provider_id": (
+                    bundle.selected_provider_id if bundle else None
+                ),
+                "cascade_length": (
+                    len(bundle.cascade_order) if bundle else 0
+                ),
+                "model_invocations": (
+                    bundle.model_invocations if bundle else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.PROVIDER_CASCADE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "selected_provider_id": (
+                    bundle.selected_provider_id if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(pc_ev, safe_error_code="PROVIDER_CASCADE_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.PROVIDER_CASCADE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="PROVIDER_CASCADE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent cascade.
+
     return canonical
 
 

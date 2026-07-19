@@ -3451,6 +3451,128 @@
       "title": "ProvenanceKind",
       "type": "string"
     },
+    "ProviderCascadeAnalysisStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "ProviderCascadeAnalysisStatus",
+      "type": "string"
+    },
+    "ProviderCascadeBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/ProviderCascadeAnalysisStatus",
+          "default": "NOT_RUN"
+        },
+        "cascade_order": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Cascade Order",
+          "type": "array"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "fallback_chain": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Fallback Chain",
+          "type": "array"
+        },
+        "model_invocations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Invocations",
+          "type": "integer"
+        },
+        "policy_name": {
+          "default": "deterministic_default_v1",
+          "title": "Policy Name",
+          "type": "string"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-22.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "selected_model_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Model Id"
+        },
+        "selected_provider_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Provider Id"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "ProviderCascadeBundleV1",
+      "type": "object"
+    },
     "QuantityFieldValueV1": {
       "additionalProperties": false,
       "properties": {
@@ -5388,6 +5510,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/ObjectReferenceBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "provider_cascade_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProviderCascadeBundleV1"
         },
         {
           "type": "null"

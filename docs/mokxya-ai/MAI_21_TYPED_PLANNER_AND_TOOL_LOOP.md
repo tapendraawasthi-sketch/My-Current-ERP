@@ -1,7 +1,7 @@
 # MAI-21 — Typed Planner and Tool Loop
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2)  
 **Authority:** [ADR_0038](decisions/ADR_0038_TYPED_PLANNER_AUTHORITY.md)  
 **Runtime:** `mai-21.0.2-slice2` (engineering; not production-approved)
 
