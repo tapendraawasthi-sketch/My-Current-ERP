@@ -1,7 +1,7 @@
 # MAI-33 — Deterministic Preview and Edit Loop
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0050](decisions/ADR_0050_DETERMINISTIC_PREVIEW_EDIT_LOOP_AUTHORITY.md)  
 **Runtime:** `mai-33.0.2-slice2` (engineering; not production-approved)
 

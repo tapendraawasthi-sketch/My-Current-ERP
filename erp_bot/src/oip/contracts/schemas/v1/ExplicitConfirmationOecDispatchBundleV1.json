@@ -1,0 +1,278 @@
+{
+  "$defs": {
+    "ActionToOecStatus": {
+      "enum": [
+        "NOT_PRODUCT_PATH",
+        "PARTIAL_RUNTIME_EXISTS"
+      ],
+      "title": "ActionToOecStatus",
+      "type": "string"
+    },
+    "ConfirmPolicy": {
+      "enum": [
+        "EXPLICIT_UI_CONFIRM_REQUIRED",
+        "NOT_APPLICABLE"
+      ],
+      "title": "ConfirmPolicy",
+      "type": "string"
+    },
+    "ConfirmReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "PENDING_TOKEN"
+      ],
+      "title": "ConfirmReadiness",
+      "type": "string"
+    },
+    "ExplicitConfirmationOecDispatchStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "ExplicitConfirmationOecDispatchStatus",
+      "type": "string"
+    },
+    "OecDispatchReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "NOT_PRODUCT_PATH"
+      ],
+      "title": "OecDispatchReadiness",
+      "type": "string"
+    },
+    "ProductMutationPath": {
+      "enum": [
+        "DEXIE_EXECUTE_ORBIX_CONFIRM",
+        "UNKNOWN"
+      ],
+      "title": "ProductMutationPath",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ExplicitConfirmationOecDispatchBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "action_runtime_invoked": {
+      "default": false,
+      "title": "Action Runtime Invoked",
+      "type": "boolean"
+    },
+    "action_to_oec_status": {
+      "$ref": "#/$defs/ActionToOecStatus",
+      "default": "NOT_PRODUCT_PATH"
+    },
+    "analysis_status": {
+      "$ref": "#/$defs/ExplicitConfirmationOecDispatchStatus",
+      "default": "NOT_RUN"
+    },
+    "calc_authority_on_confirm": {
+      "default": "DEXIE_DOMAIN_ENGINE",
+      "title": "Calc Authority On Confirm",
+      "type": "string"
+    },
+    "confirm_accepted": {
+      "default": false,
+      "title": "Confirm Accepted",
+      "type": "boolean"
+    },
+    "confirm_policy": {
+      "$ref": "#/$defs/ConfirmPolicy",
+      "default": "NOT_APPLICABLE"
+    },
+    "confirm_readiness": {
+      "$ref": "#/$defs/ConfirmReadiness",
+      "default": "NOT_APPLICABLE"
+    },
+    "confirm_token_minted": {
+      "default": false,
+      "title": "Confirm Token Minted",
+      "type": "boolean"
+    },
+    "confirm_token_status": {
+      "default": "NOT_ISSUED",
+      "title": "Confirm Token Status",
+      "type": "string"
+    },
+    "dexie_post_invoked": {
+      "default": false,
+      "title": "Dexie Post Invoked",
+      "type": "boolean"
+    },
+    "dispatch_envelope_built": {
+      "default": false,
+      "title": "Dispatch Envelope Built",
+      "type": "boolean"
+    },
+    "draft_module_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Draft Module Id"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "draft_version_bound": {
+      "default": true,
+      "title": "Draft Version Bound",
+      "type": "boolean"
+    },
+    "erp_command_posted": {
+      "default": false,
+      "title": "Erp Command Posted",
+      "type": "boolean"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "event_type": {
+      "default": "unknown",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "gap_p0_001_status": {
+      "default": "OPEN",
+      "title": "Gap P0 001 Status",
+      "type": "string"
+    },
+    "idempotency_policy": {
+      "default": "KEY_REQUIRED_ON_DISPATCH",
+      "title": "Idempotency Policy",
+      "type": "string"
+    },
+    "khata_confirm_invoked": {
+      "default": false,
+      "title": "Khata Confirm Invoked",
+      "type": "boolean"
+    },
+    "mode_aware_invoked": {
+      "default": false,
+      "title": "Mode Aware Invoked",
+      "type": "boolean"
+    },
+    "nl_assent_posts": {
+      "default": false,
+      "title": "Nl Assent Posts",
+      "type": "boolean"
+    },
+    "nl_yes_treated_as_confirm": {
+      "default": false,
+      "title": "Nl Yes Treated As Confirm",
+      "type": "boolean"
+    },
+    "oec_dispatch_invoked": {
+      "default": false,
+      "title": "Oec Dispatch Invoked",
+      "type": "boolean"
+    },
+    "oec_dispatch_readiness": {
+      "$ref": "#/$defs/OecDispatchReadiness",
+      "default": "NOT_APPLICABLE"
+    },
+    "posting_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Posting Mutations",
+      "type": "integer"
+    },
+    "preview_hash_required_on_confirm": {
+      "default": true,
+      "title": "Preview Hash Required On Confirm",
+      "type": "boolean"
+    },
+    "product_mutation_path": {
+      "$ref": "#/$defs/ProductMutationPath",
+      "default": "UNKNOWN"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "receipt_contract": {
+      "default": "RECEIPT_V1_PENDING",
+      "title": "Receipt Contract",
+      "type": "string"
+    },
+    "receipt_returned": {
+      "default": false,
+      "title": "Receipt Returned",
+      "type": "boolean"
+    },
+    "revalidation_executed": {
+      "default": false,
+      "title": "Revalidation Executed",
+      "type": "boolean"
+    },
+    "revalidation_policy": {
+      "default": "REQUIRED_BEFORE_DISPATCH",
+      "title": "Revalidation Policy",
+      "type": "string"
+    },
+    "runtime_version": {
+      "default": "mai-34.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "selected_port_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Selected Port Id"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "stale_preview_on_confirm": {
+      "default": "REJECT",
+      "title": "Stale Preview On Confirm",
+      "type": "string"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "ExplicitConfirmationOecDispatchBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

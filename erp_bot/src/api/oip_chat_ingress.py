@@ -2158,6 +2158,76 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent preview success.
 
+    # MAI-34: explicit confirm / OEC dispatch policy (never posts).
+    eco_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.EXPLICIT_CONFIRMATION_OEC_DISPATCH_STARTED,
+        component="conversation.explicit_confirmation_oec_dispatch",
+    )
+    try:
+        from ..oip.modules.conversation.application.explicit_confirmation_oec_dispatch_service import (
+            assert_explicit_confirmation_oec_dispatch_authority,
+            attach_explicit_confirmation_oec_dispatch_to_request,
+        )
+
+        updated = attach_explicit_confirmation_oec_dispatch_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.explicit_confirmation_oec_dispatch_bundle
+        assert_explicit_confirmation_oec_dispatch_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            eco_ev,
+            version_map={
+                "explicit_confirmation_oec_dispatch": "mai-34.0.1-slice1",
+            },
+            safe_attributes={
+                "confirm_oec_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "confirm_readiness": (
+                    bundle.confirm_readiness.value if bundle else None
+                ),
+                "oec_dispatch_readiness": (
+                    bundle.oec_dispatch_readiness.value if bundle else None
+                ),
+                "confirm_policy": (
+                    bundle.confirm_policy.value if bundle else None
+                ),
+                "nl_assent_posts": False,
+                "confirm_token_minted": False,
+                "oec_dispatch_invoked": False,
+                "erp_command_posted": False,
+                "dexie_post_invoked": False,
+                "gap_p0_001_status": "OPEN",
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.EXPLICIT_CONFIRMATION_OEC_DISPATCH_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "product_mutation_path": (
+                    bundle.product_mutation_path.value if bundle else None
+                ),
+                "action_to_oec_status": (
+                    bundle.action_to_oec_status.value if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            eco_ev, safe_error_code="EXPLICIT_CONFIRMATION_OEC_DISPATCH_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.EXPLICIT_CONFIRMATION_OEC_DISPATCH_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="EXPLICIT_CONFIRMATION_OEC_DISPATCH_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent confirm/OEC success.
+
     return canonical
 
 

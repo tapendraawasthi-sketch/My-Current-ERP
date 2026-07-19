@@ -579,6 +579,30 @@ class CanonicalOipRequestAdapter:
                     "preview_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-34: explicit confirm / OEC dispatch policy (never posts).
+        if canonical.explicit_confirmation_oec_dispatch_bundle is not None:
+            try:
+                from ...modules.conversation.application.explicit_confirmation_oec_dispatch_service import (
+                    explicit_confirmation_oec_dispatch_to_metadata,
+                )
+
+                metadata["explicit_confirmation_oec_dispatch"] = (
+                    explicit_confirmation_oec_dispatch_to_metadata(
+                        canonical.explicit_confirmation_oec_dispatch_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                eco = canonical.explicit_confirmation_oec_dispatch_bundle
+                metadata["explicit_confirmation_oec_dispatch"] = {
+                    "analysis_status": eco.analysis_status.value,
+                    "runtime_version": eco.runtime_version,
+                    "confirm_readiness": eco.confirm_readiness.value,
+                    "nl_assent_posts": False,
+                    "confirm_token_minted": False,
+                    "oec_dispatch_invoked": False,
+                    "gap_p0_001_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

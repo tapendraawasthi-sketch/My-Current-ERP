@@ -43,6 +43,7 @@
     "DomainPortFieldBindingV1",
     "DurableVersionedDraftBundleV1",
     "DeterministicPreviewEditLoopBundleV1",
+    "ExplicitConfirmationOecDispatchBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

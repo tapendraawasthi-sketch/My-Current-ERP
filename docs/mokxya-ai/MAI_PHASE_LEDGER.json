@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-33",
-  "active_phase_note": "MAI-33 slice 2 IN_PROGRESS (ADR_0050); preview-candidate consume (CANDIDATE_ONLY); GAP-P2-002 remains OPEN",
+  "recommended_next_phase": "MAI-34",
+  "active_phase_note": "MAI-34 slice 1 IN_PROGRESS (ADR_0051); explicit confirm / OEC policy annotation; GAP-P0-001 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2786,7 +2786,7 @@
     {
       "id": "MAI-33",
       "title": "DETERMINISTIC PREVIEW AND EDIT LOOP",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2797,6 +2797,7 @@
         "docs/mokxya-ai/decisions/ADR_0050_DETERMINISTIC_PREVIEW_EDIT_LOOP_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_33_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_33_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_33_ENGINEERING_CLOSURE.md",
         "evals/mai33/manifests/MAI_33_SLICE1.manifest.json",
         "evals/mai33/manifests/MAI_33_SLICE2.manifest.json"
       ],
@@ -2819,22 +2820,42 @@
         "MAI-32"
       ],
       "recommended_order": 33,
-      "closure_note": "Slice 2: CANDIDATE_ONLY preview candidates; never live cards; GAP-P2-002 open."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-34. production_approved=false. GAP-P2-002 remains OPEN."
     },
     {
       "id": "MAI-34",
       "title": "EXPLICIT CONFIRMATION AND OEC DISPATCH",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "UI explicit confirm; Action→OEC not product path"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-34.0.1-slice1",
+      "slice": "SLICE1_CONFIRM_OEC_POLICY_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_34_EXPLICIT_CONFIRMATION_AND_OEC_DISPATCH.md",
+        "docs/mokxya-ai/decisions/ADR_0051_EXPLICIT_CONFIRMATION_OEC_DISPATCH_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_34_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai34/manifests/MAI_34_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "explicit_confirmation_oec_dispatch_service.py (policy annotation)",
+        "ExplicitConfirmationOecDispatchBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress EXPLICIT_CONFIRMATION_OEC_DISPATCH after DETERMINISTIC_PREVIEW_EDIT_LOOP",
+        "nl_assent_posts=false; confirm_token_minted=false; oec_dispatch_invoked=false; gap_p0_001_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-33"
       ],
-      "recommended_order": 34
+      "recommended_order": 34,
+      "closure_note": "Slice 1: confirm/OEC policy annotation; never posts; GAP-P0-001 open."
     },
     {
       "id": "MAI-35",

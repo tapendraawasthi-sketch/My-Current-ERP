@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai34-slice1-v1",
+  "dataset_hash": "a25b82dd655fc207422784a2db3a53f61bd55687506314439fefe7d0cfc97636",
+  "phase": "MAI-34",
+  "slice": "SLICE1_CONFIRM_OEC_POLICY_ANNOTATION",
+  "runtime_version": "mai-34.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai34/frozen/explicit_confirmation_oec_dispatch_v1.jsonl",
+      "sha256": "a25b82dd655fc207422784a2db3a53f61bd55687506314439fefe7d0cfc97636",
+      "case_count": 6,
+      "suite_id": "explicit_confirmation_oec_dispatch_v1"
+    }
+  ]
+}
