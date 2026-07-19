@@ -112,6 +112,9 @@ from .private_user_document_intelligence import (
 from .ca_firm_engagement_workpaper import (
     CaFirmEngagementWorkpaperBundleV1,
 )
+from .compliance_obligation_calendar import (
+    ComplianceObligationCalendarBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -231,6 +234,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "CaFirmEngagementWorkpaperBundleV1",
         CaFirmEngagementWorkpaperBundleV1,
+    ),
+    (
+        "ComplianceObligationCalendarBundleV1",
+        ComplianceObligationCalendarBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

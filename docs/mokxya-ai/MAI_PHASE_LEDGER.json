@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-52",
-  "active_phase_note": "MAI-52 slice 2 IN_PROGRESS (ADR_0069); CANDIDATE_ONLY engagement/workpaper candidates (never open engagement / never post workpaper); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-53",
+  "active_phase_note": "MAI-53 slice 1 IN_PROGRESS (ADR_0070); compliance obligation / calendar policy (never arm automation / never submit filing); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3544,7 +3544,7 @@
     {
       "id": "MAI-52",
       "title": "CA-FIRM ENGAGEMENT AND WORKPAPER WORKSPACE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3555,6 +3555,7 @@
         "docs/mokxya-ai/decisions/ADR_0069_CA_FIRM_ENGAGEMENT_WORKPAPER_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_52_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_52_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_52_ENGINEERING_CLOSURE.md",
         "evals/mai52/manifests/MAI_52_SLICE1.manifest.json",
         "evals/mai52/manifests/MAI_52_SLICE2.manifest.json"
       ],
@@ -3578,20 +3579,43 @@
         "MAI-51"
       ],
       "recommended_order": 52,
-      "closure_note": "Slice 2: CANDIDATE_ONLY engagement/workpaper candidates; never open engagement / never post workpaper; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: CA-firm engagement / workpaper POLICY + CANDIDATE_ONLY candidates; never open engagement / never post workpaper; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-53",
       "title": "COMPLIANCE OBLIGATION AND CALENDAR AUTOMATION",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-53.0.1-slice1",
+      "slice": "SLICE1_COMPLIANCE_OBLIGATION_CALENDAR_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_53_COMPLIANCE_OBLIGATION_CALENDAR.md",
+        "docs/mokxya-ai/decisions/ADR_0070_COMPLIANCE_OBLIGATION_CALENDAR_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_53_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai53/manifests/MAI_53_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "compliance_obligation_calendar_service.py (policy annotation)",
+        "ComplianceObligationCalendarBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress COMPLIANCE_OBLIGATION_CALENDAR after CA_FIRM_ENGAGEMENT_WORKPAPER",
+        "release_status=NOT_RELEASED; compliance_calendar_enabled=false; obligation_created=false; deadline_scheduled=false; reminder_sent=false; automation_armed=false; filing_submitted=false; production_approved=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-52"
       ],
-      "recommended_order": 53
+      "recommended_order": 53,
+      "closure_note": "Slice 1: compliance obligation / calendar POLICY_DECLARED; never arm automation / never submit filing; GAP-P2-008 open."
     }
   ],
   "notes": [

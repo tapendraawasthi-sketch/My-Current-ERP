@@ -73,6 +73,9 @@ from .private_user_document_intelligence import (
 from .ca_firm_engagement_workpaper import (
     CaFirmEngagementWorkpaperBundleV1,
 )
+from .compliance_obligation_calendar import (
+    ComplianceObligationCalendarBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -301,6 +304,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-52: CA-firm engagement / workpaper (never opens engagements).
     ca_firm_engagement_workpaper_bundle: (
         CaFirmEngagementWorkpaperBundleV1 | None
+    ) = None
+    # MAI-53: compliance obligation / calendar (never arms automation).
+    compliance_obligation_calendar_bundle: (
+        ComplianceObligationCalendarBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

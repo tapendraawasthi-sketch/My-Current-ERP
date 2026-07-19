@@ -4023,6 +4023,86 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent engagement open.
 
+    # MAI-53: compliance obligation / calendar (never arms automation).
+    coc_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.COMPLIANCE_OBLIGATION_CALENDAR_STARTED,
+        component="conversation.compliance_obligation_calendar",
+    )
+    try:
+        from ..oip.modules.conversation.application.compliance_obligation_calendar_service import (
+            assert_compliance_obligation_calendar_authority,
+            attach_compliance_obligation_calendar_to_request,
+        )
+
+        updated = attach_compliance_obligation_calendar_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.compliance_obligation_calendar_bundle
+        assert_compliance_obligation_calendar_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            coc_ev,
+            version_map={
+                "compliance_obligation_calendar": "mai-53.0.1-slice1",
+            },
+            safe_attributes={
+                "compliance_obligation_calendar_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "compliance_obligation_calendar_readiness": (
+                    bundle.compliance_obligation_calendar_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "COMPLIANCE_OBLIGATION_CALENDAR_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "calendar_authority_claimed": False,
+                "compliance_calendar_enabled": False,
+                "obligation_created": False,
+                "deadline_scheduled": False,
+                "reminder_sent": False,
+                "automation_armed": False,
+                "calendar_synced": False,
+                "filing_submitted": False,
+                "obligation_closed": False,
+                "production_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.COMPLIANCE_OBLIGATION_CALENDAR_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            coc_ev,
+            safe_error_code="COMPLIANCE_OBLIGATION_CALENDAR_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.COMPLIANCE_OBLIGATION_CALENDAR_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="COMPLIANCE_OBLIGATION_CALENDAR_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent automation.
+
     return canonical
 
 

@@ -1,40 +1,46 @@
 {
   "$defs": {
-    "CaFirmEngagementWorkpaperReadiness": {
+    "ComplianceObligationCalendarReadiness": {
       "enum": [
         "NOT_APPLICABLE",
         "POLICY_DECLARED",
         "BLOCKED",
         "SCOPE_PARTIAL"
       ],
-      "title": "CaFirmEngagementWorkpaperReadiness",
+      "title": "ComplianceObligationCalendarReadiness",
       "type": "string"
     },
-    "CaFirmEngagementWorkpaperStatus": {
+    "ComplianceObligationCalendarStatus": {
       "enum": [
         "NOT_RUN",
         "COMPLETE",
         "SKIP",
         "FAILED"
       ],
-      "title": "CaFirmEngagementWorkpaperStatus",
+      "title": "ComplianceObligationCalendarStatus",
       "type": "string"
     }
   },
-  "$id": "https://mokxya.local/contracts/v1/CaFirmEngagementWorkpaperBundleV1.json",
+  "$id": "https://mokxya.local/contracts/v1/ComplianceObligationCalendarBundleV1.json",
   "additionalProperties": false,
   "properties": {
     "analysis_status": {
-      "$ref": "#/$defs/CaFirmEngagementWorkpaperStatus",
+      "$ref": "#/$defs/ComplianceObligationCalendarStatus",
       "default": "NOT_RUN"
     },
-    "ca_firm_engagement_workpaper_readiness": {
-      "$ref": "#/$defs/CaFirmEngagementWorkpaperReadiness",
-      "default": "NOT_APPLICABLE"
-    },
-    "ca_firm_workspace_enabled": {
+    "automation_armed": {
       "default": false,
-      "title": "Ca Firm Workspace Enabled",
+      "title": "Automation Armed",
+      "type": "boolean"
+    },
+    "calendar_authority_claimed": {
+      "default": false,
+      "title": "Calendar Authority Claimed",
+      "type": "boolean"
+    },
+    "calendar_synced": {
+      "default": false,
+      "title": "Calendar Synced",
       "type": "boolean"
     },
     "claims_verified": {
@@ -42,14 +48,23 @@
       "title": "Claims Verified",
       "type": "boolean"
     },
-    "client_binder_released": {
+    "compliance_calendar_enabled": {
       "default": false,
-      "title": "Client Binder Released",
+      "title": "Compliance Calendar Enabled",
       "type": "boolean"
+    },
+    "compliance_obligation_calendar_readiness": {
+      "$ref": "#/$defs/ComplianceObligationCalendarReadiness",
+      "default": "NOT_APPLICABLE"
     },
     "current_law_definitive": {
       "default": false,
       "title": "Current Law Definitive",
+      "type": "boolean"
+    },
+    "deadline_scheduled": {
+      "default": false,
+      "title": "Deadline Scheduled",
       "type": "boolean"
     },
     "documents_retrieved": {
@@ -64,21 +79,6 @@
       "title": "Draft Mutations",
       "type": "integer"
     },
-    "engagement_authority_claimed": {
-      "default": false,
-      "title": "Engagement Authority Claimed",
-      "type": "boolean"
-    },
-    "engagement_opened": {
-      "default": false,
-      "title": "Engagement Opened",
-      "type": "boolean"
-    },
-    "engagement_signed": {
-      "default": false,
-      "title": "Engagement Signed",
-      "type": "boolean"
-    },
     "error_codes": {
       "default": [],
       "items": {
@@ -86,6 +86,11 @@
       },
       "title": "Error Codes",
       "type": "array"
+    },
+    "filing_submitted": {
+      "default": false,
+      "title": "Filing Submitted",
+      "type": "boolean"
     },
     "gap_p2_008_status": {
       "default": "OPEN",
@@ -125,8 +130,18 @@
       "title": "Mutation Tools Allowed",
       "type": "boolean"
     },
+    "obligation_closed": {
+      "default": false,
+      "title": "Obligation Closed",
+      "type": "boolean"
+    },
+    "obligation_created": {
+      "default": false,
+      "title": "Obligation Created",
+      "type": "boolean"
+    },
     "pilot_scope": {
-      "default": "CA_FIRM_ENGAGEMENT_WORKPAPER_CANDIDATE_ONLY",
+      "default": "COMPLIANCE_OBLIGATION_CALENDAR_CANDIDATE_ONLY",
       "title": "Pilot Scope",
       "type": "string"
     },
@@ -154,13 +169,13 @@
       "title": "Release Status",
       "type": "string"
     },
-    "review_notes_finalized": {
+    "reminder_sent": {
       "default": false,
-      "title": "Review Notes Finalized",
+      "title": "Reminder Sent",
       "type": "boolean"
     },
     "runtime_version": {
-      "default": "mai-52.0.2-slice2",
+      "default": "mai-53.0.1-slice1",
       "title": "Runtime Version",
       "type": "string"
     },
@@ -178,11 +193,6 @@
       "title": "Specialist Signoff Status",
       "type": "string"
     },
-    "staff_assignment_applied": {
-      "default": false,
-      "title": "Staff Assignment Applied",
-      "type": "boolean"
-    },
     "unsupported_topics": {
       "default": [],
       "items": {
@@ -198,19 +208,9 @@
       },
       "title": "Warnings",
       "type": "array"
-    },
-    "workpaper_created": {
-      "default": false,
-      "title": "Workpaper Created",
-      "type": "boolean"
-    },
-    "workpaper_posted": {
-      "default": false,
-      "title": "Workpaper Posted",
-      "type": "boolean"
     }
   },
-  "title": "CaFirmEngagementWorkpaperBundleV1",
+  "title": "ComplianceObligationCalendarBundleV1",
   "type": "object",
   "x-mai-schema-version": "1.0.0"
 }

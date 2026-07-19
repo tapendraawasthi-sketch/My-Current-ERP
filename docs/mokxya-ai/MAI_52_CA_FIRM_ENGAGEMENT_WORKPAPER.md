@@ -1,7 +1,7 @@
 # MAI-52 — CA-Firm Engagement And Workpaper Workspace
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0069](decisions/ADR_0069_CA_FIRM_ENGAGEMENT_WORKPAPER_AUTHORITY.md)  
 **Runtime:** `mai-52.0.2-slice2` (engineering; not production-approved)
 

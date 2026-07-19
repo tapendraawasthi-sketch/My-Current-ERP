@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–51 `PASSED_ENGINEERING`. MAI-52 slice 2 consumes CA-firm engagement / workpaper into `CANDIDATE_ONLY` candidates (`allow_open_engagement=false`, `allow_post_workpaper=false`, `release_status=NOT_RELEASED`, `ca_firm_workspace_enabled=false`, `engagement_opened=false`, `engagement_signed=false`, `workpaper_created=false`, `workpaper_posted=false`, `client_binder_released=false`, `staff_assignment_applied=false`, `review_notes_finalized=false`, `production_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–52 `PASSED_ENGINEERING`. MAI-53 slice 1 declares compliance obligation / calendar policy only (`release_status=NOT_RELEASED`, `compliance_calendar_enabled=false`, `obligation_created=false`, `deadline_scheduled=false`, `reminder_sent=false`, `automation_armed=false`, `calendar_synced=false`, `filing_submitted=false`, `obligation_closed=false`, `production_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 
