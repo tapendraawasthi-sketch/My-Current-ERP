@@ -3704,12 +3704,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent production approved.
 
-    # MAI-50: Nepali/English speech channel (never enables live speech).
+    # MAI-50: Nepali/English speech channel + candidate consume.
     speech_ev = recorder.begin_stage(
         mai03_obs.TraceStage.NEPALI_ENGLISH_SPEECH_CHANNEL_STARTED,
         component="conversation.nepali_english_speech_channel",
     )
     try:
+        from ..oip.modules.conversation.application.nepali_english_speech_channel_consume_service import (
+            assert_nepali_english_speech_channel_consume_authority,
+            nepali_english_speech_channel_consume_observability,
+        )
         from ..oip.modules.conversation.application.nepali_english_speech_channel_service import (
             assert_nepali_english_speech_channel_authority,
             attach_nepali_english_speech_channel_to_request,
@@ -3720,11 +3724,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.nepali_english_speech_channel_bundle
         assert_nepali_english_speech_channel_authority(bundle)
+        consume_obs = nepali_english_speech_channel_consume_observability(
+            updated,
+            allow_asr=False,
+            allow_tts=False,
+        )
+        assert_nepali_english_speech_channel_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             speech_ev,
             version_map={
-                "nepali_english_speech_channel": "mai-50.0.1-slice1",
+                "nepali_english_speech_channel": "mai-50.0.2-slice2",
             },
             safe_attributes={
                 "nepali_english_speech_channel_status": (
@@ -3740,6 +3750,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "nepali_english_speech_channel_consume_mode": (
+                    consume_obs.get(
+                        "nepali_english_speech_channel_consume_mode"
+                    )
+                ),
+                "nepali_english_speech_channel_consume_ready": bool(
+                    consume_obs.get(
+                        "nepali_english_speech_channel_consume_ready"
+                    )
+                ),
                 "speech_authority_claimed": False,
                 "speech_channel_enabled": False,
                 "asr_live": False,
@@ -3770,6 +3790,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "nepali_english_speech_channel_consume_mode": (
+                    consume_obs.get(
+                        "nepali_english_speech_channel_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001

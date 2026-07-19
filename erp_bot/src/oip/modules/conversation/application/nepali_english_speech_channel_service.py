@@ -1,6 +1,7 @@
 """MAI-50 — Nepali/English speech channel policy (never enables live speech).
 
 Slice 1: declare candidate speech-channel policy from cue detection.
+Slice 2 consume is in nepali_english_speech_channel_consume_service.
 Never claims speech enabled, ASR/TTS live, microphone armed, or audio persisted.
 """
 
@@ -17,7 +18,7 @@ from ....contracts.nepali_english_speech_channel import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-50.0.1-slice1"
+RUNTIME_VERSION = "mai-50.0.2-slice2"
 AUTHORITY = "ADR_0067"
 
 _VOICE = re.compile(

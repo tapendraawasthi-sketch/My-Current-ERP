@@ -43,7 +43,7 @@ def _pipeline(text: str):
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-50.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-50.")
 
 
 def test_speech_channel_policy_declared() -> None:

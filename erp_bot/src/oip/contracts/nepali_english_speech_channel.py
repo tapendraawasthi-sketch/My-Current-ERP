@@ -40,7 +40,7 @@ class NepaliEnglishSpeechChannelBundleV1(ContractBase):
     analysis_status: NepaliEnglishSpeechChannelStatus = (
         NepaliEnglishSpeechChannelStatus.NOT_RUN
     )
-    runtime_version: str = "mai-50.0.1-slice1"
+    runtime_version: str = "mai-50.0.2-slice2"
     source_authority: str = "REQUEST"
     nepali_english_speech_channel_readiness: (
         NepaliEnglishSpeechChannelReadiness

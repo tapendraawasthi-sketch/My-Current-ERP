@@ -1,16 +1,17 @@
 # MAI-50 — Nepali/English Speech Channel
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0067](decisions/ADR_0067_NEPALI_ENGLISH_SPEECH_CHANNEL_AUTHORITY.md)  
-**Runtime:** `mai-50.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-50.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
 Declare a candidate policy for Nepali/English speech channel topics
 (voice/speech channel, ASR/STT, TTS, Nepali/English/bilingual speech,
-microphone capture) without enabling live speech, arming the microphone,
-or persisting audio.
+microphone capture) and consume those into `CANDIDATE_ONLY` speech
+candidates without enabling live speech, arming the microphone, or
+persisting audio.
 
 ## Slice 1
 
@@ -25,12 +26,22 @@ or persisting audio.
    `transcript_authoritative=false`; `voice_channel_released=false`
 7. GAP-P2-008 OPEN (and other open gaps remain open)
 
+## Slice 2
+
+1. Consume service builds `nepali_english_speech_channel_candidate`
+2. Default mode `CANDIDATE_ONLY` (plans null; never applied)
+3. Live ingress forces `allow_asr=false`, `allow_tts=false`
+4. Label-only invoke modes (`INVOKE_ASR`, `INVOKE_TTS`) for unit tests
+   only — never on live path
+5. Fake authority claim → `BLOCKED`; non-pilot → `SKIP`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Speech / voice / ASR / TTS / Nepali / English / bilingual / mic cues | COMPLETE → `POLICY_DECLARED` |
+| Speech / voice / ASR / TTS / Nepali / English / bilingual / mic cues | COMPLETE → `POLICY_DECLARED` → consume `CANDIDATE_ONLY` |
 | Purchase / VAT / production-release-only without speech cues | SKIP |
+| Fake ASR/TTS live or speech-enabled claim | BLOCKED |
 | Any live path | never enable speech / never arm mic; gaps OPEN |
 
 ## Non-goals
