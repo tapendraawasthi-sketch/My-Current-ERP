@@ -1,0 +1,190 @@
+{
+  "$defs": {
+    "CalculatorReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "RULE_TABLE_PENDING"
+      ],
+      "title": "CalculatorReadiness",
+      "type": "string"
+    },
+    "TaxCalculatorRuleIntegrationStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "TaxCalculatorRuleIntegrationStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/TaxCalculatorRuleIntegrationBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "amendment_applied": {
+      "default": false,
+      "title": "Amendment Applied",
+      "type": "boolean"
+    },
+    "amount_computed": {
+      "default": false,
+      "title": "Amount Computed",
+      "type": "boolean"
+    },
+    "analysis_status": {
+      "$ref": "#/$defs/TaxCalculatorRuleIntegrationStatus",
+      "default": "NOT_RUN"
+    },
+    "calc_intent_detected": {
+      "default": false,
+      "title": "Calc Intent Detected",
+      "type": "boolean"
+    },
+    "calculation_executed": {
+      "default": false,
+      "title": "Calculation Executed",
+      "type": "boolean"
+    },
+    "calculator_production_eligible": {
+      "default": false,
+      "title": "Calculator Production Eligible",
+      "type": "boolean"
+    },
+    "calculator_readiness": {
+      "$ref": "#/$defs/CalculatorReadiness",
+      "default": "NOT_APPLICABLE"
+    },
+    "citations_verified": {
+      "default": false,
+      "title": "Citations Verified",
+      "type": "boolean"
+    },
+    "claims_verified": {
+      "default": false,
+      "title": "Claims Verified",
+      "type": "boolean"
+    },
+    "current_law_definitive": {
+      "default": false,
+      "title": "Current Law Definitive",
+      "type": "boolean"
+    },
+    "documents_retrieved": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Documents Retrieved",
+      "type": "integer"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "gap_p2_008_status": {
+      "default": "OPEN",
+      "title": "Gap P2 008 Status",
+      "type": "string"
+    },
+    "kb_retrieval_invoked": {
+      "default": false,
+      "title": "Kb Retrieval Invoked",
+      "type": "boolean"
+    },
+    "legal_effective_dates_proven": {
+      "default": false,
+      "title": "Legal Effective Dates Proven",
+      "type": "boolean"
+    },
+    "legal_proof_claimed": {
+      "default": false,
+      "title": "Legal Proof Claimed",
+      "type": "boolean"
+    },
+    "mutation_tools_allowed": {
+      "default": false,
+      "title": "Mutation Tools Allowed",
+      "type": "boolean"
+    },
+    "pilot_bound": {
+      "default": false,
+      "title": "Pilot Bound",
+      "type": "boolean"
+    },
+    "posting_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Posting Mutations",
+      "type": "integer"
+    },
+    "rate_applied": {
+      "default": false,
+      "title": "Rate Applied",
+      "type": "boolean"
+    },
+    "rate_lookup_executed": {
+      "default": false,
+      "title": "Rate Lookup Executed",
+      "type": "boolean"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "rule_integration_status": {
+      "default": "POLICY_ONLY",
+      "title": "Rule Integration Status",
+      "type": "string"
+    },
+    "rule_table_loaded": {
+      "default": false,
+      "title": "Rule Table Loaded",
+      "type": "boolean"
+    },
+    "runtime_version": {
+      "default": "mai-38.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "tax_calculator_invoked": {
+      "default": false,
+      "title": "Tax Calculator Invoked",
+      "type": "boolean"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "TaxCalculatorRuleIntegrationBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

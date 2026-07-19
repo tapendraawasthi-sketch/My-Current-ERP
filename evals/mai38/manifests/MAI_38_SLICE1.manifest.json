@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai38-slice1-v1",
+  "dataset_hash": "db3b3cd9a55bfa0f6bbfd7fc0f120a54aee899c5eb1a9e336e993fb2d378a87e",
+  "phase": "MAI-38",
+  "slice": "SLICE1_CALCULATOR_RULE_POLICY",
+  "runtime_version": "mai-38.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai38/frozen/tax_calculator_rule_integration_v1.jsonl",
+      "sha256": "db3b3cd9a55bfa0f6bbfd7fc0f120a54aee899c5eb1a9e336e993fb2d378a87e",
+      "case_count": 6,
+      "suite_id": "tax_calculator_rule_integration_v1"
+    }
+  ]
+}

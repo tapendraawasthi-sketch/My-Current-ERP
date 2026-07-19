@@ -36,6 +36,7 @@ from .explicit_confirmation_oec_dispatch import ExplicitConfirmationOecDispatchB
 from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
 from .legal_question_research import LegalQuestionResearchBundleV1
 from .core_nepal_tax_knowledge_pilot import CoreNepalTaxKnowledgePilotBundleV1
+from .tax_calculator_rule_integration import TaxCalculatorRuleIntegrationBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -208,6 +209,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-37: core Nepal tax knowledge pilot (never calculates / proves law).
     core_nepal_tax_knowledge_pilot_bundle: (
         CoreNepalTaxKnowledgePilotBundleV1 | None
+    ) = None
+    # MAI-38: tax calculator / rule integration policy (never executes).
+    tax_calculator_rule_integration_bundle: (
+        TaxCalculatorRuleIntegrationBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

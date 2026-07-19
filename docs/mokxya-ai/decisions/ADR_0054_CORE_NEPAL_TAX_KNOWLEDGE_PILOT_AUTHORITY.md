@@ -1,7 +1,7 @@
 # ADR_0054 — Core Nepal Tax Knowledge Pilot Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-37-CORE-NEPAL-TAX-KNOWLEDGE-PILOT (slice 2)
+- **Phase:** MAI-37-CORE-NEPAL-TAX-KNOWLEDGE-PILOT (PASSED_ENGINEERING; not production-approved)
 - **Extends:** ADR_0001, ADR_0053, ADR_0047
 
 ## Context

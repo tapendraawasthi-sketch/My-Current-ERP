@@ -2525,6 +2525,74 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent tax pilot success.
 
+    # MAI-38: tax calculator / rule integration policy (never executes).
+    tcri_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.TAX_CALCULATOR_RULE_INTEGRATION_STARTED,
+        component="conversation.tax_calculator_rule_integration",
+    )
+    try:
+        from ..oip.modules.conversation.application.tax_calculator_rule_integration_service import (
+            assert_tax_calculator_rule_integration_authority,
+            attach_tax_calculator_rule_integration_to_request,
+        )
+
+        updated = attach_tax_calculator_rule_integration_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.tax_calculator_rule_integration_bundle
+        assert_tax_calculator_rule_integration_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            tcri_ev,
+            version_map={
+                "tax_calculator_rule_integration": "mai-38.0.1-slice1",
+            },
+            safe_attributes={
+                "calculator_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "calculator_readiness": (
+                    bundle.calculator_readiness.value if bundle else None
+                ),
+                "rule_integration_status": "POLICY_ONLY",
+                "tax_calculator_invoked": False,
+                "calculation_executed": False,
+                "amount_computed": False,
+                "rate_applied": False,
+                "rule_table_loaded": False,
+                "calculator_production_eligible": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.TAX_CALCULATOR_RULE_INTEGRATION_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "calc_intent_detected": bool(
+                    bundle.calc_intent_detected if bundle else False
+                ),
+                "pilot_bound": bool(bundle.pilot_bound if bundle else False),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            tcri_ev, safe_error_code="TAX_CALCULATOR_RULE_INTEGRATION_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.TAX_CALCULATOR_RULE_INTEGRATION_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="TAX_CALCULATOR_RULE_INTEGRATION_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent calculator success.
+
     return canonical
 
 

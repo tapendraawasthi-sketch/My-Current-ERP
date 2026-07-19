@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-37",
-  "active_phase_note": "MAI-37 slice 2 IN_PROGRESS (ADR_0054); tax-pilot-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-38",
+  "active_phase_note": "MAI-38 slice 1 IN_PROGRESS (ADR_0055); tax calculator/rule policy (never executes); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2944,7 +2944,7 @@
     {
       "id": "MAI-37",
       "title": "CORE NEPAL TAX KNOWLEDGE PILOT",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2955,6 +2955,7 @@
         "docs/mokxya-ai/decisions/ADR_0054_CORE_NEPAL_TAX_KNOWLEDGE_PILOT_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_37_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_37_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_37_ENGINEERING_CLOSURE.md",
         "evals/mai37/manifests/MAI_37_SLICE1.manifest.json",
         "evals/mai37/manifests/MAI_37_SLICE2.manifest.json"
       ],
@@ -2978,20 +2979,43 @@
         "MAI-36"
       ],
       "recommended_order": 37,
-      "closure_note": "Slice 2: CANDIDATE_ONLY tax-pilot candidates; never calculate; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: IT/VAT/TDS pilot + CANDIDATE_ONLY candidates; never calculate; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-38",
       "title": "TAX CALCULATOR/RULE INTEGRATION",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-38.0.1-slice1",
+      "slice": "SLICE1_CALCULATOR_RULE_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_38_TAX_CALCULATOR_RULE_INTEGRATION.md",
+        "docs/mokxya-ai/decisions/ADR_0055_TAX_CALCULATOR_RULE_INTEGRATION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_38_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai38/manifests/MAI_38_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "tax_calculator_rule_integration_service.py (policy annotation)",
+        "TaxCalculatorRuleIntegrationBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress TAX_CALCULATOR_RULE_INTEGRATION after CORE_NEPAL_TAX_KNOWLEDGE_PILOT",
+        "calculation_executed=false; amount_computed=false; rule_table_loaded=false; calculator_production_eligible=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-37"
       ],
-      "recommended_order": 38
+      "recommended_order": 38,
+      "closure_note": "Slice 1: calculator/rule POLICY_ONLY; never executes; GAP-P2-008 open."
     },
     {
       "id": "MAI-39",

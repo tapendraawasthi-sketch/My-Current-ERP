@@ -1,9 +1,10 @@
 # MAI-37 — Core Nepal Tax Knowledge Pilot
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0054](decisions/ADR_0054_CORE_NEPAL_TAX_KNOWLEDGE_PILOT_AUTHORITY.md)  
-**Runtime:** `mai-37.0.2-slice2` (engineering; not production-approved)
+**Runtime:** `mai-37.0.2-slice2` (engineering; not production-approved)  
+**Closure:** [MAI_37_ENGINEERING_CLOSURE.md](baselines/MAI_37_ENGINEERING_CLOSURE.md)
 
 ## Objective
 

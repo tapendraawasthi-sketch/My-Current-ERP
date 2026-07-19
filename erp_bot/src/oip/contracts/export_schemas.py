@@ -75,6 +75,7 @@ from .explicit_confirmation_oec_dispatch import ExplicitConfirmationOecDispatchB
 from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
 from .legal_question_research import LegalQuestionResearchBundleV1
 from .core_nepal_tax_knowledge_pilot import CoreNepalTaxKnowledgePilotBundleV1
+from .tax_calculator_rule_integration import TaxCalculatorRuleIntegrationBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -134,6 +135,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "CoreNepalTaxKnowledgePilotBundleV1",
         CoreNepalTaxKnowledgePilotBundleV1,
+    ),
+    (
+        "TaxCalculatorRuleIntegrationBundleV1",
+        TaxCalculatorRuleIntegrationBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

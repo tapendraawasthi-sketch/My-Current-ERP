@@ -703,6 +703,32 @@ class CanonicalOipRequestAdapter:
                     "tax_pilot_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-38: tax calculator / rule integration policy (never executes).
+        if canonical.tax_calculator_rule_integration_bundle is not None:
+            try:
+                from ...modules.conversation.application.tax_calculator_rule_integration_service import (
+                    tax_calculator_rule_integration_to_metadata,
+                )
+
+                metadata["tax_calculator_rule_integration"] = (
+                    tax_calculator_rule_integration_to_metadata(
+                        canonical.tax_calculator_rule_integration_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                tcri = canonical.tax_calculator_rule_integration_bundle
+                metadata["tax_calculator_rule_integration"] = {
+                    "analysis_status": tcri.analysis_status.value,
+                    "runtime_version": tcri.runtime_version,
+                    "calculator_readiness": tcri.calculator_readiness.value,
+                    "rule_integration_status": "POLICY_ONLY",
+                    "tax_calculator_invoked": False,
+                    "calculation_executed": False,
+                    "amount_computed": False,
+                    "calculator_production_eligible": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 
