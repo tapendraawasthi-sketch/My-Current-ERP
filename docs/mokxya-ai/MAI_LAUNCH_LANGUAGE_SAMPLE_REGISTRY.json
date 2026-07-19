@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_LAUNCH_LANGUAGE_SAMPLE_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0083",
+  "step": "NEXT-09",
+  "decision": "LAUNCH_LANGUAGE_SAMPLE_PRODUCT_POLICY_REVIEW",
+  "gap_p1_009": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "runtime_status_reason": "Launch language sample PRODUCT_POLICY signed; MAI-04 multilingual_v1 still HUMAN_REVIEW; not CLOSED"
+  },
+  "gap_p1_012": {
+    "r3o_linguist_scope": "CLOSED",
+    "launch_sample_product_policy": "SIGNED",
+    "linguist_approved_launch_language_slice": false,
+    "closed_for_all_nepali": false
+  },
+  "honesty": {
+    "production_approved": false,
+    "product_policy_approved_launch_language_slice": true,
+    "linguist_approved_launch_language_slice": false,
+    "independent_professional_linguist": false,
+    "literary_nepali_claimed": false,
+    "is_execution_authority": false
+  },
+  "review": {
+    "reviewer_role": "PRODUCT_POLICY",
+    "reviewer_name": "Product owner continuum (go)",
+    "review_date": "2026-07-19",
+    "workbook": "docs/mokxya-ai/reviews/launch_language_sample/LAUNCH_LANGUAGE_SAMPLE_REVIEW_V1.csv",
+    "decisions": "docs/mokxya-ai/reviews/launch_language_sample/LAUNCH_LANGUAGE_SAMPLE_DECISIONS.json",
+    "signed_note": "docs/mokxya-ai/reviews/launch_language_sample/SIGNED_REVIEW_NOTE.md",
+    "blocking_fix_count": 0
+  },
+  "residual_risks": [
+    "MAI-04 multilingual_v1 remains 40/40 HUMAN_REVIEW_REQUIRED",
+    "Literary Nepali polish of shop-mixed ERP terms deferred",
+    "Khata preview/confirm body language wiring incomplete",
+    "Independent professional linguist spot-check optional before production_approved"
+  ],
+  "forbidden_claims": [
+    "production_approved=true",
+    "linguist_approved_launch_language_slice=true",
+    "gap_p1_009_closed=true",
+    "literary_nepali_claimed=true",
+    "all_nepali_forever=true"
+  ]
+}

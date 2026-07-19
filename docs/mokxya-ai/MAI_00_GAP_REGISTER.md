@@ -253,14 +253,14 @@ Severity legend:
 
 - **Severity:** P1
 - **Affected capability:** MAI-07 `LINGUIST_APPROVED`
-- **Evidence:** R3O Round A/B locked; coordinator credential verification attestation 2026-07-18; `LINGUIST_APPROVED=true` under ADR_0022 for R3O review-resolution scope only
-- **User/business impact:** Professional-linguist review-resolution sign-off recorded; production approval still false
-- **Current mitigation:** Attestation + freeze seal; no runtime promotion
-- **Required remediation:** None for R3O linguist-approval scope; production still blocked on other gates
-- **Recommended MAI phase:** MAI-07R3O (linguist path closed) → later governed quality/production phases
+- **Evidence:** R3O Round A/B locked; coordinator credential verification attestation 2026-07-18; `LINGUIST_APPROVED=true` under ADR_0022 for R3O review-resolution scope only. **NEXT-09 / ADR_0083:** launch language sample PRODUCT_POLICY signed; `linguist_approved_launch_language_slice=false` (honest; does not re-grant linguist from continuum).
+- **User/business impact:** Professional-linguist review-resolution sign-off recorded for R3O; launch-slice product-policy separate; production approval still false
+- **Current mitigation:** Attestation + freeze seal; launch sample under `reviews/launch_language_sample/`
+- **Required remediation:** None for R3O linguist-approval scope; optional launch-slice linguist spot-check before production_approved
+- **Recommended MAI phase:** MAI-07R3O (linguist path closed) → PR-B / NEXT-20
 - **Dependencies:** GAP-P1-011 quality path
-- **Acceptance condition:** Explicit professional linguist approval artifact — **met under ADR_0022 + coordinator attestation**
-- **Status:** CLOSED (2026-07-18) for R3O `LINGUIST_APPROVED` scope — does not set `PRODUCTION_APPROVED` or start MAI-08
+- **Acceptance condition:** Explicit professional linguist approval artifact — **met under ADR_0022 + coordinator attestation** for R3O
+- **Status:** CLOSED (2026-07-18) for R3O `LINGUIST_APPROVED` scope — does not set `PRODUCTION_APPROVED`. Matrix launch-sample row tracks PRODUCT_POLICY REDUCED via NEXT-09 (not a reopen).
 
 ### GAP-P0-002 — Unauthenticated `/api/khata/confirm` mutates Postgres from body tenant/company
 
@@ -414,15 +414,14 @@ Severity legend:
 
 - **Severity:** P1 (further reduced)
 - **Affected capability:** language
-- **Evidence:** MAI-05 span detection landed; MAI-06 lossless views (NFC, retrieval casefold/digits/whitespace, candidates) with raw immutable and protected F1 preserved. MAI-07 candidate transliteration authority landed (annotation-only; `LINGUIST_APPROVED=false`). Product MAI-04 multilingual intent quality still often HUMAN_REVIEW/FAILED. **NEXT-07** gated concept/number-role consume into primary mode-aware NLU (ADR_0076); transliteration/typo apply and silent master bind remain forbidden.
-- **Representative cases:** `mai04_multi__rom*`; MAI-05/06/07 shards under `evals/mai05`, `evals/mai06`, `evals/mai07`
-- **User/business impact:** Shop language still mis-parsed for intent/event until MAI-08+ gated consumption
-- **Current mitigation:** LanguageFrame + NormalizationBundle + TransliterationBundle before intent; legacy `text_normalize` isolated
-- **Required remediation:** MAI-08 code-mix/typo; linguist review of MAI-07; MAI-11 response language
-- **Recommended MAI phase:** MAI-08
+- **Evidence:** MAI-05 span detection landed; MAI-06 lossless views (NFC, retrieval casefold/digits/whitespace, candidates) with raw immutable and protected F1 preserved. MAI-07 candidate transliteration authority landed. **NEXT-07** gated concept/number-role consume (ADR_0076). **NEXT-08** response scaffolds live (ADR_0082). **NEXT-09 / ADR_0083:** launch language sample PRODUCT_POLICY signed (`docs/mokxya-ai/reviews/launch_language_sample/`); FIX=0; `LINGUIST_APPROVED` launch-slice remains false.
+- **Representative cases:** `mai04_multi__rom*`; launch sample RL-*/LL-*; MAI-05/06/07 shards
+- **User/business impact:** Launch-slice shop language usable with residual MAI-04 multilingual HR debt
+- **Current mitigation:** LanguageFrame + scaffolds + product-policy launch sample; legacy `text_normalize` isolated
+- **Required remediation:** MAI-04 multilingual suite green or explicit waive; optional independent linguist spot-check before production_approved
+- **Recommended MAI phase:** PR-B staging → NEXT-20
 - **Status:** REDUCED (not closed)
-- **Status:** OPEN (normalization foundation landed; multilingual product weakness not closed)
-- **Progress (2026-07-19):** MAI-08/10/11 `PASSED_ENGINEERING`. **NEXT-06:** MAI-04 `multilingual_v1` remains **40/40 HUMAN_REVIEW_REQUIRED**. **NEXT-07 / ADR_0076:** concept→intent + number-role money preference consumed on primary preprocess; GAP remains OPEN pending NEXT-09 linguist/product-policy samples.
+- **Progress (2026-07-19):** NEXT-09 product-policy launch sample signed; MAI-04 `multilingual_v1` still **40/40 HUMAN_REVIEW_REQUIRED**; do not mark CLOSED.
 
 ---
 

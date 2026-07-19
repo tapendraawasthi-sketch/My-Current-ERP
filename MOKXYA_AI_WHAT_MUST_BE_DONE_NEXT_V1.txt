@@ -409,7 +409,16 @@ Objective:
 Gate:
   Signed review note + residual risk list; GAP-P1-012 progress updated.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_09_LAUNCH_LANGUAGE_SAMPLE_REVIEW.md
+  docs/mokxya-ai/decisions/ADR_0083_LAUNCH_LANGUAGE_SAMPLE_PRODUCT_POLICY_REVIEW.md
+  docs/mokxya-ai/MAI_LAUNCH_LANGUAGE_SAMPLE_REGISTRY.json
+  docs/mokxya-ai/reviews/launch_language_sample/
+  erp_bot/tests/oip/language_runtime/test_mai_next09_launch_language_sample.py
+Notes:
+  PRODUCT_POLICY_APPROVED launch slice = true; LINGUIST_APPROVED launch slice = false;
+  GAP-P1-009 REDUCED (not CLOSED); blocking FIX = 0.
 Depends on: NEXT-06
 
 
@@ -679,7 +688,7 @@ NEXT-05  | DONE   | ADR_0075 + NEXT_05_CONFIRM_PATH_HONESTY.md | Model B tokens;
 NEXT-06  | DONE   | NEXT_06_MAI04_LANGUAGE_SUITE_REPROOF.md | ctx+num green; multi HR waived
 NEXT-07  | DONE   | ADR_0076 + NEXT_07_NLU_LANGUAGE_CONSUME.md | concept+number-role consume
 NEXT-08  | DONE   | ADR_0082 + NEXT_08_RESPONSE_LANGUAGE_LIVE.md | MAI-11 scaffold live
-NEXT-09  | OPEN   |                   | linguist sample
+NEXT-09  | DONE   | ADR_0083 + NEXT_09_LAUNCH_LANGUAGE_SAMPLE_REVIEW.md | PRODUCT_POLICY launch slice; GAP-P1-009 REDUCED
 NEXT-10  | DONE   | ADR_0077 + NEXT_10_LAUNCH_EVENT_SPEC_FREEZE.md | sales/purchase/report freeze
 NEXT-11  | DONE   | ADR_0078 + NEXT_11_CALC_AUTHORITY_HONESTY.md | GAP-P2-002 REDUCED
 NEXT-12  | DONE   | ADR_0079 + NEXT_12_E2E_LAUNCH_SLICE.md | launch verticals evidenced
@@ -695,8 +704,8 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-09
-  last_shipped_step = NEXT-08
+  recommended_next_step = PR-B1
+  last_shipped_step = NEXT-09
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -710,6 +719,7 @@ Active pointer (update on each go):
   knowledge_citation = ADR_0080 force-abstain; GAP-P2-008 REDUCED (not CLOSED)
   prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
   response_language_live = ADR_0082 scaffold parity; applied_response_rewrite=false
+  launch_language_sample = ADR_0083 PRODUCT_POLICY launch slice; GAP-P1-009 REDUCED
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

@@ -27,8 +27,8 @@
     {"id": "GAP-P1-004", "severity": "P1", "status": "REDUCED", "blocks": ["stale_draft_merge", "production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
     {"id": "GAP-P1-007", "severity": "P1", "status": "REDUCED", "blocks": ["production_number_roles"], "note": "NEXT-06 number_roles_v1 40/40 component green"},
     {"id": "GAP-P1-008", "severity": "P1", "status": "REDUCED", "blocks": ["production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
-    {"id": "GAP-P1-009", "severity": "P1", "status": "OPEN", "blocks": ["multilingual_product", "NEXT-09"], "note": "NEXT-07 concept/number-role consume landed; multilingual product quality + NEXT-09 linguist still OPEN"},
-    {"id": "GAP-P1-012", "severity": "P1", "status": "OPEN", "blocks": ["linguist_approval", "NEXT-09"]},
+    {"id": "GAP-P1-009", "severity": "P1", "status": "REDUCED", "blocks": ["multilingual_product", "NEXT-20"], "note": "NEXT-09 ADR_0083 launch language PRODUCT_POLICY signed; MAI-04 multilingual_v1 still HR; not CLOSED"},
+    {"id": "GAP-P1-012", "severity": "P1", "status": "REDUCED", "blocks": ["linguist_approval", "NEXT-20"], "note": "R3O LINGUIST_APPROVED CLOSED (ADR_0022); NEXT-09 launch-slice PRODUCT_POLICY signed; launch linguist flag false"},
     {"id": "GAP-P2-001", "severity": "P2", "status": "REDUCED", "blocks": ["prod_retrieval", "NEXT-20"], "note": "NEXT-14 ADR_0081 LEXICAL_ONLY in prod; staging deploy proof residual; not CLOSED"},
     {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-20"], "note": "NEXT-11 ADR_0078 owners+labels; UI display estimates remain; not CLOSED"},
     {"id": "GAP-P2-008", "severity": "P2", "status": "REDUCED", "blocks": ["citation_honesty", "NEXT-20"], "note": "NEXT-13 ADR_0080 force-abstain gate; professional suite sign-off still required; not CLOSED"}
@@ -44,8 +44,8 @@
     {"id": "MAI-07", "title": "ROMANIZED NEPALI TRANSLITERATION", "depth": "GATE_PROVEN", "production_approved": false, "live_effect": "RUNTIME_ACTIVE", "linked_gaps": ["GAP-P1-009", "GAP-P1-012"], "note": "R3S active cutover for transliteration pack; product-wide production_approved remains false; linguist path still material."},
     {"id": "MAI-08", "title": "CODE-MIX AND TYPO ROBUSTNESS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "Abstention floors + typo/code-mix bundle; master Gate not fully proven."},
     {"id": "MAI-09", "title": "NUMBER DATE MONEY QUANTITY ROLES", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-007"], "note": "NEXT-07 money-role preference on primary NLU; suite green; not production-approved."},
-    {"id": "MAI-10", "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "NEXT-07 concept→intent refine on mode_aware; not sole NLU; GAP-P1-009 OPEN."},
-    {"id": "MAI-11", "title": "RESPONSE LANGUAGE AND REGISTER", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "NEXT-08 ADR_0082 scaffold live parity EN/Devanagari/Romanized; no SSE rewrite; GAP-P1-009 OPEN for NEXT-09."},
+    {"id": "MAI-10", "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "NEXT-07 concept→intent refine on mode_aware; not sole NLU; GAP-P1-009 REDUCED."},
+    {"id": "MAI-11", "title": "RESPONSE LANGUAGE AND REGISTER", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "NEXT-08 scaffolds + NEXT-09 PRODUCT_POLICY launch sample; GAP-P1-009 REDUCED; not production."},
     {"id": "MAI-12", "title": "LANGUAGE DATA GOVERNANCE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "TOOLING", "linked_gaps": ["GAP-P2-005"], "note": "Catalog + rebuildability assessment; GAP-P2-005 REDUCED."},
     {"id": "MAI-13", "title": "CONVERSATION OBJECT REFERENCE STORE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": [], "note": "Read-only store resolution; not full memory product."},
     {"id": "MAI-14", "title": "TURN RELATION BEFORE DRAFT MERGE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-004", "GAP-P1-008"], "note": "allows_pending_merge gate; NEXT-06 context_turn_relation_v1 35/35 component green; not production-approved."},
@@ -95,8 +95,8 @@
       "title": "Ask Mode — authorized company report questions",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-09", "NEXT-20"],
-      "note": "NEXT-08/10/12/13/14 Ask + citation + lexical + language scaffolds; still ANNOTATION_ONLY / not production."
+      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "PR-B1", "NEXT-20"],
+      "note": "NEXT-08/09/10/12/13/14 Ask + citation + lexical + language sample; still ANNOTATION_ONLY / not production."
     },
     {
       "id": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-09",
-  "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14"]
+  "recommended_next_step": "PR-B1",
+  "next_file": "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt",
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14"]
 }
