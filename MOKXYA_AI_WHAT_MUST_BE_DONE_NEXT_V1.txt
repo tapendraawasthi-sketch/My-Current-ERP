@@ -417,7 +417,15 @@ Objective:
 Gate:
   Event Spec Registry rows with authority owners; unsupported → safe message.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_10_LAUNCH_EVENT_SPEC_FREEZE.md
+  docs/mokxya-ai/decisions/ADR_0077_LAUNCH_EVENT_SPEC_FREEZE.md
+  docs/mokxya-ai/MAI_LAUNCH_EVENT_SPEC_REGISTRY.json
+  erp_bot/src/oip/modules/conversation/application/launch_event_spec_policy.py
+  erp_bot/tests/oip/language_runtime/test_mai_next10_launch_event_freeze.py
+  Supported: sales_invoice_draft, purchase_invoice_draft, ask_company_report
+  Deferred: receipt/payment (not in freeze)
 Depends on: NEXT-02, NEXT-06
 
 
@@ -628,7 +636,7 @@ NEXT-06  | DONE   | NEXT_06_MAI04_LANGUAGE_SUITE_REPROOF.md | ctx+num green; mul
 NEXT-07  | DONE   | ADR_0076 + NEXT_07_NLU_LANGUAGE_CONSUME.md | concept+number-role consume
 NEXT-08  | OPEN   |                   | MAI-11 live
 NEXT-09  | OPEN   |                   | linguist sample
-NEXT-10  | OPEN   |                   | event freeze
+NEXT-10  | DONE   | ADR_0077 + NEXT_10_LAUNCH_EVENT_SPEC_FREEZE.md | sales/purchase/report freeze
 NEXT-11  | OPEN   |                   | GAP-P2-002
 NEXT-12  | OPEN   |                   | E2E launch
 NEXT-13  | OPEN   |                   | GAP-P2-008
@@ -643,8 +651,8 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-10
-  last_shipped_step = NEXT-07
+  recommended_next_step = NEXT-11
+  last_shipped_step = NEXT-10
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -652,6 +660,7 @@ Active pointer (update on each go):
   sync_authority = EVENT_SYNC_QUEUE (ADR_0074); queued≠synced; conflict=reconfirm
   confirm_path = ADR_0075 Model B short-lived tokens; nl_assent_posts=false
   nlu_language_consume = ADR_0076 concept+number-role; no silent bind/draft
+  launch_event_freeze = ADR_0077 sales/purchase drafts + Ask reports; settlement deferred
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

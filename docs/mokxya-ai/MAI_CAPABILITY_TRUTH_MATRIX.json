@@ -52,7 +52,7 @@
     {"id": "MAI-15", "title": "REFERENCE COREFERENCE CORRECTION", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": [], "note": "Amount correction overlay candidates."},
     {"id": "MAI-16", "title": "CONTEXT ASSEMBLER AND MEMORY POLICY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-001"], "note": "Provider consume + memory gate; never silent memory write authority."},
     {"id": "MAI-17", "title": "HIERARCHICAL ROUTER AND OOD", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": [], "note": "OOD abstain gate scaffolding."},
-    {"id": "MAI-18", "title": "EVENT SPECIFICATION REGISTRY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": [], "note": "EventFrame skeleton; launch freeze is NEXT-10."},
+    {"id": "MAI-18", "title": "EVENT SPECIFICATION REGISTRY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": [], "note": "NEXT-10 ADR_0077 freeze overlay on primary path; not execution authority."},
     {"id": "MAI-19", "title": "STRUCTURED EVENT EXTRACTION", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": [], "note": "Optional fields/ambiguity candidates."},
     {"id": "MAI-20", "title": "INFORMATION-GAIN CLARIFICATION", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": [], "note": "Clarification plan consume; not full UX."},
     {"id": "MAI-21", "title": "TYPED PLANNER AND TOOL LOOP", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": [], "note": "Authorized tool proposals only; no invent tools."},
@@ -95,16 +95,16 @@
       "title": "Ask Mode — authorized company report questions",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P1-001", "GAP-P2-008", "GAP-P2-001", "NEXT-12", "NEXT-13", "NEXT-20"],
-      "note": "Master §32 launch candidate; not released."
+      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-20"],
+      "note": "NEXT-10 freeze includes ask_company_report; still ANNOTATION_ONLY / not production."
     },
     {
       "id": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
       "title": "Accountant Mode — sales/purchase draft+confirm (narrow)",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P0-001", "GAP-P1-002", "GAP-P1-007", "GAP-P1-008", "GAP-P2-002", "NEXT-02", "NEXT-12", "NEXT-20"],
-      "note": "Master §32 launch candidate; not released."
+      "blocked_by": ["GAP-P0-001", "GAP-P1-002", "GAP-P2-002", "NEXT-11", "NEXT-12", "NEXT-20"],
+      "note": "NEXT-10 freeze includes sales/purchase drafts; confirm+E2E still required."
     },
     {
       "id": "LAUNCH-ASK-PRODUCT-HELP",
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-10",
+  "recommended_next_step": "NEXT-11",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10"]
 }

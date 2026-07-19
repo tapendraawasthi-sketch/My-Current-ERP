@@ -5,9 +5,21 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-10",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07"],
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..07 DONE. NEXT-07 ADR_0076 gated concept/number-role consume into primary NLU; GAP-P1-009 OPEN. NEXT recommended=NEXT-10 (launch event freeze). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-11",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10"],
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..07 + NEXT-10 DONE. NEXT-10 ADR_0077 launch freeze: sales/purchase drafts + Ask reports; settlement deferred. NEXT recommended=NEXT-11 (draft/preview depth). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "launch_event_freeze": {
+    "authority": "ADR_0077",
+    "decision": "NARROW_LAUNCH_EVENT_SPEC_FREEZE",
+    "supported_event_ids": [
+      "sales_invoice_draft",
+      "purchase_invoice_draft",
+      "ask_company_report"
+    ],
+    "receipt_payment_in_freeze": false,
+    "is_execution_authority": false,
+    "registry": "docs/mokxya-ai/MAI_LAUNCH_EVENT_SPEC_REGISTRY.json"
+  },
   "nlu_language_consume": {
     "authority": "ADR_0076",
     "decision": "GATED_LANGUAGE_CANDIDATE_NLU_CONSUME",

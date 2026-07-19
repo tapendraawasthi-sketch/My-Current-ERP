@@ -16,7 +16,7 @@
 | Track I (MAI-50…53) | **Dormant / FREEZE ACTIVE** ([ADR_0071](decisions/ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md)) until **NEXT-20** |
 | `production_approved` (product) | **false** |
 | `legal_effective_dates_proven` | **false** |
-| Recommended next step | **NEXT-10** (launch event freeze) |
+| Recommended next step | **NEXT-11** (draft/preview depth) |
 
 **PASSED_ENGINEERING ≠ master Gate proven ≠ production released.**
 
@@ -108,7 +108,8 @@ Per `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` default order:
 5. ~~NEXT-06~~ — MAI-04 language suites reproof (ctx+num green; multi HR waived)  
 6. ~~NEXT-05~~ — Confirm path honesty (ADR_0075 Model B tokens)  
 7. ~~NEXT-07~~ — Gated language candidate NLU consume (ADR_0076)  
-8. **NEXT-10** — Launch event spec freeze
+8. ~~NEXT-10~~ — Launch event spec freeze (ADR_0077)  
+9. **NEXT-11** — Draft → preview → edit loop depth
 
 ## Explicit non-claims
 

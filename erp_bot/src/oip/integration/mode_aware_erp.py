@@ -111,6 +111,54 @@ class ModeAwareResult:
     applied_correction: dict[str, Any] | None = None
 
 
+def _launch_event_freeze_result(
+    message: str,
+    *,
+    operation_class: OperationClass | str | None,
+    intent_hint: str | None,
+    orbix_mode: str,
+    capabilities: ModeCapabilities,
+    has_pending: bool,
+) -> ModeAwareResult | None:
+    """NEXT-10 / ADR_0077 — unsupported launch families → safe message."""
+    try:
+        from ..modules.conversation.application.launch_event_spec_policy import (
+            evaluate_launch_event_freeze,
+        )
+    except Exception:  # noqa: BLE001
+        return None
+
+    op_val = (
+        operation_class.value
+        if isinstance(operation_class, OperationClass)
+        else (str(operation_class) if operation_class else None)
+    )
+    blocked = evaluate_launch_event_freeze(
+        message,
+        operation_class=op_val,
+        intent_hint=intent_hint,
+        has_pending=has_pending,
+    )
+    if not blocked:
+        return None
+    return ModeAwareResult(
+        skip_llm=True,
+        text=str(blocked["text"]),
+        intent=str(blocked["intent"]),
+        method=str(blocked["method"]),
+        operation_class=op_val or OperationClass.GENERAL_QUESTION.value,
+        orbix_mode=orbix_mode,
+        capabilities=capabilities.to_dict(),
+        error={
+            "code": blocked["error_code"],
+            "family": blocked["family"],
+            "authority": blocked["authority"],
+            "nothing_posted": True,
+            "draft_mutations": 0,
+        },
+    )
+
+
 def handle_mode_aware_erp(
     message: str,
     *,
@@ -528,6 +576,17 @@ def handle_mode_aware_erp(
                 orbix_mode=mode,
                 capabilities=caps.to_dict(),
             )
+        # NEXT-10: bank recon drafts outside launch freeze
+        freeze = _launch_event_freeze_result(
+            message,
+            operation_class=OperationClass.TRANSACTION_CREATE,
+            intent_hint="bank_recon",
+            orbix_mode=mode,
+            capabilities=caps,
+            has_pending=False,
+        )
+        if freeze is not None:
+            return freeze
         label = "bank reconciliation"
         if mode == "ask" or not caps.can_create_draft:
             return ModeAwareResult(
@@ -554,6 +613,17 @@ def handle_mode_aware_erp(
 
     # Prefer settlement even when classifier returns general_question (e.g. bare debit/credit JE)
     if prefer_financial_settlement(message) and not pending:
+        # NEXT-10: receipt/payment/journal/contra outside launch freeze
+        freeze = _launch_event_freeze_result(
+            message,
+            operation_class=OperationClass.TRANSACTION_CREATE,
+            intent_hint=classification.intent_hint or "customer_receipt",
+            orbix_mode=mode,
+            capabilities=caps,
+            has_pending=False,
+        )
+        if freeze is not None:
+            return freeze
         label = "settlement"
         if mode == "ask" or not caps.can_create_draft:
             return ModeAwareResult(
@@ -734,6 +804,26 @@ def handle_mode_aware_erp(
     purchase_signal = is_purchase_message(message)
     financial_signal = prefer_financial_settlement(message)
     bank_recon_signal = prefer_bank_recon(message)
+
+    # NEXT-10: block new unsupported mutating families (pending merges already allowed above).
+    # Uses launch-family classifier so return/settlement language is caught even when
+    # draft helpers disagree with the operation class.
+    if not pending:
+        freeze_hint = classification.intent_hint
+        if return_signal or purchase_return_signal:
+            freeze_hint = "sales_return_entry"
+        elif financial_signal and not sale_signal and not purchase_signal:
+            freeze_hint = freeze_hint or "customer_receipt"
+        freeze = _launch_event_freeze_result(
+            message,
+            operation_class=op,
+            intent_hint=freeze_hint,
+            orbix_mode=mode,
+            capabilities=caps,
+            has_pending=False,
+        )
+        if freeze is not None:
+            return freeze
 
     # Purchase return / supplier debit note — checked BEFORE sales returns and
     # purchases so purchase-side intents (which also match bare "returned"/"purchase")

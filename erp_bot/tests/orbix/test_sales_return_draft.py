@@ -108,19 +108,26 @@ def test_ask_mode_return_restricted():
         session_id="ask-ret-1",
     )
     assert result is not None
-    assert result.intent == "mode_restriction"
+    # NEXT-10 launch freeze: returns are outside the supported set.
+    assert result.intent in {"mode_restriction", "launch_event_unsupported"}
+    assert result.skip_llm is True
 
 
 def test_accountant_incomplete_return_via_mode_aware():
     result = handle_mode_aware_erp(
         "Ram Traders returned a bike.",
         orbix_mode="accountant",
-        session_id="acc-ret-1",
+        session_id="acc-ret-next10-freeze",
         user_role="accountant",
+        tenant_id="t1",
+        company_id="c1",
+        user_id="u1",
     )
     assert result is not None
-    assert result.draft_id
-    assert result.error and result.error.get("type") == "clarification_required"
+    # NEXT-10: sales returns are not in the launch freeze; safe message, no draft.
+    assert result.intent == "launch_event_unsupported"
+    assert result.draft_id is None
+    assert result.error and result.error.get("code") == "LAUNCH_EVENT_UNSUPPORTED"
     assert result.card is None
 
 

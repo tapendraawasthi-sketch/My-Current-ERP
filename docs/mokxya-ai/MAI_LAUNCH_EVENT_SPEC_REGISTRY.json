@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_LAUNCH_EVENT_SPEC_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0077",
+  "step": "NEXT-10",
+  "decision": "NARROW_LAUNCH_EVENT_SPEC_FREEZE",
+  "honesty": {
+    "production_approved": false,
+    "is_execution_authority": false,
+    "receipt_payment_in_freeze": false,
+    "receipt_payment_reason": "Draft path exists but not a launch capability row; deferred to later wave."
+  },
+  "events": [
+    {
+      "id": "sales_invoice_draft",
+      "mai18_spec_id": "sales_v1",
+      "launch_support": "SUPPORTED_DRAFT",
+      "orbix_mode": "accountant",
+      "authority_owner": "ACCOUNTANT_SALES_DRAFT",
+      "intent_hints": ["sales_entry", "transaction_create"],
+      "operation_classes": ["transaction_create"],
+      "notes": "Sale language / CONCEPT_SALES; Model B confirm still required (ADR_0075)."
+    },
+    {
+      "id": "purchase_invoice_draft",
+      "mai18_spec_id": "purchase_v1",
+      "launch_support": "SUPPORTED_DRAFT",
+      "orbix_mode": "accountant",
+      "authority_owner": "ACCOUNTANT_PURCHASE_DRAFT",
+      "intent_hints": ["purchase_entry"],
+      "operation_classes": ["transaction_create"],
+      "notes": "Purchase language / CONCEPT_PURCHASE; Model B confirm still required."
+    },
+    {
+      "id": "ask_company_report",
+      "mai18_spec_id": "report_v1",
+      "launch_support": "SUPPORTED_ASK",
+      "orbix_mode": "ask",
+      "authority_owner": "ASK_COMPANY_REPORT_ENGINE",
+      "intent_hints": ["report_generation", "report_follow_up"],
+      "operation_classes": ["report_request", "report_follow_up"],
+      "supported_report_types": [
+        "balance_sheet",
+        "profit_and_loss",
+        "trial_balance",
+        "account_ledger"
+      ],
+      "notes": "Unsupported report types keep existing safe gap message; not citation-honest knowledge."
+    }
+  ],
+  "unsupported_families": [
+    {
+      "id": "customer_receipt",
+      "mai18_spec_id": "customer_receipt_v1",
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "SETTLEMENT_DEFERRED"
+    },
+    {
+      "id": "supplier_payment",
+      "mai18_spec_id": "supplier_payment_v1",
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "SETTLEMENT_DEFERRED"
+    },
+    {
+      "id": "sales_return",
+      "mai18_spec_id": "sales_return_v1",
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "RETURNS_DEFERRED"
+    },
+    {
+      "id": "bank_recon",
+      "mai18_spec_id": null,
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "TREASURY_DEFERRED"
+    },
+    {
+      "id": "general_journal",
+      "mai18_spec_id": "general_journal_v1",
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "JOURNAL_DEFERRED"
+    },
+    {
+      "id": "master_data",
+      "mai18_spec_id": "master_create_v1",
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "MASTER_DATA_DEFERRED"
+    },
+    {
+      "id": "transaction_modify_reverse",
+      "mai18_spec_id": null,
+      "launch_support": "UNSUPPORTED",
+      "authority_owner": "MUTATION_DEFERRED"
+    }
+  ],
+  "passthrough_operation_classes": [
+    "general_question",
+    "accounting_question",
+    "erp_data_query",
+    "confirmation",
+    "cancellation",
+    "clarification_reply"
+  ],
+  "forbidden_claims": [
+    "production_approved=true",
+    "is_execution_authority=true",
+    "receipt_payment_launch_supported=true",
+    "sole_nlu=true",
+    "sole_oec=true"
+  ]
+}

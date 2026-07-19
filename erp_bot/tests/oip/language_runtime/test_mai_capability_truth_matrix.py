@@ -65,7 +65,7 @@ def test_blocking_gaps_include_p0_and_p2_008() -> None:
     assert "GAP-P2-008" in ids
     assert "GAP-P1-002" in ids
     assert data["honesty"]["legal_effective_dates_proven"] is False
-    assert data["recommended_next_step"] == "NEXT-10"
+    assert data["recommended_next_step"] == "NEXT-11"
 
 
 def test_track_i_freeze_active_adr_0071() -> None:
@@ -83,7 +83,7 @@ def test_track_i_freeze_active_adr_0071() -> None:
     assert freeze["authority"] == "ADR_0071"
     assert freeze["until"] == "NEXT-20"
     assert set(freeze["phases"]) == {"MAI-50", "MAI-51", "MAI-52", "MAI-53"}
-    assert ledger["recommended_next_step"] == "NEXT-10"
+    assert ledger["recommended_next_step"] == "NEXT-11"
 
     adr = (
         ROOT

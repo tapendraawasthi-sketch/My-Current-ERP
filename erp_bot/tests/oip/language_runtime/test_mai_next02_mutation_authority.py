@@ -105,7 +105,7 @@ def test_adr_and_gap_register_reduced() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "NEXT-10"
+    assert ledger["recommended_next_step"] == "NEXT-11"
     assert ledger["mutation_authority"]["decision"] == (
         "OPTION_A_MODEL_B_PRODUCT_AUTHORITY"
     )
