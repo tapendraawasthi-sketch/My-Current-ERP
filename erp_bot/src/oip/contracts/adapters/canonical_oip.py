@@ -255,6 +255,24 @@ class CanonicalOipRequestAdapter:
                     "missing_required_fields": list(ef.missing_required_fields),
                     "authorizes_posting": False,
                 }
+        # MAI-20: information-gain clarification plan (annotation only).
+        if canonical.clarification_plan_bundle is not None:
+            try:
+                from ...modules.conversation.application.clarification_plan_service import (
+                    clarification_plan_to_metadata,
+                )
+
+                metadata["clarification_plan"] = clarification_plan_to_metadata(
+                    canonical.clarification_plan_bundle
+                )
+            except Exception:  # noqa: BLE001
+                cp = canonical.clarification_plan_bundle
+                metadata["clarification_plan"] = {
+                    "analysis_status": cp.analysis_status.value,
+                    "runtime_version": cp.runtime_version,
+                    "primary_field": cp.primary_field,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

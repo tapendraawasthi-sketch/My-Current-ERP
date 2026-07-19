@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai20-slice1-v1",
+  "dataset_hash": "6c51c6d4664f0535a6620fa5838321fab11ec4742a7f41e2d290697fd17e5664",
+  "phase": "MAI-20",
+  "slice": "SLICE1_CLARIFICATION_PLAN_ANNOTATION",
+  "runtime_version": "mai-20.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai20/frozen/clarification_plan_v1.jsonl",
+      "sha256": "6c51c6d4664f0535a6620fa5838321fab11ec4742a7f41e2d290697fd17e5664",
+      "case_count": 6,
+      "suite_id": "clarification_plan_v1"
+    }
+  ]
+}

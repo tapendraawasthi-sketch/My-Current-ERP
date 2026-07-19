@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-19",
-  "active_phase_note": "MAI-19 slice 2 IN_PROGRESS (ADR_0036); optional fields + qty ambiguity; MAI-18 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-20",
+  "active_phase_note": "MAI-20 slice 1 IN_PROGRESS (ADR_0037); clarification plan annotation; MAI-19 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2271,7 +2271,7 @@
     {
       "id": "MAI-19",
       "title": "STRUCTURED EVENT EXTRACTION",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2282,6 +2282,7 @@
         "docs/mokxya-ai/decisions/ADR_0036_STRUCTURED_EVENT_EXTRACTION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_19_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_19_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_19_ENGINEERING_CLOSURE.md",
         "evals/mai19/manifests/MAI_19_SLICE1.manifest.json",
         "evals/mai19/manifests/MAI_19_SLICE2.manifest.json"
       ],
@@ -2301,22 +2302,38 @@
         "MAI-18"
       ],
       "recommended_order": 19,
-      "closure_note": "Slice 2: optional fields + qty ambiguity; authorizes_posting=false."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-20. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-20",
       "title": "INFORMATION-GAIN CLARIFICATION ENGINE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "purchase/sales clarification_message helpers"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-20.0.1-slice1",
+      "slice": "SLICE1_CLARIFICATION_PLAN_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_20_INFORMATION_GAIN_CLARIFICATION.md",
+        "docs/mokxya-ai/decisions/ADR_0037_INFORMATION_GAIN_CLARIFICATION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_20_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai20/manifests/MAI_20_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "clarification_plan_service.py",
+        "ClarificationPlanBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress CLARIFICATION_PLAN after MAI-19",
+        "purchase/sales clarification_message helpers (legacy bridge later)"
+      ],
+      "blockers": [
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-19"
       ],
-      "recommended_order": 20
+      "recommended_order": 20,
+      "closure_note": "Slice 1: EventFrame→ranked clarification plan; annotation only; is_execution_authority=false."
     },
     {
       "id": "MAI-21",

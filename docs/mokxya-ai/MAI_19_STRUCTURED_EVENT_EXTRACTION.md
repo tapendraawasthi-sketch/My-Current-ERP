@@ -1,7 +1,7 @@
 # MAI-19 — Structured Event Extraction
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2)  
 **Authority:** [ADR_0036](decisions/ADR_0036_STRUCTURED_EVENT_EXTRACTION_AUTHORITY.md)  
 **Runtime:** `mai-19.0.2-slice2` (engineering; not production-approved)
 

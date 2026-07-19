@@ -1221,6 +1221,65 @@ async def build_canonical_ai_request(
         )
         # Fail closed: keep skeleton frame; do not invent values.
 
+    # MAI-20: information-gain clarification plan (annotation only).
+    cp_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.CLARIFICATION_PLAN_STARTED,
+        component="conversation.clarification_plan",
+    )
+    try:
+        from ..oip.modules.conversation.application.clarification_plan_service import (
+            attach_clarification_plan_to_request,
+        )
+
+        updated = attach_clarification_plan_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        plan = updated.clarification_plan_bundle
+        if plan is not None and (
+            plan.is_execution_authority
+            or plan.silent_applications != 0
+            or plan.draft_mutations != 0
+        ):
+            raise RuntimeError("CLARIFICATION_PLAN_AUTHORITY")
+        canonical = updated
+        recorder.complete_stage(
+            cp_ev,
+            version_map={
+                "clarification_plan": "mai-20.0.1-slice1",
+            },
+            safe_attributes={
+                "clarification_status": (
+                    plan.analysis_status.value if plan else None
+                ),
+                "clarification_primary": (
+                    plan.primary_field if plan else None
+                ),
+                "clarification_target_count": (
+                    len(plan.targets) if plan else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CLARIFICATION_PLAN_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                plan.analysis_status.value if plan else "FAILED"
+            ),
+            safe_attributes={
+                "clarification_primary": (
+                    plan.primary_field if plan else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(cp_ev, safe_error_code="CLARIFICATION_PLAN_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.CLARIFICATION_PLAN_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="CLARIFICATION_PLAN_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent a plan.
+
     return canonical
 
 

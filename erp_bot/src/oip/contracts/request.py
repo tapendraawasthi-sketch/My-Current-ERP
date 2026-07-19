@@ -16,6 +16,7 @@ from .language import LanguageFrameV1
 from .object_reference import ObjectReferenceBundleV1
 from .reference_coreference import ReferenceCoreferenceBundleV1
 from .registry import get_contract_registry
+from .clarification_plan import ClarificationPlanBundleV1
 from .event_frame import EventFrameV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
@@ -144,6 +145,8 @@ class CanonicalAIRequestV1(ContractBase):
     event_spec_registry_bundle: EventSpecRegistryBundleV1 | None = None
     # MAI-18 slice 2: EventFrame skeleton from selected spec (no value extraction).
     event_frame: EventFrameV1 | None = None
+    # MAI-20: information-gain clarification plan (annotation only).
+    clarification_plan_bundle: ClarificationPlanBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

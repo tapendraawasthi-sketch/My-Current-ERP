@@ -1,0 +1,182 @@
+{
+  "$defs": {
+    "ClarificationPlanStatus": {
+      "enum": [
+        "NOT_RUN",
+        "NOT_NEEDED",
+        "ASK",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "ClarificationPlanStatus",
+      "type": "string"
+    },
+    "ClarificationTargetKind": {
+      "enum": [
+        "missing_required",
+        "ambiguous"
+      ],
+      "title": "ClarificationTargetKind",
+      "type": "string"
+    },
+    "ClarificationTargetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "field_name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "information_gain_rank": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Information Gain Rank",
+          "type": "integer"
+        },
+        "kind": {
+          "$ref": "#/$defs/ClarificationTargetKind",
+          "default": "missing_required"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "field_name"
+      ],
+      "title": "ClarificationTargetV1",
+      "type": "object"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ClarificationPlanBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_status": {
+      "$ref": "#/$defs/ClarificationPlanStatus",
+      "default": "NOT_RUN"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "event_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Event Type"
+    },
+    "frame_status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Frame Status"
+    },
+    "primary_field": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Primary Field"
+    },
+    "question_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Question Text"
+    },
+    "remaining_ambiguous": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Remaining Ambiguous",
+      "type": "array"
+    },
+    "remaining_missing_required": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Remaining Missing Required",
+      "type": "array"
+    },
+    "runtime_version": {
+      "default": "mai-20.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "silent_applications": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Silent Applications",
+      "type": "integer"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "targets": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ClarificationTargetV1"
+      },
+      "title": "Targets",
+      "type": "array"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "ClarificationPlanBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

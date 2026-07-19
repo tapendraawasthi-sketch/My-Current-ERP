@@ -20,6 +20,8 @@
     "OodSignalV1",
     "EventSpecRegistryBundleV1",
     "EventSpecCandidateV1",
+    "ClarificationPlanBundleV1",
+    "ClarificationTargetV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

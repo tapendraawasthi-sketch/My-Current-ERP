@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "ClarificationTargetKind": {
+      "enum": [
+        "missing_required",
+        "ambiguous"
+      ],
+      "title": "ClarificationTargetKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ClarificationTargetV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "field_name": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Field Name",
+      "type": "string"
+    },
+    "information_gain_rank": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Information Gain Rank",
+      "type": "integer"
+    },
+    "kind": {
+      "$ref": "#/$defs/ClarificationTargetKind",
+      "default": "missing_required"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "field_name"
+  ],
+  "title": "ClarificationTargetV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}
