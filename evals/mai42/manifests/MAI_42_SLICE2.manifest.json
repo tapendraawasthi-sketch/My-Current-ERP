@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai42-slice2-v1",
+  "dataset_hash": "5e2679277184c264bd9fb1f400754c68e7a5c6adb6a0c961e80548e756b11df4",
+  "phase": "MAI-42",
+  "slice": "SLICE2_JUDICIAL_DECISION_CANDIDATE_CONSUME",
+  "runtime_version": "mai-42.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai42/frozen/judicial_decision_consume_v1.jsonl",
+      "sha256": "5e2679277184c264bd9fb1f400754c68e7a5c6adb6a0c961e80548e756b11df4",
+      "case_count": 6,
+      "suite_id": "judicial_decision_consume_v1"
+    }
+  ]
+}

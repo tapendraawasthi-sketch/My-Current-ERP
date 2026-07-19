@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-42",
-  "active_phase_note": "MAI-42 slice 1 IN_PROGRESS (ADR_0059); judicial/decision intelligence policy (never judicial authority); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-42 slice 2 IN_PROGRESS (ADR_0059); judicial-decision-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3148,19 +3148,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-42.0.1-slice1",
-      "slice": "SLICE1_JUDICIAL_DECISION_POLICY",
+      "runtime_version": "mai-42.0.2-slice2",
+      "slice": "SLICE2_JUDICIAL_DECISION_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_42_JUDICIAL_DECISION_INTELLIGENCE.md",
         "docs/mokxya-ai/decisions/ADR_0059_JUDICIAL_DECISION_INTELLIGENCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_42_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai42/manifests/MAI_42_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_42_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai42/manifests/MAI_42_SLICE1.manifest.json",
+        "evals/mai42/manifests/MAI_42_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "judicial_decision_intelligence_service.py (policy annotation)",
+        "judicial_decision_intelligence_consume_service.py (CANDIDATE_ONLY judicial_decision_candidate)",
         "JudicialDecisionIntelligenceBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress JUDICIAL_DECISION_INTELLIGENCE after BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE",
-        "release_status=NOT_RELEASED; judicial_authority_claimed=false; headnote_as_binding_rule=false; subsequent_treatment_definitive=false; case_retrieved=false; gap_p2_008_status=OPEN"
+        "allow_case_retrieve=false; allow_judicial_authority=false; release_status=NOT_RELEASED; case_retrieved=false; headnote_as_binding_rule=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3175,7 +3178,7 @@
         "MAI-41"
       ],
       "recommended_order": 42,
-      "closure_note": "Slice 1: judicial/decision POLICY_DECLARED; never retrieve/claim judicial authority; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY judicial-decision candidates; never retrieve; GAP-P2-008 open."
     },
     {
       "id": "MAI-43",

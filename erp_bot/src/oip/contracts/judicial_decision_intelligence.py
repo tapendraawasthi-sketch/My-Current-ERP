@@ -38,7 +38,7 @@ class JudicialDecisionIntelligenceBundleV1(ContractBase):
     analysis_status: JudicialDecisionIntelligenceStatus = (
         JudicialDecisionIntelligenceStatus.NOT_RUN
     )
-    runtime_version: str = "mai-42.0.1-slice1"
+    runtime_version: str = "mai-42.0.2-slice2"
     source_authority: str = "REQUEST"
     judicial_decision_readiness: JudicialDecisionReadiness = (
         JudicialDecisionReadiness.NOT_APPLICABLE

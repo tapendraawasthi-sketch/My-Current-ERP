@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–41 `PASSED_ENGINEERING`. MAI-42 slice 1 declares judicial/decision intelligence policy only (`release_status=NOT_RELEASED`, `judicial_authority_claimed=false`, `headnote_as_binding_rule=false`, `subsequent_treatment_definitive=false`, `case_retrieved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–41 `PASSED_ENGINEERING`. MAI-42 slices 1–2 declare judicial/decision intelligence policy and emit `CANDIDATE_ONLY` `judicial_decision_candidate` (`release_status=NOT_RELEASED`, `allow_case_retrieve=false`, `allow_judicial_authority=false`, `case_retrieved=false`, `headnote_as_binding_rule=false`, `subsequent_treatment_definitive=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

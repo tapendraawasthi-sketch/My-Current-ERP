@@ -1,7 +1,7 @@
 # ADR_0059 — Judicial/Decision Intelligence Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-42-JUDICIAL-DECISION-INTELLIGENCE (slice 1)
+- **Phase:** MAI-42-JUDICIAL-DECISION-INTELLIGENCE (slice 2)
 - **Extends:** ADR_0001, ADR_0053, ADR_0058
 
 ## Context
@@ -35,14 +35,21 @@ dates remain open.
    `gap_p2_008_status=OPEN`.
 4. Never invent judicial authority, treat headnotes as full binding rules,
    or claim definitive subsequent treatment.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `judicial_decision_candidate` /
+   `judicial_decision_consume_mode` (`CANDIDATE_ONLY` default for
+   POLICY_DECLARED / SCOPE_PARTIAL; `BLOCKED` for fake authority;
+   `SKIP` for non-pilot). Live path forces `allow_case_retrieve=false`
+   and `allow_judicial_authority=false` — does **not** retrieve cases
+   or claim judicial authority. GAP-P2-008 stays OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-41 domain_released | Domain release must stay false / NOT_RELEASED |
-| Case retrieval in slice 1 | Honesty / corpus / specialist review required |
+| Case retrieval in slice 1–2 | Honesty / corpus / specialist review required |
+| Live case retrieve in slice 2 | Authority / honesty risk |
 | Headnote as binding rule | Roadmap gate forbids it |
 | Close GAP-P2-008 | Honesty review still required |
 | Prove effective dates | Must stay false |
@@ -50,5 +57,6 @@ dates remain open.
 ## Related
 
 - `docs/mokxya-ai/MAI_42_JUDICIAL_DECISION_INTELLIGENCE.md`
-- `docs/mokxya-ai/baselines/MAI_42_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_42_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/judicial_decision_intelligence_service.py`
+- `erp_bot/src/oip/modules/conversation/application/judicial_decision_intelligence_consume_service.py`

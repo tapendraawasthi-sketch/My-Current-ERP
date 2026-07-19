@@ -2894,12 +2894,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent domain release.
 
-    # MAI-42: judicial/decision intelligence policy (never judicial authority).
+    # MAI-42: judicial/decision intelligence + candidate consume.
     jdi_ev = recorder.begin_stage(
         mai03_obs.TraceStage.JUDICIAL_DECISION_INTELLIGENCE_STARTED,
         component="conversation.judicial_decision_intelligence",
     )
     try:
+        from ..oip.modules.conversation.application.judicial_decision_intelligence_consume_service import (
+            assert_judicial_decision_consume_authority,
+            judicial_decision_consume_observability,
+        )
         from ..oip.modules.conversation.application.judicial_decision_intelligence_service import (
             assert_judicial_decision_intelligence_authority,
             attach_judicial_decision_intelligence_to_request,
@@ -2910,11 +2914,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.judicial_decision_intelligence_bundle
         assert_judicial_decision_intelligence_authority(bundle)
+        consume_obs = judicial_decision_consume_observability(
+            updated,
+            allow_case_retrieve=False,
+            allow_judicial_authority=False,
+        )
+        assert_judicial_decision_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             jdi_ev,
             version_map={
-                "judicial_decision_intelligence": "mai-42.0.1-slice1",
+                "judicial_decision_intelligence": "mai-42.0.2-slice2",
             },
             safe_attributes={
                 "judicial_decision_status": (
@@ -2926,6 +2936,12 @@ async def build_canonical_ai_request(
                 "pilot_scope": "JUDICIAL_DECISION_CANDIDATE_ONLY",
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "judicial_decision_consume_mode": consume_obs.get(
+                    "judicial_decision_consume_mode"
+                ),
+                "judicial_decision_consume_ready": bool(
+                    consume_obs.get("judicial_decision_consume_ready")
+                ),
                 "judicial_authority_claimed": False,
                 "headnote_as_binding_rule": False,
                 "subsequent_treatment_definitive": False,
@@ -2940,6 +2956,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_case_retrieve": False,
+                "allow_judicial_authority": False,
             },
         )
         recorder.record_event(
@@ -2955,6 +2973,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "judicial_decision_consume_mode": consume_obs.get(
+                    "judicial_decision_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

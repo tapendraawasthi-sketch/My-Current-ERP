@@ -840,17 +840,21 @@ class CanonicalOipRequestAdapter:
                     "domain_release_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-42: judicial/decision intelligence policy (never judicial authority).
+        # MAI-42: judicial/decision intelligence + candidate consume.
         if canonical.judicial_decision_intelligence_bundle is not None:
             try:
+                from ...modules.conversation.application.judicial_decision_intelligence_consume_service import (
+                    enrich_jdi_metadata_with_consume,
+                )
                 from ...modules.conversation.application.judicial_decision_intelligence_service import (
                     judicial_decision_intelligence_to_metadata,
                 )
 
+                base_meta = judicial_decision_intelligence_to_metadata(
+                    canonical.judicial_decision_intelligence_bundle
+                )
                 metadata["judicial_decision_intelligence"] = (
-                    judicial_decision_intelligence_to_metadata(
-                        canonical.judicial_decision_intelligence_bundle
-                    )
+                    enrich_jdi_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 jdi = canonical.judicial_decision_intelligence_bundle
@@ -866,6 +870,8 @@ class CanonicalOipRequestAdapter:
                     "subsequent_treatment_definitive": False,
                     "case_retrieved": False,
                     "gap_p2_008_status": "OPEN",
+                    "judicial_decision_consume_mode": "UNCHANGED",
+                    "judicial_decision_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

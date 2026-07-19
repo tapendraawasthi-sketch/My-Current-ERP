@@ -1,9 +1,9 @@
 # MAI-42 — Judicial/Decision Intelligence
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0059](decisions/ADR_0059_JUDICIAL_DECISION_INTELLIGENCE_AUTHORITY.md)  
-**Runtime:** `mai-42.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-42.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -22,11 +22,20 @@ retrieving cases, treating headnotes as binding rules, or proving current law.
    `subsequent_treatment_definitive=false`; `case_retrieved=false`
 7. Dates unproven; GAP-P2-008 OPEN
 
+## Slice 2
+
+1. `resolve_judicial_decision_consume_mode` / `build_judicial_decision_candidate`
+2. Default `CANDIDATE_ONLY` — case refs / holdings / citator / anchors / definitive null
+3. Fake retrieve claim → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_case_retrieve=false` / `allow_judicial_authority=false`
+5. Metadata: `judicial_decision_consume_ready` + `judicial_decision_candidate`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Court / holding / issue / citator / case-status cues | COMPLETE → `POLICY_DECLARED` |
+| Court / holding / issue / citator / case-status cues | COMPLETE → `CANDIDATE_ONLY` |
+| Fake case-retrieved claim | `BLOCKED` |
 | VAT-only / purchase / company-law without judicial cues | SKIP |
 | Any live path | never retrieve/claim judicial authority; GAP-P2-008 OPEN |
 
