@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-49",
-  "active_phase_note": "MAI-49 slice 1 IN_PROGRESS (ADR_0066); production capability release policy (never production_approved / never cutover); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-49 slice 2 IN_PROGRESS (ADR_0066); CANDIDATE_ONLY production-release candidates (never production_approved / never cutover / never traffic); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3428,19 +3428,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-49.0.1-slice1",
-      "slice": "SLICE1_PRODUCTION_CAPABILITY_RELEASE_POLICY",
+      "runtime_version": "mai-49.0.2-slice2",
+      "slice": "SLICE2_PRODUCTION_CAPABILITY_RELEASE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_49_PRODUCTION_CAPABILITY_RELEASE.md",
         "docs/mokxya-ai/decisions/ADR_0066_PRODUCTION_CAPABILITY_RELEASE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_49_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai49/manifests/MAI_49_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_49_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai49/manifests/MAI_49_SLICE1.manifest.json",
+        "evals/mai49/manifests/MAI_49_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "production_capability_release_service.py (policy annotation)",
+        "production_capability_release_consume_service.py (CANDIDATE_ONLY production_capability_release_candidate)",
         "ProductionCapabilityReleaseBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress PRODUCTION_CAPABILITY_RELEASE after GOVERNED_IMPROVEMENT_FINE_TUNING",
-        "release_status=NOT_RELEASED; production_approved=false; production_capability_released=false; cutover_authorized=false; production_traffic_enabled=false; gap_p2_008_status=OPEN"
+        "allow_cutover=false; allow_traffic=false; release_status=NOT_RELEASED; production_approved=false; production_capability_released=false; cutover_authorized=false; production_traffic_enabled=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3455,7 +3458,7 @@
         "MAI-48"
       ],
       "recommended_order": 49,
-      "closure_note": "Slice 1: production capability release POLICY_DECLARED; never production_approved / never cutover; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY production-release candidates; never production_approved / never cutover / never traffic; GAP-P2-008 open."
     },
     {
       "id": "MAI-50",

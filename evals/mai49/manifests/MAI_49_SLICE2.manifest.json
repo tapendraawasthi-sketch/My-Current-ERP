@@ -1,0 +1,28 @@
+{
+  "phase": "MAI-49",
+  "slice": "2",
+  "runtime_version": "mai-49.0.2-slice2",
+  "authority": "ADR_0066",
+  "frozen_sets": [
+    {
+      "id": "production_capability_release_consume_v1",
+      "path": "evals/mai49/frozen/production_capability_release_consume_v1.jsonl",
+      "sha256": "ce7c1ef4a043e7d92788fde251af3413a5f2e17d474b7a485b3dc0ca2e2cb845",
+      "row_count": 6
+    }
+  ],
+  "honesty": {
+    "default_consume_mode": "CANDIDATE_ONLY",
+    "allow_cutover": false,
+    "allow_traffic": false,
+    "production_approved": false,
+    "production_capability_released": false,
+    "release_checklist_complete": false,
+    "residual_risk_accepted": false,
+    "owner_signoff_proven": false,
+    "cutover_authorized": false,
+    "rollback_proven": false,
+    "production_traffic_enabled": false,
+    "gap_p2_008": "OPEN"
+  }
+}

@@ -40,7 +40,7 @@ class ProductionCapabilityReleaseBundleV1(ContractBase):
     analysis_status: ProductionCapabilityReleaseStatus = (
         ProductionCapabilityReleaseStatus.NOT_RUN
     )
-    runtime_version: str = "mai-49.0.1-slice1"
+    runtime_version: str = "mai-49.0.2-slice2"
     source_authority: str = "REQUEST"
     production_capability_release_readiness: (
         ProductionCapabilityReleaseReadiness

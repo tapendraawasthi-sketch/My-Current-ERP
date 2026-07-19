@@ -1,6 +1,7 @@
 """MAI-49 — production capability release policy (never claims approved).
 
 Slice 1: declare candidate production-release policy from cue detection.
+Slice 2 consume is in production_capability_release_consume_service.
 Never claims production approved, capability released, or cutover authorized.
 """
 
@@ -17,7 +18,7 @@ from ....contracts.production_capability_release import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-49.0.1-slice1"
+RUNTIME_VERSION = "mai-49.0.2-slice2"
 AUTHORITY = "ADR_0066"
 
 _PROD_RELEASE = re.compile(

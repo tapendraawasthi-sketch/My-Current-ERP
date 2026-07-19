@@ -1,7 +1,7 @@
 # ADR_0066 — Production Capability Release Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-49-PRODUCTION-CAPABILITY-RELEASE (slice 1)
+- **Phase:** MAI-49-PRODUCTION-CAPABILITY-RELEASE (slice 2)
 - **Extends:** ADR_0001, ADR_0003
 
 ## Context
@@ -31,22 +31,29 @@ production-approved claim, cutover authorization, or traffic enablement.
    `rollback_proven=false`,
    `production_traffic_enabled=false`,
    `gap_p2_008_status=OPEN`.
-4. Never invent production approval, cutover, or traffic enablement from cue
+4. Slice 2: consume into `CANDIDATE_ONLY`
+   `production_capability_release_candidate` with null plans; live ingress
+   forces `allow_cutover=false` and `allow_traffic=false`. Label-only
+   `INVOKE_CUTOVER` / `INVOKE_TRAFFIC` modes exist for unit tests only.
+5. Never invent production approval, cutover, or traffic enablement from cue
    detection alone.
-5. Engineering-gated: ledger `production_approved=false` remains false.
+6. Engineering-gated: ledger `production_approved=false` remains false.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-48 governed_change_approved | Change must stay unapproved |
-| Claim production_approved in slice 1 | Owner acceptance + residual risk required |
+| Claim production_approved in slice 1/2 | Owner acceptance + residual risk required |
 | Enable production traffic from cues | Explicit multi-party release required |
 | Close GAP-P2-008 / GAP-P0-001 | Honesty + security review still required |
 | Auto-cutover | Rollback proof and owner sign-off required |
+| Live allow_cutover / allow_traffic | Would invent cutover / traffic authority |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_49_PRODUCTION_CAPABILITY_RELEASE.md`
 - `docs/mokxya-ai/baselines/MAI_49_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_49_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/production_capability_release_service.py`
+- `erp_bot/src/oip/modules/conversation/application/production_capability_release_consume_service.py`

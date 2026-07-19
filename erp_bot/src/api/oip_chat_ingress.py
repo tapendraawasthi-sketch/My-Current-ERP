@@ -3600,12 +3600,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent apply/fine-tune.
 
-    # MAI-49: production capability release (never claims production approved).
+    # MAI-49: production capability release + candidate consume.
     pcr_ev = recorder.begin_stage(
         mai03_obs.TraceStage.PRODUCTION_CAPABILITY_RELEASE_STARTED,
         component="conversation.production_capability_release",
     )
     try:
+        from ..oip.modules.conversation.application.production_capability_release_consume_service import (
+            assert_production_capability_release_consume_authority,
+            production_capability_release_consume_observability,
+        )
         from ..oip.modules.conversation.application.production_capability_release_service import (
             assert_production_capability_release_authority,
             attach_production_capability_release_to_request,
@@ -3616,11 +3620,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.production_capability_release_bundle
         assert_production_capability_release_authority(bundle)
+        consume_obs = production_capability_release_consume_observability(
+            updated,
+            allow_cutover=False,
+            allow_traffic=False,
+        )
+        assert_production_capability_release_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             pcr_ev,
             version_map={
-                "production_capability_release": "mai-49.0.1-slice1",
+                "production_capability_release": "mai-49.0.2-slice2",
             },
             safe_attributes={
                 "production_capability_release_status": (
@@ -3636,6 +3646,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "production_capability_release_consume_mode": (
+                    consume_obs.get(
+                        "production_capability_release_consume_mode"
+                    )
+                ),
+                "production_capability_release_consume_ready": bool(
+                    consume_obs.get(
+                        "production_capability_release_consume_ready"
+                    )
+                ),
                 "release_authority_claimed": False,
                 "production_approved": False,
                 "production_capability_released": False,
@@ -3665,6 +3685,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "production_capability_release_consume_mode": (
+                    consume_obs.get(
+                        "production_capability_release_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001
