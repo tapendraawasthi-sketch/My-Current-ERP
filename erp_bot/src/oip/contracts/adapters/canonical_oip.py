@@ -978,17 +978,21 @@ class CanonicalOipRequestAdapter:
                     "load_latency_failover_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-46: backup/restore/disaster/lifecycle policy (never DR proven).
+        # MAI-46: backup/restore/disaster/lifecycle + candidate consume.
         if canonical.backup_restore_disaster_lifecycle_bundle is not None:
             try:
+                from ...modules.conversation.application.backup_restore_disaster_lifecycle_consume_service import (
+                    enrich_brdl_metadata_with_consume,
+                )
                 from ...modules.conversation.application.backup_restore_disaster_lifecycle_service import (
                     backup_restore_disaster_lifecycle_to_metadata,
                 )
 
+                base_meta = backup_restore_disaster_lifecycle_to_metadata(
+                    canonical.backup_restore_disaster_lifecycle_bundle
+                )
                 metadata["backup_restore_disaster_lifecycle"] = (
-                    backup_restore_disaster_lifecycle_to_metadata(
-                        canonical.backup_restore_disaster_lifecycle_bundle
-                    )
+                    enrich_brdl_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 brdl = canonical.backup_restore_disaster_lifecycle_bundle
@@ -1006,6 +1010,10 @@ class CanonicalOipRequestAdapter:
                     "purge_executed": False,
                     "production_dr_approved": False,
                     "gap_p2_008_status": "OPEN",
+                    "backup_restore_disaster_lifecycle_consume_mode": (
+                        "UNCHANGED"
+                    ),
+                    "backup_restore_disaster_lifecycle_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

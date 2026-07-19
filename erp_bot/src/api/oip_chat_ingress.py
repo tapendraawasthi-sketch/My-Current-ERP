@@ -3281,12 +3281,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent SLO pass.
 
-    # MAI-46: backup/restore/disaster/lifecycle policy (never claims DR proven).
+    # MAI-46: backup/restore/disaster/lifecycle + candidate consume.
     brdl_ev = recorder.begin_stage(
         mai03_obs.TraceStage.BACKUP_RESTORE_DISASTER_LIFECYCLE_STARTED,
         component="conversation.backup_restore_disaster_lifecycle",
     )
     try:
+        from ..oip.modules.conversation.application.backup_restore_disaster_lifecycle_consume_service import (
+            assert_backup_restore_disaster_lifecycle_consume_authority,
+            backup_restore_disaster_lifecycle_consume_observability,
+        )
         from ..oip.modules.conversation.application.backup_restore_disaster_lifecycle_service import (
             assert_backup_restore_disaster_lifecycle_authority,
             attach_backup_restore_disaster_lifecycle_to_request,
@@ -3297,11 +3301,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.backup_restore_disaster_lifecycle_bundle
         assert_backup_restore_disaster_lifecycle_authority(bundle)
+        consume_obs = backup_restore_disaster_lifecycle_consume_observability(
+            updated,
+            allow_dr_drill=False,
+            allow_purge_apply=False,
+        )
+        assert_backup_restore_disaster_lifecycle_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             brdl_ev,
             version_map={
-                "backup_restore_disaster_lifecycle": "mai-46.0.1-slice1",
+                "backup_restore_disaster_lifecycle": "mai-46.0.2-slice2",
             },
             safe_attributes={
                 "backup_restore_disaster_lifecycle_status": (
@@ -3317,6 +3327,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "backup_restore_disaster_lifecycle_consume_mode": (
+                    consume_obs.get(
+                        "backup_restore_disaster_lifecycle_consume_mode"
+                    )
+                ),
+                "backup_restore_disaster_lifecycle_consume_ready": bool(
+                    consume_obs.get(
+                        "backup_restore_disaster_lifecycle_consume_ready"
+                    )
+                ),
                 "dr_authority_claimed": False,
                 "backup_proven": False,
                 "restore_proven": False,
@@ -3333,6 +3353,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_dr_drill": False,
+                "allow_purge_apply": False,
             },
         )
         recorder.record_event(
@@ -3348,6 +3370,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "backup_restore_disaster_lifecycle_consume_mode": (
+                    consume_obs.get(
+                        "backup_restore_disaster_lifecycle_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001

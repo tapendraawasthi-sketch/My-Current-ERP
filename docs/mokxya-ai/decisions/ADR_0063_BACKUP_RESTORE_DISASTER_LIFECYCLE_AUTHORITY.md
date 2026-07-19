@@ -1,7 +1,7 @@
 # ADR_0063 — Backup, Restore, Disaster, and Data Lifecycle Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-46-BACKUP-RESTORE-DISASTER-AND-DATA-LIFECYCLE (slice 1)
+- **Phase:** MAI-46-BACKUP-RESTORE-DISASTER-AND-DATA-LIFECYCLE (slice 2)
 - **Extends:** ADR_0001, ADR_0003
 
 ## Context
@@ -33,22 +33,32 @@ approval.
    `purge_executed=false`,
    `production_dr_approved=false`,
    `gap_p2_008_status=OPEN`.
-4. Never invent DR proof, silent purge, or production DR approval from cue
+4. Slice 2: consume builds `backup_restore_disaster_lifecycle_candidate` /
+   `backup_restore_disaster_lifecycle_consume_ready` under default
+   `CANDIDATE_ONLY`. Backup plan, restore runbook, DR plan, RPO/RTO targets,
+   retention schedule, archival plan, purge plan, and definitive answer stay
+   null. Live ingress forces `allow_dr_drill=false` and
+   `allow_purge_apply=false`. Label-only invoke modes exist for unit tests
+   only.
+5. Never invent DR proof, silent purge, or production DR approval from cue
    detection alone.
-5. Engineering-gated: `production_approved=false`.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-45 pilot_slos_met | Perf SLOs must stay unmet |
-| Claim DR proven in slice 1 | Restore drills / owner acceptance required |
+| Claim DR proven in slice 1–2 | Restore drills / owner acceptance required |
+| Live DR drill / purge apply in slice 2 | Authority / honesty risk |
 | Silent purge under lifecycle | Fail-closed; explicit confirmation required |
-| Production DR approval | Residual risk / RPO-RTO proof required |
 | Close GAP-P2-008 | Honesty review still required |
+| Production DR approval | Residual risk / RPO-RTO proof required |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_46_BACKUP_RESTORE_DISASTER_LIFECYCLE.md`
 - `docs/mokxya-ai/baselines/MAI_46_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_46_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/backup_restore_disaster_lifecycle_service.py`
+- `erp_bot/src/oip/modules/conversation/application/backup_restore_disaster_lifecycle_consume_service.py`

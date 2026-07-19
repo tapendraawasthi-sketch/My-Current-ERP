@@ -40,7 +40,7 @@ class BackupRestoreDisasterLifecycleBundleV1(ContractBase):
     analysis_status: BackupRestoreDisasterLifecycleStatus = (
         BackupRestoreDisasterLifecycleStatus.NOT_RUN
     )
-    runtime_version: str = "mai-46.0.1-slice1"
+    runtime_version: str = "mai-46.0.2-slice2"
     source_authority: str = "REQUEST"
     backup_restore_disaster_lifecycle_readiness: (
         BackupRestoreDisasterLifecycleReadiness

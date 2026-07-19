@@ -18,7 +18,7 @@ from ....contracts.backup_restore_disaster_lifecycle import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-46.0.1-slice1"
+RUNTIME_VERSION = "mai-46.0.2-slice2"
 AUTHORITY = "ADR_0063"
 
 _BACKUP = re.compile(

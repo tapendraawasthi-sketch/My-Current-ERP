@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-46",
-  "active_phase_note": "MAI-46 slice 1 IN_PROGRESS (ADR_0063); backup/restore/disaster/lifecycle policy (never DR proven / never silent purge); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-46 slice 2 IN_PROGRESS (ADR_0063); backup/restore/disaster/lifecycle CANDIDATE_ONLY (never DR proven / never silent purge); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3308,19 +3308,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-46.0.1-slice1",
-      "slice": "SLICE1_BACKUP_RESTORE_DISASTER_LIFECYCLE_POLICY",
+      "runtime_version": "mai-46.0.2-slice2",
+      "slice": "SLICE2_BACKUP_RESTORE_DISASTER_LIFECYCLE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_46_BACKUP_RESTORE_DISASTER_LIFECYCLE.md",
         "docs/mokxya-ai/decisions/ADR_0063_BACKUP_RESTORE_DISASTER_LIFECYCLE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_46_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai46/manifests/MAI_46_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_46_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai46/manifests/MAI_46_SLICE1.manifest.json",
+        "evals/mai46/manifests/MAI_46_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "backup_restore_disaster_lifecycle_service.py (policy annotation)",
+        "backup_restore_disaster_lifecycle_consume_service.py (CANDIDATE_ONLY backup_restore_disaster_lifecycle_candidate)",
         "BackupRestoreDisasterLifecycleBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress BACKUP_RESTORE_DISASTER_LIFECYCLE after LOAD_LATENCY_FAILOVER",
-        "release_status=NOT_RELEASED; backup_proven=false; restore_proven=false; disaster_recovery_proven=false; silent_purge_allowed=false; purge_executed=false; production_dr_approved=false; gap_p2_008_status=OPEN"
+        "allow_dr_drill=false; allow_purge_apply=false; release_status=NOT_RELEASED; backup_proven=false; restore_proven=false; disaster_recovery_proven=false; silent_purge_allowed=false; purge_executed=false; production_dr_approved=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3335,7 +3338,7 @@
         "MAI-45"
       ],
       "recommended_order": 46,
-      "closure_note": "Slice 1: backup/restore/disaster/lifecycle POLICY_DECLARED; never DR proven / never silent purge; GAP-P2-008 open."
+      "closure_note": "Slice 2: backup/restore/disaster/lifecycle POLICY + CANDIDATE_ONLY candidates; never DR proven / never silent purge; GAP-P2-008 open."
     },
     {
       "id": "MAI-47",

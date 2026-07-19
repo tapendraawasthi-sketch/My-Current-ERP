@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai46-slice2-v1",
+  "dataset_hash": "4b387aeefcee9f2d79566398eb6315a056d9688243e2ec094f8fc1317e62cb7e",
+  "phase": "MAI-46",
+  "slice": "SLICE2_BACKUP_RESTORE_DISASTER_LIFECYCLE_CANDIDATE_CONSUME",
+  "runtime_version": "mai-46.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai46/frozen/backup_restore_disaster_lifecycle_consume_v1.jsonl",
+      "sha256": "4b387aeefcee9f2d79566398eb6315a056d9688243e2ec094f8fc1317e62cb7e",
+      "case_count": 6,
+      "suite_id": "backup_restore_disaster_lifecycle_consume_v1"
+    }
+  ]
+}
