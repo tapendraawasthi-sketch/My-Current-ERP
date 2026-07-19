@@ -1,0 +1,26 @@
+{
+  "phase": "MAI-50",
+  "slice": "1",
+  "runtime_version": "mai-50.0.1-slice1",
+  "authority": "ADR_0067",
+  "frozen_sets": [
+    {
+      "id": "nepali_english_speech_channel_v1",
+      "path": "evals/mai50/frozen/nepali_english_speech_channel_v1.jsonl",
+      "sha256": "2cfc86377be63ca1b4e8c5f917db150f37fdcf8c9f2613955ccd4a9524710706",
+      "row_count": 6
+    }
+  ],
+  "honesty": {
+    "speech_channel_enabled": false,
+    "asr_live": false,
+    "tts_live": false,
+    "microphone_armed": false,
+    "audio_persisted": false,
+    "transcript_authoritative": false,
+    "voice_channel_released": false,
+    "speech_verified": false,
+    "production_approved": false,
+    "gap_p2_008": "OPEN"
+  }
+}

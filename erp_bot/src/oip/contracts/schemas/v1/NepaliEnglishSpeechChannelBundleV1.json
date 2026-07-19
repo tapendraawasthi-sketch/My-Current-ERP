@@ -1,32 +1,42 @@
 {
   "$defs": {
-    "ProductionCapabilityReleaseReadiness": {
+    "NepaliEnglishSpeechChannelReadiness": {
       "enum": [
         "NOT_APPLICABLE",
         "POLICY_DECLARED",
         "BLOCKED",
         "SCOPE_PARTIAL"
       ],
-      "title": "ProductionCapabilityReleaseReadiness",
+      "title": "NepaliEnglishSpeechChannelReadiness",
       "type": "string"
     },
-    "ProductionCapabilityReleaseStatus": {
+    "NepaliEnglishSpeechChannelStatus": {
       "enum": [
         "NOT_RUN",
         "COMPLETE",
         "SKIP",
         "FAILED"
       ],
-      "title": "ProductionCapabilityReleaseStatus",
+      "title": "NepaliEnglishSpeechChannelStatus",
       "type": "string"
     }
   },
-  "$id": "https://mokxya.local/contracts/v1/ProductionCapabilityReleaseBundleV1.json",
+  "$id": "https://mokxya.local/contracts/v1/NepaliEnglishSpeechChannelBundleV1.json",
   "additionalProperties": false,
   "properties": {
     "analysis_status": {
-      "$ref": "#/$defs/ProductionCapabilityReleaseStatus",
+      "$ref": "#/$defs/NepaliEnglishSpeechChannelStatus",
       "default": "NOT_RUN"
+    },
+    "asr_live": {
+      "default": false,
+      "title": "Asr Live",
+      "type": "boolean"
+    },
+    "audio_persisted": {
+      "default": false,
+      "title": "Audio Persisted",
+      "type": "boolean"
     },
     "claims_verified": {
       "default": false,
@@ -36,11 +46,6 @@
     "current_law_definitive": {
       "default": false,
       "title": "Current Law Definitive",
-      "type": "boolean"
-    },
-    "cutover_authorized": {
-      "default": false,
-      "title": "Cutover Authorized",
       "type": "boolean"
     },
     "documents_retrieved": {
@@ -96,18 +101,22 @@
       "title": "Legal Proof Claimed",
       "type": "boolean"
     },
+    "microphone_armed": {
+      "default": false,
+      "title": "Microphone Armed",
+      "type": "boolean"
+    },
     "mutation_tools_allowed": {
       "default": false,
       "title": "Mutation Tools Allowed",
       "type": "boolean"
     },
-    "owner_signoff_proven": {
-      "default": false,
-      "title": "Owner Signoff Proven",
-      "type": "boolean"
+    "nepali_english_speech_channel_readiness": {
+      "$ref": "#/$defs/NepaliEnglishSpeechChannelReadiness",
+      "default": "NOT_APPLICABLE"
     },
     "pilot_scope": {
-      "default": "PRODUCTION_CAPABILITY_RELEASE_CANDIDATE_ONLY",
+      "default": "NEPALI_ENGLISH_SPEECH_CHANNEL_CANDIDATE_ONLY",
       "title": "Pilot Scope",
       "type": "string"
     },
@@ -122,20 +131,6 @@
       "title": "Production Approved",
       "type": "boolean"
     },
-    "production_capability_release_readiness": {
-      "$ref": "#/$defs/ProductionCapabilityReleaseReadiness",
-      "default": "NOT_APPLICABLE"
-    },
-    "production_capability_released": {
-      "default": false,
-      "title": "Production Capability Released",
-      "type": "boolean"
-    },
-    "production_traffic_enabled": {
-      "default": false,
-      "title": "Production Traffic Enabled",
-      "type": "boolean"
-    },
     "reason_codes": {
       "default": [],
       "items": {
@@ -144,33 +139,13 @@
       "title": "Reason Codes",
       "type": "array"
     },
-    "release_authority_claimed": {
-      "default": false,
-      "title": "Release Authority Claimed",
-      "type": "boolean"
-    },
-    "release_checklist_complete": {
-      "default": false,
-      "title": "Release Checklist Complete",
-      "type": "boolean"
-    },
     "release_status": {
       "default": "NOT_RELEASED",
       "title": "Release Status",
       "type": "string"
     },
-    "residual_risk_accepted": {
-      "default": false,
-      "title": "Residual Risk Accepted",
-      "type": "boolean"
-    },
-    "rollback_proven": {
-      "default": false,
-      "title": "Rollback Proven",
-      "type": "boolean"
-    },
     "runtime_version": {
-      "default": "mai-49.0.2-slice2",
+      "default": "mai-50.0.1-slice1",
       "title": "Runtime Version",
       "type": "string"
     },
@@ -188,6 +163,31 @@
       "title": "Specialist Signoff Status",
       "type": "string"
     },
+    "speech_authority_claimed": {
+      "default": false,
+      "title": "Speech Authority Claimed",
+      "type": "boolean"
+    },
+    "speech_channel_enabled": {
+      "default": false,
+      "title": "Speech Channel Enabled",
+      "type": "boolean"
+    },
+    "speech_verified": {
+      "default": false,
+      "title": "Speech Verified",
+      "type": "boolean"
+    },
+    "transcript_authoritative": {
+      "default": false,
+      "title": "Transcript Authoritative",
+      "type": "boolean"
+    },
+    "tts_live": {
+      "default": false,
+      "title": "Tts Live",
+      "type": "boolean"
+    },
     "unsupported_topics": {
       "default": [],
       "items": {
@@ -195,6 +195,11 @@
       },
       "title": "Unsupported Topics",
       "type": "array"
+    },
+    "voice_channel_released": {
+      "default": false,
+      "title": "Voice Channel Released",
+      "type": "boolean"
     },
     "warnings": {
       "default": [],
@@ -205,7 +210,7 @@
       "type": "array"
     }
   },
-  "title": "ProductionCapabilityReleaseBundleV1",
+  "title": "NepaliEnglishSpeechChannelBundleV1",
   "type": "object",
   "x-mai-schema-version": "1.0.0"
 }

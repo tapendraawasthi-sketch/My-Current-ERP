@@ -64,6 +64,9 @@ from .governed_improvement_fine_tuning import (
 from .production_capability_release import (
     ProductionCapabilityReleaseBundleV1,
 )
+from .nepali_english_speech_channel import (
+    NepaliEnglishSpeechChannelBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -280,6 +283,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-49: production capability release (never claims production approved).
     production_capability_release_bundle: (
         ProductionCapabilityReleaseBundleV1 | None
+    ) = None
+    # MAI-50: Nepali/English speech channel (never enables live speech).
+    nepali_english_speech_channel_bundle: (
+        NepaliEnglishSpeechChannelBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

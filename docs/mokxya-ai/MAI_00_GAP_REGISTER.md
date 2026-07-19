@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–48 `PASSED_ENGINEERING`. MAI-49 slice 2 consumes production capability release into `CANDIDATE_ONLY` candidates (`allow_cutover=false`, `allow_traffic=false`, `release_status=NOT_RELEASED`, `production_approved=false`, `production_capability_released=false`, `release_checklist_complete=false`, `residual_risk_accepted=false`, `owner_signoff_proven=false`, `cutover_authorized=false`, `production_traffic_enabled=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–49 `PASSED_ENGINEERING`. MAI-50 slice 1 declares Nepali/English speech channel policy only (`release_status=NOT_RELEASED`, `speech_channel_enabled=false`, `asr_live=false`, `tts_live=false`, `microphone_armed=false`, `audio_persisted=false`, `transcript_authoritative=false`, `voice_channel_released=false`, `speech_verified=false`, `production_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

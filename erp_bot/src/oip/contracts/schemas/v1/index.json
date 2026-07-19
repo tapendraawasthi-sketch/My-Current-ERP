@@ -59,6 +59,7 @@
     "HumanReviewPilotOperationsBundleV1",
     "GovernedImprovementFineTuningBundleV1",
     "ProductionCapabilityReleaseBundleV1",
+    "NepaliEnglishSpeechChannelBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

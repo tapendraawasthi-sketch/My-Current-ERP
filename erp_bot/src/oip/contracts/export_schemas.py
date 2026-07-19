@@ -103,6 +103,9 @@ from .governed_improvement_fine_tuning import (
 from .production_capability_release import (
     ProductionCapabilityReleaseBundleV1,
 )
+from .nepali_english_speech_channel import (
+    NepaliEnglishSpeechChannelBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -210,6 +213,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "ProductionCapabilityReleaseBundleV1",
         ProductionCapabilityReleaseBundleV1,
+    ),
+    (
+        "NepaliEnglishSpeechChannelBundleV1",
+        NepaliEnglishSpeechChannelBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

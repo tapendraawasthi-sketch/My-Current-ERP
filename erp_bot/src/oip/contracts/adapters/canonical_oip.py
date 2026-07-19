@@ -1122,6 +1122,35 @@ class CanonicalOipRequestAdapter:
                     "production_capability_release_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-50: Nepali/English speech channel (never enables live speech).
+        if canonical.nepali_english_speech_channel_bundle is not None:
+            try:
+                from ...modules.conversation.application.nepali_english_speech_channel_service import (
+                    nepali_english_speech_channel_to_metadata,
+                )
+
+                metadata["nepali_english_speech_channel"] = (
+                    nepali_english_speech_channel_to_metadata(
+                        canonical.nepali_english_speech_channel_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                speech = canonical.nepali_english_speech_channel_bundle
+                metadata["nepali_english_speech_channel"] = {
+                    "analysis_status": speech.analysis_status.value,
+                    "runtime_version": speech.runtime_version,
+                    "nepali_english_speech_channel_readiness": (
+                        speech.nepali_english_speech_channel_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "speech_channel_enabled": False,
+                    "asr_live": False,
+                    "tts_live": False,
+                    "microphone_armed": False,
+                    "production_approved": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

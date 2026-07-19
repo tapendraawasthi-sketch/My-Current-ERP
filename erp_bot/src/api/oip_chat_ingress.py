@@ -3704,6 +3704,86 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent production approved.
 
+    # MAI-50: Nepali/English speech channel (never enables live speech).
+    speech_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.NEPALI_ENGLISH_SPEECH_CHANNEL_STARTED,
+        component="conversation.nepali_english_speech_channel",
+    )
+    try:
+        from ..oip.modules.conversation.application.nepali_english_speech_channel_service import (
+            assert_nepali_english_speech_channel_authority,
+            attach_nepali_english_speech_channel_to_request,
+        )
+
+        updated = attach_nepali_english_speech_channel_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.nepali_english_speech_channel_bundle
+        assert_nepali_english_speech_channel_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            speech_ev,
+            version_map={
+                "nepali_english_speech_channel": "mai-50.0.1-slice1",
+            },
+            safe_attributes={
+                "nepali_english_speech_channel_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "nepali_english_speech_channel_readiness": (
+                    bundle.nepali_english_speech_channel_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "NEPALI_ENGLISH_SPEECH_CHANNEL_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "speech_authority_claimed": False,
+                "speech_channel_enabled": False,
+                "asr_live": False,
+                "tts_live": False,
+                "microphone_armed": False,
+                "audio_persisted": False,
+                "transcript_authoritative": False,
+                "voice_channel_released": False,
+                "speech_verified": False,
+                "production_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.NEPALI_ENGLISH_SPEECH_CHANNEL_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            speech_ev,
+            safe_error_code="NEPALI_ENGLISH_SPEECH_CHANNEL_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.NEPALI_ENGLISH_SPEECH_CHANNEL_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="NEPALI_ENGLISH_SPEECH_CHANNEL_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent live speech.
+
     return canonical
 
 

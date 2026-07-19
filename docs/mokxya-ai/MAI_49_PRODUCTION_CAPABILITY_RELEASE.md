@@ -1,7 +1,7 @@
 # MAI-49 — Production Capability Release
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0066](decisions/ADR_0066_PRODUCTION_CAPABILITY_RELEASE_AUTHORITY.md)  
 **Runtime:** `mai-49.0.2-slice2` (engineering; not production-approved)
 
