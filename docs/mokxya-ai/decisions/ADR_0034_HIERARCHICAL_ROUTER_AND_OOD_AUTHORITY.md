@@ -1,7 +1,7 @@
 # ADR_0034 — Hierarchical Router and OOD Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-17-HIERARCHICAL-ROUTER-AND-OOD (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-17-HIERARCHICAL-ROUTER-AND-OOD (slice 2)
 - **Extends:** ADR_0001, ADR_0033
 
 ## Context
@@ -18,9 +18,10 @@ here.
    `CanonicalAIRequestV1`.
 2. Slice 1: annotation-only after MAI-16 context assembly; wraps
    `classify_operation` + concept bridge as evidence; `is_execution_authority=false`.
-3. Slice 2 (later): consume OOD abstain / family gate into mode_aware /
-   preprocess — never silent draft writes.
-4. Does not replace OIP provider `RouterService` or planner pipeline in slice 1.
+3. Slice 2: consume OOD abstain into `mode_aware` / preprocess — clarify
+   response, no draft mutations; pending clarify + allow-merge turn-relation
+   is never blocked; soft `is_ood` only blocks mutating operation classes.
+4. Does not replace OIP provider `RouterService` or planner pipeline.
 5. Gaps GAP-P1-004 / GAP-P1-008 stay REDUCED.
 6. Engineering-gated: `production_approved=false`.
 

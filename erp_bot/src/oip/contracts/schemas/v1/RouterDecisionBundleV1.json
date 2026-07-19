@@ -251,7 +251,7 @@
       "type": "array"
     },
     "classifier_version": {
-      "default": "mai-17.0.1-slice1",
+      "default": "mai-17.0.2-slice2",
       "title": "Classifier Version",
       "type": "string"
     },
@@ -320,7 +320,7 @@
       "type": "number"
     },
     "runtime_version": {
-      "default": "mai-17.0.1-slice1",
+      "default": "mai-17.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

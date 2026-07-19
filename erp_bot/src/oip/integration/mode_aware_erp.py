@@ -128,6 +128,7 @@ def handle_mode_aware_erp(
     recent_parties: list[str] | None = None,
     turn_relation: dict[str, Any] | None = None,
     reference_coreference: dict[str, Any] | None = None,
+    router_decision: dict[str, Any] | None = None,
 ) -> ModeAwareResult | None:
     """Return a deterministic result when mode/classification handles the turn.
 
@@ -326,6 +327,61 @@ def handle_mode_aware_erp(
     field_overrides: dict[str, Any] = {}
     if correction_overlay.get("total_amount") is not None:
         field_overrides = {"total_amount": correction_overlay["total_amount"]}
+
+    # MAI-17 slice 2: OOD abstain / family gate — clarify; never silent draft writes.
+    try:
+        from ..modules.conversation.application.hierarchical_router_service import (
+            router_abstain_user_message,
+            should_abstain_router_decision,
+        )
+
+        pending_clarify = (
+            pending is not None
+            and getattr(pending, "status", None) == "awaiting_clarification"
+        )
+        if should_abstain_router_decision(
+            router_decision,
+            has_pending_clarify=pending_clarify,
+            turn_relation=turn_relation,
+            operation_class=op.value if op is not None else None,
+        ):
+            return ModeAwareResult(
+                skip_llm=True,
+                text=router_abstain_user_message(router_decision),
+                intent="router_ood_abstain",
+                method="mai17_router_ood_gate",
+                operation_class=OperationClass.GENERAL_QUESTION.value,
+                orbix_mode=mode,
+                capabilities=caps.to_dict(),
+                error={
+                    "code": "ROUTER_OOD_ABSTAIN",
+                    "ood": (router_decision or {}).get("ood")
+                    if isinstance(router_decision, dict)
+                    else None,
+                    "domain": (router_decision or {}).get("domain")
+                    if isinstance(router_decision, dict)
+                    else None,
+                    "intent_family": (router_decision or {}).get("intent_family")
+                    if isinstance(router_decision, dict)
+                    else None,
+                },
+            )
+    except Exception:  # noqa: BLE001
+        # Fail closed only when metadata was provided.
+        if router_decision is not None:
+            return ModeAwareResult(
+                skip_llm=True,
+                text=(
+                    "I could not map that to a clear ERP action. "
+                    "Please rephrase your request."
+                ),
+                intent="router_ood_abstain",
+                method="mai17_router_ood_gate",
+                operation_class=OperationClass.GENERAL_QUESTION.value,
+                orbix_mode=mode,
+                capabilities=caps.to_dict(),
+                error={"code": "ROUTER_OOD_GATE_FAILED"},
+            )
 
     # Phase 10 bank recon explanations - before settlement, never mutate
     if is_bank_recon_explanation_query(message):

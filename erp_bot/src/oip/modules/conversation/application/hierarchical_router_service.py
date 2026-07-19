@@ -1,13 +1,14 @@
-"""MAI-17 slice 1 — hierarchical router + OOD annotation.
+"""MAI-17 — hierarchical router + OOD.
 
-Deterministic domain → intent_family → OOD signal on CanonicalAIRequestV1.
-Never posts, never merges drafts, never grants execution authority.
+Slice 1: annotate domain → intent_family → OOD on CanonicalAIRequestV1.
+Slice 2: consume abstain into mode_aware (clarify; never silent draft writes).
+Never posts, never grants execution authority.
 Wraps operation_classifier + domain concept bridge as evidence only.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.dialogue import (
     ContractStatus,
@@ -27,7 +28,18 @@ from ....contracts.router_decision import (
     RouterDomain,
 )
 
-RUNTIME_VERSION = "mai-17.0.1-slice1"
+RUNTIME_VERSION = "mai-17.0.2-slice2"
+
+_MUTATING_OP_CLASSES = frozenset(
+    {
+        "transaction_create",
+        "transaction_modify",
+        "transaction_reverse",
+        "master_data_create",
+        "master_data_modify",
+        "confirmation",
+    }
+)
 
 _OOD_IS_THRESHOLD = 0.70
 _OOD_ABSTAIN_THRESHOLD = 0.75
@@ -326,3 +338,85 @@ def router_decision_to_metadata(
         "draft_mutations": bundle.draft_mutations,
         "is_execution_authority": False,
     }
+
+
+def _ood_from_meta(router_decision: Mapping[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(router_decision, Mapping):
+        return {}
+    ood = router_decision.get("ood")
+    return dict(ood) if isinstance(ood, Mapping) else {}
+
+
+def should_abstain_router_decision(
+    router_decision: Mapping[str, Any] | None,
+    *,
+    has_pending_clarify: bool = False,
+    turn_relation: Mapping[str, Any] | None = None,
+    operation_class: str | None = None,
+) -> bool:
+    """Return True when mode_aware must clarify and not mutate drafts.
+
+    ``router_decision=None`` keeps legacy behavior (no gate).
+    Pending clarification with allow-merge turn-relation is never blocked.
+    """
+    if not isinstance(router_decision, Mapping):
+        return False
+
+    if has_pending_clarify:
+        try:
+            from .turn_relation_service import allows_pending_merge
+
+            if allows_pending_merge(turn_relation):
+                return False
+        except Exception:  # noqa: BLE001
+            # Fail closed: with pending + broken gate helper, still allow
+            # clarification path (prefer draft continuity over hard abstain).
+            if turn_relation is None:
+                return False
+
+    ood = _ood_from_meta(router_decision)
+    if not ood.get("abstain_recommended") and not ood.get("is_ood"):
+        return False
+
+    family = str(router_decision.get("intent_family") or "UNKNOWN")
+    # Dialogue families on grounded turns are not OOD-blocked.
+    if family in {"CLARIFY", "CONFIRM", "CANCEL"} and has_pending_clarify:
+        return False
+
+    if ood.get("abstain_recommended"):
+        return True
+
+    # Soft OOD: only block mutating operation classes.
+    op = (operation_class or router_decision.get("operation_class") or "").lower()
+    return bool(ood.get("is_ood") and op in _MUTATING_OP_CLASSES)
+
+
+def router_abstain_user_message(
+    router_decision: Mapping[str, Any] | None = None,
+) -> str:
+    domain = ""
+    family = ""
+    if isinstance(router_decision, Mapping):
+        domain = str(router_decision.get("domain") or "")
+        family = str(router_decision.get("intent_family") or "")
+    base = (
+        "I could not map that to a clear ERP action. "
+        "Please rephrase as a purchase, sale, payment, receipt, report, "
+        "or party balance query."
+    )
+    if domain or family:
+        return f"{base} (router: {domain or '-'} / {family or '-'})"
+    return base
+
+
+def select_family_operation_hint(
+    router_decision: Mapping[str, Any] | None,
+) -> str | None:
+    """Optional family hint for observability; never execution authority."""
+    if not isinstance(router_decision, Mapping):
+        return None
+    family = str(router_decision.get("intent_family") or "")
+    hint = router_decision.get("intent_hint")
+    if family and family != "UNKNOWN":
+        return f"{family}:{hint or ''}".rstrip(":")
+    return None

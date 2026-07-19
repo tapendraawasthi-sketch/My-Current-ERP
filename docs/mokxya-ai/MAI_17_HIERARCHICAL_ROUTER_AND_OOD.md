@@ -1,9 +1,9 @@
 # MAI-17 — Hierarchical Router and OOD
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0034](decisions/ADR_0034_HIERARCHICAL_ROUTER_AND_OOD_AUTHORITY.md)  
-**Runtime:** `mai-17.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-17.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -18,20 +18,23 @@ granting execution authority or mutating drafts.
 3. Ingress `ROUTING_*` after CONTEXT_ASSEMBLY; metadata `router_decision`
 4. Candidates / OOD annotation only; never posts or merges
 
-## Slice 2 (planned)
+## Slice 2
 
-1. Consume high-OOD / abstain into mode_aware / preprocess clarify path
-2. Optional family gate beside flat operation classification
-3. Still no silent draft writes
+1. Forward `metadata.router_decision` into preprocess / mode_aware
+2. `should_abstain_router_decision` → clarify `ModeAwareResult` (no drafts)
+3. Pending clarify + allow-merge turn-relation never blocked
+4. Soft `is_ood` without abstain only blocks mutating op classes
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Purchase / sale create cue | `ERP_OPS` + `TRANSACTION`, not OOD |
+| Purchase / sale create cue | `ERP_OPS` + `TRANSACTION`, not OOD; proceeds |
 | Balance sheet | `REPORTING` + `REPORT` |
-| Gibberish / weak fallthrough | `is_ood=true` |
-| ANSWER_CLARIFICATION + short answer | `CLARIFY`, OOD reduced |
+| Gibberish / weak fallthrough | abstain clarify; no draft |
+| Soft OOD + transaction_create | abstain |
+| Soft OOD + general_question | no abstain |
+| Pending clarify + ANSWER_CLARIFICATION | never abstain |
 | Any route | `is_execution_authority=false` |
 
 ## Non-goals

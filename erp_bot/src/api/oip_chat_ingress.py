@@ -1030,7 +1030,7 @@ async def build_canonical_ai_request(
             outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
             component_versions={
                 "hierarchical_router": (
-                    bundle.runtime_version if bundle else "mai-17.0.1-slice1"
+                    bundle.runtime_version if bundle else "mai-17.0.2-slice2"
                 ),
             },
             safe_attributes={

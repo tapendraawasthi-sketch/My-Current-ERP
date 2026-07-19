@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai17-slice2-v1",
+  "dataset_hash": "faec9cc835bb14b392aea34f0fa4289626c6c3ecbb0d370d5e1bc1197dc8a9c6",
+  "phase": "MAI-17",
+  "slice": "SLICE2_OOD_ABSTAIN_GATE",
+  "runtime_version": "mai-17.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai17/frozen/router_ood_gate_v1.jsonl",
+      "sha256": "faec9cc835bb14b392aea34f0fa4289626c6c3ecbb0d370d5e1bc1197dc8a9c6",
+      "case_count": 6,
+      "suite_id": "router_ood_gate_v1"
+    }
+  ]
+}

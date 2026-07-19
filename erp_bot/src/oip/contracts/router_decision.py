@@ -49,7 +49,7 @@ class OodSignalV1(ContractBase):
 class RouterDecisionBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: RouterAnalysisStatus = RouterAnalysisStatus.NOT_RUN
-    runtime_version: str = "mai-17.0.1-slice1"
+    runtime_version: str = "mai-17.0.2-slice2"
     source_authority: str = "REQUEST"
     domain: RouterDomain = RouterDomain.UNKNOWN
     intent_family: IntentFamily = IntentFamily.UNKNOWN
@@ -58,7 +58,7 @@ class RouterDecisionBundleV1(ContractBase):
     operation_confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     candidates: tuple[IntentCandidateV1, ...] = ()
     ood: OodSignalV1 = Field(default_factory=OodSignalV1)
-    classifier_version: str = "mai-17.0.1-slice1"
+    classifier_version: str = "mai-17.0.2-slice2"
     concept_ids: tuple[str, ...] = ()
     warnings: tuple[str, ...] = ()
     error_codes: tuple[str, ...] = ()
