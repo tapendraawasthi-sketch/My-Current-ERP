@@ -1245,7 +1245,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             cp_ev,
             version_map={
-                "clarification_plan": "mai-20.0.1-slice1",
+                "clarification_plan": "mai-20.0.2-slice2",
             },
             safe_attributes={
                 "clarification_status": (

@@ -1,13 +1,12 @@
-"""MAI-20 slice 1 — information-gain clarification plan from EventFrame.
+"""MAI-20 — information-gain clarification plan from EventFrame.
 
-Annotation only: ranks missing/ambiguous fields and drafts one question.
-Does not mutate drafts, post, or become execution authority.
-Consume/surface to the user is MAI-20 slice 2.
+Slice 1: rank missing/ambiguous fields and draft one question (annotation).
+Slice 2: surface ASK plans in mode_aware — never silent draft writes.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.clarification_plan import (
     ClarificationPlanBundleV1,
@@ -18,7 +17,7 @@ from ....contracts.clarification_plan import (
 from ....contracts.event_frame import FrameStatus
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-20.0.1-slice1"
+RUNTIME_VERSION = "mai-20.0.2-slice2"
 AUTHORITY = "ADR_0037"
 
 # Higher information-gain first within each kind. Ambiguous always outranks
@@ -194,10 +193,58 @@ def clarification_plan_to_metadata(
     }
 
 
+def should_surface_clarification_plan(
+    clarification_plan: Mapping[str, Any] | None,
+    *,
+    has_pending_clarify: bool = False,
+    turn_relation: Mapping[str, Any] | None = None,
+) -> bool:
+    """Return True when mode_aware must ask and not mutate drafts.
+
+    ``clarification_plan=None`` keeps legacy behavior (no gate).
+    Pending clarification with allow-merge turn-relation is never blocked.
+    """
+    if not isinstance(clarification_plan, Mapping):
+        return False
+
+    if has_pending_clarify:
+        try:
+            from .turn_relation_service import allows_pending_merge
+
+            if allows_pending_merge(turn_relation):
+                return False
+        except Exception:  # noqa: BLE001
+            if turn_relation is None:
+                return False
+
+    status = str(clarification_plan.get("analysis_status") or "")
+    if status != ClarificationPlanStatus.ASK.value:
+        return False
+    return bool(
+        clarification_plan.get("question_text")
+        or clarification_plan.get("primary_field")
+    )
+
+
+def clarification_plan_user_message(
+    clarification_plan: Mapping[str, Any] | None = None,
+) -> str:
+    if isinstance(clarification_plan, Mapping):
+        q = clarification_plan.get("question_text")
+        if q:
+            return str(q)
+        primary = clarification_plan.get("primary_field")
+        if primary:
+            return _question_for(str(primary))
+    return "Please provide the missing details to continue."
+
+
 __all__ = [
     "AUTHORITY",
     "RUNTIME_VERSION",
     "attach_clarification_plan_to_request",
     "build_clarification_plan_bundle",
     "clarification_plan_to_metadata",
+    "clarification_plan_user_message",
+    "should_surface_clarification_plan",
 ]

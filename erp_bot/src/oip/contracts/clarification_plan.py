@@ -33,7 +33,7 @@ class ClarificationTargetV1(ContractBase):
 class ClarificationPlanBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: ClarificationPlanStatus = ClarificationPlanStatus.NOT_RUN
-    runtime_version: str = "mai-20.0.1-slice1"
+    runtime_version: str = "mai-20.0.2-slice2"
     source_authority: str = "REQUEST"
     event_type: str | None = None
     frame_status: str | None = None

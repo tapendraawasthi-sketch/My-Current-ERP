@@ -1,7 +1,7 @@
 # ADR_0037 — Information-Gain Clarification Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-20-INFORMATION-GAIN-CLARIFICATION (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-20-INFORMATION-GAIN-CLARIFICATION (slice 2)
 - **Extends:** ADR_0001, ADR_0036
 
 ## Context
@@ -19,9 +19,10 @@ must rank questions by information gain without becoming posting authority.
    `is_execution_authority=false`; `silent_applications=0`; `draft_mutations=0`.
 3. Ambiguous fields (e.g. qty-unit) outrank missing required so numbers are
    never silently treated as money.
-4. Slice 2 (later): consume/surface the plan in response path; may bridge
-   legacy `clarification_message` helpers as non-authoritative presentation.
-5. Does not call `start_or_merge_*` / `save_draft` from this path.
+4. Slice 2: consume/surface ASK plans in `mode_aware_erp` (`skip_llm` +
+   question); pending clarify + allow-merge never blocked; legacy
+   `clarification_message` remains non-authoritative presentation for drafts.
+5. Does not call `start_or_merge_*` / `save_draft` from the plan gate path.
 6. Gaps GAP-P1-004 / GAP-P1-008 stay REDUCED.
 7. Engineering-gated: `production_approved=false`.
 

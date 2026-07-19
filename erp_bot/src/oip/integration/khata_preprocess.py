@@ -69,6 +69,7 @@ def preprocess_erp_message(
     turn_relation: dict[str, Any] | None = None,
     reference_coreference: dict[str, Any] | None = None,
     router_decision: dict[str, Any] | None = None,
+    clarification_plan: dict[str, Any] | None = None,
 ) -> ErpPreprocessResult | None:
     """Parse ERP transactions deterministically. Returns None for non-ERP chat."""
     stripped = (text or "").strip()
@@ -110,6 +111,7 @@ def preprocess_erp_message(
         turn_relation=turn_relation,
         reference_coreference=reference_coreference,
         router_decision=router_decision,
+        clarification_plan=clarification_plan,
     )
     if mode_result is not None and mode_result.skip_llm:
         return ErpPreprocessResult(

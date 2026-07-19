@@ -129,6 +129,7 @@ def handle_mode_aware_erp(
     turn_relation: dict[str, Any] | None = None,
     reference_coreference: dict[str, Any] | None = None,
     router_decision: dict[str, Any] | None = None,
+    clarification_plan: dict[str, Any] | None = None,
 ) -> ModeAwareResult | None:
     """Return a deterministic result when mode/classification handles the turn.
 
@@ -381,6 +382,62 @@ def handle_mode_aware_erp(
                 orbix_mode=mode,
                 capabilities=caps.to_dict(),
                 error={"code": "ROUTER_OOD_GATE_FAILED"},
+            )
+
+    # MAI-20 slice 2: surface EventFrame clarification plan — ask; no draft writes.
+    try:
+        from ..modules.conversation.application.clarification_plan_service import (
+            clarification_plan_user_message,
+            should_surface_clarification_plan,
+        )
+
+        pending_clarify = (
+            pending is not None
+            and getattr(pending, "status", None) == "awaiting_clarification"
+        )
+        if should_surface_clarification_plan(
+            clarification_plan,
+            has_pending_clarify=pending_clarify,
+            turn_relation=turn_relation,
+        ):
+            plan = clarification_plan if isinstance(clarification_plan, dict) else {}
+            return ModeAwareResult(
+                skip_llm=True,
+                text=clarification_plan_user_message(clarification_plan),
+                intent="event_frame_clarification",
+                method="mai20_clarification_plan_gate",
+                operation_class=OperationClass.CLARIFICATION_REPLY.value,
+                orbix_mode=mode,
+                capabilities=caps.to_dict(),
+                error={
+                    "type": "clarification_required",
+                    "code": "CLARIFICATION_PLAN_ASK",
+                    "primary_field": plan.get("primary_field"),
+                    "missing_fields": list(
+                        plan.get("remaining_missing_required") or []
+                    ),
+                    "ambiguous_fields": list(
+                        plan.get("remaining_ambiguous") or []
+                    ),
+                    "event_type": plan.get("event_type"),
+                    "nothing_posted": True,
+                },
+            )
+    except Exception:  # noqa: BLE001
+        if clarification_plan is not None:
+            return ModeAwareResult(
+                skip_llm=True,
+                text="Please provide the missing details to continue.",
+                intent="event_frame_clarification",
+                method="mai20_clarification_plan_gate",
+                operation_class=OperationClass.GENERAL_QUESTION.value,
+                orbix_mode=mode,
+                capabilities=caps.to_dict(),
+                error={
+                    "type": "clarification_required",
+                    "code": "CLARIFICATION_PLAN_GATE_FAILED",
+                    "nothing_posted": True,
+                },
             )
 
     # Phase 10 bank recon explanations - before settlement, never mutate
