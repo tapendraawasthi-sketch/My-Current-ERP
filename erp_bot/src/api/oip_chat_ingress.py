@@ -2990,12 +2990,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent judicial authority.
 
-    # MAI-43: continuous change intelligence policy (never production truth).
+    # MAI-43: continuous change intelligence + candidate consume.
     cci_ev = recorder.begin_stage(
         mai03_obs.TraceStage.CONTINUOUS_CHANGE_INTELLIGENCE_STARTED,
         component="conversation.continuous_change_intelligence",
     )
     try:
+        from ..oip.modules.conversation.application.continuous_change_intelligence_consume_service import (
+            assert_continuous_change_consume_authority,
+            continuous_change_consume_observability,
+        )
         from ..oip.modules.conversation.application.continuous_change_intelligence_service import (
             assert_continuous_change_intelligence_authority,
             attach_continuous_change_intelligence_to_request,
@@ -3006,11 +3010,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.continuous_change_intelligence_bundle
         assert_continuous_change_intelligence_authority(bundle)
+        consume_obs = continuous_change_consume_observability(
+            updated,
+            allow_change_apply=False,
+            allow_cache_invalidate=False,
+        )
+        assert_continuous_change_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             cci_ev,
             version_map={
-                "continuous_change_intelligence": "mai-43.0.1-slice1",
+                "continuous_change_intelligence": "mai-43.0.2-slice2",
             },
             safe_attributes={
                 "continuous_change_status": (
@@ -3022,6 +3032,12 @@ async def build_canonical_ai_request(
                 "pilot_scope": "CONTINUOUS_CHANGE_CANDIDATE_ONLY",
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "continuous_change_consume_mode": consume_obs.get(
+                    "continuous_change_consume_mode"
+                ),
+                "continuous_change_consume_ready": bool(
+                    consume_obs.get("continuous_change_consume_ready")
+                ),
                 "continuous_change_authority_claimed": False,
                 "unreviewed_as_production_truth": False,
                 "cache_invalidated": False,
@@ -3036,6 +3052,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_change_apply": False,
+                "allow_cache_invalidate": False,
             },
         )
         recorder.record_event(
@@ -3051,6 +3069,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "continuous_change_consume_mode": consume_obs.get(
+                    "continuous_change_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

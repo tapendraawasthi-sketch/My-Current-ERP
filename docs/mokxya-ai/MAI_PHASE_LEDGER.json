@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-43",
-  "active_phase_note": "MAI-43 slice 1 IN_PROGRESS (ADR_0060); continuous-change intelligence policy (never production truth); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-43 slice 2 IN_PROGRESS (ADR_0060); continuous-change-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3188,19 +3188,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-43.0.1-slice1",
-      "slice": "SLICE1_CONTINUOUS_CHANGE_POLICY",
+      "runtime_version": "mai-43.0.2-slice2",
+      "slice": "SLICE2_CONTINUOUS_CHANGE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_43_CONTINUOUS_CHANGE_INTELLIGENCE.md",
         "docs/mokxya-ai/decisions/ADR_0060_CONTINUOUS_CHANGE_INTELLIGENCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_43_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai43/manifests/MAI_43_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_43_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai43/manifests/MAI_43_SLICE1.manifest.json",
+        "evals/mai43/manifests/MAI_43_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "continuous_change_intelligence_service.py (policy annotation)",
+        "continuous_change_intelligence_consume_service.py (CANDIDATE_ONLY continuous_change_candidate)",
         "ContinuousChangeIntelligenceBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress CONTINUOUS_CHANGE_INTELLIGENCE after JUDICIAL_DECISION_INTELLIGENCE",
-        "release_status=NOT_RELEASED; unreviewed_as_production_truth=false; cache_invalidated=false; change_applied=false; legal_effective_dates_proven=false; gap_p2_008_status=OPEN"
+        "allow_change_apply=false; allow_cache_invalidate=false; release_status=NOT_RELEASED; change_applied=false; unreviewed_as_production_truth=false; legal_effective_dates_proven=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3215,7 +3218,7 @@
         "MAI-42"
       ],
       "recommended_order": 43,
-      "closure_note": "Slice 1: continuous-change POLICY_DECLARED; never apply/unreviewed-as-truth; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY continuous-change candidates; never apply; GAP-P2-008 open."
     },
     {
       "id": "MAI-44",

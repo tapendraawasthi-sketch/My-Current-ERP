@@ -22,7 +22,7 @@ from ....contracts.legal_question_research import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-43.0.1-slice1"
+RUNTIME_VERSION = "mai-43.0.2-slice2"
 AUTHORITY = "ADR_0060"
 
 _AMENDMENT = re.compile(r"\b(?:amendment|संशोधन)\b", re.I)

@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai43-slice2-v1",
+  "dataset_hash": "65a110a95d659d6f406aef18f2ac9132d144efeba0e5b4087352d6dd80c5c5de",
+  "phase": "MAI-43",
+  "slice": "SLICE2_CONTINUOUS_CHANGE_CANDIDATE_CONSUME",
+  "runtime_version": "mai-43.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai43/frozen/continuous_change_consume_v1.jsonl",
+      "sha256": "65a110a95d659d6f406aef18f2ac9132d144efeba0e5b4087352d6dd80c5c5de",
+      "case_count": 6,
+      "suite_id": "continuous_change_consume_v1"
+    }
+  ]
+}

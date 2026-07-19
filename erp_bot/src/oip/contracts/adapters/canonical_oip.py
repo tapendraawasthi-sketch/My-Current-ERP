@@ -874,17 +874,21 @@ class CanonicalOipRequestAdapter:
                     "judicial_decision_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-43: continuous change intelligence policy (never production truth).
+        # MAI-43: continuous change intelligence + candidate consume.
         if canonical.continuous_change_intelligence_bundle is not None:
             try:
+                from ...modules.conversation.application.continuous_change_intelligence_consume_service import (
+                    enrich_cci_metadata_with_consume,
+                )
                 from ...modules.conversation.application.continuous_change_intelligence_service import (
                     continuous_change_intelligence_to_metadata,
                 )
 
+                base_meta = continuous_change_intelligence_to_metadata(
+                    canonical.continuous_change_intelligence_bundle
+                )
                 metadata["continuous_change_intelligence"] = (
-                    continuous_change_intelligence_to_metadata(
-                        canonical.continuous_change_intelligence_bundle
-                    )
+                    enrich_cci_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 cci = canonical.continuous_change_intelligence_bundle
@@ -901,6 +905,8 @@ class CanonicalOipRequestAdapter:
                     "change_applied": False,
                     "legal_effective_dates_proven": False,
                     "gap_p2_008_status": "OPEN",
+                    "continuous_change_consume_mode": "UNCHANGED",
+                    "continuous_change_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

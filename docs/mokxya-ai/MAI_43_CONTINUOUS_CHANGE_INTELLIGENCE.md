@@ -1,9 +1,9 @@
 # MAI-43 — Continuous Change Intelligence
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0060](decisions/ADR_0060_CONTINUOUS_CHANGE_INTELLIGENCE_AUTHORITY.md)  
-**Runtime:** `mai-43.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-43.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -23,11 +23,20 @@ production truth, or proving effective dates.
    `change_applied=false`; `legal_effective_dates_proven=false`
 7. GAP-P2-008 OPEN
 
+## Slice 2
+
+1. `resolve_continuous_change_consume_mode` / `build_continuous_change_candidate`
+2. Default `CANDIDATE_ONLY` — change refs / impact / queue / cache / rollback / definitive null
+3. Fake apply claim → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_change_apply=false` / `allow_cache_invalidate=false`
+5. Metadata: `continuous_change_consume_ready` + `continuous_change_candidate`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Amendment / gazette / circular / effective-date / rate cues | COMPLETE → `POLICY_DECLARED` |
+| Amendment / gazette / circular / effective-date / rate cues | COMPLETE → `CANDIDATE_ONLY` |
+| Fake change-applied claim | `BLOCKED` |
 | VAT-only / purchase / court-only without change cues | SKIP |
 | Any live path | never apply/invalidate as truth; GAP-P2-008 OPEN |
 

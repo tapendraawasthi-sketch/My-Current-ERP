@@ -1,7 +1,7 @@
 # ADR_0060 — Continuous Change Intelligence Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-43-CONTINUOUS-CHANGE-INTELLIGENCE (slice 1)
+- **Phase:** MAI-43-CONTINUOUS-CHANGE-INTELLIGENCE (slice 2)
 - **Extends:** ADR_0001, ADR_0053, ADR_0059
 
 ## Context
@@ -34,14 +34,21 @@ or production-truth claim. GAP-P2-008 and unproven effective dates remain open.
    `gap_p2_008_status=OPEN`.
 4. Never treat unreviewed detections as production truth, apply amendments,
    or prove effective dates.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `continuous_change_candidate` /
+   `continuous_change_consume_mode` (`CANDIDATE_ONLY` default for
+   POLICY_DECLARED / SCOPE_PARTIAL; `BLOCKED` for fake authority;
+   `SKIP` for non-pilot). Live path forces `allow_change_apply=false`
+   and `allow_cache_invalidate=false` — does **not** apply changes
+   or invalidate caches as production side-effects. GAP-P2-008 stays OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-42 case_retrieved | Judicial retrieve must stay false |
-| Apply amendment / invalidate cache in slice 1 | Honesty / review / rollback required |
+| Apply amendment / invalidate cache in slice 1–2 | Honesty / review / rollback required |
+| Live change apply in slice 2 | Authority / honesty risk |
 | Unreviewed detection as production truth | Roadmap gate forbids it |
 | Prove effective dates | Must stay false |
 | Close GAP-P2-008 | Honesty review still required |
@@ -49,5 +56,6 @@ or production-truth claim. GAP-P2-008 and unproven effective dates remain open.
 ## Related
 
 - `docs/mokxya-ai/MAI_43_CONTINUOUS_CHANGE_INTELLIGENCE.md`
-- `docs/mokxya-ai/baselines/MAI_43_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_43_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/continuous_change_intelligence_service.py`
+- `erp_bot/src/oip/modules/conversation/application/continuous_change_intelligence_consume_service.py`

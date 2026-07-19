@@ -40,7 +40,7 @@ class ContinuousChangeIntelligenceBundleV1(ContractBase):
     analysis_status: ContinuousChangeIntelligenceStatus = (
         ContinuousChangeIntelligenceStatus.NOT_RUN
     )
-    runtime_version: str = "mai-43.0.1-slice1"
+    runtime_version: str = "mai-43.0.2-slice2"
     source_authority: str = "REQUEST"
     continuous_change_readiness: ContinuousChangeReadiness = (
         ContinuousChangeReadiness.NOT_APPLICABLE
