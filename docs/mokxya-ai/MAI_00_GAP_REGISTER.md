@@ -414,7 +414,7 @@ Severity legend:
 
 - **Severity:** P1 (further reduced)
 - **Affected capability:** language
-- **Evidence:** MAI-05 span detection landed; MAI-06 lossless views (NFC, retrieval casefold/digits/whitespace, candidates) with raw immutable and protected F1 preserved. MAI-07 candidate transliteration authority landed (annotation-only; `LINGUIST_APPROVED=false`). Product MAI-04 multilingual intent quality still often HUMAN_REVIEW/FAILED. Candidates are not consumed by NLU/routing/RAG/UI yet.
+- **Evidence:** MAI-05 span detection landed; MAI-06 lossless views (NFC, retrieval casefold/digits/whitespace, candidates) with raw immutable and protected F1 preserved. MAI-07 candidate transliteration authority landed (annotation-only; `LINGUIST_APPROVED=false`). Product MAI-04 multilingual intent quality still often HUMAN_REVIEW/FAILED. **NEXT-07** gated concept/number-role consume into primary mode-aware NLU (ADR_0076); transliteration/typo apply and silent master bind remain forbidden.
 - **Representative cases:** `mai04_multi__rom*`; MAI-05/06/07 shards under `evals/mai05`, `evals/mai06`, `evals/mai07`
 - **User/business impact:** Shop language still mis-parsed for intent/event until MAI-08+ gated consumption
 - **Current mitigation:** LanguageFrame + NormalizationBundle + TransliterationBundle before intent; legacy `text_normalize` isolated
@@ -422,7 +422,7 @@ Severity legend:
 - **Recommended MAI phase:** MAI-08
 - **Status:** REDUCED (not closed)
 - **Status:** OPEN (normalization foundation landed; multilingual product weakness not closed)
-- **Progress (2026-07-19):** MAI-08/10/11 `PASSED_ENGINEERING`. **NEXT-06:** MAI-04 `multilingual_v1` remains **40/40 HUMAN_REVIEW_REQUIRED** — automation waived pending linguist/product-policy sample review (NEXT-09). Does **not** close this gap.
+- **Progress (2026-07-19):** MAI-08/10/11 `PASSED_ENGINEERING`. **NEXT-06:** MAI-04 `multilingual_v1` remains **40/40 HUMAN_REVIEW_REQUIRED**. **NEXT-07 / ADR_0076:** concept→intent + number-role money preference consumed on primary preprocess; GAP remains OPEN pending NEXT-09 linguist/product-policy samples.
 
 ---
 

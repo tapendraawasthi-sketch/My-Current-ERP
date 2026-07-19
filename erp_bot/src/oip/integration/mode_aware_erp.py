@@ -130,6 +130,7 @@ def handle_mode_aware_erp(
     reference_coreference: dict[str, Any] | None = None,
     router_decision: dict[str, Any] | None = None,
     clarification_plan: dict[str, Any] | None = None,
+    language_nlu_candidates: dict[str, Any] | None = None,
 ) -> ModeAwareResult | None:
     """Return a deterministic result when mode/classification handles the turn.
 
@@ -308,6 +309,20 @@ def handle_mode_aware_erp(
         has_active_report=has_active_report,
         has_pending_confirmation=has_pending_confirmation,
     )
+    # NEXT-07 / ADR_0076: gated concept/number-role consume into primary NLU.
+    try:
+        from ..modules.conversation.application.language_nlu_consume import (
+            refine_classification_with_language_candidates,
+        )
+
+        classification = refine_classification_with_language_candidates(
+            classification,
+            message,
+            language_nlu_candidates,
+            router_decision=router_decision,
+        )
+    except Exception:  # noqa: BLE001
+        pass
     op = classification.operation_class
 
     # MAI-15 slice 2: amount correction overlay (CORRECT + parseable AMOUNT only).

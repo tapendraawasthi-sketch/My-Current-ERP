@@ -508,6 +508,10 @@ class ExecutionStageAdapter(WorkflowStagePort):
         router_decision = raw_router if isinstance(raw_router, dict) else None
         raw_cp = meta.get("clarification_plan")
         clarification_plan = raw_cp if isinstance(raw_cp, dict) else None
+        raw_lang_nlu = meta.get("language_nlu_candidates")
+        language_nlu_candidates = (
+            raw_lang_nlu if isinstance(raw_lang_nlu, dict) else None
+        )
         erp_result = preprocess_erp_message(
             context.message,
             orbix_mode=orbix_mode,
@@ -526,6 +530,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
             reference_coreference=reference_coreference,
             router_decision=router_decision,
             clarification_plan=clarification_plan,
+            language_nlu_candidates=language_nlu_candidates,
         )
         if erp_result and erp_result.skip_llm:
             _mai03_finish(pre_ev, ok=True)

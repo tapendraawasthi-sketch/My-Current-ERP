@@ -363,7 +363,13 @@ Gate:
   Before/after on frozen cases; protected spans preserved; fuzzy party/item
   still abstains under ambiguity.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_07_NLU_LANGUAGE_CONSUME.md
+  docs/mokxya-ai/decisions/ADR_0076_GATED_LANGUAGE_CANDIDATE_NLU_CONSUME.md
+  docs/mokxya-ai/MAI_NLU_LANGUAGE_CONSUME_REGISTRY.json
+  erp_bot/src/oip/modules/conversation/application/language_nlu_consume.py
+  erp_bot/tests/oip/language_runtime/test_mai_next07_nlu_consume.py
 Depends on: NEXT-06
 
 
@@ -619,7 +625,7 @@ NEXT-03  | DONE   | ADR_0073 + prod mount gates | GAP-P1-001 REDUCED (not CLOSED
 NEXT-04  | DONE   | ADR_0074 + sync registry | GAP-P1-002 REDUCED (runtime dual OPEN)
 NEXT-05  | DONE   | ADR_0075 + NEXT_05_CONFIRM_PATH_HONESTY.md | Model B tokens; NL never posts
 NEXT-06  | DONE   | NEXT_06_MAI04_LANGUAGE_SUITE_REPROOF.md | ctx+num green; multi HR waived
-NEXT-07  | OPEN   |                   | NLU consume
+NEXT-07  | DONE   | ADR_0076 + NEXT_07_NLU_LANGUAGE_CONSUME.md | concept+number-role consume
 NEXT-08  | OPEN   |                   | MAI-11 live
 NEXT-09  | OPEN   |                   | linguist sample
 NEXT-10  | OPEN   |                   | event freeze
@@ -637,14 +643,15 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-07
-  last_shipped_step = NEXT-05
+  recommended_next_step = NEXT-10
+  last_shipped_step = NEXT-07
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
   ai_stack_strangler = ACTIVE (ADR_0073); primary=/orbix/chat/stream
   sync_authority = EVENT_SYNC_QUEUE (ADR_0074); queued≠synced; conflict=reconfirm
   confirm_path = ADR_0075 Model B short-lived tokens; nl_assent_posts=false
+  nlu_language_consume = ADR_0076 concept+number-role; no silent bind/draft
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

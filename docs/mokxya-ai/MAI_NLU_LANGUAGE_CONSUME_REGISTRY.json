@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_NLU_LANGUAGE_CONSUME_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0076",
+  "step": "NEXT-07",
+  "decision": "GATED_LANGUAGE_CANDIDATE_NLU_CONSUME",
+  "product_path": "PRIMARY_ORBIX_OIP_PREPROCESS",
+  "entry": "erp_bot/src/oip/integration/mode_aware_erp.py::handle_mode_aware_erp",
+  "policies": {
+    "allow_concept_intent_consume": true,
+    "allow_number_role_consume": true,
+    "allow_transliteration_apply": false,
+    "allow_typo_rewrite_apply": false,
+    "allow_silent_master_bind": false,
+    "allow_silent_draft_write": false,
+    "protected_spans_must_preserve": true,
+    "fuzzy_party_item_abstain_under_ambiguity": true
+  },
+  "consumed_signals": [
+    "domain_lexicon_concept_ids",
+    "number_role_candidates"
+  ],
+  "not_consumed": [
+    "transliteration_top1_as_intent_text",
+    "typo_rewrite_as_intent_text",
+    "normalization_retrieval_as_intent_authority"
+  ],
+  "honesty": {
+    "production_approved": false,
+    "gap_p1_009_status": "OPEN",
+    "raw_text_immutable": true
+  },
+  "forbidden_claims": [
+    "allow_transliteration_apply=true",
+    "allow_typo_rewrite_apply=true",
+    "allow_silent_master_bind=true",
+    "allow_silent_draft_write=true",
+    "gap_p1_009_closed_by_consume_alone",
+    "production_approved=true"
+  ]
+}

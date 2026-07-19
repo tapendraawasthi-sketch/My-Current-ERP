@@ -27,7 +27,7 @@
     {"id": "GAP-P1-004", "severity": "P1", "status": "REDUCED", "blocks": ["stale_draft_merge", "production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
     {"id": "GAP-P1-007", "severity": "P1", "status": "REDUCED", "blocks": ["production_number_roles"], "note": "NEXT-06 number_roles_v1 40/40 component green"},
     {"id": "GAP-P1-008", "severity": "P1", "status": "REDUCED", "blocks": ["production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
-    {"id": "GAP-P1-009", "severity": "P1", "status": "OPEN", "blocks": ["multilingual_product", "NEXT-09", "NEXT-07"], "note": "NEXT-06 multilingual_v1 40/40 HUMAN_REVIEW_REQUIRED — automation waived"},
+    {"id": "GAP-P1-009", "severity": "P1", "status": "OPEN", "blocks": ["multilingual_product", "NEXT-09"], "note": "NEXT-07 concept/number-role consume landed; multilingual product quality + NEXT-09 linguist still OPEN"},
     {"id": "GAP-P1-012", "severity": "P1", "status": "OPEN", "blocks": ["linguist_approval", "NEXT-09"]},
     {"id": "GAP-P2-001", "severity": "P2", "status": "OPEN", "blocks": ["prod_retrieval", "NEXT-14"]},
     {"id": "GAP-P2-002", "severity": "P2", "status": "OPEN", "blocks": ["calc_authority", "NEXT-11"]},
@@ -43,8 +43,8 @@
     {"id": "MAI-06", "title": "LOSSLESS NORMALIZATION", "depth": "GATE_PROVEN", "production_approved": false, "live_effect": "PIPELINE_ACTIVE", "linked_gaps": ["GAP-P1-009"], "note": "Normalization views; raw immutable."},
     {"id": "MAI-07", "title": "ROMANIZED NEPALI TRANSLITERATION", "depth": "GATE_PROVEN", "production_approved": false, "live_effect": "RUNTIME_ACTIVE", "linked_gaps": ["GAP-P1-009", "GAP-P1-012"], "note": "R3S active cutover for transliteration pack; product-wide production_approved remains false; linguist path still material."},
     {"id": "MAI-08", "title": "CODE-MIX AND TYPO ROBUSTNESS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "Abstention floors + typo/code-mix bundle; master Gate not fully proven."},
-    {"id": "MAI-09", "title": "NUMBER DATE MONEY QUANTITY ROLES", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-007"], "note": "Roles on frame; NEXT-06 number_roles_v1 40/40 component green; not production-approved."},
-    {"id": "MAI-10", "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "Concept→intent bridge gated; not sole NLU."},
+    {"id": "MAI-09", "title": "NUMBER DATE MONEY QUANTITY ROLES", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-007"], "note": "NEXT-07 money-role preference on primary NLU; suite green; not production-approved."},
+    {"id": "MAI-10", "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "NEXT-07 concept→intent refine on mode_aware; not sole NLU; GAP-P1-009 OPEN."},
     {"id": "MAI-11", "title": "RESPONSE LANGUAGE AND REGISTER", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P1-009"], "note": "Prompt directive; no SSE rewrite authority."},
     {"id": "MAI-12", "title": "LANGUAGE DATA GOVERNANCE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "TOOLING", "linked_gaps": ["GAP-P2-005"], "note": "Catalog + rebuildability assessment; GAP-P2-005 REDUCED."},
     {"id": "MAI-13", "title": "CONVERSATION OBJECT REFERENCE STORE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": [], "note": "Read-only store resolution; not full memory product."},
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-07",
+  "recommended_next_step": "NEXT-10",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07"]
 }

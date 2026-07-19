@@ -5,9 +5,20 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-07",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06"],
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..06 DONE. NEXT-05 ADR_0075 Model B short-lived confirm tokens; NL assent never posts. NEXT recommended=NEXT-07 (NLU consume). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-10",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07"],
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..07 DONE. NEXT-07 ADR_0076 gated concept/number-role consume into primary NLU; GAP-P1-009 OPEN. NEXT recommended=NEXT-10 (launch event freeze). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "nlu_language_consume": {
+    "authority": "ADR_0076",
+    "decision": "GATED_LANGUAGE_CANDIDATE_NLU_CONSUME",
+    "allow_concept_intent_consume": true,
+    "allow_number_role_consume": true,
+    "allow_transliteration_apply": false,
+    "allow_silent_master_bind": false,
+    "allow_silent_draft_write": false,
+    "gap_p1_009_status": "OPEN",
+    "registry": "docs/mokxya-ai/MAI_NLU_LANGUAGE_CONSUME_REGISTRY.json"
+  },
   "confirm_path_authority": {
     "authority": "ADR_0075",
     "decision": "MODEL_B_SHORT_LIVED_CONFIRM_TOKEN",

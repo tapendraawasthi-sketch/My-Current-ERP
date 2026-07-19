@@ -85,6 +85,31 @@ class CanonicalOipRequestAdapter:
         # MAI-11: pass response language/register policy into orchestrator metadata
         # (annotation only — never authority for posting).
         frame = canonical.language_frame
+        if frame is not None:
+            # NEXT-07 / ADR_0076: slim language candidates for primary NLU consume.
+            try:
+                from ...modules.conversation.application.language_nlu_consume import (
+                    language_frame_to_nlu_metadata,
+                )
+
+                metadata["language_nlu_candidates"] = language_frame_to_nlu_metadata(
+                    frame
+                )
+            except Exception:  # noqa: BLE001
+                metadata["language_nlu_candidates"] = {
+                    "authority": "ADR_0076",
+                    "concept_ids": [],
+                    "number_roles": [],
+                    "allow_concept_intent_consume": True,
+                    "allow_number_role_consume": True,
+                    "allow_transliteration_apply": False,
+                    "allow_typo_rewrite_apply": False,
+                    "allow_silent_master_bind": False,
+                    "allow_silent_draft_write": False,
+                    "silent_applications": 0,
+                    "draft_mutations": 0,
+                    "raw_text_mutated": False,
+                }
         if frame is not None and frame.response_register_bundle is not None:
             try:
                 from ...modules.language_runtime.response_register.application.prompt_directive import (
