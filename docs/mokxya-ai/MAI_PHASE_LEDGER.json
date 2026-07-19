@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-14",
-  "active_phase_note": "MAI-14 slice 2 IN_PROGRESS (ADR_0031); pending-draft merge gate; MAI-13 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-15",
+  "active_phase_note": "MAI-15 slice 1 IN_PROGRESS (ADR_0032); reference/coreference annotation; MAI-14 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2081,7 +2081,7 @@
     {
       "id": "MAI-14",
       "title": "TURN RELATION BEFORE DRAFT MERGE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2092,6 +2092,7 @@
         "docs/mokxya-ai/decisions/ADR_0031_TURN_RELATION_BEFORE_DRAFT_MERGE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_14_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_14_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_14_ENGINEERING_CLOSURE.md",
         "evals/mai14/manifests/MAI_14_SLICE1.manifest.json",
         "evals/mai14/manifests/MAI_14_SLICE2.manifest.json"
       ],
@@ -2112,22 +2113,40 @@
         "MAI-13"
       ],
       "recommended_order": 14,
-      "closure_note": "Slice 2: pending-draft merge gate on mode_aware path; gaps REDUCED."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-15. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-15",
       "title": "REFERENCE, COREFERENCE, AND CORRECTION",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "discourse confirm_pending / corrections partial"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-15.0.1-slice1",
+      "slice": "SLICE1_REFERENCE_COREFERENCE_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_15_REFERENCE_COREFERENCE_AND_CORRECTION.md",
+        "docs/mokxya-ai/decisions/ADR_0032_REFERENCE_COREFERENCE_CORRECTION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_15_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai15/manifests/MAI_15_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/contracts/reference_coreference.py",
+        "reference_coreference_service.py",
+        "CanonicalAIRequestV1.reference_coreference_bundle",
+        "oip_chat_ingress REFERENCE_COREFERENCE after MAI-14",
+        "canonical_oip metadata.reference_coreference"
+      ],
+      "blockers": [
+        "Corrections not applied until slice 2",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-14"
       ],
-      "recommended_order": 15
+      "recommended_order": 15,
+      "closure_note": "Slice 1: mention/correction annotation only; never applied."
     },
     {
       "id": "MAI-16",

@@ -12,6 +12,7 @@
     "LanguageDataCatalogV1",
     "KbRebuildabilityReportV1",
     "ObjectReferenceBundleV1",
+    "ReferenceCoreferenceBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

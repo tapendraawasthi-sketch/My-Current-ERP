@@ -160,6 +160,26 @@ class CanonicalOipRequestAdapter:
                     "classifier_version": tr.classifier_version,
                     "is_execution_authority": False,
                 }
+        # MAI-15: reference/coreference/correction candidates (never applied).
+        if canonical.reference_coreference_bundle is not None:
+            try:
+                from ...modules.conversation.application.reference_coreference_service import (
+                    reference_coreference_to_metadata,
+                )
+
+                metadata["reference_coreference"] = reference_coreference_to_metadata(
+                    canonical.reference_coreference_bundle
+                )
+            except Exception:  # noqa: BLE001
+                rc = canonical.reference_coreference_bundle
+                metadata["reference_coreference"] = {
+                    "analysis_status": rc.analysis_status.value,
+                    "runtime_version": rc.runtime_version,
+                    "mention_count": rc.mention_count,
+                    "correction_count": rc.correction_count,
+                    "silent_applications": 0,
+                    "draft_mutations": 0,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

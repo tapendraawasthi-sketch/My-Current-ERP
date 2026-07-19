@@ -852,6 +852,82 @@ async def build_canonical_ai_request(
         except Exception:  # noqa: BLE001
             pass
 
+    # MAI-15: reference / coreference / correction candidates (annotation only).
+    rc_ev = recorder.start_stage(
+        mai03_obs.TraceStage.REFERENCE_COREFERENCE_STARTED,
+        component="conversation.reference_coreference",
+    )
+    try:
+        from ..oip.modules.conversation.application.reference_coreference_service import (
+            attach_reference_coreference_to_request,
+        )
+
+        updated = attach_reference_coreference_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.reference_coreference_bundle
+        if bundle is not None and (
+            bundle.silent_applications != 0 or bundle.draft_mutations != 0
+        ):
+            raise RuntimeError("REFERENCE_COREFERENCE_MUTATION")
+        canonical = updated
+        recorder.complete_stage(
+            rc_ev,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            component_versions={
+                "reference_coreference": (
+                    bundle.runtime_version if bundle else "mai-15.0.1-slice1"
+                ),
+            },
+            safe_attributes={
+                "reference_coreference_status": (
+                    bundle.analysis_status.value if bundle else "FAILED"
+                ),
+                "reference_coreference_mention_count": (
+                    bundle.mention_count if bundle else 0
+                ),
+                "reference_coreference_correction_count": (
+                    bundle.correction_count if bundle else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.REFERENCE_COREFERENCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            safe_attributes={
+                "reference_coreference_mention_count": (
+                    bundle.mention_count if bundle else 0
+                ),
+                "reference_coreference_correction_count": (
+                    bundle.correction_count if bundle else 0
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(rc_ev, safe_error_code="REFERENCE_COREFERENCE_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.REFERENCE_COREFERENCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="REFERENCE_COREFERENCE_FAILED",
+        )
+        try:
+            from ..oip.contracts.reference_coreference import (
+                ReferenceCoreferenceBundleV1,
+                ReferenceCoreferenceStatus,
+            )
+
+            fail_bundle = ReferenceCoreferenceBundleV1(
+                analysis_status=ReferenceCoreferenceStatus.FAILED,
+                warnings=("REFERENCE_COREFERENCE_FAILED",),
+                error_codes=("REFERENCE_COREFERENCE_FAILED",),
+            )
+            canonical = canonical.model_copy(
+                update={"reference_coreference_bundle": fail_bundle}
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
     return canonical
 
 

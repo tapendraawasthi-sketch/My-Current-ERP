@@ -168,6 +168,134 @@
       "title": "ContractStatus",
       "type": "string"
     },
+    "CorrectionCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "applied": {
+          "default": false,
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "correction_id": {
+          "title": "Correction Id",
+          "type": "string"
+        },
+        "cue_kind": {
+          "$ref": "#/$defs/CorrectionCueKind"
+        },
+        "linked_mention_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Linked Mention Ids",
+          "type": "array"
+        },
+        "proposed_value_surface": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proposed Value Surface"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "target_kind": {
+          "$ref": "#/$defs/CorrectionTargetKind"
+        }
+      },
+      "required": [
+        "correction_id",
+        "target_kind",
+        "cue_kind"
+      ],
+      "title": "CorrectionCandidateV1",
+      "type": "object"
+    },
+    "CorrectionCueKind": {
+      "enum": [
+        "REPLACE_AMOUNT",
+        "NEGATE_REPLACE",
+        "GENERIC_CORRECT",
+        "UNKNOWN"
+      ],
+      "title": "CorrectionCueKind",
+      "type": "string"
+    },
+    "CorrectionTargetKind": {
+      "enum": [
+        "AMOUNT",
+        "PARTY",
+        "FIELD",
+        "DRAFT",
+        "UNKNOWN"
+      ],
+      "title": "CorrectionTargetKind",
+      "type": "string"
+    },
+    "DiscourseMentionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "applied": {
+          "default": false,
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/$defs/MentionKind"
+        },
+        "mention_id": {
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "referent_object_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Referent Object Id"
+        },
+        "resolution_status": {
+          "$ref": "#/$defs/MentionResolutionStatus",
+          "default": "UNRESOLVED"
+        },
+        "surface_cue": {
+          "default": "",
+          "title": "Surface Cue",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mention_id",
+        "kind"
+      ],
+      "title": "DiscourseMentionV1",
+      "type": "object"
+    },
     "DomainConceptCandidateV1": {
       "additionalProperties": false,
       "properties": {
@@ -607,6 +735,28 @@
         "DELETION_CANDIDATE_NOT_APPLIED"
       ],
       "title": "MappingKind",
+      "type": "string"
+    },
+    "MentionKind": {
+      "enum": [
+        "PARTY",
+        "AMOUNT",
+        "DRAFT",
+        "PRIOR_ANSWER",
+        "PRIOR_RESULT",
+        "UNKNOWN"
+      ],
+      "title": "MentionKind",
+      "type": "string"
+    },
+    "MentionResolutionStatus": {
+      "enum": [
+        "RESOLVED",
+        "AMBIGUOUS",
+        "UNRESOLVED",
+        "SKIPPED"
+      ],
+      "title": "MentionResolutionStatus",
       "type": "string"
     },
     "NormalizationBundleV1": {
@@ -1482,6 +1632,120 @@
       ],
       "title": "ReconstructionIntegrityV1",
       "type": "object"
+    },
+    "ReferenceCoreferenceBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguous_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ambiguous Count",
+          "type": "integer"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/ReferenceCoreferenceStatus",
+          "default": "NOT_RUN"
+        },
+        "correction_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Correction Count",
+          "type": "integer"
+        },
+        "corrections": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CorrectionCandidateV1"
+          },
+          "title": "Corrections",
+          "type": "array"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "mention_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Mention Count",
+          "type": "integer"
+        },
+        "mentions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DiscourseMentionV1"
+          },
+          "title": "Mentions",
+          "type": "array"
+        },
+        "resolved_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Resolved Count",
+          "type": "integer"
+        },
+        "runtime_version": {
+          "default": "mai-15.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "turn_relation_echo": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TurnRelationKind"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "ReferenceCoreferenceBundleV1",
+      "type": "object"
+    },
+    "ReferenceCoreferenceStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "ReferenceCoreferenceStatus",
+      "type": "string"
     },
     "ResponseLanguageKind": {
       "enum": [
@@ -2525,6 +2789,17 @@
       "minLength": 1,
       "title": "Raw Text",
       "type": "string"
+    },
+    "reference_coreference_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReferenceCoreferenceBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "request_id": {
       "maxLength": 128,

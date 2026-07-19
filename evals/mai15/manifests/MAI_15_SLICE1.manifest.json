@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai15-slice1-v1",
+  "dataset_hash": "3d2c1cb99f6b6b2e6eba48a844540e07cd7e4928d68b705e2e9a0954f8c03b3b",
+  "phase": "MAI-15",
+  "slice": "SLICE1_REFERENCE_COREFERENCE_ANNOTATION",
+  "runtime_version": "mai-15.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai15/frozen/reference_coreference_critical_v1.jsonl",
+      "sha256": "3d2c1cb99f6b6b2e6eba48a844540e07cd7e4928d68b705e2e9a0954f8c03b3b",
+      "case_count": 6,
+      "suite_id": "reference_coreference_critical_v1"
+    }
+  ]
+}

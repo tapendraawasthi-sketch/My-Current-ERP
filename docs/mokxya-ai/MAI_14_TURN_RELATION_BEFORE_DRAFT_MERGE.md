@@ -1,7 +1,7 @@
 # MAI-14 — Turn Relation Before Draft Merge
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2; `production_approved=false`)  
 **Authority:** [ADR_0031](decisions/ADR_0031_TURN_RELATION_BEFORE_DRAFT_MERGE_AUTHORITY.md)  
 **Runtime:** `mai-14.0.2-slice2` (engineering; not production-approved)
 
