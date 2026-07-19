@@ -1016,17 +1016,21 @@ class CanonicalOipRequestAdapter:
                     "backup_restore_disaster_lifecycle_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-47: human review / pilot ops policy (never review complete).
+        # MAI-47: human review / pilot ops + candidate consume.
         if canonical.human_review_pilot_operations_bundle is not None:
             try:
+                from ...modules.conversation.application.human_review_pilot_operations_consume_service import (
+                    enrich_hrpo_metadata_with_consume,
+                )
                 from ...modules.conversation.application.human_review_pilot_operations_service import (
                     human_review_pilot_operations_to_metadata,
                 )
 
+                base_meta = human_review_pilot_operations_to_metadata(
+                    canonical.human_review_pilot_operations_bundle
+                )
                 metadata["human_review_pilot_operations"] = (
-                    human_review_pilot_operations_to_metadata(
-                        canonical.human_review_pilot_operations_bundle
-                    )
+                    enrich_hrpo_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 hrpo = canonical.human_review_pilot_operations_bundle
@@ -1042,6 +1046,8 @@ class CanonicalOipRequestAdapter:
                     "production_pilot_authorized": False,
                     "go_live_authorized": False,
                     "gap_p2_008_status": "OPEN",
+                    "human_review_pilot_operations_consume_mode": "UNCHANGED",
+                    "human_review_pilot_operations_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

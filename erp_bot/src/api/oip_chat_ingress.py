@@ -3389,12 +3389,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent DR proven.
 
-    # MAI-47: human review / pilot ops policy (never claims review complete).
+    # MAI-47: human review / pilot ops + candidate consume.
     hrpo_ev = recorder.begin_stage(
         mai03_obs.TraceStage.HUMAN_REVIEW_PILOT_OPERATIONS_STARTED,
         component="conversation.human_review_pilot_operations",
     )
     try:
+        from ..oip.modules.conversation.application.human_review_pilot_operations_consume_service import (
+            assert_human_review_pilot_operations_consume_authority,
+            human_review_pilot_operations_consume_observability,
+        )
         from ..oip.modules.conversation.application.human_review_pilot_operations_service import (
             assert_human_review_pilot_operations_authority,
             attach_human_review_pilot_operations_to_request,
@@ -3405,11 +3409,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.human_review_pilot_operations_bundle
         assert_human_review_pilot_operations_authority(bundle)
+        consume_obs = human_review_pilot_operations_consume_observability(
+            updated,
+            allow_reviewer_signoff=False,
+            allow_go_live=False,
+        )
+        assert_human_review_pilot_operations_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             hrpo_ev,
             version_map={
-                "human_review_pilot_operations": "mai-47.0.1-slice1",
+                "human_review_pilot_operations": "mai-47.0.2-slice2",
             },
             safe_attributes={
                 "human_review_pilot_operations_status": (
@@ -3425,6 +3435,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "human_review_pilot_operations_consume_mode": (
+                    consume_obs.get(
+                        "human_review_pilot_operations_consume_mode"
+                    )
+                ),
+                "human_review_pilot_operations_consume_ready": bool(
+                    consume_obs.get(
+                        "human_review_pilot_operations_consume_ready"
+                    )
+                ),
                 "review_authority_claimed": False,
                 "human_review_complete": False,
                 "pilot_approved": False,
@@ -3439,6 +3459,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_reviewer_signoff": False,
+                "allow_go_live": False,
             },
         )
         recorder.record_event(
@@ -3454,6 +3476,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "human_review_pilot_operations_consume_mode": (
+                    consume_obs.get(
+                        "human_review_pilot_operations_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001

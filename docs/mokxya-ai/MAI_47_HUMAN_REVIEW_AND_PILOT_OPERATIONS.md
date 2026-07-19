@@ -1,9 +1,9 @@
 # MAI-47 — Human Review and Pilot Operations
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0064](decisions/ADR_0064_HUMAN_REVIEW_PILOT_OPERATIONS_AUTHORITY.md)  
-**Runtime:** `mai-47.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-47.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -24,11 +24,23 @@ pilot approved, or go-live authorized.
    `production_pilot_authorized=false`; `go_live_authorized=false`
 7. GAP-P2-008 OPEN (and other open gaps remain open)
 
+## Slice 2
+
+1. `resolve_human_review_pilot_operations_consume_mode` /
+   `build_human_review_pilot_operations_candidate`
+2. Default `CANDIDATE_ONLY` — review / pilot / gold / signoff / runbook /
+   acceptance / go-live packets / definitive = null
+3. Fake review-complete claim → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_reviewer_signoff=false` / `allow_go_live=false`
+5. Metadata: `human_review_pilot_operations_consume_ready` +
+   `human_review_pilot_operations_candidate`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Human review / pilot ops / gold / sign-off / runbook / acceptance / go-live cues | COMPLETE → `POLICY_DECLARED` |
+| Human review / pilot ops / gold / sign-off / runbook / acceptance / go-live cues | COMPLETE → `CANDIDATE_ONLY` |
+| Fake human_review_complete claim | `BLOCKED` |
 | Purchase / VAT / DR-only without review cues | SKIP |
 | Any live path | never claim review complete / never authorize go-live; gaps OPEN |
 

@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–46 `PASSED_ENGINEERING`. MAI-47 slice 1 declares human review / pilot ops policy only (`release_status=NOT_RELEASED`, `human_review_complete=false`, `pilot_approved=false`, `production_pilot_authorized=false`, `reviewer_signoff_proven=false`, `gold_suite_accepted=false`, `ops_runbook_live=false`, `go_live_authorized=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–46 `PASSED_ENGINEERING`. MAI-47 slice 2 builds `CANDIDATE_ONLY` human review / pilot ops candidates (`release_status=NOT_RELEASED`, `human_review_complete=false`, `pilot_approved=false`, `production_pilot_authorized=false`, `reviewer_signoff_proven=false`, `gold_suite_accepted=false`, `ops_runbook_live=false`, `go_live_authorized=false`, live `allow_reviewer_signoff=false` / `allow_go_live=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

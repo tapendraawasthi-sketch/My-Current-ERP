@@ -17,7 +17,7 @@ from ....contracts.human_review_pilot_operations import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-47.0.1-slice1"
+RUNTIME_VERSION = "mai-47.0.2-slice2"
 AUTHORITY = "ADR_0064"
 
 _HUMAN_REVIEW = re.compile(
