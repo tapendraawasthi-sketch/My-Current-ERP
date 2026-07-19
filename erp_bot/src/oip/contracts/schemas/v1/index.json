@@ -9,6 +9,7 @@
     "NumberRoleBundleV1",
     "DomainLexiconBundleV1",
     "ResponseRegisterBundleV1",
+    "LanguageDataCatalogV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

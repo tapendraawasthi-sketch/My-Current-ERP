@@ -1,9 +1,10 @@
 # MAI-11 — Response Language and Register Policy
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0028](decisions/ADR_0028_RESPONSE_LANGUAGE_AND_REGISTER_POLICY_AUTHORITY.md)  
-**Runtime:** `mai-11.0.2-slice2` (engineering; not production-approved)
+**Runtime:** `mai-11.0.2-slice2` (engineering; not production-approved)  
+**Closure:** [MAI_11_ENGINEERING_CLOSURE.md](baselines/MAI_11_ENGINEERING_CLOSURE.md)
 
 ## Objective
 

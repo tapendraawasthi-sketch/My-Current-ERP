@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai12-slice1-v1",
+  "dataset_hash": "6e711f8d9c64b5173cfd05fae0f3f5e5aabeb399b986419952dd16a87d38a295",
+  "phase": "MAI-12",
+  "slice": "SLICE1_LANGUAGE_DATA_CATALOG",
+  "runtime_version": "mai-12.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai12/frozen/language_data_catalog_v1.jsonl",
+      "sha256": "6e711f8d9c64b5173cfd05fae0f3f5e5aabeb399b986419952dd16a87d38a295",
+      "case_count": 5,
+      "suite_id": "language_data_catalog_v1"
+    }
+  ]
+}

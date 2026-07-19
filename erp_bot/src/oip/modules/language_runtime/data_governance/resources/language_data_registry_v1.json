@@ -1,0 +1,99 @@
+{
+  "catalog_version": "mai-12.catalog.v1",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "assets": [
+    {
+      "asset_id": "mai08_slice1_manifest",
+      "path": "evals/mai08/manifests/MAI_08_SLICE1.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai08_slice2_manifest",
+      "path": "evals/mai08/manifests/MAI_08_SLICE2.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai09_slice1_manifest",
+      "path": "evals/mai09/manifests/MAI_09_SLICE1.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai09_slice2_manifest",
+      "path": "evals/mai09/manifests/MAI_09_SLICE2.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai10_slice1_manifest",
+      "path": "evals/mai10/manifests/MAI_10_SLICE1.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai10_slice2_manifest",
+      "path": "evals/mai10/manifests/MAI_10_SLICE2.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai11_slice1_manifest",
+      "path": "evals/mai11/manifests/MAI_11_SLICE1.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai11_slice2_manifest",
+      "path": "evals/mai11/manifests/MAI_11_SLICE2.manifest.json",
+      "role": "FROZEN_EVAL",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "mai10_seed_concepts",
+      "path": "erp_bot/src/oip/modules/language_runtime/domain_lexicon/resources/seed_concepts_v1.json",
+      "role": "SEED_ONTOLOGY",
+      "training_eligible": false,
+      "required": true,
+      "notes": "Engineering seed; not linguist-approved training gold"
+    },
+    {
+      "asset_id": "kb_lexical_index",
+      "path": "knowledgebase/indexes/lexical/kb_lexical.sqlite",
+      "role": "KB_INDEX",
+      "training_eligible": false,
+      "required": false,
+      "notes": "Runtime index; rebuildability tracked by GAP-P2-005"
+    },
+    {
+      "asset_id": "knowledge_source_slot_0001_0016",
+      "path": "Knowledge source/ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip",
+      "role": "SOURCE_ARCHIVE",
+      "training_eligible": false,
+      "required": false,
+      "notes": "Optional offline archive; may be MISSING in fresh clones"
+    },
+    {
+      "asset_id": "knowledge_source_slot_0017_0088",
+      "path": "Knowledge source/ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip",
+      "role": "SOURCE_ARCHIVE",
+      "training_eligible": false,
+      "required": false
+    }
+  ],
+  "frozen_jsonl_globs": [
+    "evals/mai08/frozen/*.jsonl",
+    "evals/mai09/frozen/*.jsonl",
+    "evals/mai10/frozen/*.jsonl",
+    "evals/mai11/frozen/*.jsonl"
+  ]
+}

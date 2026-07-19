@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-11",
-  "active_phase_note": "MAI-11 slice 2 IN_PROGRESS (ADR_0028); prompt directive consumption; MAI-10 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-12",
+  "active_phase_note": "MAI-12 slice 1 IN_PROGRESS (ADR_0029); language data catalog; MAI-11 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -1970,7 +1970,7 @@
     {
       "id": "MAI-11",
       "title": "RESPONSE LANGUAGE AND REGISTER POLICY",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -1981,6 +1981,7 @@
         "docs/mokxya-ai/decisions/ADR_0028_RESPONSE_LANGUAGE_AND_REGISTER_POLICY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_11_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_11_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_11_ENGINEERING_CLOSURE.md",
         "evals/mai11/manifests/MAI_11_SLICE1.manifest.json",
         "evals/mai11/manifests/MAI_11_SLICE2.manifest.json"
       ],
@@ -2000,23 +2001,38 @@
         "MAI-10"
       ],
       "recommended_order": 11,
-      "closure_note": "Slice 2: prompt directive consumption; applied_response_rewrite remains false."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-12. production_approved=false."
     },
     {
       "id": "MAI-12",
       "title": "LANGUAGE DATA GOVERNANCE AND TRAINING PIPELINE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "knowledgebase/config.json pipeline",
-        "zips offline"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-12.0.1-slice1",
+      "slice": "SLICE1_LANGUAGE_DATA_CATALOG",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_12_LANGUAGE_DATA_GOVERNANCE_AND_TRAINING_PIPELINE.md",
+        "docs/mokxya-ai/decisions/ADR_0029_LANGUAGE_DATA_GOVERNANCE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_12_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai12/manifests/MAI_12_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/data_governance/",
+        "erp_bot/src/oip/contracts/language_data_governance.py",
+        "language_data_registry_v1.json",
+        "frozen eval training gates + manifest hash checks"
+      ],
+      "blockers": [
+        "GAP-P2-005 remains REDUCED (not closed)",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-11"
       ],
-      "recommended_order": 12
+      "recommended_order": 12,
+      "closure_note": "Slice 1 IN_PROGRESS: catalog + training gates; KB rebuild deferred."
     },
     {
       "id": "MAI-13",

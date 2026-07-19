@@ -500,7 +500,8 @@ Severity legend:
 - **Recommended MAI phase:** MAI-12
 - **Dependencies:** storage policy
 - **Acceptance condition:** Manifested source + rebuildable indexes
-- **Status:** OPEN
+- **Status:** REDUCED (not closed)
+- **Progress (2026-07-19):** MAI-12 slice 1 `IN_PROGRESS` — `LanguageDataCatalogV1` manifests Knowledge-source slots as PRESENT/MISSING and gates frozen evals as non-training. Does **not** rebuild indexes or commit zips.
 
 ### GAP-P2-006 — AI pipeline relied on untyped dicts / duplicated FE-BE shapes
 
