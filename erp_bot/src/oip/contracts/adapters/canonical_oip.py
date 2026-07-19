@@ -599,7 +599,7 @@ class CanonicalOipRequestAdapter:
                     "preview_generated": False,
                     "confirmation_card_generated": False,
                     "journal_calculated": False,
-                    "gap_p2_002_status": "OPEN",
+                    "gap_p2_002_status": "REDUCED",
                     "preview_consume_mode": "UNCHANGED",
                     "preview_consume_ready": False,
                     "is_execution_authority": False,

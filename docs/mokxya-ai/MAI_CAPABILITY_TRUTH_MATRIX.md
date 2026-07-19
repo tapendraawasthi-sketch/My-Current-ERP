@@ -16,7 +16,7 @@
 | Track I (MAI-50…53) | **Dormant / FREEZE ACTIVE** ([ADR_0071](decisions/ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md)) until **NEXT-20** |
 | `production_approved` (product) | **false** |
 | `legal_effective_dates_proven` | **false** |
-| Recommended next step | **NEXT-11** (draft/preview depth) |
+| Recommended next step | **NEXT-12** (E2E launch slice) |
 
 **PASSED_ENGINEERING ≠ master Gate proven ≠ production released.**
 
@@ -42,7 +42,7 @@
 | GAP-P1-009 | OPEN | NEXT-07 NLU consume landed; linguist/product still OPEN |
 | GAP-P1-012 | OPEN | Linguist approval path |
 | GAP-P2-001 | OPEN | Prod retrieval without Ollama |
-| GAP-P2-002 | OPEN | UI vs engine calc authority |
+| GAP-P2-002 | REDUCED | NEXT-11 ADR_0078 owners+labels; display estimates remain |
 | GAP-P2-008 | OPEN | Knowledge/no-answer & citation honesty |
 
 ## Phase matrix (MAI-00 … MAI-53)
@@ -109,7 +109,8 @@ Per `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` default order:
 6. ~~NEXT-05~~ — Confirm path honesty (ADR_0075 Model B tokens)  
 7. ~~NEXT-07~~ — Gated language candidate NLU consume (ADR_0076)  
 8. ~~NEXT-10~~ — Launch event spec freeze (ADR_0077)  
-9. **NEXT-11** — Draft → preview → edit loop depth
+9. ~~NEXT-11~~ — Calc authority honesty / GAP-P2-002 REDUCED (ADR_0078)  
+10. **NEXT-12** — E2E launch slice
 
 ## Explicit non-claims
 

@@ -86,7 +86,7 @@ def test_purchase_candidate_only() -> None:
     assert cand["stale_preview_on_confirm"] == "REJECT"
     assert cand["field_overrides"]["supplier"] == "Ram"
     assert built["preview_generated"] is False
-    assert built["gap_p2_002_status"] == "OPEN"
+    assert built["gap_p2_002_status"] == "REDUCED"
     obs = preview_edit_loop_consume_observability(req)
     assert_preview_edit_loop_consume_authority(obs)
     assert obs["allow_preview_generate"] is False
@@ -100,7 +100,7 @@ def test_blocked_readiness() -> None:
         "analysis_status": "COMPLETE",
         "preview_readiness": "BLOCKED",
         "draft_module_id": "purchase_draft",
-        "gap_p2_002_status": "OPEN",
+        "gap_p2_002_status": "REDUCED",
         "preview_generated": False,
         "journal_calculated": False,
         "is_execution_authority": False,
@@ -113,7 +113,7 @@ def test_authority_blocks() -> None:
         "analysis_status": "COMPLETE",
         "preview_readiness": "POLICY_DECLARED",
         "draft_module_id": "purchase_draft",
-        "gap_p2_002_status": "OPEN",
+        "gap_p2_002_status": "REDUCED",
         "preview_generated": True,
         "is_execution_authority": False,
     }
@@ -149,7 +149,7 @@ def test_adapter_metadata_consume() -> None:
     assert pel.get("preview_consume_ready") is True
     assert pel.get("preview_generated") is False
     assert pel.get("confirmation_card_generated") is False
-    assert pel.get("gap_p2_002_status") == "OPEN"
+    assert pel.get("gap_p2_002_status") == "REDUCED"
     assert pel.get("allow_preview_generate") is False
     assert pel.get("is_execution_authority") is False
     cand = pel.get("preview_candidate") or {}

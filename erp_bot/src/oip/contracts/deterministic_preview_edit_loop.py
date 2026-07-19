@@ -55,7 +55,7 @@ class DeterministicPreviewEditLoopBundleV1(ContractBase):
         CalcAuthorityOnConfirm.DEXIE_DOMAIN_ENGINE
     )
     khata_preview_helpers_are_display_path: bool = True
-    gap_p2_002_status: str = "OPEN"
+    gap_p2_002_status: str = "REDUCED"
     preview_compute_locus_candidates: tuple[str, ...] = (
         "DEXIE_DOMAIN_ENGINE",
         "SERVER_PREVIEW_SERVICE_PENDING",
@@ -101,8 +101,11 @@ class DeterministicPreviewEditLoopBundleV1(ContractBase):
     @field_validator("gap_p2_002_status")
     @classmethod
     def _gap(cls, v: str) -> str:
-        if v != "OPEN":
-            raise ValueError("GAP_P2_002_MUST_REMAIN_OPEN")
+        # NEXT-11 / ADR_0078: register REDUCED; CLOSED still forbidden here.
+        if v not in {"OPEN", "REDUCED"}:
+            raise ValueError("GAP_P2_002_STATUS_INVALID")
+        if v == "CLOSED":
+            raise ValueError("GAP_P2_002_MUST_NOT_CLAIM_CLOSED")
         return v
 
     @field_validator(

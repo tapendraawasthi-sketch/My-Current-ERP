@@ -52,7 +52,7 @@ def _authority_blocks(data: Mapping[str, Any]) -> bool:
         or data.get("mode_aware_invoked") is True
         or int(data.get("draft_mutations") or 0) != 0
         or int(data.get("edit_mutations") or 0) != 0
-        or str(data.get("gap_p2_002_status") or "OPEN") != "OPEN"
+        or str(data.get("gap_p2_002_status") or "OPEN") not in {"OPEN", "REDUCED"}
     )
 
 
@@ -113,7 +113,7 @@ def build_preview_candidate(
         "ai_journal_math_allowed": False,
         "draft_mutations": 0,
         "edit_mutations": 0,
-        "gap_p2_002_status": "OPEN",
+        "gap_p2_002_status": "REDUCED",
         "is_execution_authority": False,
         "runtime_version": RUNTIME_VERSION,
         "allow_preview_generate": False,
@@ -136,7 +136,7 @@ def build_preview_candidate(
         "preview_hash": None,
         "effects": None,
         "field_overrides": overrides,
-        "gap_p2_002_status": "OPEN",
+        "gap_p2_002_status": "REDUCED",
         "ready": True,
     }
     ready = mode == "CANDIDATE_ONLY" and bool(candidate["draft_module_id"])
@@ -188,7 +188,7 @@ def preview_edit_loop_consume_observability(
         "ai_journal_math_allowed": False,
         "draft_mutations": 0,
         "edit_mutations": 0,
-        "gap_p2_002_status": "OPEN",
+        "gap_p2_002_status": "REDUCED",
         "is_execution_authority": False,
         "runtime_version": RUNTIME_VERSION,
         "allow_preview_generate": False,
@@ -213,7 +213,7 @@ def assert_preview_edit_loop_consume_authority(
         or int(obs.get("draft_mutations") or 0) != 0
         or int(obs.get("edit_mutations") or 0) != 0
         or obs.get("allow_preview_generate") is True
-        or str(obs.get("gap_p2_002_status") or "OPEN") != "OPEN"
+        or str(obs.get("gap_p2_002_status") or "OPEN") not in {"OPEN", "REDUCED"}
     ):
         raise RuntimeError("PREVIEW_EDIT_LOOP_CONSUME_AUTHORITY")
 

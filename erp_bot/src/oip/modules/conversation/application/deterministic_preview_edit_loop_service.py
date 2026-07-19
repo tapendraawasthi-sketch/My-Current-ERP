@@ -73,10 +73,10 @@ def build_deterministic_preview_edit_loop_bundle(
                 "NO_PREVIEW_GENERATED",
                 "NO_CONFIRMATION_CARD",
                 "NO_DRAFT_MUTATIONS",
-                "GAP_P2_002_OPEN",
+                "GAP_P2_002_REDUCED",
             ),
             warnings=(
-                "GAP_P2_002_REMAINS_OPEN",
+                "GAP_P2_002_REDUCED_ADR_0078",
                 "ENGINE_PREVIEW_PENDING_LATER_SLICE",
             ),
         )
@@ -102,7 +102,7 @@ def build_deterministic_preview_edit_loop_bundle(
             reason_codes=(
                 "PREVIEW_BLOCKED_UNTIL_DRAFT_READY",
                 "NO_PREVIEW_GENERATED",
-                "GAP_P2_002_OPEN",
+                "GAP_P2_002_REDUCED",
             ),
             warnings=("ENGINE_PREVIEW_PENDING_LATER_SLICE",),
         )
@@ -117,7 +117,7 @@ def build_deterministic_preview_edit_loop_bundle(
         "UI_MUST_NOT_CALCULATE_AUTHORITATIVE_TOTALS",
         "AI_MUST_NOT_JOURNAL_MATH",
         "DEXIE_REMAINS_CALC_ON_CONFIRM",
-        "GAP_P2_002_OPEN",
+        "GAP_P2_002_REDUCED",
         "LEGACY_KHATA_PREVIEW_PATH_DOCUMENTED",
         "NO_PREVIEW_GENERATED",
         "NO_CONFIRMATION_CARD",
@@ -141,13 +141,13 @@ def build_deterministic_preview_edit_loop_bundle(
         preview_bound_to_draft_version=True,
         calc_authority_on_confirm=CalcAuthorityOnConfirm.DEXIE_DOMAIN_ENGINE,
         khata_preview_helpers_are_display_path=True,
-        gap_p2_002_status="OPEN",
+        gap_p2_002_status="REDUCED",
         reason_codes=reasons,
         warnings=(
-            "GAP_P2_002_REMAINS_OPEN",
-            "LEGACY_PREVIEW_HELPERS_STILL_ACTIVE_AUTHORITATIVE",
+            "GAP_P2_002_REDUCED_ADR_0078",
+            "UI_DISPLAY_ESTIMATES_REMAIN",
+            "LEGACY_PREVIEW_HELPERS_DISPLAY_PATH",
             "ENGINE_PREVIEW_PENDING_LATER_SLICE",
-            "CONFIRM_TOKEN_PENDING_MAI_34",
         ),
     )
 
@@ -183,7 +183,7 @@ def assert_deterministic_preview_edit_loop_authority(
         or bundle.mode_aware_invoked
         or bundle.draft_mutations != 0
         or bundle.edit_mutations != 0
-        or bundle.gap_p2_002_status != "OPEN"
+        or bundle.gap_p2_002_status not in {"OPEN", "REDUCED"}
     ):
         raise RuntimeError("DETERMINISTIC_PREVIEW_EDIT_LOOP_AUTHORITY")
 
@@ -205,7 +205,7 @@ def deterministic_preview_edit_loop_to_metadata(
         "stale_preview_on_confirm": "REJECT",
         "preview_bound_to_draft_version": True,
         "calc_authority_on_confirm": bundle.calc_authority_on_confirm.value,
-        "gap_p2_002_status": "OPEN",
+        "gap_p2_002_status": bundle.gap_p2_002_status,
         "preview_generated": False,
         "confirmation_card_generated": False,
         "preview_message_invoked": False,

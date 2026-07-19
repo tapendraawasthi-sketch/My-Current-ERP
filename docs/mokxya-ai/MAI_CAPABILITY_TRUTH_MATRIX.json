@@ -30,7 +30,7 @@
     {"id": "GAP-P1-009", "severity": "P1", "status": "OPEN", "blocks": ["multilingual_product", "NEXT-09"], "note": "NEXT-07 concept/number-role consume landed; multilingual product quality + NEXT-09 linguist still OPEN"},
     {"id": "GAP-P1-012", "severity": "P1", "status": "OPEN", "blocks": ["linguist_approval", "NEXT-09"]},
     {"id": "GAP-P2-001", "severity": "P2", "status": "OPEN", "blocks": ["prod_retrieval", "NEXT-14"]},
-    {"id": "GAP-P2-002", "severity": "P2", "status": "OPEN", "blocks": ["calc_authority", "NEXT-11"]},
+    {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-12"], "note": "NEXT-11 ADR_0078 owners+labels; UI display estimates remain; not CLOSED"},
     {"id": "GAP-P2-008", "severity": "P2", "status": "OPEN", "blocks": ["citation_honesty", "NEXT-13"]}
   ],
   "phases": [
@@ -67,7 +67,7 @@
     {"id": "MAI-30", "title": "GROUNDED ANSWER CLAIM CITATION", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-008"], "note": "Gate consume/abstain policy; suite honesty still OPEN."},
     {"id": "MAI-31", "title": "EVENTFRAME TO DOMAIN PORTS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "Draft payload candidates; no silent domain post."},
     {"id": "MAI-32", "title": "DURABLE VERSIONED DRAFTS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "Draft aggregate candidates; Dexie remains product draft store."},
-    {"id": "MAI-33", "title": "DETERMINISTIC PREVIEW EDIT LOOP", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-002"], "note": "Preview candidates; UI totals authority still OPEN."},
+    {"id": "MAI-33", "title": "DETERMINISTIC PREVIEW EDIT LOOP", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-002"], "note": "Preview candidates; NEXT-11 GAP-P2-002 REDUCED (not CLOSED); display estimates remain."},
     {"id": "MAI-34", "title": "EXPLICIT CONFIRMATION AND OEC DISPATCH", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "AI confirm_oec_candidate non-authority; NEXT-05 product tokens on Dexie path; nl_assent_posts=false."},
     {"id": "MAI-35", "title": "OFFLINE SYNC CONFLICT REVERSAL", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P1-002"], "note": "offline_sync_candidate only; dual sync still OPEN."},
     {"id": "MAI-36", "title": "LEGAL QUESTION RESEARCH MODE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-008"], "note": "Research candidates; no legal proof authority."},
@@ -95,7 +95,7 @@
       "title": "Ask Mode — authorized company report questions",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-20"],
+      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-12", "NEXT-13", "NEXT-20"],
       "note": "NEXT-10 freeze includes ask_company_report; still ANNOTATION_ONLY / not production."
     },
     {
@@ -103,8 +103,8 @@
       "title": "Accountant Mode — sales/purchase draft+confirm (narrow)",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P0-001", "GAP-P1-002", "GAP-P2-002", "NEXT-11", "NEXT-12", "NEXT-20"],
-      "note": "NEXT-10 freeze includes sales/purchase drafts; confirm+E2E still required."
+      "blocked_by": ["GAP-P0-001", "GAP-P1-002", "GAP-P2-002", "NEXT-12", "NEXT-20"],
+      "note": "NEXT-10 freeze + NEXT-11 calc honesty; E2E still required (NEXT-12)."
     },
     {
       "id": "LAUNCH-ASK-PRODUCT-HELP",
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-11",
+  "recommended_next_step": "NEXT-12",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11"]
 }

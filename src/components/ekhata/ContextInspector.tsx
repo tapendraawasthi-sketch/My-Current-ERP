@@ -153,7 +153,7 @@ const ContextInspector: React.FC<ContextInspectorProps> = ({
                 Hash · {String(pendingCard.preview_hash).slice(0, 10)}…
               </p>
             ) : (
-              <p className="mt-1 text-[12px] text-[var(--ds-text-subtle)]">Authoritative preview identifiers pending</p>
+              <p className="mt-1 text-[12px] text-[var(--ds-text-subtle)]">Confirm preview identifiers pending</p>
             )}
           </div>
         )}

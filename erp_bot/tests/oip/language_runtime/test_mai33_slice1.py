@@ -77,7 +77,7 @@ def test_purchase_policy_declared() -> None:
     assert bundle.edit_loop_policy == EditLoopPolicy.INVALIDATE_PREVIEW_ON_EDIT
     assert bundle.draft_module_id == "purchase_draft"
     assert bundle.stale_preview_on_confirm == "REJECT"
-    assert bundle.gap_p2_002_status == "OPEN"
+    assert bundle.gap_p2_002_status == "REDUCED"
     assert bundle.preview_generated is False
     assert bundle.confirmation_card_generated is False
     assert bundle.preview_message_invoked is False
@@ -132,7 +132,7 @@ def test_adapter_metadata() -> None:
     assert pel.get("preview_generated") is False
     assert pel.get("confirmation_card_generated") is False
     assert pel.get("journal_calculated") is False
-    assert pel.get("gap_p2_002_status") == "OPEN"
+    assert pel.get("gap_p2_002_status") == "REDUCED"
     assert pel.get("is_execution_authority") is False
 
 
@@ -157,7 +157,7 @@ def test_frozen_eval_fixtures() -> None:
         assert bundle.preview_generated is False
         assert bundle.confirmation_card_generated is False
         assert bundle.journal_calculated is False
-        assert bundle.gap_p2_002_status == "OPEN"
+        assert bundle.gap_p2_002_status == "REDUCED"
         assert bundle.is_execution_authority is False
         if case.get("expected_status"):
             assert bundle.analysis_status.value == case["expected_status"], case[

@@ -1651,9 +1651,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               </div>
             </Card>
 
-            {/* Totals */}
+            {/* Totals — NEXT-11 / ADR_0078: display estimate, not post authority */}
             <div className="flex justify-end">
               <div className="totals-panel">
+                <p className="text-[11px] text-gray-500 mb-2 text-right">
+                  Display estimate — ledger amounts use the domain engine when posted.
+                </p>
                 <div className="totals-row">
                   <span className="font-medium">Subtotal</span>
                   <span className="number-cell">

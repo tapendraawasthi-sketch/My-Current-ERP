@@ -806,7 +806,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 deterministic_preview_edit_loop["preview_message_invoked"] = False
                 deterministic_preview_edit_loop["journal_calculated"] = False
                 deterministic_preview_edit_loop["draft_mutations"] = 0
-                deterministic_preview_edit_loop["gap_p2_002_status"] = "OPEN"
+                deterministic_preview_edit_loop["gap_p2_002_status"] = "REDUCED"
                 deterministic_preview_edit_loop["allow_preview_generate"] = False
                 deterministic_preview_edit_loop["is_execution_authority"] = False
                 route = route.model_copy(

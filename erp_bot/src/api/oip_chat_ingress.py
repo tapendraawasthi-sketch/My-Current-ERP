@@ -2127,7 +2127,7 @@ async def build_canonical_ai_request(
                 "preview_message_invoked": False,
                 "journal_calculated": False,
                 "draft_mutations": 0,
-                "gap_p2_002_status": "OPEN",
+                "gap_p2_002_status": "REDUCED",
                 "allow_preview_generate": False,
             },
         )

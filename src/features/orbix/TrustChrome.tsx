@@ -9,7 +9,7 @@ import type { OrbixResponse } from "@/lib/ekhata/orbixResponseTypes";
 const TRUST_COPY: Record<OrbixTrustLabel, string> = {
   explanation: "Explanation — no posting",
   clarification: "Clarification — nothing posted",
-  preview: "Authoritative preview — confirm to post",
+  preview: "Confirm preview — domain engine posts on confirm",
   posted_local: "Posted locally",
   pending_sync: "Posted locally · waiting to sync",
   synced: "Posted and synced",

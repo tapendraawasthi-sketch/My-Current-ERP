@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_CALC_AUTHORITY_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0078",
+  "step": "NEXT-11",
+  "decision": "DEXIE_DOMAIN_ENGINE_CALC_ON_CONFIRM",
+  "gap_p2_002": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "runtime_ui_display_estimates_present": true,
+    "runtime_status_reason": "Invoice form and Orbix card may show display totals; confirm/post uses Dexie domain engines."
+  },
+  "flows": [
+    {
+      "id": "LAUNCH_SALES_CONFIRM_POST",
+      "launch_event": "sales_invoice_draft",
+      "calc_owner": "DEXIE_DOMAIN_ENGINE",
+      "entry": "src/domains/sales/postSalesTransaction.ts",
+      "via": "src/lib/ekhata/orbixPostingService.ts::executeOrbixConfirm",
+      "ui_display_role": "NON_AUTHORITATIVE_UNTIL_POST",
+      "edit_loop_may_invent_party_or_amount": false
+    },
+    {
+      "id": "LAUNCH_PURCHASE_CONFIRM_POST",
+      "launch_event": "purchase_invoice_draft",
+      "calc_owner": "DEXIE_DOMAIN_ENGINE",
+      "entry": "src/domains/purchase/postPurchaseTransaction.ts",
+      "via": "src/lib/ekhata/orbixPostingService.ts::executeOrbixConfirm",
+      "ui_display_role": "NON_AUTHORITATIVE_UNTIL_POST",
+      "edit_loop_may_invent_party_or_amount": false
+    },
+    {
+      "id": "ORBIX_KHATA_PREVIEW_CARD",
+      "calc_owner": "KHATA_BUILD_PREVIEW_DISPLAY",
+      "entry": "erp_bot/src/khata/sales_draft.py::build_preview / purchase_draft.py::build_preview",
+      "ui_display_role": "CONFIRM_PREVIEW_DISPLAY",
+      "authoritative_on_post": false,
+      "notes": "Preview hash binds confirm; money authority remains Dexie domain on post."
+    },
+    {
+      "id": "MANUAL_INVOICE_FORM_TOTALS",
+      "calc_owner": "UI_DISPLAY_ESTIMATE",
+      "entry": "src/components/invoice/SalesInvoiceForm.tsx + taxUtils.computeInvoiceVAT",
+      "ui_display_role": "NON_AUTHORITATIVE_DISPLAY",
+      "authoritative_on_post": false,
+      "notes": "Labeled non-authoritative; voucherSlice/domain post owns ledger amounts."
+    }
+  ],
+  "policies": {
+    "ui_calculates_authoritative_totals": false,
+    "ai_journal_math_allowed": false,
+    "edit_loop_invents_party_or_amount": false,
+    "stale_preview_on_confirm": "REJECT",
+    "calc_authority_on_confirm": "DEXIE_DOMAIN_ENGINE"
+  },
+  "honesty": {
+    "production_approved": false,
+    "gap_p2_002_closed": false
+  },
+  "forbidden_claims": [
+    "ui_calculates_authoritative_totals=true",
+    "ai_journal_math_allowed=true",
+    "edit_loop_invents_party_or_amount=true",
+    "gap_p2_002_closed=true",
+    "production_approved=true"
+  ]
+}

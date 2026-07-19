@@ -466,8 +466,8 @@ Severity legend:
 - **Recommended MAI phase:** MAI-33
 - **Dependencies:** authority decision
 - **Acceptance condition:** Documented single calc owner per flow with parity tests
-- **Status:** OPEN
-- **Progress (2026-07-19):** MAI-33 slice 1 annotates `ui_calculates_authoritative_totals=false`, `calc_authority_on_confirm=DEXIE_DOMAIN_ENGINE`, `gap_p2_002_status=OPEN`. Does **not** close the gap (UI/engine parity work still pending).
+- **Status:** REDUCED
+- **Progress (2026-07-19):** MAI-33 annotated ownership. NEXT-11 / ADR_0078 documents owners in `MAI_CALC_AUTHORITY_REGISTRY.json`, labels form/Orbix totals non-authoritative, sets bundle `gap_p2_002_status=REDUCED`, and adds parity/honesty tests. Does **not** mark CLOSED (UI display estimates + voucherSlice dual-calc residual remain).
 
 ### GAP-P2-003 — Default OEC/knowledge SQLite tenant-a seeds
 

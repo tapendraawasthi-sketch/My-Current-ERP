@@ -63,7 +63,7 @@ const META: Partial<Record<OrbixResponseType, Omit<OrbixPresentationMeta, "respo
     isStructured: true,
   },
   transaction_preview: {
-    heading: "Authoritative preview",
+    heading: "Confirm preview",
     trust: "preview",
     allowsConfirm: true,
     allowsMutation: false,
