@@ -1159,6 +1159,35 @@ class CanonicalOipRequestAdapter:
                     "nepali_english_speech_channel_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-51: private user-document intelligence (never ingests docs).
+        if canonical.private_user_document_intelligence_bundle is not None:
+            try:
+                from ...modules.conversation.application.private_user_document_intelligence_service import (
+                    private_user_document_intelligence_to_metadata,
+                )
+
+                metadata["private_user_document_intelligence"] = (
+                    private_user_document_intelligence_to_metadata(
+                        canonical.private_user_document_intelligence_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                pudi = canonical.private_user_document_intelligence_bundle
+                metadata["private_user_document_intelligence"] = {
+                    "analysis_status": pudi.analysis_status.value,
+                    "runtime_version": pudi.runtime_version,
+                    "private_user_document_intelligence_readiness": (
+                        pudi.private_user_document_intelligence_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "private_document_intelligence_enabled": False,
+                    "document_ingested": False,
+                    "document_qa_live": False,
+                    "cross_tenant_isolation_proven": False,
+                    "production_approved": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

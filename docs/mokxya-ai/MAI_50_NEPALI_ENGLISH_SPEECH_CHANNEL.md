@@ -1,7 +1,7 @@
 # MAI-50 — Nepali/English Speech Channel
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0067](decisions/ADR_0067_NEPALI_ENGLISH_SPEECH_CHANNEL_AUTHORITY.md)  
 **Runtime:** `mai-50.0.2-slice2` (engineering; not production-approved)
 

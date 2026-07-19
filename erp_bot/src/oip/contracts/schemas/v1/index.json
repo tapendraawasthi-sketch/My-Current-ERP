@@ -60,6 +60,7 @@
     "GovernedImprovementFineTuningBundleV1",
     "ProductionCapabilityReleaseBundleV1",
     "NepaliEnglishSpeechChannelBundleV1",
+    "PrivateUserDocumentIntelligenceBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

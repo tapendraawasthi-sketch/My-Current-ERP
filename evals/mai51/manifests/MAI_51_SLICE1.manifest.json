@@ -1,0 +1,27 @@
+{
+  "phase": "MAI-51",
+  "slice": "1",
+  "runtime_version": "mai-51.0.1-slice1",
+  "authority": "ADR_0068",
+  "frozen_sets": [
+    {
+      "id": "private_user_document_intelligence_v1",
+      "path": "evals/mai51/frozen/private_user_document_intelligence_v1.jsonl",
+      "sha256": "b54bc07b7d61385951942a889f464235eb969457615c6a823f0ed67d68f70189",
+      "row_count": 6
+    }
+  ],
+  "honesty": {
+    "private_document_intelligence_enabled": false,
+    "document_ingested": false,
+    "document_indexed": false,
+    "document_qa_live": false,
+    "retention_policy_applied": false,
+    "access_control_enforced": false,
+    "cross_tenant_isolation_proven": false,
+    "user_document_released": false,
+    "documents_retrieved": 0,
+    "production_approved": false,
+    "gap_p2_008": "OPEN"
+  }
+}

@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-50",
-  "active_phase_note": "MAI-50 slice 2 IN_PROGRESS (ADR_0067); CANDIDATE_ONLY speech-channel candidates (never speech enabled / never ASR-TTS live); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-51",
+  "active_phase_note": "MAI-51 slice 1 IN_PROGRESS (ADR_0068); private user-document intelligence policy (never ingest / never QA live); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3464,7 +3464,7 @@
     {
       "id": "MAI-50",
       "title": "NEPALI/ENGLISH SPEECH CHANNEL",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3475,6 +3475,7 @@
         "docs/mokxya-ai/decisions/ADR_0067_NEPALI_ENGLISH_SPEECH_CHANNEL_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_50_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_50_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_50_ENGINEERING_CLOSURE.md",
         "evals/mai50/manifests/MAI_50_SLICE1.manifest.json",
         "evals/mai50/manifests/MAI_50_SLICE2.manifest.json"
       ],
@@ -3498,20 +3499,43 @@
         "MAI-49"
       ],
       "recommended_order": 50,
-      "closure_note": "Slice 2: CANDIDATE_ONLY speech-channel candidates; never speech enabled / never ASR-TTS live; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: Nepali/English speech channel POLICY + CANDIDATE_ONLY candidates; never speech enabled / never ASR-TTS live; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-51",
       "title": "PRIVATE USER-DOCUMENT INTELLIGENCE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-51.0.1-slice1",
+      "slice": "SLICE1_PRIVATE_USER_DOCUMENT_INTELLIGENCE_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_51_PRIVATE_USER_DOCUMENT_INTELLIGENCE.md",
+        "docs/mokxya-ai/decisions/ADR_0068_PRIVATE_USER_DOCUMENT_INTELLIGENCE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_51_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai51/manifests/MAI_51_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "private_user_document_intelligence_service.py (policy annotation)",
+        "PrivateUserDocumentIntelligenceBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress PRIVATE_USER_DOCUMENT_INTELLIGENCE after NEPALI_ENGLISH_SPEECH_CHANNEL",
+        "release_status=NOT_RELEASED; private_document_intelligence_enabled=false; document_ingested=false; document_indexed=false; document_qa_live=false; cross_tenant_isolation_proven=false; documents_retrieved=0; production_approved=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-50"
       ],
-      "recommended_order": 51
+      "recommended_order": 51,
+      "closure_note": "Slice 1: private user-document intelligence POLICY_DECLARED; never ingest / never QA live; GAP-P2-008 open."
     },
     {
       "id": "MAI-52",

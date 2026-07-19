@@ -67,6 +67,9 @@ from .production_capability_release import (
 from .nepali_english_speech_channel import (
     NepaliEnglishSpeechChannelBundleV1,
 )
+from .private_user_document_intelligence import (
+    PrivateUserDocumentIntelligenceBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -287,6 +290,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-50: Nepali/English speech channel (never enables live speech).
     nepali_english_speech_channel_bundle: (
         NepaliEnglishSpeechChannelBundleV1 | None
+    ) = None
+    # MAI-51: private user-document intelligence (never ingests docs).
+    private_user_document_intelligence_bundle: (
+        PrivateUserDocumentIntelligenceBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

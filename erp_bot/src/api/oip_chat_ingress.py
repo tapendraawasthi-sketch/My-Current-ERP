@@ -3809,6 +3809,88 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent live speech.
 
+    # MAI-51: private user-document intelligence (never ingests docs).
+    pudi_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.PRIVATE_USER_DOCUMENT_INTELLIGENCE_STARTED,
+        component="conversation.private_user_document_intelligence",
+    )
+    try:
+        from ..oip.modules.conversation.application.private_user_document_intelligence_service import (
+            assert_private_user_document_intelligence_authority,
+            attach_private_user_document_intelligence_to_request,
+        )
+
+        updated = attach_private_user_document_intelligence_to_request(
+            canonical
+        )
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.private_user_document_intelligence_bundle
+        assert_private_user_document_intelligence_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            pudi_ev,
+            version_map={
+                "private_user_document_intelligence": "mai-51.0.1-slice1",
+            },
+            safe_attributes={
+                "private_user_document_intelligence_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "private_user_document_intelligence_readiness": (
+                    bundle.private_user_document_intelligence_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "PRIVATE_USER_DOCUMENT_INTELLIGENCE_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "document_authority_claimed": False,
+                "private_document_intelligence_enabled": False,
+                "document_ingested": False,
+                "document_indexed": False,
+                "document_qa_live": False,
+                "retention_policy_applied": False,
+                "access_control_enforced": False,
+                "cross_tenant_isolation_proven": False,
+                "user_document_released": False,
+                "production_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.PRIVATE_USER_DOCUMENT_INTELLIGENCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            pudi_ev,
+            safe_error_code="PRIVATE_USER_DOCUMENT_INTELLIGENCE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.PRIVATE_USER_DOCUMENT_INTELLIGENCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="PRIVATE_USER_DOCUMENT_INTELLIGENCE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent document ingest.
+
     return canonical
 
 

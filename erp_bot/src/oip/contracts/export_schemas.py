@@ -106,6 +106,9 @@ from .production_capability_release import (
 from .nepali_english_speech_channel import (
     NepaliEnglishSpeechChannelBundleV1,
 )
+from .private_user_document_intelligence import (
+    PrivateUserDocumentIntelligenceBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -217,6 +220,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "NepaliEnglishSpeechChannelBundleV1",
         NepaliEnglishSpeechChannelBundleV1,
+    ),
+    (
+        "PrivateUserDocumentIntelligenceBundleV1",
+        PrivateUserDocumentIntelligenceBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
