@@ -44,6 +44,7 @@
     "DurableVersionedDraftBundleV1",
     "DeterministicPreviewEditLoopBundleV1",
     "ExplicitConfirmationOecDispatchBundleV1",
+    "OfflineSyncConflictReversalBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

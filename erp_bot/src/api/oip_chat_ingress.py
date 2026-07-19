@@ -2249,6 +2249,78 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent confirm/OEC success.
 
+    # MAI-35: offline / sync / conflict / reversal policy (never syncs).
+    osc_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.OFFLINE_SYNC_CONFLICT_REVERSAL_STARTED,
+        component="conversation.offline_sync_conflict_reversal",
+    )
+    try:
+        from ..oip.modules.conversation.application.offline_sync_conflict_reversal_service import (
+            assert_offline_sync_conflict_reversal_authority,
+            attach_offline_sync_conflict_reversal_to_request,
+        )
+
+        updated = attach_offline_sync_conflict_reversal_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.offline_sync_conflict_reversal_bundle
+        assert_offline_sync_conflict_reversal_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            osc_ev,
+            version_map={
+                "offline_sync_conflict_reversal": "mai-35.0.1-slice1",
+            },
+            safe_attributes={
+                "sync_policy_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "sync_policy_readiness": (
+                    bundle.sync_policy_readiness.value if bundle else None
+                ),
+                "conflict_policy": (
+                    bundle.conflict_policy.value if bundle else None
+                ),
+                "reversal_policy": (
+                    bundle.reversal_policy.value if bundle else None
+                ),
+                "queued_must_not_label_synced": True,
+                "sync_workers_started": False,
+                "queue_enqueued": False,
+                "conflict_resolved": False,
+                "reversal_dispatched": False,
+                "gap_p1_002_status": "OPEN",
+                "gap_p0_001_status": "OPEN",
+                "queue_mutations": 0,
+                "sync_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.OFFLINE_SYNC_CONFLICT_REVERSAL_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "dual_sync_status": (
+                    bundle.dual_sync_status.value if bundle else None
+                ),
+                "draft_module_id": (
+                    bundle.draft_module_id if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            osc_ev, safe_error_code="OFFLINE_SYNC_CONFLICT_REVERSAL_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.OFFLINE_SYNC_CONFLICT_REVERSAL_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="OFFLINE_SYNC_CONFLICT_REVERSAL_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent sync success.
+
     return canonical
 
 

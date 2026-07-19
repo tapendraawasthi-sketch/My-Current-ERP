@@ -1,0 +1,6 @@
+{"case_id": "mai35_osc__purchase", "suite_id": "offline_sync_conflict_reversal_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai35_osc__purchase_en", "suite_id": "offline_sync_conflict_reversal_v1", "text": "bought rice from Ram for Rs 500 cash", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai35_osc__sales", "suite_id": "offline_sync_conflict_reversal_v1", "text": "sold goods to Ram for Rs 500 cash", "expected_status": "COMPLETE", "expected_readiness": "POLICY_DECLARED", "prohibited_for_training": true}
+{"case_id": "mai35_osc__report", "suite_id": "offline_sync_conflict_reversal_v1", "text": "show balance sheet", "expected_status": "SKIP", "expected_readiness": "NOT_APPLICABLE", "prohibited_for_training": true}
+{"case_id": "mai35_osc__ood", "suite_id": "offline_sync_conflict_reversal_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai35_osc__ledger", "suite_id": "offline_sync_conflict_reversal_v1", "text": "show ledger balance report for cash account", "expected_status": "SKIP", "prohibited_for_training": true}

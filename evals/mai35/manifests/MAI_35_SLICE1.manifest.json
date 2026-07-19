@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai35-slice1-v1",
+  "dataset_hash": "85c846f1353e3c434bdac6223bb52afea1d1e6de7b94b3bdc48b80e816ea1566",
+  "phase": "MAI-35",
+  "slice": "SLICE1_OFFLINE_SYNC_POLICY_ANNOTATION",
+  "runtime_version": "mai-35.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai35/frozen/offline_sync_conflict_reversal_v1.jsonl",
+      "sha256": "85c846f1353e3c434bdac6223bb52afea1d1e6de7b94b3bdc48b80e816ea1566",
+      "case_count": 6,
+      "suite_id": "offline_sync_conflict_reversal_v1"
+    }
+  ]
+}

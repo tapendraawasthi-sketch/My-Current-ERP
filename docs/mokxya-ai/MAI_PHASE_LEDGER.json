@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-34",
-  "active_phase_note": "MAI-34 slice 2 IN_PROGRESS (ADR_0051); confirm/OEC-candidate consume (CANDIDATE_ONLY); GAP-P0-001 remains OPEN",
+  "recommended_next_phase": "MAI-35",
+  "active_phase_note": "MAI-35 slice 1 IN_PROGRESS (ADR_0052); offline/sync/conflict/reversal policy annotation; GAP-P1-002 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2825,7 +2825,7 @@
     {
       "id": "MAI-34",
       "title": "EXPLICIT CONFIRMATION AND OEC DISPATCH",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2836,6 +2836,7 @@
         "docs/mokxya-ai/decisions/ADR_0051_EXPLICIT_CONFIRMATION_OEC_DISPATCH_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_34_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_34_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_34_ENGINEERING_CLOSURE.md",
         "evals/mai34/manifests/MAI_34_SLICE1.manifest.json",
         "evals/mai34/manifests/MAI_34_SLICE2.manifest.json"
       ],
@@ -2858,22 +2859,43 @@
         "MAI-33"
       ],
       "recommended_order": 34,
-      "closure_note": "Slice 2: CANDIDATE_ONLY confirm/OEC candidates; never live post; GAP-P0-001 open."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-35. production_approved=false. GAP-P0-001 remains OPEN."
     },
     {
       "id": "MAI-35",
       "title": "OFFLINE, SYNC, CONFLICT, AND REVERSAL UX",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "eventSyncQueue + dual sync remains"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-35.0.1-slice1",
+      "slice": "SLICE1_OFFLINE_SYNC_POLICY_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_35_OFFLINE_SYNC_CONFLICT_AND_REVERSAL_UX.md",
+        "docs/mokxya-ai/decisions/ADR_0052_OFFLINE_SYNC_CONFLICT_REVERSAL_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_35_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai35/manifests/MAI_35_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "offline_sync_conflict_reversal_service.py (policy annotation)",
+        "OfflineSyncConflictReversalBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress OFFLINE_SYNC_CONFLICT_REVERSAL after EXPLICIT_CONFIRMATION_OEC_DISPATCH",
+        "sync_workers_started=false; queue_enqueued=false; gap_p1_002_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-34"
       ],
-      "recommended_order": 35
+      "recommended_order": 35,
+      "closure_note": "Slice 1: offline/sync/conflict/reversal policy annotation; never syncs; GAP-P1-002 open."
     },
     {
       "id": "MAI-36",

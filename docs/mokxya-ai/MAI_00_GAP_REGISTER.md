@@ -330,8 +330,7 @@ Severity legend:
 - **Dependencies:** posting authority decision
 - **Acceptance condition:** One authoritative sync path for accounting events; tests for two-device conflict
 - **Status:** OPEN
-
-### GAP-P1-003 — JWT / API secret falls back to insecure default
+- **Progress (2026-07-19):** MAI-35 slice 1 annotates lifecycle states, `conflict_policy=REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT`, `reversal_policy=GOVERNED_CORRECTION_ONLY`, `queued_must_not_label_synced=true`, `dual_sync_status=OPEN`, `gap_p1_002_status=OPEN`. Does **not** close the gap (dual sync workers still active; no enqueue / resolve / reversal in this slice).
 
 - **Severity:** P1
 - **Affected capability:** security

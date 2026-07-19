@@ -625,6 +625,14 @@
       "title": "ConfirmReadiness",
       "type": "string"
     },
+    "ConflictPolicy": {
+      "enum": [
+        "REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT",
+        "NOT_APPLICABLE"
+      ],
+      "title": "ConflictPolicy",
+      "type": "string"
+    },
     "ContextAssemblyBundleV1": {
       "additionalProperties": false,
       "properties": {
@@ -1810,6 +1818,14 @@
         "UNKNOWN"
       ],
       "title": "DraftVersionPolicy",
+      "type": "string"
+    },
+    "DualSyncStatus": {
+      "enum": [
+        "OPEN",
+        "NOT_APPLICABLE"
+      ],
+      "title": "DualSyncStatus",
       "type": "string"
     },
     "DurableVersionedDraftBundleV1": {
@@ -4889,6 +4905,221 @@
       "title": "OecDispatchReadiness",
       "type": "string"
     },
+    "OfflineSyncConflictReversalBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/OfflineSyncConflictReversalStatus",
+          "default": "NOT_RUN"
+        },
+        "conflict_auto_overwrite": {
+          "default": false,
+          "title": "Conflict Auto Overwrite",
+          "type": "boolean"
+        },
+        "conflict_policy": {
+          "$ref": "#/$defs/ConflictPolicy",
+          "default": "NOT_APPLICABLE"
+        },
+        "conflict_resolved": {
+          "default": false,
+          "title": "Conflict Resolved",
+          "type": "boolean"
+        },
+        "draft_module_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Module Id"
+        },
+        "dual_sync_status": {
+          "$ref": "#/$defs/DualSyncStatus",
+          "default": "NOT_APPLICABLE"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "gap_p0_001_status": {
+          "default": "OPEN",
+          "title": "Gap P0 001 Status",
+          "type": "string"
+        },
+        "gap_p1_002_status": {
+          "default": "OPEN",
+          "title": "Gap P1 002 Status",
+          "type": "string"
+        },
+        "lifecycle_states_declared": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Lifecycle States Declared",
+          "type": "array"
+        },
+        "online_only_class_policy": {
+          "default": "DECLARED_NOT_ENFORCED",
+          "title": "Online Only Class Policy",
+          "type": "string"
+        },
+        "posted_history_edited": {
+          "default": false,
+          "title": "Posted History Edited",
+          "type": "boolean"
+        },
+        "posted_history_immutable_except_governed_reversal": {
+          "default": true,
+          "title": "Posted History Immutable Except Governed Reversal",
+          "type": "boolean"
+        },
+        "queue_enqueued": {
+          "default": false,
+          "title": "Queue Enqueued",
+          "type": "boolean"
+        },
+        "queue_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Queue Mutations",
+          "type": "integer"
+        },
+        "queueable_class_policy": {
+          "default": "DECLARED_NOT_ENFORCED",
+          "title": "Queueable Class Policy",
+          "type": "string"
+        },
+        "queued_labeled_synced": {
+          "default": false,
+          "title": "Queued Labeled Synced",
+          "type": "boolean"
+        },
+        "queued_must_not_label_synced": {
+          "default": true,
+          "title": "Queued Must Not Label Synced",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "retry_must_be_idempotent": {
+          "default": true,
+          "title": "Retry Must Be Idempotent",
+          "type": "boolean"
+        },
+        "reversal_dispatched": {
+          "default": false,
+          "title": "Reversal Dispatched",
+          "type": "boolean"
+        },
+        "reversal_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Reversal Mutations",
+          "type": "integer"
+        },
+        "reversal_policy": {
+          "$ref": "#/$defs/ReversalPolicy",
+          "default": "NOT_APPLICABLE"
+        },
+        "runtime_version": {
+          "default": "mai-35.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "selected_port_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Port Id"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "sync_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Sync Mutations",
+          "type": "integer"
+        },
+        "sync_policy_readiness": {
+          "$ref": "#/$defs/SyncPolicyReadiness",
+          "default": "NOT_APPLICABLE"
+        },
+        "sync_pull_invoked": {
+          "default": false,
+          "title": "Sync Pull Invoked",
+          "type": "boolean"
+        },
+        "sync_push_invoked": {
+          "default": false,
+          "title": "Sync Push Invoked",
+          "type": "boolean"
+        },
+        "sync_workers_started": {
+          "default": false,
+          "title": "Sync Workers Started",
+          "type": "boolean"
+        },
+        "ui_badge_mutated": {
+          "default": false,
+          "title": "Ui Badge Mutated",
+          "type": "boolean"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "OfflineSyncConflictReversalBundleV1",
+      "type": "object"
+    },
+    "OfflineSyncConflictReversalStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "OfflineSyncConflictReversalStatus",
+      "type": "string"
+    },
     "OffsetMapSegmentV1": {
       "additionalProperties": false,
       "properties": {
@@ -5954,6 +6185,14 @@
       "title": "ResponseRegisterStatus",
       "type": "string"
     },
+    "ReversalPolicy": {
+      "enum": [
+        "GOVERNED_CORRECTION_ONLY",
+        "NOT_APPLICABLE"
+      ],
+      "title": "ReversalPolicy",
+      "type": "string"
+    },
     "RouterAnalysisStatus": {
       "enum": [
         "NOT_RUN",
@@ -6394,6 +6633,15 @@
         "FAILED"
       ],
       "title": "StructuralSegmentationStatus",
+      "type": "string"
+    },
+    "SyncPolicyReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED"
+      ],
+      "title": "SyncPolicyReadiness",
       "type": "string"
     },
     "TemporalCrossRefBundleV1": {
@@ -8020,6 +8268,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/ObjectReferenceBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "offline_sync_conflict_reversal_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OfflineSyncConflictReversalBundleV1"
         },
         {
           "type": "null"

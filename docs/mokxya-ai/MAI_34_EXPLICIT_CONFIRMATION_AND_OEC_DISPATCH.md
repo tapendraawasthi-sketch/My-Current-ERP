@@ -1,7 +1,7 @@
 # MAI-34 — Explicit Confirmation and OEC Dispatch
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0051](decisions/ADR_0051_EXPLICIT_CONFIRMATION_OEC_DISPATCH_AUTHORITY.md)  
 **Runtime:** `mai-34.0.2-slice2` (engineering; not production-approved)
 
