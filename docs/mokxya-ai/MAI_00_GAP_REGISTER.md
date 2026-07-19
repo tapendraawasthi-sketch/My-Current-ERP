@@ -316,7 +316,8 @@ Severity legend:
 - **Recommended MAI phase:** MAI-01 / MAI-16
 - **Dependencies:** traffic metrics
 - **Acceptance condition:** Non-canonical stacks blocked in production or explicitly gated
-- **Status:** OPEN
+- **Status:** REDUCED
+- **Progress (2026-07-19):** NEXT-03 / ADR_0073 — production disables secondary AI mounts by default (`/nios/v1`, `/orbix/v2`, `/v2/chat`, `/v2/chat/stream`) via `ai_stack_mount_policy.py`; primary remains `/orbix/chat/stream`. Break-glass `MOKXYA_ALLOW_SECONDARY_AI_STACKS=true`. Non-prod keeps secondary for DX. Does **not** CLOSE (secondary code remains; non-prod still mounts).
 
 ### GAP-P1-002 — Dual sync authorities (event sync + legacy outbox + khata confirm)
 

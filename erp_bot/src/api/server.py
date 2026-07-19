@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import httpx
-from fastapi import BackgroundTasks, FastAPI, Header, Request
+from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -48,18 +48,37 @@ from .oip_chat_ingress import (
     submit_chat,
 )
 from .streaming import router as streaming_router
+from ..oip.domain.constitution.ai_stack_mount_policy import (
+    secondary_ai_stacks_allowed,
+    secondary_stack_denial_payload,
+)
 
 app = FastAPI(title="ERP AI Chatbot")
-app.include_router(streaming_router)
 
-# NIOS v3 — Financial Intelligence Platform gateway
-try:
-    from ..nios.api import router as nios_router
+_SECONDARY_AI_STACKS = secondary_ai_stacks_allowed()
+if _SECONDARY_AI_STACKS:
+    app.include_router(streaming_router)
+    print("[SERVER] Legacy /v2/chat/stream mounted (secondary AI stacks allowed)")
+else:
+    print(
+        "[SERVER] Legacy /v2/chat/stream NOT mounted "
+        "(ADR_0073 / GAP-P1-001 production strangler)"
+    )
 
-    app.include_router(nios_router)
-    print("[SERVER] NIOS v3 router mounted at /nios/v1")
-except Exception as _nios_exc:
-    print(f"[SERVER] NIOS v3 unavailable: {_nios_exc}")
+# NIOS v3 — Financial Intelligence Platform gateway (secondary; prod-gated)
+if _SECONDARY_AI_STACKS:
+    try:
+        from ..nios.api import router as nios_router
+
+        app.include_router(nios_router)
+        print("[SERVER] NIOS v3 router mounted at /nios/v1")
+    except Exception as _nios_exc:
+        print(f"[SERVER] NIOS v3 unavailable: {_nios_exc}")
+else:
+    print(
+        "[SERVER] NIOS v3 NOT mounted "
+        "(ADR_0073 / GAP-P1-001 production strangler)"
+    )
 
 # Cloudflare R2 storage health check
 try:
@@ -80,14 +99,20 @@ try:
 except Exception as _knowledge_exc:
     print(f"[SERVER] Knowledge pipeline unavailable: {_knowledge_exc}")
 
-# Orbix v2 — genuine local reasoning agent (plan/tool/verify loop).
-try:
-    from ..orbix.api import router as orbix_router
+# Orbix v2 — secondary local reasoning agent (prod-gated; primary is OIP stream).
+if _SECONDARY_AI_STACKS:
+    try:
+        from ..orbix.api import router as orbix_router
 
-    app.include_router(orbix_router)
-    print("[SERVER] Orbix v2 router mounted at /orbix/v2")
-except Exception as _orbix_exc:  # keep legacy endpoints working if Orbix fails to import
-    print(f"[SERVER] Orbix v2 unavailable: {_orbix_exc}")
+        app.include_router(orbix_router)
+        print("[SERVER] Orbix v2 router mounted at /orbix/v2")
+    except Exception as _orbix_exc:
+        print(f"[SERVER] Orbix v2 unavailable: {_orbix_exc}")
+else:
+    print(
+        "[SERVER] Orbix v2 NOT mounted "
+        "(ADR_0073 / GAP-P1-001 production strangler)"
+    )
 
 # Orbix draft ack (Model B — Dexie posts, Python draft status sync)
 try:
@@ -834,7 +859,16 @@ def khata_clear_session_endpoint(payload: dict) -> dict:
 
 @app.post("/v2/chat", response_model=V2ChatResponse)
 def v2_chat_endpoint(req: V2ChatRequest) -> V2ChatResponse:
-    """e-Khata v2 — conversation manager with reasoner + confirmation flow."""
+    """e-Khata v2 — conversation manager with reasoner + confirmation flow.
+
+    Secondary stack: denied in production unless break-glass
+    MOKXYA_ALLOW_SECONDARY_AI_STACKS=true (ADR_0073 / GAP-P1-001).
+    """
+    if not secondary_ai_stacks_allowed():
+        raise HTTPException(
+            status_code=403,
+            detail=secondary_stack_denial_payload("LEGACY_V2_CHAT"),
+        )
     try:
         if req.context:
             set_session_context(req.session_id, req.context)

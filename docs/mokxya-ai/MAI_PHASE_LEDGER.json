@@ -5,9 +5,16 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-03",
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00/01 DONE; NEXT-02 DONE (ADR_0072 Option A Model B product mutation authority; GAP-P0-001 REDUCED not CLOSED). NEXT recommended=NEXT-03 (GAP-P1-001 stack strangler). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-04",
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..03 DONE. NEXT-03 ADR_0073 production secondary AI stacks gated (GAP-P1-001 REDUCED). NEXT recommended=NEXT-04 (GAP-P1-002 sync authority). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
   "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
+  "ai_stack_strangler": {
+    "authority": "ADR_0073",
+    "primary_chat_route": "/orbix/chat/stream",
+    "secondary_disabled_in_production_by_default": true,
+    "break_glass_env": "MOKXYA_ALLOW_SECONDARY_AI_STACKS",
+    "gap_p1_001_register_status": "REDUCED"
+  },
   "mutation_authority": {
     "authority": "ADR_0072",
     "decision": "OPTION_A_MODEL_B_PRODUCT_AUTHORITY",

@@ -272,8 +272,13 @@ Gate:
   Production matrix test: secondary stacks cannot mutate or serve as default;
   GAP-P1-001 REDUCED or CLOSED with evidence.
 
-Status: OPEN
-Depends on: NEXT-02 recommended (or parallel if owner approves)
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/decisions/ADR_0073_PRODUCTION_AI_STACK_STRANGLER.md
+  erp_bot/src/oip/domain/constitution/ai_stack_mount_policy.py
+  erp_bot/src/api/server.py (prod mount gates)
+  erp_bot/tests/oip/language_runtime/test_mai_next03_ai_stack_strangler.py
+  GAP-P1-001 register status REDUCED (secondary code remains; non-prod DX mounts)
 
 
 NEXT-04 — SYNC AUTHORITY HARDENING (GAP-P1-002 / MAI-35 depth)
@@ -588,7 +593,7 @@ Step     | Status | Commit / evidence | Notes
 NEXT-00  | DONE   | MAI_CAPABILITY_TRUTH_MATRIX.* | honest depths; Track I dormant
 NEXT-01  | DONE   | ADR_0071 + ledger track_i_freeze | freeze until NEXT-20
 NEXT-02  | DONE   | ADR_0072 + mutation registry | GAP-P0-001 REDUCED (not CLOSED)
-NEXT-03  | OPEN   |                   | GAP-P1-001
+NEXT-03  | DONE   | ADR_0073 + prod mount gates | GAP-P1-001 REDUCED (not CLOSED)
 NEXT-04  | OPEN   |                   | GAP-P1-002
 NEXT-05  | OPEN   |                   | MAI-34 depth
 NEXT-06  | OPEN   |                   | MAI-04 suites
@@ -610,11 +615,12 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-03
-  last_shipped_step = NEXT-02
+  recommended_next_step = NEXT-04
+  last_shipped_step = NEXT-03
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
+  ai_stack_strangler = ACTIVE (ADR_0073); primary=/orbix/chat/stream
 
 ======================================================================
 10. RELATIONSHIP TO THE MASTER FILE
