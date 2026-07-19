@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_KNOWLEDGE_HONESTY_SIGNOFF_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0088",
+  "step": "PR-B5",
+  "decision": "KNOWLEDGE_HONESTY_SIGNOFF_PACK",
+  "extends": "ADR_0080",
+  "gap_p2_008": {
+    "register_status": "REDUCED",
+    "runtime_status": "OPEN",
+    "closed": false,
+    "runtime_status_reason": "Engineering critical-case force-abstain re-proven; staging professional reviewer attestation may remain PENDING; not CLOSED"
+  },
+  "signoff": {
+    "engineering_gate_status": "PASS",
+    "launch_ask_sign_status": "ENGINEERING_PASS",
+    "staging_professional_review_status": "PENDING",
+    "staging_professional_review_ticket": "TICKET-PR-B5-001",
+    "blocking_fix_shipped": false,
+    "blocking_fix_required": false
+  },
+  "critical_suite": {
+    "suite_id": "knowledge_no_answer_v1",
+    "path": "evals/mai04/frozen/knowledge_no_answer_v1.jsonl",
+    "cases": [
+      "mai04_know__fake_cite_04",
+      "mai04_know__tax_current_02",
+      "mai04_know__no_kb_05",
+      "mai04_know__lang_as_law_07",
+      "mai04_know__unsupp_legal_09",
+      "mai04_know__stale_08"
+    ],
+    "engineering_reproof_status": "PASS",
+    "review_status": "PROFESSIONAL_REVIEW_PENDING"
+  },
+  "policies": {
+    "fake_cite_fails": true,
+    "missing_evidence_no_answer": true,
+    "tax_current_without_release_abstains": true,
+    "allow_with_candidates_is_not_verified": true,
+    "gap_closed_without_professional_attestation": false
+  },
+  "proofs": {
+    "engineering_gate": [
+      "erp_bot/tests/oip/language_runtime/test_mai_next13_knowledge_citation.py",
+      "erp_bot/tests/oip/language_runtime/test_mai_pr_b5_knowledge_honesty_signoff.py",
+      "artifacts/prod-ready-pr-b5/CRITICAL_CASE_RESULTS.md"
+    ],
+    "sign_note": [
+      "artifacts/prod-ready-pr-b5/SIGN_NOTE.md"
+    ]
+  },
+  "honesty": {
+    "production_approved": false,
+    "gap_p2_008_closed": false,
+    "claims_verified": false,
+    "citations_verified": false,
+    "legal_effective_dates_proven": false,
+    "staging_professional_attested": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "gap_p2_008_closed=true",
+    "production_approved=true",
+    "claims_verified=true",
+    "legal_effective_dates_proven=true",
+    "staging_professional_attested=true_without_evidence"
+  ]
+}

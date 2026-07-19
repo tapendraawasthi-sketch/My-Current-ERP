@@ -5,10 +5,12 @@
   "authority": "ADR_0080",
   "step": "NEXT-13",
   "decision": "LAUNCH_ASK_KNOWLEDGE_CITATION_HONESTY_GATE",
+  "residual_step": "PR-B5",
+  "residual_authority": "ADR_0088",
   "gap_p2_008": {
     "register_status": "REDUCED",
     "closed": false,
-    "runtime_status_reason": "Force-abstain gate for fake cite / missing evidence / tax-current without release; professional suite sign-off still required for CLOSED."
+    "runtime_status_reason": "Force-abstain gate for fake cite / missing evidence / tax-current without release; PR-B5 ADR_0088 engineering sign note PASS; staging professional review PENDING for CLOSED."
   },
   "honesty": {
     "production_approved": false,
@@ -37,7 +39,8 @@
       "mai04_know__unsupp_legal_09",
       "mai04_know__stale_08"
     ],
-    "review_status": "PROFESSIONAL_REVIEW_REQUIRED"
+    "review_status": "PROFESSIONAL_REVIEW_PENDING",
+    "engineering_reproof_status": "PASS"
   },
   "gate_owner": "erp_bot/src/oip/modules/conversation/application/claim_citation_service.py::resolve_grounded_answer_gate",
   "forbidden_claims": [

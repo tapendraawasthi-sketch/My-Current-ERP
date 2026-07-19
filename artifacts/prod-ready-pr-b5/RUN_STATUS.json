@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-B5",
+  "authority": "ADR_0088",
+  "as_of": "2026-07-19",
+  "engineering_pack_ready": true,
+  "engineering_gate_status": "PASS",
+  "launch_ask_sign_status": "ENGINEERING_PASS",
+  "staging_professional_attested": false,
+  "staging_professional_review_status": "PENDING",
+  "blocking_fix_required": false,
+  "production_approved": false,
+  "gap_p2_008_closed": false,
+  "unit_proofs": {
+    "status": "PASS",
+    "notes": "test_mai_next13_knowledge_citation 10 passed; critical cases ABSTAIN_UNGROUNDED"
+  },
+  "staging": {
+    "professional_review": "PENDING",
+    "ticket": "TICKET-PR-B5-001"
+  },
+  "blocks_pr_c_with_pr_b1_tickets": true
+}

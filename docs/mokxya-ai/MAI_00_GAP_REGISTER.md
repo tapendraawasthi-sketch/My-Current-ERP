@@ -439,6 +439,7 @@ Severity legend:
 - **Recommended MAI phase:** MAI-24+
 - **Status:** REDUCED
 - **Progress (2026-07-19):** MAI-24–30 engineering path landed. NEXT-13 / ADR_0080 force-abstains fake cite, missing-evidence claim-like Ask, and tax-current without knowledge release on the launch Ask gate; suite critical cases mapped. Does **not** mark CLOSED (professional honesty review + suite sign-off still required; `legal_effective_dates_proven=false`).
+- **Progress (2026-07-19, PR-B5):** ADR_0088 files engineering sign note (`ENGINEERING_PASS`) + critical-case re-proof under `artifacts/prod-ready-pr-b5/`. Staging professional review remains PENDING (`TICKET-PR-B5-001`). Does **not** mark CLOSED.
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

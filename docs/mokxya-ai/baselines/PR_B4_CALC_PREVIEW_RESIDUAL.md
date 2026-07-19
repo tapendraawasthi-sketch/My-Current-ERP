@@ -21,4 +21,4 @@
 
 ## Pointer
 
-recommended_next_step → **PR-B5**
+recommended_next_step → **PR-B5** (shipped; active pointer now PR-B6)
