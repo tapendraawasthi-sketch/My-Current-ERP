@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-42",
-  "active_phase_note": "MAI-42 slice 2 IN_PROGRESS (ADR_0059); judicial-decision-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-43",
+  "active_phase_note": "MAI-43 slice 1 IN_PROGRESS (ADR_0060); continuous-change intelligence policy (never production truth); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3144,7 +3144,7 @@
     {
       "id": "MAI-42",
       "title": "JUDICIAL/DECISION INTELLIGENCE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3155,6 +3155,7 @@
         "docs/mokxya-ai/decisions/ADR_0059_JUDICIAL_DECISION_INTELLIGENCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_42_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_42_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_42_ENGINEERING_CLOSURE.md",
         "evals/mai42/manifests/MAI_42_SLICE1.manifest.json",
         "evals/mai42/manifests/MAI_42_SLICE2.manifest.json"
       ],
@@ -3178,20 +3179,43 @@
         "MAI-41"
       ],
       "recommended_order": 42,
-      "closure_note": "Slice 2: CANDIDATE_ONLY judicial-decision candidates; never retrieve; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: judicial POLICY + CANDIDATE_ONLY candidates; never retrieve; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-43",
       "title": "CONTINUOUS CHANGE INTELLIGENCE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-43.0.1-slice1",
+      "slice": "SLICE1_CONTINUOUS_CHANGE_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_43_CONTINUOUS_CHANGE_INTELLIGENCE.md",
+        "docs/mokxya-ai/decisions/ADR_0060_CONTINUOUS_CHANGE_INTELLIGENCE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_43_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai43/manifests/MAI_43_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "continuous_change_intelligence_service.py (policy annotation)",
+        "ContinuousChangeIntelligenceBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress CONTINUOUS_CHANGE_INTELLIGENCE after JUDICIAL_DECISION_INTELLIGENCE",
+        "release_status=NOT_RELEASED; unreviewed_as_production_truth=false; cache_invalidated=false; change_applied=false; legal_effective_dates_proven=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-42"
       ],
-      "recommended_order": 43
+      "recommended_order": 43,
+      "closure_note": "Slice 1: continuous-change POLICY_DECLARED; never apply/unreviewed-as-truth; GAP-P2-008 open."
     },
     {
       "id": "MAI-44",

@@ -2990,6 +2990,81 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent judicial authority.
 
+    # MAI-43: continuous change intelligence policy (never production truth).
+    cci_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.CONTINUOUS_CHANGE_INTELLIGENCE_STARTED,
+        component="conversation.continuous_change_intelligence",
+    )
+    try:
+        from ..oip.modules.conversation.application.continuous_change_intelligence_service import (
+            assert_continuous_change_intelligence_authority,
+            attach_continuous_change_intelligence_to_request,
+        )
+
+        updated = attach_continuous_change_intelligence_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.continuous_change_intelligence_bundle
+        assert_continuous_change_intelligence_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            cci_ev,
+            version_map={
+                "continuous_change_intelligence": "mai-43.0.1-slice1",
+            },
+            safe_attributes={
+                "continuous_change_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "continuous_change_readiness": (
+                    bundle.continuous_change_readiness.value if bundle else None
+                ),
+                "pilot_scope": "CONTINUOUS_CHANGE_CANDIDATE_ONLY",
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "continuous_change_authority_claimed": False,
+                "unreviewed_as_production_truth": False,
+                "cache_invalidated": False,
+                "rates_changed_as_truth": False,
+                "change_applied": False,
+                "amendment_applied": False,
+                "rollback_executed": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CONTINUOUS_CHANGE_INTELLIGENCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            cci_ev,
+            safe_error_code="CONTINUOUS_CHANGE_INTELLIGENCE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CONTINUOUS_CHANGE_INTELLIGENCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="CONTINUOUS_CHANGE_INTELLIGENCE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent change apply.
+
     return canonical
 
 

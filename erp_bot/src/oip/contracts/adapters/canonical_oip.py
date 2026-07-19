@@ -874,6 +874,35 @@ class CanonicalOipRequestAdapter:
                     "judicial_decision_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-43: continuous change intelligence policy (never production truth).
+        if canonical.continuous_change_intelligence_bundle is not None:
+            try:
+                from ...modules.conversation.application.continuous_change_intelligence_service import (
+                    continuous_change_intelligence_to_metadata,
+                )
+
+                metadata["continuous_change_intelligence"] = (
+                    continuous_change_intelligence_to_metadata(
+                        canonical.continuous_change_intelligence_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                cci = canonical.continuous_change_intelligence_bundle
+                metadata["continuous_change_intelligence"] = {
+                    "analysis_status": cci.analysis_status.value,
+                    "runtime_version": cci.runtime_version,
+                    "continuous_change_readiness": (
+                        cci.continuous_change_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "continuous_change_authority_claimed": False,
+                    "unreviewed_as_production_truth": False,
+                    "cache_invalidated": False,
+                    "change_applied": False,
+                    "legal_effective_dates_proven": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

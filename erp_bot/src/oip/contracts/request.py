@@ -47,6 +47,9 @@ from .broader_nepal_business_law_domain_release import (
 from .judicial_decision_intelligence import (
     JudicialDecisionIntelligenceBundleV1,
 )
+from .continuous_change_intelligence import (
+    ContinuousChangeIntelligenceBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -239,6 +242,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-42: judicial/decision intelligence (never judicial authority).
     judicial_decision_intelligence_bundle: (
         JudicialDecisionIntelligenceBundleV1 | None
+    ) = None
+    # MAI-43: continuous change intelligence (never production truth).
+    continuous_change_intelligence_bundle: (
+        ContinuousChangeIntelligenceBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

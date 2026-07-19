@@ -1,7 +1,7 @@
 # MAI-42 — Judicial/Decision Intelligence
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0059](decisions/ADR_0059_JUDICIAL_DECISION_INTELLIGENCE_AUTHORITY.md)  
 **Runtime:** `mai-42.0.2-slice2` (engineering; not production-approved)
 
