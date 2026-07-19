@@ -6299,6 +6299,124 @@
       "title": "UnknownNumberFieldValueV1",
       "type": "object"
     },
+    "VectorIndexBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/VectorIndexStatus",
+          "default": "NOT_RUN"
+        },
+        "chroma_present": {
+          "default": false,
+          "title": "Chroma Present",
+          "type": "boolean"
+        },
+        "citations_verified": {
+          "default": false,
+          "title": "Citations Verified",
+          "type": "boolean"
+        },
+        "documents_retrieved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Retrieved",
+          "type": "integer"
+        },
+        "embed_invocations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Embed Invocations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "index_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Index Mutations",
+          "type": "integer"
+        },
+        "index_present": {
+          "default": false,
+          "title": "Index Present",
+          "type": "boolean"
+        },
+        "multilingual_capable": {
+          "default": false,
+          "title": "Multilingual Capable",
+          "type": "boolean"
+        },
+        "ollama_required": {
+          "default": true,
+          "title": "Ollama Required",
+          "type": "boolean"
+        },
+        "production_eligible": {
+          "default": false,
+          "title": "Production Eligible",
+          "type": "boolean"
+        },
+        "query_executions": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Query Executions",
+          "type": "integer"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-28.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "vector_backend": {
+          "default": "CHROMA_OLLAMA",
+          "title": "Vector Backend",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "VectorIndexBundleV1",
+      "type": "object"
+    },
+    "VectorIndexStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "VectorIndexStatus",
+      "type": "string"
+    },
     "ViewType": {
       "enum": [
         "RAW",
@@ -6582,6 +6700,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/TypedPlanBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "vector_index_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VectorIndexBundleV1"
         },
         {
           "type": "null"

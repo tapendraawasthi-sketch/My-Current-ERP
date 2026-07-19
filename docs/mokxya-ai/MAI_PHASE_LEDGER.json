@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-27",
-  "active_phase_note": "MAI-27 slice 2 IN_PROGRESS (ADR_0044); LEXICAL_ONLY consume into NP KB grounding; MAI-26 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-28",
+  "active_phase_note": "MAI-28 slice 1 IN_PROGRESS (ADR_0045); vector index readiness (not production-eligible); MAI-27 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2558,7 +2558,7 @@
     {
       "id": "MAI-27",
       "title": "LEXICAL INDEX",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2569,6 +2569,7 @@
         "docs/mokxya-ai/decisions/ADR_0044_LEXICAL_INDEX_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_27_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_27_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_27_ENGINEERING_CLOSURE.md",
         "evals/mai27/manifests/MAI_27_SLICE1.manifest.json",
         "evals/mai27/manifests/MAI_27_SLICE2.manifest.json"
       ],
@@ -2589,22 +2590,41 @@
         "MAI-26"
       ],
       "recommended_order": 27,
-      "closure_note": "Slice 2: COMPLETE+fts_ready→LEXICAL_ONLY NP KB; not ready→fail-closed; citations not verified."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-28. production_approved=false. Gaps unchanged."
     },
     {
       "id": "MAI-28",
       "title": "MULTILINGUAL VECTOR INDEX",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "optional semantic chroma — partial/prod-limited"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-28.0.1-slice1",
+      "slice": "SLICE1_VECTOR_INDEX_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_28_MULTILINGUAL_VECTOR_INDEX.md",
+        "docs/mokxya-ai/decisions/ADR_0045_VECTOR_INDEX_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_28_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai28/manifests/MAI_28_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "vector_index_service.py (Chroma presence probe; no embed/query)",
+        "VectorIndexBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress VECTOR_INDEX after LEXICAL_INDEX",
+        "ollama_required=true; production_eligible=false; embed_invocations=0"
+      ],
+      "blockers": [
+        "Vector path requires Ollama embeddings",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-27"
       ],
-      "recommended_order": 28
+      "recommended_order": 28,
+      "closure_note": "Slice 1: CHROMA_OLLAMA readiness annotation only; not production-eligible; no embed/query."
     },
     {
       "id": "MAI-29",

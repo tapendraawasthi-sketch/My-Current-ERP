@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai28-slice1-v1",
+  "dataset_hash": "94e9e345887ac548c5cd20aef8e734532be076184c680ae524576b49f04518d6",
+  "phase": "MAI-28",
+  "slice": "SLICE1_VECTOR_INDEX_ANNOTATION",
+  "runtime_version": "mai-28.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai28/frozen/vector_index_v1.jsonl",
+      "sha256": "94e9e345887ac548c5cd20aef8e734532be076184c680ae524576b49f04518d6",
+      "case_count": 6,
+      "suite_id": "vector_index_v1"
+    }
+  ]
+}

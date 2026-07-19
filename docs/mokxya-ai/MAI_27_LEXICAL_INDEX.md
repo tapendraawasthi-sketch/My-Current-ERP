@@ -1,7 +1,7 @@
 # MAI-27 — Lexical Index
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0044](decisions/ADR_0044_LEXICAL_INDEX_AUTHORITY.md)  
 **Runtime:** `mai-27.0.2-slice2` (engineering; not production-approved)
 

@@ -1741,6 +1741,66 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent index readiness.
 
+    # MAI-28: vector / semantic index readiness (never embed/query; not prod).
+    vec_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.VECTOR_INDEX_STARTED,
+        component="conversation.vector_index",
+    )
+    try:
+        from ..oip.modules.conversation.application.vector_index_service import (
+            assert_vector_index_authority,
+            attach_vector_index_to_request,
+        )
+
+        updated = attach_vector_index_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.vector_index_bundle
+        assert_vector_index_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            vec_ev,
+            version_map={
+                "vector_index": "mai-28.0.1-slice1",
+            },
+            safe_attributes={
+                "vector_index_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "index_present": bundle.index_present if bundle else False,
+                "chroma_present": bundle.chroma_present if bundle else False,
+                "ollama_required": True,
+                "production_eligible": False,
+                "citations_verified": False,
+                "embed_invocations": (
+                    bundle.embed_invocations if bundle else 0
+                ),
+                "query_executions": bundle.query_executions if bundle else 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.VECTOR_INDEX_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "vector_backend": (
+                    bundle.vector_backend if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            vec_ev, safe_error_code="VECTOR_INDEX_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.VECTOR_INDEX_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="VECTOR_INDEX_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent vector readiness.
+
     return canonical
 
 

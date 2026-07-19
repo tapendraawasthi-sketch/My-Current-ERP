@@ -426,6 +426,26 @@ class CanonicalOipRequestAdapter:
                     "citations_verified": False,
                     "is_execution_authority": False,
                 }
+        # MAI-28: vector index readiness (Chroma+Ollama; not production-eligible).
+        if canonical.vector_index_bundle is not None:
+            try:
+                from ...modules.conversation.application.vector_index_service import (
+                    vector_index_to_metadata,
+                )
+
+                metadata["vector_index"] = vector_index_to_metadata(
+                    canonical.vector_index_bundle
+                )
+            except Exception:  # noqa: BLE001
+                vec = canonical.vector_index_bundle
+                metadata["vector_index"] = {
+                    "analysis_status": vec.analysis_status.value,
+                    "runtime_version": vec.runtime_version,
+                    "ollama_required": True,
+                    "production_eligible": False,
+                    "citations_verified": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

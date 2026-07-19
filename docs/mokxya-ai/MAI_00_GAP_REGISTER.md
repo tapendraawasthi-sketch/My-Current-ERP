@@ -451,7 +451,7 @@ Severity legend:
 - **Dependencies:** knowledge governance
 - **Acceptance condition:** Prod retrieval does not require Ollama
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-27 slice 2 — COMPLETE + `fts_ready` forces `LEXICAL_ONLY` NP KB grounding (`semantic_enabled=false`). Does **not** close the gap (vector/hybrid/citation honesty still open via MAI-28–30).
+- **Progress (2026-07-19):** MAI-27 `PASSED_ENGINEERING` (LEXICAL_ONLY). MAI-28 slice 1 annotates Chroma/Ollama vector readiness with `production_eligible=false`. Does **not** close the gap (prod still must not require Ollama; hybrid/citation honesty via MAI-29–30).
 
 ### GAP-P2-002 — Frontend calculates authoritative-looking totals
 

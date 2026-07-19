@@ -26,6 +26,7 @@ from .structural_segmentation import StructuralSegmentationBundleV1
 from .extraction_ocr_plan import ExtractionOcrPlanBundleV1
 from .temporal_cross_ref import TemporalCrossRefBundleV1
 from .lexical_index import LexicalIndexBundleV1
+from .vector_index import VectorIndexBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -171,6 +172,8 @@ class CanonicalAIRequestV1(ContractBase):
     temporal_cross_ref_bundle: TemporalCrossRefBundleV1 | None = None
     # MAI-27: lexical index readiness (no MATCH query / no mutations).
     lexical_index_bundle: LexicalIndexBundleV1 | None = None
+    # MAI-28: vector / semantic index readiness (no embed/query; not prod-eligible).
+    vector_index_bundle: VectorIndexBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod
