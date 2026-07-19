@@ -1,0 +1,6 @@
+{"case_id": "mai29_hyb__vat_report", "suite_id": "hybrid_fusion_v1", "text": "show VAT report for this month", "expected_status": "COMPLETE", "expected_fusion_mode": "RRF_CANDIDATE", "prohibited_for_training": true}
+{"case_id": "mai29_hyb__purchase", "suite_id": "hybrid_fusion_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "COMPLETE", "expected_fusion_mode": "RRF_CANDIDATE", "prohibited_for_training": true}
+{"case_id": "mai29_hyb__ledger", "suite_id": "hybrid_fusion_v1", "text": "show ledger balance report for cash account", "expected_status": "COMPLETE", "expected_fusion_mode": "RRF_CANDIDATE", "prohibited_for_training": true}
+{"case_id": "mai29_hyb__fy_report", "suite_id": "hybrid_fusion_v1", "text": "show VAT report FY 2080/81", "expected_status": "COMPLETE", "expected_fusion_mode": "RRF_CANDIDATE", "prohibited_for_training": true}
+{"case_id": "mai29_hyb__ood", "suite_id": "hybrid_fusion_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "expected_fusion_mode": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai29_hyb__nfrs", "suite_id": "hybrid_fusion_v1", "text": "show NFRS report pursuant to section 5", "expected_status": "COMPLETE", "expected_fusion_mode": "RRF_CANDIDATE", "prohibited_for_training": true}

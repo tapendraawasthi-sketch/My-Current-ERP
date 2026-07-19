@@ -62,6 +62,7 @@ from .temporal_cross_ref import (
 )
 from .lexical_index import LexicalIndexBundleV1
 from .vector_index import VectorIndexBundleV1
+from .hybrid_fusion import HybridFusionBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -101,6 +102,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("CrossRefCueV1", CrossRefCueV1),
     ("LexicalIndexBundleV1", LexicalIndexBundleV1),
     ("VectorIndexBundleV1", VectorIndexBundleV1),
+    ("HybridFusionBundleV1", HybridFusionBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

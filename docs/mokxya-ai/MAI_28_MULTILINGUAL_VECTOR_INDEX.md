@@ -1,7 +1,7 @@
 # MAI-28 — Multilingual Vector Index
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0045](decisions/ADR_0045_VECTOR_INDEX_AUTHORITY.md)  
 **Runtime:** `mai-28.0.2-slice2` (engineering; not production-approved)
 

@@ -446,6 +446,27 @@ class CanonicalOipRequestAdapter:
                     "citations_verified": False,
                     "is_execution_authority": False,
                 }
+        # MAI-29: hybrid fusion / evidence policy (never execute RRF/rerank).
+        if canonical.hybrid_fusion_bundle is not None:
+            try:
+                from ...modules.conversation.application.hybrid_fusion_service import (
+                    hybrid_fusion_to_metadata,
+                )
+
+                metadata["hybrid_fusion"] = hybrid_fusion_to_metadata(
+                    canonical.hybrid_fusion_bundle
+                )
+            except Exception:  # noqa: BLE001
+                hyb = canonical.hybrid_fusion_bundle
+                metadata["hybrid_fusion"] = {
+                    "analysis_status": hyb.analysis_status.value,
+                    "runtime_version": hyb.runtime_version,
+                    "fusion_mode": hyb.fusion_mode.value,
+                    "fusion_executed": False,
+                    "rerank_authorized": False,
+                    "hybrid_production_eligible": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

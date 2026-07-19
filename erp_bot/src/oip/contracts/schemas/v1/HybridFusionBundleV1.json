@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "HybridFusionMode": {
+      "enum": [
+        "LEXICAL_ONLY",
+        "RRF_CANDIDATE",
+        "SKIP",
+        "UNKNOWN"
+      ],
+      "title": "HybridFusionMode",
+      "type": "string"
+    },
+    "HybridFusionStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "HybridFusionStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/HybridFusionBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_status": {
+      "$ref": "#/$defs/HybridFusionStatus",
+      "default": "NOT_RUN"
+    },
+    "citations_verified": {
+      "default": false,
+      "title": "Citations Verified",
+      "type": "boolean"
+    },
+    "claims_verified": {
+      "default": false,
+      "title": "Claims Verified",
+      "type": "boolean"
+    },
+    "documents_retrieved": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Documents Retrieved",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "evidence_assembled": {
+      "default": false,
+      "title": "Evidence Assembled",
+      "type": "boolean"
+    },
+    "evidence_item_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Evidence Item Count",
+      "type": "integer"
+    },
+    "fusion_executed": {
+      "default": false,
+      "title": "Fusion Executed",
+      "type": "boolean"
+    },
+    "fusion_mode": {
+      "$ref": "#/$defs/HybridFusionMode",
+      "default": "UNKNOWN"
+    },
+    "hybrid_production_eligible": {
+      "default": false,
+      "title": "Hybrid Production Eligible",
+      "type": "boolean"
+    },
+    "index_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Index Mutations",
+      "type": "integer"
+    },
+    "lexical_authoritative": {
+      "default": true,
+      "title": "Lexical Authoritative",
+      "type": "boolean"
+    },
+    "ollama_required_for_hybrid": {
+      "default": true,
+      "title": "Ollama Required For Hybrid",
+      "type": "boolean"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "rerank_authorized": {
+      "default": false,
+      "title": "Rerank Authorized",
+      "type": "boolean"
+    },
+    "rrf_k": {
+      "default": 60,
+      "minimum": 1,
+      "title": "Rrf K",
+      "type": "integer"
+    },
+    "runtime_version": {
+      "default": "mai-29.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "HybridFusionBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

@@ -27,6 +27,7 @@ from .extraction_ocr_plan import ExtractionOcrPlanBundleV1
 from .temporal_cross_ref import TemporalCrossRefBundleV1
 from .lexical_index import LexicalIndexBundleV1
 from .vector_index import VectorIndexBundleV1
+from .hybrid_fusion import HybridFusionBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -174,6 +175,8 @@ class CanonicalAIRequestV1(ContractBase):
     lexical_index_bundle: LexicalIndexBundleV1 | None = None
     # MAI-28: vector / semantic index readiness (no embed/query; not prod-eligible).
     vector_index_bundle: VectorIndexBundleV1 | None = None
+    # MAI-29: hybrid fusion / evidence policy (no RRF execute / no rerank).
+    hybrid_fusion_bundle: HybridFusionBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

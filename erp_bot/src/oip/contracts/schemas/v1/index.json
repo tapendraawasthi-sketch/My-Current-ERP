@@ -35,6 +35,7 @@
     "CrossRefCueV1",
     "LexicalIndexBundleV1",
     "VectorIndexBundleV1",
+    "HybridFusionBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

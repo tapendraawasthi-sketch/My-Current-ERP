@@ -1801,6 +1801,64 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent vector readiness.
 
+    # MAI-29: hybrid fusion / evidence policy (never execute RRF / rerank).
+    hyb_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.HYBRID_FUSION_STARTED,
+        component="conversation.hybrid_fusion",
+    )
+    try:
+        from ..oip.modules.conversation.application.hybrid_fusion_service import (
+            assert_hybrid_fusion_authority,
+            attach_hybrid_fusion_to_request,
+        )
+
+        updated = attach_hybrid_fusion_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.hybrid_fusion_bundle
+        assert_hybrid_fusion_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            hyb_ev,
+            version_map={
+                "hybrid_fusion": "mai-29.0.1-slice1",
+            },
+            safe_attributes={
+                "hybrid_fusion_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "fusion_mode": (
+                    bundle.fusion_mode.value if bundle else None
+                ),
+                "fusion_executed": False,
+                "rerank_authorized": False,
+                "evidence_assembled": False,
+                "hybrid_production_eligible": False,
+                "claims_verified": False,
+                "citations_verified": False,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.HYBRID_FUSION_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "rrf_k": bundle.rrf_k if bundle else None,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            hyb_ev, safe_error_code="HYBRID_FUSION_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.HYBRID_FUSION_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="HYBRID_FUSION_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent fusion claims.
+
     return canonical
 
 

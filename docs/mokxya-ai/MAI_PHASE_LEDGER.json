@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-28",
-  "active_phase_note": "MAI-28 slice 2 IN_PROGRESS (ADR_0045); optional non-prod semantic filler; lexical authoritative; MAI-27 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-29",
+  "active_phase_note": "MAI-29 slice 1 IN_PROGRESS (ADR_0046); hybrid fusion policy annotation (no RRF execute); MAI-28 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2595,7 +2595,7 @@
     {
       "id": "MAI-28",
       "title": "MULTILINGUAL VECTOR INDEX",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2606,6 +2606,7 @@
         "docs/mokxya-ai/decisions/ADR_0045_VECTOR_INDEX_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_28_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_28_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_28_ENGINEERING_CLOSURE.md",
         "evals/mai28/manifests/MAI_28_SLICE1.manifest.json",
         "evals/mai28/manifests/MAI_28_SLICE2.manifest.json"
       ],
@@ -2627,22 +2628,41 @@
         "MAI-27"
       ],
       "recommended_order": 28,
-      "closure_note": "Slice 2: optional non-prod semantic filler behind dual env flags; lexical authoritative; not production-eligible."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-29. production_approved=false. Gaps unchanged."
     },
     {
       "id": "MAI-29",
       "title": "HYBRID FUSION, RERANKING, AND EVIDENCE BUNDLES",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "hybrid_rag RRF — local path"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-29.0.1-slice1",
+      "slice": "SLICE1_HYBRID_FUSION_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_29_HYBRID_FUSION_RERANKING_AND_EVIDENCE.md",
+        "docs/mokxya-ai/decisions/ADR_0046_HYBRID_FUSION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_29_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai29/manifests/MAI_29_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "hybrid_fusion_service.py (LEXICAL_ONLY / RRF_CANDIDATE policy)",
+        "HybridFusionBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress HYBRID_FUSION after VECTOR_INDEX",
+        "fusion_executed=false; rerank_authorized=false; hybrid_production_eligible=false"
+      ],
+      "blockers": [
+        "RRF hybrid still Ollama-dependent for semantic leg",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-28"
       ],
-      "recommended_order": 29
+      "recommended_order": 29,
+      "closure_note": "Slice 1: fusion policy annotation only; no RRF/rerank/evidence execute; claims unverified."
     },
     {
       "id": "MAI-30",
