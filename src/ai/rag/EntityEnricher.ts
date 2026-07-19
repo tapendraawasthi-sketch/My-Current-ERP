@@ -9,6 +9,11 @@ import { paymentModeEnricher } from "../context/PaymentModeEnricher";
 
 const PARTY_MARKERS = /\b([a-z\u0900-\u097F]{2,20})\s+(lai|le|ko|sanga|bata)\b/i;
 
+/** MAI-08 slice 1 — hard abstention floors for high-risk master binds (ADR_0025). */
+export const MAI08_PARTY_SCORE_FLOOR = 0.75;
+export const MAI08_ITEM_SCORE_FLOOR = 0.78;
+export const MAI08_MIN_SCORE_GAP = 0.12;
+
 export class EntityEnricher {
   enrich(
     entities: ExtractedEntities,
@@ -24,13 +29,17 @@ export class EntityEnricher {
     if (productQuery && ctx.items?.length) {
       const itemHits = erpRagRetriever.findItems(productQuery, ctx.items, 3);
       const top = itemHits[0];
-      if (top && top.score >= 0.65) {
-        const ambiguous =
+      if (top && top.score >= MAI08_ITEM_SCORE_FLOOR) {
+        const closeSecond =
           itemHits.length > 1 &&
-          itemHits[1].score >= 0.65 &&
-          top.score - itemHits[1].score < 0.08;
+          itemHits[1].score >= MAI08_ITEM_SCORE_FLOOR &&
+          top.score - itemHits[1].score < MAI08_MIN_SCORE_GAP;
 
-        if (!ambiguous) {
+        if (closeSecond) {
+          enriched.itemAmbiguous = itemHits.slice(0, 3).map((h) => h.ref.name);
+          // Keep surface query; do not silent-bind itemId
+          delete enriched.itemId;
+        } else {
           enriched.itemId = top.ref.id;
           enriched.product = top.ref.name;
           enriched.productEnglish = top.ref.name;
@@ -55,15 +64,17 @@ export class EntityEnricher {
       const partyHits = erpRagRetriever.findParties(partyQuery, ctx.parties, 4);
       const top = partyHits[0];
 
-      if (top && top.score >= 0.62) {
+      if (top && top.score >= MAI08_PARTY_SCORE_FLOOR) {
         const closeSecond =
           partyHits.length > 1 &&
-          partyHits[1].score >= 0.62 &&
-          top.score - partyHits[1].score < 0.1;
+          partyHits[1].score >= MAI08_PARTY_SCORE_FLOOR &&
+          top.score - partyHits[1].score < MAI08_MIN_SCORE_GAP;
 
         if (closeSecond) {
           enriched.partyAmbiguous = partyHits.slice(0, 3).map((h) => h.ref.name);
           enriched.party = partyQuery;
+          delete enriched.partyId;
+          delete enriched.partyResolvedName;
         } else {
           enriched.partyId = top.ref.id;
           enriched.party = top.ref.name;

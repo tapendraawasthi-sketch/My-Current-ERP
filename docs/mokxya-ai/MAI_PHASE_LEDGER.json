@@ -5,6 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-08",
+  "active_phase_note": "MAI-08 slice 1 IN_PROGRESS (ADR_0025); MAI-07 R3S cutover complete",
   "phases": [
     {
       "id": "MAI-00",
@@ -304,7 +305,7 @@
       "r3q_status": "PASSED_QUALITY_UNPROMOTED",
       "r3r_status": "PRODUCTION_APPROVED_CUTOVER_PENDING",
       "r3s_status": "RUNTIME_CUTOVER_COMPLETE",
-      "closure_note": "ADR_0024 cutover complete. Active=mai-07.1.13-r3s-active + R3N6 pack. candidate_promoted=true. PRODUCTION_APPROVED/QUALITY_GATES_PASSED/LINGUIST_APPROVED true. Overlay disabled. MAI-08 NOT_STARTED (next).",
+      "closure_note": "ADR_0024 cutover complete. Active=mai-07.1.13-r3s-active + R3N6 pack. candidate_promoted=true. PRODUCTION_APPROVED/QUALITY_GATES_PASSED/LINGUIST_APPROVED true. Overlay disabled. Next=MAI-08 (IN_PROGRESS slice 1).",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_07_R3G_REAUTHORIZED_FROZEN_V2_EVALUATION_REPORT.md",
         "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_PREFLIGHT_REPORT.json",
@@ -316,13 +317,12 @@
       ],
       "implementation_evidence": [
         "ENABLE_PROMOTION_OVERLAY=false",
-        "Active runtime mai-07.1.3-r3f-sealnew; sealed pack 16174253…",
+        "Active runtime mai-07.1.13-r3s-active; pack mai-07.1.11-r3n6-chaincomplete",
         "Historical R3F RC 37e551f2… INVALIDATED_BY_SEAL_DRIFT",
         "R3G-REAUTHORIZED blocked on missing immutable lock-before-holdout RC body"
       ],
       "blockers": [
-        "GAP-P0-001 OPEN",
-        "MAI-08 NOT_STARTED"
+        "GAP-P0-001 OPEN"
       ],
       "dependencies": [
         "MAI-06"
@@ -1862,18 +1862,34 @@
     {
       "id": "MAI-08",
       "title": "CODE-MIX AND TYPO ROBUSTNESS",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-08.0.1-slice1",
+      "slice": "SLICE1_SLOT_STABILITY_AND_MASTER_ABSTENTION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_08_CODE_MIX_AND_TYPO_ROBUSTNESS.md",
+        "docs/mokxya-ai/decisions/ADR_0025_CODE_MIX_AND_TYPO_ROBUSTNESS_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_08_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai08/manifests/MAI_08_SLICE1.manifest.json"
+      ],
       "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/typo_robustness/",
+        "erp_bot/src/oip/contracts/typo_code_mix.py",
+        "src/ai/rag/EntityEnricher.ts (party 0.75 / item 0.78 / gap 0.12)",
         "nepali_shop_nlu",
         "operation_classifier regex"
       ],
-      "blockers": [],
+      "blockers": [
+        "GAP-P1-009 remains OPEN",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-07"
       ],
-      "recommended_order": 8
+      "recommended_order": 8,
+      "closure_note": "Slice 1 kickoff. Candidate-only TypoCodeMixBundle + fuzzy abstention. MAI-09 NOT_STARTED."
     },
     {
       "id": "MAI-09",

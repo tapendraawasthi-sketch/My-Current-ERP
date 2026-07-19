@@ -26,6 +26,7 @@ from .request import CanonicalAIRequestV1, ClientTurnPayloadV1
 from .response import AIResponseEnvelopeV1
 from .sse import SSEEventEnvelopeV1
 from .transliteration import TransliterationBundleV1
+from .typo_code_mix import TypoCodeMixBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -35,6 +36,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("LanguageFrameV1", LanguageFrameV1),
     ("NormalizationBundleV1", NormalizationBundleV1),
     ("TransliterationBundleV1", TransliterationBundleV1),
+    ("TypoCodeMixBundleV1", TypoCodeMixBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

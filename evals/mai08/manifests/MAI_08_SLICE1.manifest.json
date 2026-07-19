@@ -1,0 +1,34 @@
+{
+  "dataset_version": "mai08-slice1-v1",
+  "dataset_hash": "02a0f257adb503ba405ee53e82ae775a179e188164d62765a618aef263aec5df",
+  "phase": "MAI-08",
+  "slice": "SLICE1_SLOT_STABILITY_AND_MASTER_ABSTENTION",
+  "runtime_version": "mai-08.0.1-slice1",
+  "thresholds_path": "evals/mai08/manifests/MAI_08_SLICE1_THRESHOLDS.json",
+  "files": [
+    {
+      "path": "evals/mai08/frozen/fuzzy_high_risk_abstain_v1.jsonl",
+      "sha256": "308edf4a0b797d62f14a997a1f5fcd5e23949c98bd5be05a2c64981f1ff0882c",
+      "case_count": 8,
+      "suite_id": "fuzzy_high_risk_abstain_v1"
+    },
+    {
+      "path": "evals/mai08/frozen/ood_unknown_party_v1.jsonl",
+      "sha256": "f89f7ffd1f8b99e8b4e6373946341249043ac9b2f922d0a16a7ea0658bdc7e76",
+      "case_count": 10,
+      "suite_id": "ood_unknown_party_v1"
+    },
+    {
+      "path": "evals/mai08/frozen/slot_stable_code_mix_v1.jsonl",
+      "sha256": "f99d2a1ce54bfafbd38163989ec777d4a747326f51a14afb98ad51502dcd2ee3",
+      "case_count": 12,
+      "suite_id": "slot_stable_code_mix_v1"
+    },
+    {
+      "path": "evals/mai08/frozen/slot_stable_typo_abbr_v1.jsonl",
+      "sha256": "d56ddaddbbe687edaa3b680c500b1ec130d9635e7034095884235fc2785faab5",
+      "case_count": 12,
+      "suite_id": "slot_stable_typo_abbr_v1"
+    }
+  ]
+}

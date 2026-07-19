@@ -5,6 +5,7 @@
     "LanguageFrameV1",
     "NormalizationBundleV1",
     "TransliterationBundleV1",
+    "TypoCodeMixBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

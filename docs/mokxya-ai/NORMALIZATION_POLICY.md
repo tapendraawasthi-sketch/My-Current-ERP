@@ -49,5 +49,5 @@ BIDI/ZW/controls → SECURITY_REVIEW_REQUIRED edits; preserved in RAW.
 
 ## Future
 
-- MAI-07: Romanized↔Devanagari candidates (not identity)
-- MAI-08: typo robustness beyond repetition candidates
+- MAI-07: Romanized↔Devanagari candidates (not identity) — active via R3S
+- MAI-08: typo robustness beyond repetition candidates — slice 1 `IN_PROGRESS` (ADR_0025; candidate-only `TypoCodeMixBundleV1`)

@@ -1,0 +1,15 @@
+{
+  "phase": "MAI-08",
+  "slice": "SLICE1_SLOT_STABILITY_AND_MASTER_ABSTENTION",
+  "thresholds": {
+    "slot_stability_pass_rate": 0.95,
+    "silent_high_risk_master_bind_rate": 0.0,
+    "ood_abstain_or_clarify_rate": 0.9,
+    "silent_candidate_applications": 0
+  },
+  "fuzzy_policy": {
+    "party_score_floor": 0.75,
+    "item_score_floor": 0.78,
+    "min_score_gap": 0.12
+  }
+}

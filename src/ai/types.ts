@@ -254,6 +254,7 @@ export interface ExtractedEntities {
   partyResolvedName?: string;
   partyAmbiguous?: string[];
   itemId?: string;
+  itemAmbiguous?: string[];
   itemRate?: number;
   ragConfidence?: number;
   agent?: string;

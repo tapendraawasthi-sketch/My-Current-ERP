@@ -95,7 +95,7 @@ def cutover_identity_card() -> dict[str, Any]:
         "candidate_promoted": True,
         "default_active": True,
         "overlay_enabled": False,
-        "mai_08": "NOT_STARTED",
+        "mai_08": "IN_PROGRESS",
     }
 
 

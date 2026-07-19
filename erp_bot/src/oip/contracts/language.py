@@ -11,6 +11,7 @@ from .common import ConfidenceV1, ContractBase, SourceSpanV1, default_schema_ver
 from .normalization import NormalizationBundleV1
 from .registry import get_contract_registry
 from .transliteration import TransliterationBundleV1
+from .typo_code_mix import TypoCodeMixBundleV1
 
 
 class AnalysisStatus(str, Enum):
@@ -67,6 +68,8 @@ class LanguageFrameV1(ContractBase):
     protected_span_kinds: tuple[str, ...] = ()
     # MAI-06: typed lossless normalization bundle (never replaces raw_text)
     normalization_bundle: NormalizationBundleV1 | None = None
+    # MAI-08: candidate-only typo / abbreviation / code-mix features
+    typo_code_mix_bundle: TypoCodeMixBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod
