@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai32-slice2-v1",
+  "dataset_hash": "2fc4091d9b1e63814ceefe905b64296413c3ef7f78d69c74f8a42239826e2e75",
+  "phase": "MAI-32",
+  "slice": "SLICE2_DRAFT_AGGREGATE_CANDIDATE_CONSUME",
+  "runtime_version": "mai-32.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai32/frozen/durable_draft_consume_v1.jsonl",
+      "sha256": "2fc4091d9b1e63814ceefe905b64296413c3ef7f78d69c74f8a42239826e2e75",
+      "case_count": 6,
+      "suite_id": "durable_draft_consume_v1"
+    }
+  ]
+}

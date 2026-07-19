@@ -37,7 +37,7 @@ class DraftConcurrencyPolicy(str, Enum):
 class DurableVersionedDraftBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: DurableVersionedDraftStatus = DurableVersionedDraftStatus.NOT_RUN
-    runtime_version: str = "mai-32.0.1-slice1"
+    runtime_version: str = "mai-32.0.2-slice2"
     source_authority: str = "REQUEST"
     selected_port_id: str | None = None
     selected_draft_entrypoint: str | None = None

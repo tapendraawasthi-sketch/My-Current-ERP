@@ -519,17 +519,21 @@ class CanonicalOipRequestAdapter:
                     "port_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-32: durable versioned draft readiness (never writes).
+        # MAI-32: durable versioned draft readiness + aggregate-candidate consume.
         if canonical.durable_versioned_draft_bundle is not None:
             try:
+                from ...modules.conversation.application.durable_versioned_draft_consume_service import (
+                    enrich_dvd_metadata_with_consume,
+                )
                 from ...modules.conversation.application.durable_versioned_draft_service import (
                     durable_versioned_draft_to_metadata,
                 )
 
-                metadata["durable_versioned_draft"] = (
-                    durable_versioned_draft_to_metadata(
-                        canonical.durable_versioned_draft_bundle
-                    )
+                base_meta = durable_versioned_draft_to_metadata(
+                    canonical.durable_versioned_draft_bundle
+                )
+                metadata["durable_versioned_draft"] = enrich_dvd_metadata_with_consume(
+                    base_meta, canonical
                 )
             except Exception:  # noqa: BLE001
                 dvd = canonical.durable_versioned_draft_bundle
@@ -541,6 +545,8 @@ class CanonicalOipRequestAdapter:
                     "save_invoked": False,
                     "draft_mutations": 0,
                     "draft_aggregate_ready": False,
+                    "durable_consume_mode": "UNCHANGED",
+                    "durable_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

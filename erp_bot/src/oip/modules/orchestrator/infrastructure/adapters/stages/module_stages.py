@@ -762,6 +762,32 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             domain_port_mapping = {}
 
+        # MAI-32: forward durable draft / aggregate candidate (never save_*).
+        durable_versioned_draft: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_dvd = context.metadata.get("durable_versioned_draft")
+                if isinstance(raw_dvd, dict):
+                    durable_versioned_draft = dict(raw_dvd)
+            if durable_versioned_draft:
+                durable_versioned_draft["save_invoked"] = False
+                durable_versioned_draft["load_invoked"] = False
+                durable_versioned_draft["draft_mutations"] = 0
+                durable_versioned_draft["aggregate_written"] = False
+                durable_versioned_draft["production_store_authority"] = False
+                durable_versioned_draft["allow_durable_write"] = False
+                durable_versioned_draft["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "durable_versioned_draft": durable_versioned_draft,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            durable_versioned_draft = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding

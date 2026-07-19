@@ -1,7 +1,7 @@
 # ADR_0049 — Durable Versioned Draft Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-32-DURABLE-VERSIONED-DRAFTS (slice 1)
+- **Phase:** MAI-32-DURABLE-VERSIONED-DRAFTS (slice 2)
 - **Extends:** ADR_0001, ADR_0048
 
 ## Context
@@ -29,8 +29,12 @@ Cursor heavy-edit lane.
    `is_execution_authority=false`.
 4. Incomplete / unsupported ports → annotate `AGGREGATE_PENDING` fail-closed;
    missing mapping → SKIP. Do not invent durable-write success.
-5. Slice 2+ may implement DraftAggregate repository / durable writes under
-   separate allow flags; Dexie remains calc authority on confirm.
+5. Slice 2: consume builds `draft_aggregate_candidate` /
+   `durable_consume_mode` (`CANDIDATE_ONLY` default; `BLOCKED` for
+   aggregate-pending / production-authority claims; `SKIP` for read-only).
+   Live path forces `allow_durable_write=false` — does **not** call
+   `save_*` or edit khata. Still no AI journal math; Dexie remains calc
+   authority on confirm.
 6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
@@ -38,11 +42,14 @@ Cursor heavy-edit lane.
 | Alternative | Why |
 |-------------|-----|
 | Call save_* in annotation | Side effects / CR-32-01 |
+| Live save_* in slice 2 | CR-32-01 / CR-32-02; GAP-P0-001 risk |
 | Treat temp JSON as production aggregate | False authority (F-03) |
-| Edit mode_aware / khata in slice 1 | CR-31-01 / CR-32-01 |
+| Edit mode_aware / khata in slice 1–2 | CR-31-01 / CR-32-01 |
 | Add third posting writer | Worsens GAP-P0-001 |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_32_DURABLE_VERSIONED_DRAFTS.md`
+- `docs/mokxya-ai/baselines/MAI_32_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/durable_versioned_draft_service.py`
+- `erp_bot/src/oip/modules/conversation/application/durable_versioned_draft_consume_service.py`

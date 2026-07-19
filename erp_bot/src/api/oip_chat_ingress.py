@@ -1999,12 +1999,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent port success.
 
-    # MAI-32: durable versioned draft readiness (never save_*/aggregate write).
+    # MAI-32: durable versioned draft readiness + aggregate-candidate consume.
     dvd_ev = recorder.begin_stage(
         mai03_obs.TraceStage.DURABLE_VERSIONED_DRAFT_STARTED,
         component="conversation.durable_versioned_draft",
     )
     try:
+        from ..oip.modules.conversation.application.durable_versioned_draft_consume_service import (
+            assert_durable_draft_consume_authority,
+            durable_draft_consume_observability,
+        )
         from ..oip.modules.conversation.application.durable_versioned_draft_service import (
             assert_durable_versioned_draft_authority,
             attach_durable_versioned_draft_to_request,
@@ -2015,11 +2019,15 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.durable_versioned_draft_bundle
         assert_durable_versioned_draft_authority(bundle)
+        consume_obs = durable_draft_consume_observability(
+            updated, allow_durable_write=False
+        )
+        assert_durable_draft_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             dvd_ev,
             version_map={
-                "durable_versioned_draft": "mai-32.0.1-slice1",
+                "durable_versioned_draft": "mai-32.0.2-slice2",
             },
             safe_attributes={
                 "durable_versioned_draft_status": (
@@ -2031,11 +2039,16 @@ async def build_canonical_ai_request(
                 "draft_module_id": (
                     bundle.draft_module_id if bundle else None
                 ),
+                "durable_consume_mode": consume_obs.get("durable_consume_mode"),
+                "durable_consume_ready": bool(
+                    consume_obs.get("durable_consume_ready")
+                ),
                 "production_store_authority": False,
                 "draft_aggregate_ready": False,
                 "save_invoked": False,
                 "draft_mutations": 0,
                 "store_ready_for_production": False,
+                "allow_durable_write": False,
             },
         )
         recorder.record_event(
@@ -2051,6 +2064,7 @@ async def build_canonical_ai_request(
                 "known_store_filename": (
                     bundle.known_store_filename if bundle else None
                 ),
+                "durable_consume_mode": consume_obs.get("durable_consume_mode"),
             },
         )
     except Exception:  # noqa: BLE001

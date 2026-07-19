@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-32",
-  "active_phase_note": "MAI-32 slice 1 IN_PROGRESS (ADR_0049); durable draft readiness annotation; MAI-31 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-32 slice 2 IN_PROGRESS (ADR_0049); DraftAggregate candidate consume (CANDIDATE_ONLY); no live save_*",
   "phases": [
     {
       "id": "MAI-00",
@@ -2751,23 +2751,26 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-32.0.1-slice1",
-      "slice": "SLICE1_DRAFT_DURABILITY_READINESS_ANNOTATION",
+      "runtime_version": "mai-32.0.2-slice2",
+      "slice": "SLICE2_DRAFT_AGGREGATE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_32_DURABLE_VERSIONED_DRAFTS.md",
         "docs/mokxya-ai/decisions/ADR_0049_DURABLE_VERSIONED_DRAFT_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_32_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai32/manifests/MAI_32_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_32_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai32/manifests/MAI_32_SLICE1.manifest.json",
+        "evals/mai32/manifests/MAI_32_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "durable_versioned_draft_service.py (policy + store readiness annotation)",
+        "durable_versioned_draft_consume_service.py (CANDIDATE_ONLY aggregate candidate)",
         "DurableVersionedDraftBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress DURABLE_VERSIONED_DRAFT after DOMAIN_PORT_MAPPING",
-        "save_invoked=false; draft_mutations=0; production_store_authority=false"
+        "save_invoked=false; draft_mutations=0; allow_durable_write=false; no khata edits"
       ],
       "blockers": [
         "GAP-P0-001 must not worsen (no new posting writer)",
-        "DraftAggregate / durable write deferred to slice 2+",
+        "CR-32-01 / CR-32-02: live save_* / dual-authority handoff deferred",
         "GAP-P2-008 remains OPEN",
         "GAP-P2-001 remains OPEN",
         "GAP-P1-004 / GAP-P1-008 remain REDUCED",
@@ -2777,7 +2780,7 @@
         "MAI-31"
       ],
       "recommended_order": 32,
-      "closure_note": "Slice 1: durable draft readiness / version policy annotation only; never save_*."
+      "closure_note": "Slice 2: CANDIDATE_ONLY DraftAggregate candidates; never live save_*/khata/Dexie."
     },
     {
       "id": "MAI-33",

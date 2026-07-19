@@ -3,6 +3,8 @@
 Slice 1: declare version/concurrency/durability policy + read-only store
 path probe from MAI-31 domain-port mapping. Never save_*/load_*/start_or_merge,
 mode_aware, Dexie, or DraftAggregate writes.
+Slice 2: consume helpers build DraftAggregate candidates (CANDIDATE_ONLY);
+still never save_* on the annotation path.
 """
 
 from __future__ import annotations
@@ -25,7 +27,7 @@ from ....contracts.durable_versioned_draft import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-32.0.1-slice1"
+RUNTIME_VERSION = "mai-32.0.2-slice2"
 AUTHORITY = "ADR_0049"
 
 # Annotation seed: port → khata module / store file / version field (not imported).
