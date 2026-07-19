@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-47",
-  "active_phase_note": "MAI-47 slice 2 IN_PROGRESS (ADR_0064); human review / pilot ops CANDIDATE_ONLY (never review complete / never go-live); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-48",
+  "active_phase_note": "MAI-48 slice 1 IN_PROGRESS (ADR_0065); governed improvement / fine-tuning policy (never apply / never fine-tune / never model swap); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3344,7 +3344,7 @@
     {
       "id": "MAI-47",
       "title": "HUMAN REVIEW AND PILOT OPERATIONS",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3355,6 +3355,7 @@
         "docs/mokxya-ai/decisions/ADR_0064_HUMAN_REVIEW_PILOT_OPERATIONS_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_47_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_47_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_47_ENGINEERING_CLOSURE.md",
         "evals/mai47/manifests/MAI_47_SLICE1.manifest.json",
         "evals/mai47/manifests/MAI_47_SLICE2.manifest.json"
       ],
@@ -3378,20 +3379,43 @@
         "MAI-46"
       ],
       "recommended_order": 47,
-      "closure_note": "Slice 2: human review / pilot ops POLICY + CANDIDATE_ONLY candidates; never review complete / never go-live; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: human review / pilot ops POLICY + CANDIDATE_ONLY candidates; never review complete / never go-live; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-48",
       "title": "GOVERNED IMPROVEMENT AND OPTIONAL FINE-TUNING",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-48.0.1-slice1",
+      "slice": "SLICE1_GOVERNED_IMPROVEMENT_FINE_TUNING_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_48_GOVERNED_IMPROVEMENT_FINE_TUNING.md",
+        "docs/mokxya-ai/decisions/ADR_0065_GOVERNED_IMPROVEMENT_FINE_TUNING_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_48_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai48/manifests/MAI_48_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "governed_improvement_fine_tuning_service.py (policy annotation)",
+        "GovernedImprovementFineTuningBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress GOVERNED_IMPROVEMENT_FINE_TUNING after HUMAN_REVIEW_PILOT_OPERATIONS",
+        "release_status=NOT_RELEASED; improvement_applied=false; fine_tuning_executed=false; production_model_swapped=false; governed_change_approved=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-47"
       ],
-      "recommended_order": 48
+      "recommended_order": 48,
+      "closure_note": "Slice 1: governed improvement / fine-tuning POLICY_DECLARED; never apply / never fine-tune / never model swap; GAP-P2-008 open."
     },
     {
       "id": "MAI-49",

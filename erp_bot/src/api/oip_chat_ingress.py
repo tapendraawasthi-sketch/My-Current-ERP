@@ -3495,6 +3495,84 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent review complete.
 
+    # MAI-48: governed improvement / fine-tuning (never applies changes).
+    gift_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.GOVERNED_IMPROVEMENT_FINE_TUNING_STARTED,
+        component="conversation.governed_improvement_fine_tuning",
+    )
+    try:
+        from ..oip.modules.conversation.application.governed_improvement_fine_tuning_service import (
+            assert_governed_improvement_fine_tuning_authority,
+            attach_governed_improvement_fine_tuning_to_request,
+        )
+
+        updated = attach_governed_improvement_fine_tuning_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.governed_improvement_fine_tuning_bundle
+        assert_governed_improvement_fine_tuning_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            gift_ev,
+            version_map={
+                "governed_improvement_fine_tuning": "mai-48.0.1-slice1",
+            },
+            safe_attributes={
+                "governed_improvement_fine_tuning_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "governed_improvement_fine_tuning_readiness": (
+                    bundle.governed_improvement_fine_tuning_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "GOVERNED_IMPROVEMENT_FINE_TUNING_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "fine_tune_authority_claimed": False,
+                "improvement_applied": False,
+                "fine_tuning_executed": False,
+                "training_data_exported": False,
+                "model_weights_changed": False,
+                "production_model_swapped": False,
+                "regression_suite_passed": False,
+                "governed_change_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.GOVERNED_IMPROVEMENT_FINE_TUNING_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            gift_ev,
+            safe_error_code="GOVERNED_IMPROVEMENT_FINE_TUNING_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.GOVERNED_IMPROVEMENT_FINE_TUNING_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="GOVERNED_IMPROVEMENT_FINE_TUNING_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent apply/fine-tune.
+
     return canonical
 
 

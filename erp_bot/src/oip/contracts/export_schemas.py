@@ -97,6 +97,9 @@ from .backup_restore_disaster_lifecycle import (
 from .human_review_pilot_operations import (
     HumanReviewPilotOperationsBundleV1,
 )
+from .governed_improvement_fine_tuning import (
+    GovernedImprovementFineTuningBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -196,6 +199,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "HumanReviewPilotOperationsBundleV1",
         HumanReviewPilotOperationsBundleV1,
+    ),
+    (
+        "GovernedImprovementFineTuningBundleV1",
+        GovernedImprovementFineTuningBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

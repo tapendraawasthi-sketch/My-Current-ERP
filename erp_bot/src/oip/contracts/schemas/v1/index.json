@@ -57,6 +57,7 @@
     "LoadLatencyFailoverBundleV1",
     "BackupRestoreDisasterLifecycleBundleV1",
     "HumanReviewPilotOperationsBundleV1",
+    "GovernedImprovementFineTuningBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

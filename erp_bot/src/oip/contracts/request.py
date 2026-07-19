@@ -58,6 +58,9 @@ from .backup_restore_disaster_lifecycle import (
 from .human_review_pilot_operations import (
     HumanReviewPilotOperationsBundleV1,
 )
+from .governed_improvement_fine_tuning import (
+    GovernedImprovementFineTuningBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -266,6 +269,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-47: human review / pilot ops (never claims review complete).
     human_review_pilot_operations_bundle: (
         HumanReviewPilotOperationsBundleV1 | None
+    ) = None
+    # MAI-48: governed improvement / fine-tuning (never applies changes).
+    governed_improvement_fine_tuning_bundle: (
+        GovernedImprovementFineTuningBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

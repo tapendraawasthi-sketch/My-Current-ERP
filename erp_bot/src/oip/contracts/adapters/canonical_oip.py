@@ -1050,6 +1050,34 @@ class CanonicalOipRequestAdapter:
                     "human_review_pilot_operations_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-48: governed improvement / fine-tuning (never applies).
+        if canonical.governed_improvement_fine_tuning_bundle is not None:
+            try:
+                from ...modules.conversation.application.governed_improvement_fine_tuning_service import (
+                    governed_improvement_fine_tuning_to_metadata,
+                )
+
+                metadata["governed_improvement_fine_tuning"] = (
+                    governed_improvement_fine_tuning_to_metadata(
+                        canonical.governed_improvement_fine_tuning_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                gift = canonical.governed_improvement_fine_tuning_bundle
+                metadata["governed_improvement_fine_tuning"] = {
+                    "analysis_status": gift.analysis_status.value,
+                    "runtime_version": gift.runtime_version,
+                    "governed_improvement_fine_tuning_readiness": (
+                        gift.governed_improvement_fine_tuning_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "improvement_applied": False,
+                    "fine_tuning_executed": False,
+                    "production_model_swapped": False,
+                    "governed_change_approved": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

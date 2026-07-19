@@ -1,7 +1,7 @@
 # MAI-47 — Human Review and Pilot Operations
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0064](decisions/ADR_0064_HUMAN_REVIEW_PILOT_OPERATIONS_AUTHORITY.md)  
 **Runtime:** `mai-47.0.2-slice2` (engineering; not production-approved)
 
