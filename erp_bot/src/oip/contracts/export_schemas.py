@@ -94,6 +94,9 @@ from .load_latency_failover import LoadLatencyFailoverBundleV1
 from .backup_restore_disaster_lifecycle import (
     BackupRestoreDisasterLifecycleBundleV1,
 )
+from .human_review_pilot_operations import (
+    HumanReviewPilotOperationsBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -189,6 +192,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "BackupRestoreDisasterLifecycleBundleV1",
         BackupRestoreDisasterLifecycleBundleV1,
+    ),
+    (
+        "HumanReviewPilotOperationsBundleV1",
+        HumanReviewPilotOperationsBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

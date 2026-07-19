@@ -56,6 +56,7 @@
     "SecurityTenantRedTeamBundleV1",
     "LoadLatencyFailoverBundleV1",
     "BackupRestoreDisasterLifecycleBundleV1",
+    "HumanReviewPilotOperationsBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

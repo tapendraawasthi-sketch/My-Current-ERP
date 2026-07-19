@@ -1,7 +1,7 @@
 # MAI-46 — Backup, Restore, Disaster, and Data Lifecycle
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0063](decisions/ADR_0063_BACKUP_RESTORE_DISASTER_LIFECYCLE_AUTHORITY.md)  
 **Runtime:** `mai-46.0.2-slice2` (engineering; not production-approved)
 

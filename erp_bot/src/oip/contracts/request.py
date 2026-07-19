@@ -55,6 +55,9 @@ from .load_latency_failover import LoadLatencyFailoverBundleV1
 from .backup_restore_disaster_lifecycle import (
     BackupRestoreDisasterLifecycleBundleV1,
 )
+from .human_review_pilot_operations import (
+    HumanReviewPilotOperationsBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -259,6 +262,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-46: backup/restore/disaster/lifecycle (never claims DR proven).
     backup_restore_disaster_lifecycle_bundle: (
         BackupRestoreDisasterLifecycleBundleV1 | None
+    ) = None
+    # MAI-47: human review / pilot ops (never claims review complete).
+    human_review_pilot_operations_bundle: (
+        HumanReviewPilotOperationsBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

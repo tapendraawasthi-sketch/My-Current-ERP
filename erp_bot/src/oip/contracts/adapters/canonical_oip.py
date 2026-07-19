@@ -1016,6 +1016,34 @@ class CanonicalOipRequestAdapter:
                     "backup_restore_disaster_lifecycle_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-47: human review / pilot ops policy (never review complete).
+        if canonical.human_review_pilot_operations_bundle is not None:
+            try:
+                from ...modules.conversation.application.human_review_pilot_operations_service import (
+                    human_review_pilot_operations_to_metadata,
+                )
+
+                metadata["human_review_pilot_operations"] = (
+                    human_review_pilot_operations_to_metadata(
+                        canonical.human_review_pilot_operations_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                hrpo = canonical.human_review_pilot_operations_bundle
+                metadata["human_review_pilot_operations"] = {
+                    "analysis_status": hrpo.analysis_status.value,
+                    "runtime_version": hrpo.runtime_version,
+                    "human_review_pilot_operations_readiness": (
+                        hrpo.human_review_pilot_operations_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "human_review_complete": False,
+                    "pilot_approved": False,
+                    "production_pilot_authorized": False,
+                    "go_live_authorized": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

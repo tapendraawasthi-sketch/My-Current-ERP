@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai47-slice1-v1",
+  "dataset_hash": "b4abe7c6780fdaaf8809993370439d0c63b0aacd9874196b9c552896d91990b8",
+  "phase": "MAI-47",
+  "slice": "SLICE1_HUMAN_REVIEW_PILOT_OPERATIONS_POLICY",
+  "runtime_version": "mai-47.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai47/frozen/human_review_pilot_operations_v1.jsonl",
+      "sha256": "b4abe7c6780fdaaf8809993370439d0c63b0aacd9874196b9c552896d91990b8",
+      "case_count": 6,
+      "suite_id": "human_review_pilot_operations_v1"
+    }
+  ]
+}
