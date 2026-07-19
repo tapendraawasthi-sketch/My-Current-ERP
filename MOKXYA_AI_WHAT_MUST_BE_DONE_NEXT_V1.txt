@@ -225,7 +225,11 @@ Objective:
 Gate:
   Ledger note + ADR or decision line records the freeze.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/decisions/ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md
+  docs/mokxya-ai/MAI_PHASE_LEDGER.json track_i_freeze
+  docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json honesty.track_i_freeze_status=ACTIVE
 
 
 ----------------------------------------------------------------------
@@ -576,7 +580,7 @@ That is the product. Everything else waits.
 Step     | Status | Commit / evidence | Notes
 ---------|--------|-------------------|------
 NEXT-00  | DONE   | MAI_CAPABILITY_TRUTH_MATRIX.* | honest depths; Track I dormant
-NEXT-01  | OPEN   |                   |
+NEXT-01  | DONE   | ADR_0071 + ledger track_i_freeze | freeze until NEXT-20
 NEXT-02  | OPEN   |                   | GAP-P0-001
 NEXT-03  | OPEN   |                   | GAP-P1-001
 NEXT-04  | OPEN   |                   | GAP-P1-002
@@ -600,9 +604,10 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-01
-  last_shipped_step = NEXT-00
+  recommended_next_step = NEXT-02
+  last_shipped_step = NEXT-01
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
+  track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
 
 ======================================================================
 10. RELATIONSHIP TO THE MASTER FILE

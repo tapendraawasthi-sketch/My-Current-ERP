@@ -16,6 +16,8 @@
     "continuum_mai08_to_mai53": "PASSED_ENGINEERING",
     "default_production_approved": false,
     "track_i_dormant_until": "NEXT-20",
+    "track_i_freeze_authority": "ADR_0071",
+    "track_i_freeze_status": "ACTIVE",
     "legal_effective_dates_proven": false
   },
   "blocking_gaps": [
@@ -124,6 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-01",
-  "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt"
+  "recommended_next_step": "NEXT-02",
+  "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
+  "completed_steps": ["NEXT-00", "NEXT-01"]
 }

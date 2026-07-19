@@ -5,9 +5,16 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-01",
-  "active_phase_note": "Post-MAI-53 queue active (MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt). NEXT-00 DONE: capability truth matrix. NEXT recommended=NEXT-01 (freeze Track I). MAI-08–53 PASSED_ENGINEERING / CANDIDATE_CONSUMED; Track I dormant; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-02",
+  "active_phase_note": "Post-MAI-53 queue (WHAT_MUST_BE_DONE_NEXT_V1). NEXT-00 DONE; NEXT-01 DONE (ADR_0071 Track I freeze until NEXT-20). NEXT recommended=NEXT-02 (GAP-P0-001 mutation authority). MAI-50–53 dormant; production_approved=false; GAP-P2-008 OPEN",
   "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
+  "track_i_freeze": {
+    "status": "ACTIVE",
+    "authority": "ADR_0071",
+    "phases": ["MAI-50", "MAI-51", "MAI-52", "MAI-53"],
+    "until": "NEXT-20",
+    "exception": "owner written risk acceptance required to reopen early"
+  },
   "phases": [
     {
       "id": "MAI-00",

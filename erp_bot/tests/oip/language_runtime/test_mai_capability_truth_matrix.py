@@ -65,4 +65,34 @@ def test_blocking_gaps_include_p0_and_p2_008() -> None:
     assert "GAP-P2-008" in ids
     assert "GAP-P1-002" in ids
     assert data["honesty"]["legal_effective_dates_proven"] is False
-    assert data["recommended_next_step"] == "NEXT-01"
+    assert data["recommended_next_step"] == "NEXT-02"
+
+
+def test_track_i_freeze_active_adr_0071() -> None:
+    data = _load()
+    honesty = data["honesty"]
+    assert honesty["track_i_freeze_status"] == "ACTIVE"
+    assert honesty["track_i_freeze_authority"] == "ADR_0071"
+    assert honesty["track_i_dormant_until"] == "NEXT-20"
+    assert "NEXT-01" in data.get("completed_steps", [])
+
+    ledger_path = ROOT / "docs" / "mokxya-ai" / "MAI_PHASE_LEDGER.json"
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    freeze = ledger["track_i_freeze"]
+    assert freeze["status"] == "ACTIVE"
+    assert freeze["authority"] == "ADR_0071"
+    assert freeze["until"] == "NEXT-20"
+    assert set(freeze["phases"]) == {"MAI-50", "MAI-51", "MAI-52", "MAI-53"}
+    assert ledger["recommended_next_step"] == "NEXT-02"
+
+    adr = (
+        ROOT
+        / "docs"
+        / "mokxya-ai"
+        / "decisions"
+        / "ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md"
+    )
+    assert adr.is_file()
+    text = adr.read_text(encoding="utf-8")
+    assert "NEXT-20" in text
+    assert "MAI-50" in text
