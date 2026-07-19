@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai37-slice2-v1",
+  "dataset_hash": "601ba00507c19c8451ad425153f86bdec0f6203d283a928f1786bf1386cfc57f",
+  "phase": "MAI-37",
+  "slice": "SLICE2_TAX_PILOT_CANDIDATE_CONSUME",
+  "runtime_version": "mai-37.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai37/frozen/tax_pilot_consume_v1.jsonl",
+      "sha256": "601ba00507c19c8451ad425153f86bdec0f6203d283a928f1786bf1386cfc57f",
+      "case_count": 6,
+      "suite_id": "tax_pilot_consume_v1"
+    }
+  ]
+}

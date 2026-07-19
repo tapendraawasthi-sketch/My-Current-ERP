@@ -2438,12 +2438,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent legal research success.
 
-    # MAI-37: core Nepal tax knowledge pilot (never calculates / proves law).
+    # MAI-37: core Nepal tax knowledge pilot + candidate consume (never calculates).
     ctk_ev = recorder.begin_stage(
         mai03_obs.TraceStage.CORE_NEPAL_TAX_KNOWLEDGE_PILOT_STARTED,
         component="conversation.core_nepal_tax_knowledge_pilot",
     )
     try:
+        from ..oip.modules.conversation.application.core_nepal_tax_knowledge_pilot_consume_service import (
+            assert_tax_pilot_consume_authority,
+            tax_pilot_consume_observability,
+        )
         from ..oip.modules.conversation.application.core_nepal_tax_knowledge_pilot_service import (
             assert_core_nepal_tax_knowledge_pilot_authority,
             attach_core_nepal_tax_knowledge_pilot_to_request,
@@ -2454,11 +2458,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.core_nepal_tax_knowledge_pilot_bundle
         assert_core_nepal_tax_knowledge_pilot_authority(bundle)
+        consume_obs = tax_pilot_consume_observability(
+            updated,
+            allow_rate_lookup=False,
+            allow_tax_calculator=False,
+        )
+        assert_tax_pilot_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             ctk_ev,
             version_map={
-                "core_nepal_tax_knowledge_pilot": "mai-37.0.1-slice1",
+                "core_nepal_tax_knowledge_pilot": "mai-37.0.2-slice2",
             },
             safe_attributes={
                 "tax_pilot_status": (
@@ -2468,6 +2478,12 @@ async def build_canonical_ai_request(
                     bundle.tax_pilot_readiness.value if bundle else None
                 ),
                 "pilot_scope": "INCOME_TAX_VAT_TDS_ONLY",
+                "tax_pilot_consume_mode": consume_obs.get(
+                    "tax_pilot_consume_mode"
+                ),
+                "tax_pilot_consume_ready": bool(
+                    consume_obs.get("tax_pilot_consume_ready")
+                ),
                 "tax_calculator_invoked": False,
                 "rate_lookup_executed": False,
                 "current_law_definitive": False,
@@ -2476,6 +2492,8 @@ async def build_canonical_ai_request(
                 "gap_p2_008_status": "OPEN",
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
+                "allow_rate_lookup": False,
+                "allow_tax_calculator": False,
             },
         )
         recorder.record_event(
@@ -2491,6 +2509,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "tax_pilot_consume_mode": consume_obs.get(
+                    "tax_pilot_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

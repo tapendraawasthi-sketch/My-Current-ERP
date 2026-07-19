@@ -1,15 +1,15 @@
 # MAI-37 — Core Nepal Tax Knowledge Pilot
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0054](decisions/ADR_0054_CORE_NEPAL_TAX_KNOWLEDGE_PILOT_AUTHORITY.md)  
-**Runtime:** `mai-37.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-37.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
-Declare a narrow Income Tax / VAT / TDS knowledge pilot scope on top of MAI-36
-research framing — without calculating tax, proving current law, or releasing
-gold questions.
+Declare a narrow Income Tax / VAT / TDS knowledge pilot scope — then consume
+into tax-pilot candidates — without calculating tax, proving current law, or
+releasing gold questions.
 
 ## Slice 1
 
@@ -21,17 +21,22 @@ gold questions.
 6. `tax_calculator_invoked=false`; dates unproven; GAP-P2-008 OPEN
 7. Never KB authority / rate lookup execute / all-law expansion
 
-## Slice 2 (later)
+## Slice 2
 
-Tax-pilot candidates under allow flags — still no calculator / definitive law.
+1. `resolve_tax_pilot_consume_mode` / `build_tax_pilot_candidate`
+2. Default `CANDIDATE_ONLY` — rate refs / computed amount / definitive null
+3. Fake calculator / sign-off → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_rate_lookup=false` / `allow_tax_calculator=false`
+5. Metadata: `tax_pilot_consume_ready` + `tax_pilot_candidate`
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| VAT / Income Tax research | COMPLETE → POLICY_DECLARED |
+| VAT / TDS research | COMPLETE → `CANDIDATE_ONLY` |
+| Fake calculator claim | `BLOCKED` |
 | purchase / report / OOD | SKIP |
-| Any path | no calculator; GAP-P2-008 OPEN |
+| Any live path | never calculate; GAP-P2-008 OPEN |
 
 ## Non-goals
 

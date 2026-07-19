@@ -36,7 +36,7 @@ class CoreNepalTaxKnowledgePilotBundleV1(ContractBase):
     analysis_status: CoreNepalTaxKnowledgePilotStatus = (
         CoreNepalTaxKnowledgePilotStatus.NOT_RUN
     )
-    runtime_version: str = "mai-37.0.1-slice1"
+    runtime_version: str = "mai-37.0.2-slice2"
     source_authority: str = "REQUEST"
     tax_pilot_readiness: TaxPilotReadiness = TaxPilotReadiness.NOT_APPLICABLE
     pilot_scope: str = "INCOME_TAX_VAT_TDS_ONLY"

@@ -672,17 +672,21 @@ class CanonicalOipRequestAdapter:
                     "legal_research_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-37: core Nepal tax knowledge pilot (never calculates / proves law).
+        # MAI-37: core Nepal tax knowledge pilot + candidate consume.
         if canonical.core_nepal_tax_knowledge_pilot_bundle is not None:
             try:
+                from ...modules.conversation.application.core_nepal_tax_knowledge_pilot_consume_service import (
+                    enrich_ctk_metadata_with_consume,
+                )
                 from ...modules.conversation.application.core_nepal_tax_knowledge_pilot_service import (
                     core_nepal_tax_knowledge_pilot_to_metadata,
                 )
 
+                base_meta = core_nepal_tax_knowledge_pilot_to_metadata(
+                    canonical.core_nepal_tax_knowledge_pilot_bundle
+                )
                 metadata["core_nepal_tax_knowledge_pilot"] = (
-                    core_nepal_tax_knowledge_pilot_to_metadata(
-                        canonical.core_nepal_tax_knowledge_pilot_bundle
-                    )
+                    enrich_ctk_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 ctk = canonical.core_nepal_tax_knowledge_pilot_bundle
@@ -695,6 +699,8 @@ class CanonicalOipRequestAdapter:
                     "legal_effective_dates_proven": False,
                     "specialist_signoff_status": "NOT_SIGNED",
                     "gap_p2_008_status": "OPEN",
+                    "tax_pilot_consume_mode": "UNCHANGED",
+                    "tax_pilot_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

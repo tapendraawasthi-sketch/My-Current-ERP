@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-37",
-  "active_phase_note": "MAI-37 slice 1 IN_PROGRESS (ADR_0054); core Nepal tax pilot scope annotation; GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-37 slice 2 IN_PROGRESS (ADR_0054); tax-pilot-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2948,19 +2948,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-37.0.1-slice1",
-      "slice": "SLICE1_TAX_PILOT_SCOPE_ANNOTATION",
+      "runtime_version": "mai-37.0.2-slice2",
+      "slice": "SLICE2_TAX_PILOT_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_37_CORE_NEPAL_TAX_KNOWLEDGE_PILOT.md",
         "docs/mokxya-ai/decisions/ADR_0054_CORE_NEPAL_TAX_KNOWLEDGE_PILOT_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_37_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai37/manifests/MAI_37_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_37_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai37/manifests/MAI_37_SLICE1.manifest.json",
+        "evals/mai37/manifests/MAI_37_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "core_nepal_tax_knowledge_pilot_service.py (policy annotation)",
+        "core_nepal_tax_knowledge_pilot_consume_service.py (CANDIDATE_ONLY tax_pilot_candidate)",
         "CoreNepalTaxKnowledgePilotBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress CORE_NEPAL_TAX_KNOWLEDGE_PILOT after LEGAL_QUESTION_RESEARCH",
-        "tax_calculator_invoked=false; specialist_signoff_status=NOT_SIGNED; gap_p2_008_status=OPEN"
+        "allow_rate_lookup=false; allow_tax_calculator=false; specialist_signoff_status=NOT_SIGNED; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -2975,7 +2978,7 @@
         "MAI-36"
       ],
       "recommended_order": 37,
-      "closure_note": "Slice 1: IT/VAT/TDS pilot scope annotation; never calculates; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY tax-pilot candidates; never calculate; GAP-P2-008 open."
     },
     {
       "id": "MAI-38",
