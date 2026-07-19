@@ -46,7 +46,7 @@ class ClaimCueV1(ContractBase):
 class ClaimCitationBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: ClaimCitationStatus = ClaimCitationStatus.NOT_RUN
-    runtime_version: str = "mai-30.0.2-slice2"
+    runtime_version: str = "mai-30.0.3-next13"
     source_authority: str = "REQUEST"
     grounded_answer_policy: GroundedAnswerPolicy = (
         GroundedAnswerPolicy.ABSTAIN_WHEN_UNGROUNDED

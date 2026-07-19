@@ -438,8 +438,8 @@ Severity legend:
 - **Current mitigation:** Expected safe no-answer in harness; product not upgraded in MAI-04
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
-- **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–53 `PASSED_ENGINEERING`. MAI-53 closed engineering with compliance obligation / calendar POLICY + `CANDIDATE_ONLY` candidates (`allow_arm_automation=false`, `allow_submit_filing=false`, `release_status=NOT_RELEASED`, `compliance_calendar_enabled=false`, `obligation_created=false`, `deadline_scheduled=false`, `reminder_sent=false`, `automation_armed=false`, `calendar_synced=false`, `filing_submitted=false`, `obligation_closed=false`, `production_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Status:** REDUCED
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed. NEXT-13 / ADR_0080 force-abstains fake cite, missing-evidence claim-like Ask, and tax-current without knowledge release on the launch Ask gate; suite critical cases mapped. Does **not** mark CLOSED (professional honesty review + suite sign-off still required; `legal_effective_dates_proven=false`).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

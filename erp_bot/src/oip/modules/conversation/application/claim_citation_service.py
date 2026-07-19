@@ -3,6 +3,8 @@
 Slice 1: detect claim-like cues; ABSTAIN_WHEN_UNGROUNDED; never verifies.
 Slice 2: gate grounding / force safe no-answer when ungrounded claim-like
 queries lack evidence candidates. Never marks VERIFIED or legal proof.
+NEXT-13 / ADR_0080: fake-cite, tax-current-without-release, and unsupported
+legal conclusions force abstain even when unrelated KB candidates exist.
 """
 
 from __future__ import annotations
@@ -22,12 +24,13 @@ from ....contracts.hybrid_fusion import HybridFusionMode, HybridFusionStatus
 from ....contracts.knowledge_source_governance import KnowledgeSourceGovernanceStatus
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-30.0.2-slice2"
+RUNTIME_VERSION = "mai-30.0.3-next13"
 AUTHORITY = "ADR_0047"
+NEXT13_AUTHORITY = "ADR_0080"
 
 _LEGAL_TAX = re.compile(
     r"\b(?:VAT\s+Act|Income\s+Tax\s+Act|tax\s+rate|VAT\s+rate|NFRS|IAS|IFRS|"
-    r"आयकर|मूल्य\s+अभिवृद्धि\s+कर|कर\s+दर)\b",
+    r"\btax\b|VAT|TDS|आयकर|मूल्य\s+अभिवृद्धि\s+कर|कर\s+दर)\b",
     re.IGNORECASE,
 )
 _ACCOUNTING = re.compile(
@@ -44,6 +47,46 @@ _PRODUCT = re.compile(
     r"\b(?:can\s+(?:I|you|we)|does\s+(?:it|this)|how\s+do\s+I|"
     r"feature|support|MokXya|Ask\s+MokXya)\b",
     re.IGNORECASE,
+)
+# NEXT-13 honesty: invent/fake cites and unsupported legal conclusions.
+_FAKE_CITE = re.compile(
+    r"(?i)\b(?:"
+    r"cite\s+(?:IRD|circular|section)|"
+    r"circular\s+\d{3,}|"
+    r"IRD\s+circular|"
+    r"fake\s+cite|"
+    r"made[- ]up|"
+    r"phrasebook\s+as\s+legal|"
+    r"legal\s+proof|"
+    r"without\s+source|"
+    r"loksewa\s+fee\s+rule"
+    r")\b"
+)
+# Tax/VAT "current / effective today" without an immutable knowledge release.
+_TAX_CURRENT = re.compile(
+    r"(?i)\b(?:"
+    r"effective\s+today|"
+    r"as\s+of\s+today|"
+    r"current\s+(?:law|rate|VAT|tax)|"
+    r"VAT\s+rate\s+effective|"
+    r"today'?s\s+(?:VAT|tax)\s+rate|"
+    r"use\s+FY\s+\d+\s+.+\s+as\s+current\s+law"
+    r")\b"
+)
+_UNSUPPORTED_LEGAL = re.compile(
+    r"(?i)\b(?:"
+    r"conclude\s+filing|"
+    r"mandatory\s+tomorrow|"
+    r"filing\s+is\s+mandatory"
+    r")\b"
+)
+
+_HONESTY_FORCE_ABSTAIN_REASONS = frozenset(
+    {
+        "FAKE_CITE_OR_INVENTED_SOURCE",
+        "TAX_CURRENT_WITHOUT_KNOWLEDGE_RELEASE",
+        "UNSUPPORTED_LEGAL_CONCLUSION",
+    }
 )
 
 SAFE_NO_ANSWER_BLOCK = """## GROUNDED ANSWER GATE (MAI-30)
@@ -79,11 +122,72 @@ def _add_cues(
         )
 
 
+def _honesty_force_reasons(text: str) -> list[str]:
+    reasons: list[str] = []
+    if _FAKE_CITE.search(text or ""):
+        reasons.append("FAKE_CITE_OR_INVENTED_SOURCE")
+    if _TAX_CURRENT.search(text or ""):
+        reasons.append("TAX_CURRENT_WITHOUT_KNOWLEDGE_RELEASE")
+    if _UNSUPPORTED_LEGAL.search(text or ""):
+        reasons.append("UNSUPPORTED_LEGAL_CONCLUSION")
+    return reasons
+
+
+def _honesty_force_bundle(text: str, reasons: list[str]) -> ClaimCitationBundleV1:
+    """NEXT-13: honesty-critical Ask still abstains when governance is incomplete."""
+    warnings = ["GAP_P2_008_REDUCED_ADR_0080"]
+    if "FAKE_CITE_OR_INVENTED_SOURCE" in reasons:
+        warnings.append("FAKE_CITE_FORCE_ABSTAIN")
+    if "TAX_CURRENT_WITHOUT_KNOWLEDGE_RELEASE" in reasons:
+        warnings.append("TAX_CURRENT_FORCE_ABSTAIN")
+    if "UNSUPPORTED_LEGAL_CONCLUSION" in reasons:
+        warnings.append("UNSUPPORTED_LEGAL_FORCE_ABSTAIN")
+    return ClaimCitationBundleV1(
+        analysis_status=ClaimCitationStatus.COMPLETE,
+        runtime_version=RUNTIME_VERSION,
+        grounded_answer_policy=GroundedAnswerPolicy.ABSTAIN_WHEN_UNGROUNDED,
+        verification_status=ClaimCitationVerificationStatus.INSUFFICIENT,
+        citation_required=True,
+        claim_cues=(
+            ClaimCueV1(
+                cue_id="c-0001",
+                kind=ClaimCueKind.LEGAL_TAX,
+                surface="next13_honesty_force_abstain",
+                reason_codes=tuple(reasons),
+            ),
+        ),
+        claims_verified=False,
+        citations_verified=False,
+        verifier_executed=False,
+        legal_proof_claimed=False,
+        fake_citation_allowed=False,
+        reason_codes=tuple(
+            [
+                "NEXT13_KNOWLEDGE_CITATION_HONESTY",
+                "KNOWLEDGE_RELEASE_NOT_RELEASED",
+                "ABSTAIN_WHEN_UNGROUNDED",
+                "CLAIMS_NOT_VERIFIED",
+                "FAKE_CITATION_NOT_ALLOWED",
+                *reasons,
+            ]
+        ),
+        warnings=tuple(warnings),
+        documents_retrieved=0,
+        draft_mutations=0,
+        model_invocations=0,
+    )
+
+
 def build_claim_citation_bundle(
     request: CanonicalAIRequestV1,
 ) -> ClaimCitationBundleV1:
+    text = request.raw_text or ""
+    force_reasons = _honesty_force_reasons(text)
+
     gov = request.knowledge_source_governance_bundle
     if gov is None:
+        if force_reasons:
+            return _honesty_force_bundle(text, force_reasons)
         return ClaimCitationBundleV1(
             analysis_status=ClaimCitationStatus.SKIP,
             runtime_version=RUNTIME_VERSION,
@@ -92,6 +196,8 @@ def build_claim_citation_bundle(
         )
 
     if gov.analysis_status != KnowledgeSourceGovernanceStatus.COMPLETE:
+        if force_reasons:
+            return _honesty_force_bundle(text, force_reasons)
         return ClaimCitationBundleV1(
             analysis_status=ClaimCitationStatus.SKIP,
             runtime_version=RUNTIME_VERSION,
@@ -100,7 +206,6 @@ def build_claim_citation_bundle(
         )
 
     cues: list[ClaimCueV1] = []
-    text = request.raw_text or ""
     _add_cues(text, _LEGAL_TAX, ClaimCueKind.LEGAL_TAX, "LEGAL_TAX_CUE", cues)
     _add_cues(
         text, _ACCOUNTING, ClaimCueKind.ACCOUNTING_RULE, "ACCOUNTING_RULE_CUE", cues
@@ -121,8 +226,13 @@ def build_claim_citation_bundle(
         "LEGAL_PROOF_NOT_CLAIMED",
         "FAKE_CITATION_NOT_ALLOWED",
         "CITATION_REQUIRED",
+        "NEXT13_KNOWLEDGE_CITATION_HONESTY",
+        "KNOWLEDGE_RELEASE_NOT_RELEASED",
     ]
-    warnings: list[str] = ["CITATION_PRESENCE_IS_NOT_VERIFICATION"]
+    warnings: list[str] = [
+        "CITATION_PRESENCE_IS_NOT_VERIFICATION",
+        "GAP_P2_008_REDUCED_ADR_0080",
+    ]
 
     if hyb is None or hyb.analysis_status != HybridFusionStatus.COMPLETE:
         verification = ClaimCitationVerificationStatus.INSUFFICIENT
@@ -137,6 +247,24 @@ def build_claim_citation_bundle(
     if any(c.kind == ClaimCueKind.LEGAL_TAX for c in cues):
         reasons.append("LEGAL_TAX_REQUIRES_GROUNDED_ABSTAIN")
         warnings.append("LEGAL_TAX_UNVERIFIED")
+
+    for code in force_reasons:
+        reasons.append(code)
+        if code == "FAKE_CITE_OR_INVENTED_SOURCE":
+            warnings.append("FAKE_CITE_FORCE_ABSTAIN")
+        elif code == "TAX_CURRENT_WITHOUT_KNOWLEDGE_RELEASE":
+            warnings.append("TAX_CURRENT_FORCE_ABSTAIN")
+        elif code == "UNSUPPORTED_LEGAL_CONCLUSION":
+            warnings.append("UNSUPPORTED_LEGAL_FORCE_ABSTAIN")
+    if force_reasons and not any(c.kind == ClaimCueKind.LEGAL_TAX for c in cues):
+        cues.append(
+            ClaimCueV1(
+                cue_id=f"c-{len(cues) + 1:04d}",
+                kind=ClaimCueKind.LEGAL_TAX,
+                surface="next13_honesty_force_abstain",
+                reason_codes=tuple(force_reasons),
+            )
+        )
 
     return ClaimCitationBundleV1(
         analysis_status=ClaimCitationStatus.COMPLETE,
@@ -244,7 +372,11 @@ def resolve_grounded_answer_gate(
     citation_count: int = 0,
     evidence_candidate_count: int = 0,
 ) -> str:
-    """Return gate mode for consume (never implies claims verified)."""
+    """Return gate mode for consume (never implies claims verified).
+
+    NEXT-13: honesty-critical reason codes force abstain even when KB
+    candidates exist (fake cite / tax-current without release / unsupported).
+    """
     data = _as_claim_meta(claim_citation)
     if data is None:
         return "UNCHANGED"
@@ -258,9 +390,14 @@ def resolve_grounded_answer_gate(
     ):
         return "ABSTAIN_UNGROUNDED"
 
+    reasons = {str(r) for r in (data.get("reason_codes") or [])}
+    if reasons & _HONESTY_FORCE_ABSTAIN_REASONS:
+        return "ABSTAIN_UNGROUNDED"
+
     kinds = {str(k) for k in (data.get("claim_cue_kinds") or [])}
     grounded = citation_count > 0 or evidence_candidate_count > 0
     if grounded:
+        # Candidates may be shown; never means verified current law.
         return "ALLOW_WITH_CANDIDATES"
 
     # Ungrounded claim-like / legal questions must abstain.

@@ -16,7 +16,7 @@
 | Track I (MAI-50…53) | **Dormant / FREEZE ACTIVE** ([ADR_0071](decisions/ADR_0071_TRACK_I_DEEPENING_FREEZE_UNTIL_NEXT_20.md)) until **NEXT-20** |
 | `production_approved` (product) | **false** |
 | `legal_effective_dates_proven` | **false** |
-| Recommended next step | **NEXT-13** (knowledge no-answer / citation) |
+| Recommended next step | **NEXT-14** (prod retrieval without Ollama) |
 
 **PASSED_ENGINEERING ≠ master Gate proven ≠ production released.**
 
@@ -43,7 +43,7 @@
 | GAP-P1-012 | OPEN | Linguist approval path |
 | GAP-P2-001 | OPEN | Prod retrieval without Ollama |
 | GAP-P2-002 | REDUCED | NEXT-11 ADR_0078 owners+labels; display estimates remain |
-| GAP-P2-008 | OPEN | Knowledge/no-answer & citation honesty |
+| GAP-P2-008 | REDUCED | NEXT-13 ADR_0080 force-abstain gate; reviewer sign-off still needed |
 
 ## Phase matrix (MAI-00 … MAI-53)
 
@@ -111,7 +111,8 @@ Per `MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt` default order:
 8. ~~NEXT-10~~ — Launch event spec freeze (ADR_0077)  
 9. ~~NEXT-11~~ — Calc authority honesty / GAP-P2-002 REDUCED (ADR_0078)  
 10. ~~NEXT-12~~ — E2E launch slice evidence (ADR_0079)  
-11. **NEXT-13** — Knowledge no-answer + claim citation (GAP-P2-008)
+11. ~~NEXT-13~~ — Knowledge citation honesty / GAP-P2-008 REDUCED (ADR_0080)  
+12. **NEXT-14** — Production retrieval without Ollama (GAP-P2-001)
 
 ## Explicit non-claims
 

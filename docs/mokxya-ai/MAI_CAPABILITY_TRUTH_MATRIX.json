@@ -31,7 +31,7 @@
     {"id": "GAP-P1-012", "severity": "P1", "status": "OPEN", "blocks": ["linguist_approval", "NEXT-09"]},
     {"id": "GAP-P2-001", "severity": "P2", "status": "OPEN", "blocks": ["prod_retrieval", "NEXT-14"]},
     {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-20"], "note": "NEXT-11 ADR_0078 owners+labels; UI display estimates remain; not CLOSED"},
-    {"id": "GAP-P2-008", "severity": "P2", "status": "OPEN", "blocks": ["citation_honesty", "NEXT-13"]}
+    {"id": "GAP-P2-008", "severity": "P2", "status": "REDUCED", "blocks": ["citation_honesty", "NEXT-20"], "note": "NEXT-13 ADR_0080 force-abstain gate; professional suite sign-off still required; not CLOSED"}
   ],
   "phases": [
     {"id": "MAI-00", "title": "REPOSITORY AND AUTHORITY MAP", "depth": "GATE_PROVEN", "production_approved": false, "live_effect": "DOCS_ONLY", "linked_gaps": [], "note": "Audit/authority map complete."},
@@ -64,7 +64,7 @@
     {"id": "MAI-27", "title": "LEXICAL INDEX", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "PIPELINE_PARTIAL", "linked_gaps": ["GAP-P2-001"], "note": "Lexical-only consume path; prod still mismatched vs Groq chat."},
     {"id": "MAI-28", "title": "MULTILINGUAL VECTOR INDEX", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "NON_PROD_OPTIONAL", "linked_gaps": ["GAP-P2-001"], "note": "Semantic leg Ollama-tied; never production-eligible by default."},
     {"id": "MAI-29", "title": "HYBRID FUSION EVIDENCE BUNDLES", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-001", "GAP-P2-008"], "note": "Unverified evidence candidates; LEXICAL_ONLY default."},
-    {"id": "MAI-30", "title": "GROUNDED ANSWER CLAIM CITATION", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-008"], "note": "Gate consume/abstain policy; suite honesty still OPEN."},
+    {"id": "MAI-30", "title": "GROUNDED ANSWER CLAIM CITATION", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-008"], "note": "NEXT-13 force-abstain honesty; GAP-P2-008 REDUCED (not CLOSED); not production."},
     {"id": "MAI-31", "title": "EVENTFRAME TO DOMAIN PORTS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "Draft payload candidates; no silent domain post."},
     {"id": "MAI-32", "title": "DURABLE VERSIONED DRAFTS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "Draft aggregate candidates; Dexie remains product draft store."},
     {"id": "MAI-33", "title": "DETERMINISTIC PREVIEW EDIT LOOP", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-002"], "note": "Preview candidates; NEXT-11 GAP-P2-002 REDUCED (not CLOSED); display estimates remain."},
@@ -95,8 +95,8 @@
       "title": "Ask Mode — authorized company report questions",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-13", "NEXT-20"],
-      "note": "NEXT-10/12 Ask report vertical evidenced; still ANNOTATION_ONLY / not production."
+      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-14", "NEXT-20"],
+      "note": "NEXT-10/12/13 Ask report + citation honesty; still ANNOTATION_ONLY / not production."
     },
     {
       "id": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
@@ -111,8 +111,8 @@
       "title": "Ask Mode — general product/accounting explanation",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P2-008", "NEXT-13", "NEXT-20"],
-      "note": "Lowest-risk Ask row still needs honesty gates before PRODUCTION."
+      "blocked_by": ["GAP-P2-008", "NEXT-20"],
+      "note": "NEXT-13 citation honesty REDUCED; still not production_approved."
     }
   ],
   "counts": {
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-13",
+  "recommended_next_step": "NEXT-14",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11", "NEXT-12"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13"]
 }
