@@ -1,0 +1,123 @@
+{
+  "$defs": {
+    "LexicalIndexStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "LexicalIndexStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/LexicalIndexBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "active_lexical_db": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Active Lexical Db"
+    },
+    "analysis_status": {
+      "$ref": "#/$defs/LexicalIndexStatus",
+      "default": "NOT_RUN"
+    },
+    "citations_verified": {
+      "default": false,
+      "title": "Citations Verified",
+      "type": "boolean"
+    },
+    "documents_retrieved": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Documents Retrieved",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "fts_ready": {
+      "default": false,
+      "title": "Fts Ready",
+      "type": "boolean"
+    },
+    "index_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Index Mutations",
+      "type": "integer"
+    },
+    "index_present": {
+      "default": false,
+      "title": "Index Present",
+      "type": "boolean"
+    },
+    "lexical_backend": {
+      "default": "SQLITE_FTS",
+      "title": "Lexical Backend",
+      "type": "string"
+    },
+    "ollama_required": {
+      "default": false,
+      "title": "Ollama Required",
+      "type": "boolean"
+    },
+    "query_executions": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Query Executions",
+      "type": "integer"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "runtime_version": {
+      "default": "mai-27.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "vector_backend_required": {
+      "default": false,
+      "title": "Vector Backend Required",
+      "type": "boolean"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "LexicalIndexBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

@@ -1684,6 +1684,63 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent temporal claims.
 
+    # MAI-27: lexical index readiness (SQLITE FTS; never Ollama/vector/query).
+    lex_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.LEXICAL_INDEX_STARTED,
+        component="conversation.lexical_index",
+    )
+    try:
+        from ..oip.modules.conversation.application.lexical_index_service import (
+            assert_lexical_index_authority,
+            attach_lexical_index_to_request,
+        )
+
+        updated = attach_lexical_index_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.lexical_index_bundle
+        assert_lexical_index_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            lex_ev,
+            version_map={
+                "lexical_index": "mai-27.0.1-slice1",
+            },
+            safe_attributes={
+                "lexical_index_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "index_present": bundle.index_present if bundle else False,
+                "fts_ready": bundle.fts_ready if bundle else False,
+                "ollama_required": False,
+                "vector_backend_required": False,
+                "citations_verified": False,
+                "query_executions": bundle.query_executions if bundle else 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.LEXICAL_INDEX_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "active_lexical_db": (
+                    bundle.active_lexical_db if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            lex_ev, safe_error_code="LEXICAL_INDEX_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.LEXICAL_INDEX_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="LEXICAL_INDEX_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent index readiness.
+
     return canonical
 
 

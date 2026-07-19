@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai27-slice1-v1",
+  "dataset_hash": "f074675c3ec4a4490f019fb70baeaf909f7a35787f58caaa51a13d0d10cb0555",
+  "phase": "MAI-27",
+  "slice": "SLICE1_LEXICAL_INDEX_ANNOTATION",
+  "runtime_version": "mai-27.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai27/frozen/lexical_index_v1.jsonl",
+      "sha256": "f074675c3ec4a4490f019fb70baeaf909f7a35787f58caaa51a13d0d10cb0555",
+      "case_count": 6,
+      "suite_id": "lexical_index_v1"
+    }
+  ]
+}

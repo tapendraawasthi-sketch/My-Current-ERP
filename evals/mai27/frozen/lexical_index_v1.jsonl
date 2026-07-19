@@ -1,0 +1,6 @@
+{"case_id": "mai27_lex__vat_report", "suite_id": "lexical_index_v1", "text": "show VAT report for this month", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai27_lex__purchase", "suite_id": "lexical_index_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai27_lex__balance", "suite_id": "lexical_index_v1", "text": "show ledger balance report for cash account", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai27_lex__fy_report", "suite_id": "lexical_index_v1", "text": "show VAT report FY 2080/81", "expected_status": "COMPLETE", "prohibited_for_training": true}
+{"case_id": "mai27_lex__ood", "suite_id": "lexical_index_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai27_lex__nfrs", "suite_id": "lexical_index_v1", "text": "show NFRS report pursuant to section 5", "expected_status": "COMPLETE", "prohibited_for_training": true}

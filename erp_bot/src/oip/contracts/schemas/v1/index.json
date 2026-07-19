@@ -33,6 +33,7 @@
     "TemporalCrossRefBundleV1",
     "TemporalCueV1",
     "CrossRefCueV1",
+    "LexicalIndexBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

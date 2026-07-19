@@ -1,7 +1,7 @@
 # MAI-26 — Temporal, Amendment, and Cross-Reference Model
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0043](decisions/ADR_0043_TEMPORAL_CROSS_REF_AUTHORITY.md)  
 **Runtime:** `mai-26.0.2-slice2` (engineering; not production-approved)
 

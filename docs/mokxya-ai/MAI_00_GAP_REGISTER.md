@@ -451,6 +451,7 @@ Severity legend:
 - **Dependencies:** knowledge governance
 - **Acceptance condition:** Prod retrieval does not require Ollama
 - **Status:** OPEN
+- **Progress (2026-07-19):** MAI-27 slice 1 `IN_PROGRESS` — `LexicalIndexBundleV1` annotates SQLITE FTS readiness with `ollama_required=false` / `vector_backend_required=false`. Does **not** consume retrieval preference or close the gap.
 
 ### GAP-P2-002 — Frontend calculates authoritative-looking totals
 

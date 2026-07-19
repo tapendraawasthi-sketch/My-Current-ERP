@@ -406,6 +406,26 @@ class CanonicalOipRequestAdapter:
                     "amendment_applied": False,
                     "is_execution_authority": False,
                 }
+        # MAI-27: lexical index readiness (no retrieval / no Ollama claim).
+        if canonical.lexical_index_bundle is not None:
+            try:
+                from ...modules.conversation.application.lexical_index_service import (
+                    lexical_index_to_metadata,
+                )
+
+                metadata["lexical_index"] = lexical_index_to_metadata(
+                    canonical.lexical_index_bundle
+                )
+            except Exception:  # noqa: BLE001
+                lex = canonical.lexical_index_bundle
+                metadata["lexical_index"] = {
+                    "analysis_status": lex.analysis_status.value,
+                    "runtime_version": lex.runtime_version,
+                    "ollama_required": False,
+                    "vector_backend_required": False,
+                    "citations_verified": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

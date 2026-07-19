@@ -25,6 +25,7 @@ from .knowledge_source_governance import KnowledgeSourceGovernanceBundleV1
 from .structural_segmentation import StructuralSegmentationBundleV1
 from .extraction_ocr_plan import ExtractionOcrPlanBundleV1
 from .temporal_cross_ref import TemporalCrossRefBundleV1
+from .lexical_index import LexicalIndexBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -168,6 +169,8 @@ class CanonicalAIRequestV1(ContractBase):
     extraction_ocr_plan_bundle: ExtractionOcrPlanBundleV1 | None = None
     # MAI-26: temporal / amendment / cross-reference cues (never proven/applied).
     temporal_cross_ref_bundle: TemporalCrossRefBundleV1 | None = None
+    # MAI-27: lexical index readiness (no MATCH query / no mutations).
+    lexical_index_bundle: LexicalIndexBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

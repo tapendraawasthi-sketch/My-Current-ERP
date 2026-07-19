@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-26",
-  "active_phase_note": "MAI-26 slice 2 IN_PROGRESS (ADR_0043); as_of retrieval consume; amendment CUES_ONLY; MAI-25 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-27",
+  "active_phase_note": "MAI-27 slice 1 IN_PROGRESS (ADR_0044); lexical index readiness annotation; MAI-26 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2521,7 +2521,7 @@
     {
       "id": "MAI-26",
       "title": "TEMPORAL, AMENDMENT, AND CROSS-REFERENCE MODEL",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2532,6 +2532,7 @@
         "docs/mokxya-ai/decisions/ADR_0043_TEMPORAL_CROSS_REF_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_26_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_26_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_26_ENGINEERING_CLOSURE.md",
         "evals/mai26/manifests/MAI_26_SLICE1.manifest.json",
         "evals/mai26/manifests/MAI_26_SLICE2.manifest.json"
       ],
@@ -2552,22 +2553,40 @@
         "MAI-25"
       ],
       "recommended_order": 26,
-      "closure_note": "Slice 2: as_of_candidate→knowledge.retrieve filter hint; amendment CUES_ONLY; legal dates not proven."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-27. production_approved=false. Gaps unchanged."
     },
     {
       "id": "MAI-27",
       "title": "LEXICAL INDEX",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "kb_lexical.sqlite ACTIVE"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-27.0.1-slice1",
+      "slice": "SLICE1_LEXICAL_INDEX_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_27_LEXICAL_INDEX.md",
+        "docs/mokxya-ai/decisions/ADR_0044_LEXICAL_INDEX_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_27_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai27/manifests/MAI_27_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "lexical_index_service.py (presence + prod_fts schema probe)",
+        "LexicalIndexBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress LEXICAL_INDEX after TEMPORAL_CROSS_REF",
+        "ollama_required=false; vector_backend_required=false; query_executions=0"
+      ],
+      "blockers": [
+        "GAP-P2-001 remains OPEN",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-26"
       ],
-      "recommended_order": 27
+      "recommended_order": 27,
+      "closure_note": "Slice 1: SQLITE FTS readiness annotation only; no MATCH query; citations not verified."
     },
     {
       "id": "MAI-28",
