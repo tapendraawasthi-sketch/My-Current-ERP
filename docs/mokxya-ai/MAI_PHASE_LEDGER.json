@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-14",
-  "active_phase_note": "MAI-14 slice 1 IN_PROGRESS (ADR_0031); turn-relation annotation; MAI-13 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-14 slice 2 IN_PROGRESS (ADR_0031); pending-draft merge gate; MAI-13 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2085,29 +2085,34 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-14.0.1-slice1",
-      "slice": "SLICE1_TURN_RELATION_ANNOTATION",
+      "runtime_version": "mai-14.0.2-slice2",
+      "slice": "SLICE2_PENDING_DRAFT_MERGE_GATE",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_14_TURN_RELATION_BEFORE_DRAFT_MERGE.md",
         "docs/mokxya-ai/decisions/ADR_0031_TURN_RELATION_BEFORE_DRAFT_MERGE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_14_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai14/manifests/MAI_14_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_14_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai14/manifests/MAI_14_SLICE1.manifest.json",
+        "evals/mai14/manifests/MAI_14_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "erp_bot/src/oip/modules/conversation/application/turn_relation_service.py",
+        "allows_pending_merge",
         "CanonicalAIRequestV1.turn_relation",
         "oip_chat_ingress TURN_RELATION after MAI-13",
-        "canonical_oip metadata.turn_relation"
+        "canonical_oip metadata.turn_relation",
+        "mode_aware_erp pending clear before classify",
+        "module_stages / khata_preprocess turn_relation forward"
       ],
       "blockers": [
-        "GAP-P1-004 / GAP-P1-008 not closed until merge gate (slice 2)",
+        "GAP-P1-004 / GAP-P1-008 REDUCED (MAI-04 suite not fully green)",
         "production_approved=false"
       ],
       "dependencies": [
         "MAI-13"
       ],
       "recommended_order": 14,
-      "closure_note": "Slice 1: turn-relation annotation only; mode_aware merge unchanged."
+      "closure_note": "Slice 2: pending-draft merge gate on mode_aware path; gaps REDUCED."
     },
     {
       "id": "MAI-15",

@@ -810,7 +810,7 @@ async def build_canonical_ai_request(
             outcome_code=(decision.relation.value if decision else "FAILED"),
             component_versions={
                 "turn_relation": (
-                    decision.classifier_version if decision else "mai-14.0.1-slice1"
+                    decision.classifier_version if decision else "mai-14.0.2-slice2"
                 ),
             },
             safe_attributes={
@@ -845,7 +845,7 @@ async def build_canonical_ai_request(
 
             fail = TurnRelationV1(
                 relation=TurnRelationKind.UNKNOWN,
-                classifier_version="mai-14.0.1-slice1",
+                classifier_version="mai-14.0.2-slice2",
                 status=ContractStatus.FAILED,
             )
             canonical = canonical.model_copy(update={"turn_relation": fail})

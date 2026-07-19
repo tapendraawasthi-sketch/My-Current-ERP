@@ -98,7 +98,7 @@ def _bundle(
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-14.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-14.")
 
 
 def test_new_topic_without_draft() -> None:

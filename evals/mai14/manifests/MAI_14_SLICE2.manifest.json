@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai14-slice2-v1",
+  "dataset_hash": "12e70909ba8fcfce985fc5b5c18ba74b97b71e7b0bf75e56baf121d41bc55132",
+  "phase": "MAI-14",
+  "slice": "SLICE2_PENDING_DRAFT_MERGE_GATE",
+  "runtime_version": "mai-14.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai14/frozen/turn_relation_merge_gate_v1.jsonl",
+      "sha256": "12e70909ba8fcfce985fc5b5c18ba74b97b71e7b0bf75e56baf121d41bc55132",
+      "case_count": 8,
+      "suite_id": "turn_relation_merge_gate_v1"
+    }
+  ]
+}

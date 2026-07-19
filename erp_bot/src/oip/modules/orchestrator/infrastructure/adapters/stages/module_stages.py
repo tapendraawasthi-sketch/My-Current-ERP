@@ -457,6 +457,10 @@ class ExecutionStageAdapter(WorkflowStagePort):
         recent_raw = client_ctx.get("recent_parties") or client_ctx.get("lastParties") or []
         recent_parties = [str(p) for p in recent_raw if p] if isinstance(recent_raw, list) else []
         pre_ev = _mai03_safe_stage("DETERMINISTIC_PREPROCESS_STARTED", path="erp_preprocess")
+        raw_turn_relation = meta.get("turn_relation")
+        turn_relation = (
+            raw_turn_relation if isinstance(raw_turn_relation, dict) else None
+        )
         erp_result = preprocess_erp_message(
             context.message,
             orbix_mode=orbix_mode,
@@ -471,6 +475,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
             draft_id=client_ctx.get("draft_id") or client_ctx.get("active_draft_id"),
             last_party=str(last_party) if last_party else None,
             recent_parties=recent_parties,
+            turn_relation=turn_relation,
         )
         if erp_result and erp_result.skip_llm:
             _mai03_finish(pre_ev, ok=True)

@@ -125,6 +125,7 @@ def handle_mode_aware_erp(
     draft_id: str | None = None,
     last_party: str | None = None,
     recent_parties: list[str] | None = None,
+    turn_relation: dict[str, Any] | None = None,
 ) -> ModeAwareResult | None:
     """Return a deterministic result when mode/classification handles the turn.
 
@@ -137,12 +138,14 @@ def handle_mode_aware_erp(
     caps = resolve_capabilities(mode, can_post=can_post)
 
     # MAI-01 — deny-by-default constitution before any draft merge/persist.
+    # Import constitution OperationClass under a distinct name so a failed try
+    # does not shadow the module-level orbix OperationClass (UnboundLocalError).
     try:
-        from ...config.settings import get_oip_settings
-        from ...domain.constitution import OperationClass
-        from ...domain.constitution.enforcement import enforce_draft_operation
-        from ...domain.constitution.config_guard import insecure_dev_identity_allowed
-        from ...infrastructure.security.session_context import current_principal
+        from ..config.settings import get_oip_settings
+        from ..domain.constitution import OperationClass as ConstitutionOperationClass
+        from ..domain.constitution.enforcement import enforce_draft_operation
+        from ..domain.constitution.config_guard import insecure_dev_identity_allowed
+        from ..infrastructure.security.session_context import current_principal
 
         settings = get_oip_settings()
         if mode == "accountant" and (
@@ -152,7 +155,7 @@ def handle_mode_aware_erp(
                 if settings.auth_required:
                     _, decision = enforce_draft_operation(
                         orbix_mode=mode,
-                        operation=OperationClass.CREATE_PERSISTED_DRAFT,
+                        operation=ConstitutionOperationClass.CREATE_PERSISTED_DRAFT,
                         requested_tenant_id=tenant_id or None,
                         requested_company_id=company_id or None,
                     )
@@ -263,6 +266,37 @@ def handle_mode_aware_erp(
         pending, pending_kind = pending_sale, "sale"
     elif pending_purchase:
         pending, pending_kind = pending_purchase, "purchase"
+
+    # MAI-14 slice 2: clear pending before classify/merge when turn-relation
+    # forbids binding (NEW_TOPIC / UNKNOWN / CONFIRMATION / CANCEL / FAILED).
+    # ``turn_relation=None`` keeps legacy unit-test behavior.
+    try:
+        from ..modules.conversation.application.turn_relation_service import (
+            allows_pending_merge,
+        )
+
+        if not allows_pending_merge(turn_relation):
+            pending = None
+            pending_kind = None
+            pending_purchase = None
+            pending_sale = None
+            pending_return = None
+            pending_purchase_return = None
+            pending_financial = None
+            pending_bank_recon = None
+            draft_id = None
+    except Exception:  # noqa: BLE001
+        # Fail closed when gate helper errors and metadata was provided.
+        if turn_relation is not None:
+            pending = None
+            pending_kind = None
+            pending_purchase = None
+            pending_sale = None
+            pending_return = None
+            pending_purchase_return = None
+            pending_financial = None
+            pending_bank_recon = None
+            draft_id = None
 
     classification = classify_operation(
         message,

@@ -347,14 +347,15 @@ Severity legend:
 
 - **Severity:** P1
 - **Affected capability:** language / drafts / intent
-- **Evidence:** `operation_classifier.py` regex intents including `purchase_clarification`; `mode_aware_erp.py` loads pending drafts and merges via `start_or_merge_*`; MAI-14 not proven
+- **Evidence:** `operation_classifier.py` regex intents including `purchase_clarification`; `mode_aware_erp.py` loads pending drafts and merges via `start_or_merge_*`
 - **User/business impact:** Stale draft may capture new topic; wrong event class
 - **Current mitigation:** Operation classifier + mode-aware incomplete-field checks
 - **Required remediation:** Turn-relation before draft merge (MAI-14); EventFrame registry (MAI-18/19)
 - **Recommended MAI phase:** MAI-14
 - **Dependencies:** MAI-05–09 language foundations preferred
 - **Acceptance condition:** New-topic turns do not silently merge into pending purchase drafts (tests)
-- **Status:** OPEN
+- **Status:** REDUCED (not closed)
+- **Progress (2026-07-19):** MAI-14 slice 2 gates pending merge on `TurnRelationV1` (`allows_pending_merge`). Does **not** claim full MAI-04 `context_turn_relation_v1` green or production approval.
 
 ### GAP-P1-005 — Python test suite largely ENVIRONMENT-BLOCKED in this checkout
 
@@ -399,13 +400,14 @@ Severity legend:
 
 - **Severity:** P1
 - **Affected capability:** conversation / drafts
-- **Evidence:** Suite `context_turn_relation_v1` (35 cases); baseline failures expected pre-MAI-14
+- **Evidence:** Suite `context_turn_relation_v1` (35 cases); lexicon classifier + merge gate landed in MAI-14
 - **Representative cases:** `mai04_ctx__new_after_stale_*`, `mai04_ctx__theft_after_stale_*`, `mai04_ctx__yes_no_preview_*`
 - **User/business impact:** Stale draft capture; confirm-without-preview risk
-- **Current mitigation:** Measured only
-- **Required remediation:** Turn-relation classifier + draft binding
+- **Current mitigation:** MAI-14 annotation + `allows_pending_merge` on mode_aware path
+- **Required remediation:** Broader classifier coverage; prove MAI-04 suite
 - **Recommended MAI phase:** MAI-14 (related GAP-P1-004)
-- **Status:** OPEN
+- **Status:** REDUCED (not closed)
+- **Progress (2026-07-19):** Merge gate + critical evals; full frozen suite not claimed green.
 
 ### GAP-P1-009 — Multilingual / Romanized / code-mix understanding incomplete (MAI-04 baseline)
 

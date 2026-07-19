@@ -1,6 +1,7 @@
-"""MAI-14 slice 1 — deterministic turn-relation decision (annotation only).
+"""MAI-14 — turn-relation decision + pending-draft merge gate.
 
-Never merges drafts. Never posts. Never changes mode_aware selection.
+Slice 1: annotate TurnRelationV1. Slice 2: gate mode_aware pending merge.
+Never posts. CONFIRMATION_INTENT is never execution authority.
 Uses MAI-13 object-reference resolutions as signals only.
 """
 
@@ -18,7 +19,17 @@ from ....contracts.object_reference import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-14.0.1-slice1"
+RUNTIME_VERSION = "mai-14.0.2-slice2"
+
+# Relations that may bind the turn to a pending draft for merge/clarify/correct.
+_ALLOW_PENDING_MERGE = frozenset(
+    {
+        TurnRelationKind.CONTINUE_ACTIVE_DRAFT,
+        TurnRelationKind.CONTINUE_EXPLICIT_DRAFT,
+        TurnRelationKind.ANSWER_CLARIFICATION,
+        TurnRelationKind.CORRECT_ACTIVE_DRAFT,
+    }
+)
 
 _CANCEL_RE = re.compile(
     r"\b("
@@ -247,6 +258,43 @@ def attach_turn_relation_to_request(request: CanonicalAIRequestV1) -> CanonicalA
     return request.model_copy(update={"turn_relation": decision})
 
 
+def allows_pending_merge(turn_relation: Any) -> bool:
+    """Whether mode_aware may bind this turn to a pending draft.
+
+    ``None`` preserves legacy behavior (direct unit tests without metadata).
+    Unknown / NEW_TOPIC / CONFIRMATION / CANCEL / FAILED → False (fail-closed).
+    """
+    if turn_relation is None:
+        return True
+
+    relation: TurnRelationKind | None = None
+    status: ContractStatus | None = None
+
+    if isinstance(turn_relation, TurnRelationV1):
+        relation = turn_relation.relation
+        status = turn_relation.status
+    elif isinstance(turn_relation, dict):
+        raw_rel = turn_relation.get("relation")
+        raw_status = turn_relation.get("status")
+        if raw_rel is None:
+            return False
+        try:
+            relation = TurnRelationKind(str(raw_rel))
+        except ValueError:
+            return False
+        if raw_status is not None:
+            try:
+                status = ContractStatus(str(raw_status))
+            except ValueError:
+                return False
+    else:
+        return False
+
+    if status == ContractStatus.FAILED:
+        return False
+    return relation in _ALLOW_PENDING_MERGE
+
+
 def turn_relation_to_metadata(decision: TurnRelationV1 | None) -> dict[str, Any]:
     if decision is None:
         return {}
@@ -260,4 +308,5 @@ def turn_relation_to_metadata(decision: TurnRelationV1 | None) -> dict[str, Any]
             decision.confidence.value if decision.confidence is not None else None
         ),
         "is_execution_authority": False,
+        "allows_pending_merge": allows_pending_merge(decision),
     }
