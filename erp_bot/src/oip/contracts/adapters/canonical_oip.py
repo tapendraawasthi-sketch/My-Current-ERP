@@ -103,6 +103,26 @@ class CanonicalOipRequestAdapter:
                     "runtime_version": bundle.runtime_version,
                     "applied_response_rewrite": False,
                 }
+        # MAI-13: object-reference candidates (annotation only — never draft merge).
+        oref = canonical.object_reference_bundle
+        if oref is not None:
+            metadata["object_reference"] = {
+                "analysis_status": oref.analysis_status.value,
+                "runtime_version": oref.runtime_version,
+                "candidate_count": oref.candidate_count,
+                "silent_applications": oref.silent_applications,
+                "draft_mutations": oref.draft_mutations,
+                "candidates": [
+                    {
+                        "candidate_id": c.candidate_id,
+                        "kind": c.kind.value,
+                        "object_id": c.object_id,
+                        "source": c.source,
+                        "applied": c.applied,
+                    }
+                    for c in oref.candidates
+                ],
+            }
         if annotations:
             metadata["annotations"] = annotations
 

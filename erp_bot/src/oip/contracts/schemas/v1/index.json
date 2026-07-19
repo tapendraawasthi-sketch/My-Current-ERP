@@ -11,6 +11,7 @@
     "ResponseRegisterBundleV1",
     "LanguageDataCatalogV1",
     "KbRebuildabilityReportV1",
+    "ObjectReferenceBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

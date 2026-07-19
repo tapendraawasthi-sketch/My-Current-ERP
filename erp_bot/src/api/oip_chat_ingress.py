@@ -712,6 +712,70 @@ async def build_canonical_ai_request(
             except Exception:  # noqa: BLE001
                 pass
 
+    # MAI-13: conversation object-reference candidates (annotation only; no draft merge).
+    oref_ev = recorder.start_stage(
+        mai03_obs.TraceStage.OBJECT_REFERENCE_STARTED,
+        component="conversation.object_reference",
+    )
+    try:
+        from ..oip.modules.conversation.application.object_reference_service import (
+            attach_object_references_to_request,
+        )
+
+        updated = attach_object_references_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.object_reference_bundle
+        if bundle is not None and (
+            bundle.silent_applications != 0 or bundle.draft_mutations != 0
+        ):
+            raise RuntimeError("OBJECT_REFERENCE_MUTATION")
+        canonical = updated
+        recorder.complete_stage(
+            oref_ev,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            component_versions={
+                "object_reference": (
+                    bundle.runtime_version if bundle else "mai-13.0.1-slice1"
+                ),
+            },
+            safe_attributes={
+                "object_reference_status": bundle.analysis_status.value if bundle else "FAILED",
+                "object_reference_candidate_count": bundle.candidate_count if bundle else 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.OBJECT_REFERENCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            safe_attributes={
+                "object_reference_candidate_count": bundle.candidate_count if bundle else 0,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(oref_ev, safe_error_code="OBJECT_REFERENCE_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.OBJECT_REFERENCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="OBJECT_REFERENCE_FAILED",
+        )
+        try:
+            from ..oip.contracts.object_reference import (
+                ObjectReferenceBundleV1,
+                ObjectReferenceStatus,
+            )
+
+            fail_bundle = ObjectReferenceBundleV1(
+                analysis_status=ObjectReferenceStatus.FAILED,
+                warnings=("OBJECT_REFERENCE_FAILED",),
+                error_codes=("OBJECT_REFERENCE_FAILED",),
+            )
+            canonical = canonical.model_copy(
+                update={"object_reference_bundle": fail_bundle}
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
     return canonical
 
 

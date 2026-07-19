@@ -1,7 +1,7 @@
 # MAI-12 — Language Data Governance and Training Pipeline
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2; `production_approved=false`)  
 **Authority:** [ADR_0029](decisions/ADR_0029_LANGUAGE_DATA_GOVERNANCE_AUTHORITY.md)  
 **Runtime:** `mai-12.0.2-slice2` (engineering; not production-approved)
 

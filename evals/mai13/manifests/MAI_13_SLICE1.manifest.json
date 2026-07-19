@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai13-slice1-v1",
+  "dataset_hash": "b59b99f429beae489471c6e0c4214ac99d4c62d39d27c0b04c815dd9cf803c3e",
+  "phase": "MAI-13",
+  "slice": "SLICE1_OBJECT_REFERENCE_CANDIDATES",
+  "runtime_version": "mai-13.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai13/frozen/object_reference_critical_v1.jsonl",
+      "sha256": "b59b99f429beae489471c6e0c4214ac99d4c62d39d27c0b04c815dd9cf803c3e",
+      "case_count": 5,
+      "suite_id": "object_reference_critical_v1"
+    }
+  ]
+}

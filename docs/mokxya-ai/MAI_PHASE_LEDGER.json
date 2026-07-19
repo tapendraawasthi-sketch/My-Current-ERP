@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-12",
-  "active_phase_note": "MAI-12 slice 2 IN_PROGRESS (ADR_0029); KB rebuildability recipe; MAI-11 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-13",
+  "active_phase_note": "MAI-13 slice 1 IN_PROGRESS (ADR_0030); object-reference candidates; MAI-12 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2006,7 +2006,7 @@
     {
       "id": "MAI-12",
       "title": "LANGUAGE DATA GOVERNANCE AND TRAINING PIPELINE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2018,6 +2018,7 @@
         "docs/mokxya-ai/decisions/ADR_0029_LANGUAGE_DATA_GOVERNANCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_12_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_12_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_12_ENGINEERING_CLOSURE.md",
         "evals/mai12/manifests/MAI_12_SLICE1.manifest.json",
         "evals/mai12/manifests/MAI_12_SLICE2.manifest.json"
       ],
@@ -2037,24 +2038,39 @@
         "MAI-11"
       ],
       "recommended_order": 12,
-      "closure_note": "Slice 2: KB rebuildability recipe assessed; operator rebuild via knowledgebase scripts."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-13. production_approved=false. GAP-P2-005 REDUCED."
     },
     {
       "id": "MAI-13",
       "title": "CONVERSATION AND OBJECT-REFERENCE STORE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "oip conversation/session modules",
-        "khata draft stores",
-        "Dexie UI history"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-13.0.1-slice1",
+      "slice": "SLICE1_OBJECT_REFERENCE_CANDIDATES",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_13_CONVERSATION_AND_OBJECT_REFERENCE_STORE.md",
+        "docs/mokxya-ai/decisions/ADR_0030_CONVERSATION_OBJECT_REFERENCE_STORE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_13_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai13/manifests/MAI_13_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/contracts/object_reference.py",
+        "erp_bot/src/oip/modules/conversation/application/object_reference_service.py",
+        "CanonicalAIRequestV1.object_reference_bundle",
+        "oip_chat_ingress OBJECT_REFERENCE after MAI-11",
+        "canonical_oip metadata.object_reference"
+      ],
+      "blockers": [
+        "GAP-P1-004 / GAP-P1-008 remain open (MAI-14)",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-12"
       ],
-      "recommended_order": 13
+      "recommended_order": 13,
+      "closure_note": "Slice 1: candidate-only object references; never merges drafts."
     },
     {
       "id": "MAI-14",

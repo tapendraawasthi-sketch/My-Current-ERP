@@ -11,6 +11,7 @@ from pydantic import Field, field_validator, model_validator
 from .common import ContractBase, TimestampV1, default_schema_version
 from .errors import ContractErrorCode, ContractValidationError
 from .language import LanguageFrameV1
+from .object_reference import ObjectReferenceBundleV1
 from .registry import get_contract_registry
 
 
@@ -123,6 +124,8 @@ class CanonicalAIRequestV1(ContractBase):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     # MAI-05: optional typed LanguageFrame (None when analysis not attached).
     language_frame: LanguageFrameV1 | None = None
+    # MAI-13: candidate-only conversation object references (never merges drafts).
+    object_reference_bundle: ObjectReferenceBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

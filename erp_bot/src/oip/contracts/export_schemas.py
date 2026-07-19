@@ -31,6 +31,7 @@ from .number_roles import NumberRoleBundleV1
 from .domain_lexicon import DomainLexiconBundleV1
 from .response_register import ResponseRegisterBundleV1
 from .language_data_governance import LanguageDataCatalogV1, KbRebuildabilityReportV1
+from .object_reference import ObjectReferenceBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -46,6 +47,7 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("ResponseRegisterBundleV1", ResponseRegisterBundleV1),
     ("LanguageDataCatalogV1", LanguageDataCatalogV1),
     ("KbRebuildabilityReportV1", KbRebuildabilityReportV1),
+    ("ObjectReferenceBundleV1", ObjectReferenceBundleV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),
