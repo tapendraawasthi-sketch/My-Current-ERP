@@ -1921,6 +1921,70 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent verification.
 
+    # MAI-31: EventFrame → domain port mapping (never executes ports / drafts).
+    dpm_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.DOMAIN_PORT_MAPPING_STARTED,
+        component="conversation.domain_port_mapping",
+    )
+    try:
+        from ..oip.modules.conversation.application.domain_port_mapping_service import (
+            assert_domain_port_mapping_authority,
+            attach_domain_port_mapping_to_request,
+        )
+
+        updated = attach_domain_port_mapping_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.domain_port_mapping_bundle
+        assert_domain_port_mapping_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            dpm_ev,
+            version_map={
+                "domain_port_mapping": "mai-31.0.1-slice1",
+            },
+            safe_attributes={
+                "domain_port_mapping_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "support_status": (
+                    bundle.support_status.value if bundle else None
+                ),
+                "selected_port_id": (
+                    bundle.selected_port_id if bundle else None
+                ),
+                "port_executed": False,
+                "draft_mutations": 0,
+                "dexie_invoked": False,
+                "journal_calculated": False,
+                "mode_aware_invoked": False,
+                "lookup_executed": False,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.DOMAIN_PORT_MAPPING_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "event_type": (bundle.event_type if bundle else None),
+                "candidate_count": (
+                    len(bundle.candidates) if bundle else 0
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            dpm_ev, safe_error_code="DOMAIN_PORT_MAPPING_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.DOMAIN_PORT_MAPPING_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="DOMAIN_PORT_MAPPING_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent port success.
+
     return canonical
 
 

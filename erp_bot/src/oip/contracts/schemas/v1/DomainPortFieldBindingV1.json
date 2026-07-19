@@ -1,0 +1,38 @@
+{
+  "$id": "https://mokxya.local/contracts/v1/DomainPortFieldBindingV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "draft_field": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Draft Field",
+      "type": "string"
+    },
+    "event_field": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Event Field",
+      "type": "string"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "required": {
+      "default": false,
+      "title": "Required",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "event_field",
+    "draft_field"
+  ],
+  "title": "DomainPortFieldBindingV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

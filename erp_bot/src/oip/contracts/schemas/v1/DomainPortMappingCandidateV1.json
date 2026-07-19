@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "DomainPortFieldBindingV1": {
+      "additionalProperties": false,
+      "properties": {
+        "draft_field": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Draft Field",
+          "type": "string"
+        },
+        "event_field": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Event Field",
+          "type": "string"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "event_field",
+        "draft_field"
+      ],
+      "title": "DomainPortFieldBindingV1",
+      "type": "object"
+    },
+    "DomainPortSupportStatus": {
+      "enum": [
+        "SUPPORTED",
+        "UNSUPPORTED",
+        "INCOMPLETE",
+        "NOT_APPLICABLE"
+      ],
+      "title": "DomainPortSupportStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/DomainPortMappingCandidateV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "candidate_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "draft_entrypoint": {
+      "maxLength": 96,
+      "minLength": 1,
+      "title": "Draft Entrypoint",
+      "type": "string"
+    },
+    "event_type": {
+      "default": "",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "field_bindings": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/DomainPortFieldBindingV1"
+      },
+      "title": "Field Bindings",
+      "type": "array"
+    },
+    "port_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Port Id",
+      "type": "string"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "support_status": {
+      "$ref": "#/$defs/DomainPortSupportStatus",
+      "default": "UNSUPPORTED"
+    }
+  },
+  "required": [
+    "candidate_id",
+    "port_id",
+    "draft_entrypoint"
+  ],
+  "title": "DomainPortMappingCandidateV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

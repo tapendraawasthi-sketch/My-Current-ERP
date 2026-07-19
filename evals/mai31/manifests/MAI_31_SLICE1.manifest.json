@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai31-slice1-v1",
+  "dataset_hash": "241000c3a08c84660742856c7d4936ffe85cdd9cd6d187ebc3a1a3d249e14ba6",
+  "phase": "MAI-31",
+  "slice": "SLICE1_DOMAIN_PORT_MAPPING_ANNOTATION",
+  "runtime_version": "mai-31.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai31/frozen/domain_port_mapping_v1.jsonl",
+      "sha256": "241000c3a08c84660742856c7d4936ffe85cdd9cd6d187ebc3a1a3d249e14ba6",
+      "case_count": 6,
+      "suite_id": "domain_port_mapping_v1"
+    }
+  ]
+}

@@ -488,6 +488,29 @@ class CanonicalOipRequestAdapter:
                     "legal_proof_claimed": False,
                     "is_execution_authority": False,
                 }
+        # MAI-31: EventFrame → domain port mapping (never executes).
+        if canonical.domain_port_mapping_bundle is not None:
+            try:
+                from ...modules.conversation.application.domain_port_mapping_service import (
+                    domain_port_mapping_to_metadata,
+                )
+
+                metadata["domain_port_mapping"] = domain_port_mapping_to_metadata(
+                    canonical.domain_port_mapping_bundle
+                )
+            except Exception:  # noqa: BLE001
+                dpm = canonical.domain_port_mapping_bundle
+                metadata["domain_port_mapping"] = {
+                    "analysis_status": dpm.analysis_status.value,
+                    "runtime_version": dpm.runtime_version,
+                    "support_status": dpm.support_status.value,
+                    "port_executed": False,
+                    "draft_mutations": 0,
+                    "dexie_invoked": False,
+                    "journal_calculated": False,
+                    "mode_aware_invoked": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

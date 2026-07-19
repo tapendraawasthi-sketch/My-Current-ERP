@@ -1,7 +1,7 @@
 # MAI-30 — Grounded Answer and Claim-Citation Verification
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0047](decisions/ADR_0047_CLAIM_CITATION_AUTHORITY.md)  
 **Runtime:** `mai-30.0.2-slice2` (engineering; not production-approved)
 

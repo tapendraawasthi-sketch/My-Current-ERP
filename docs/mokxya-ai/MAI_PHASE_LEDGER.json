@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-30",
-  "active_phase_note": "MAI-30 slice 2 IN_PROGRESS (ADR_0047); grounded-answer gate / safe no-answer consume; GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-31",
+  "active_phase_note": "MAI-31 slice 1 IN_PROGRESS (ADR_0048); EventFrame→domain port mapping annotation; MAI-30 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2671,7 +2671,7 @@
     {
       "id": "MAI-30",
       "title": "GROUNDED ANSWER AND CLAIM-CITATION VERIFICATION",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2682,6 +2682,7 @@
         "docs/mokxya-ai/decisions/ADR_0047_CLAIM_CITATION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_30_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_30_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_30_ENGINEERING_CLOSURE.md",
         "evals/mai30/manifests/MAI_30_SLICE1.manifest.json",
         "evals/mai30/manifests/MAI_30_SLICE2.manifest.json"
       ],
@@ -2702,22 +2703,41 @@
         "MAI-29"
       ],
       "recommended_order": 30,
-      "closure_note": "Slice 2: gate ungrounded claim-like answers with safe no-answer; never VERIFIED; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-31. production_approved=false. GAP-P2-008 OPEN."
     },
     {
       "id": "MAI-31",
       "title": "EVENTFRAME TO EXISTING DOMAIN PORTS",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "mode_aware → draft cards → Dexie engines"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-31.0.1-slice1",
+      "slice": "SLICE1_DOMAIN_PORT_MAPPING_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_31_EVENTFRAME_TO_EXISTING_DOMAIN_PORTS.md",
+        "docs/mokxya-ai/decisions/ADR_0048_EVENTFRAME_DOMAIN_PORT_MAPPING_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_31_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai31/manifests/MAI_31_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "domain_port_mapping_service.py (EventFrame→port table annotation)",
+        "DomainPortMappingBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress DOMAIN_PORT_MAPPING after CLAIM_CITATION",
+        "port_executed=false; draft_mutations=0; dexie_invoked=false; journal_calculated=false"
+      ],
+      "blockers": [
+        "GAP-P0-001 must not worsen (no new posting writer)",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-30"
       ],
-      "recommended_order": 31
+      "recommended_order": 31,
+      "closure_note": "Slice 1: EventFrame→domain port mapping annotation only; never executes mode_aware/khata/Dexie."
     },
     {
       "id": "MAI-32",

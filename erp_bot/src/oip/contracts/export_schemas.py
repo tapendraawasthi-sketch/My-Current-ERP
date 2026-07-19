@@ -64,6 +64,11 @@ from .lexical_index import LexicalIndexBundleV1
 from .vector_index import VectorIndexBundleV1
 from .hybrid_fusion import HybridFusionBundleV1
 from .claim_citation import ClaimCitationBundleV1, ClaimCueV1
+from .domain_port_mapping import (
+    DomainPortFieldBindingV1,
+    DomainPortMappingBundleV1,
+    DomainPortMappingCandidateV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -106,6 +111,9 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("HybridFusionBundleV1", HybridFusionBundleV1),
     ("ClaimCitationBundleV1", ClaimCitationBundleV1),
     ("ClaimCueV1", ClaimCueV1),
+    ("DomainPortMappingBundleV1", DomainPortMappingBundleV1),
+    ("DomainPortMappingCandidateV1", DomainPortMappingCandidateV1),
+    ("DomainPortFieldBindingV1", DomainPortFieldBindingV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),
