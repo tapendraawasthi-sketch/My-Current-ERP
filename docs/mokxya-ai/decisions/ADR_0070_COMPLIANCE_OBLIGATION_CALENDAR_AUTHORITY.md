@@ -1,7 +1,7 @@
 # ADR_0070 — Compliance Obligation And Calendar Automation Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-53-COMPLIANCE-OBLIGATION-CALENDAR (slice 1)
+- **Phase:** MAI-53-COMPLIANCE-OBLIGATION-CALENDAR (slice 2)
 - **Extends:** ADR_0001, ADR_0003
 
 ## Context
@@ -33,9 +33,14 @@ filing submit.
    `obligation_closed=false`,
    `production_approved=false`,
    `gap_p2_008_status=OPEN`.
-4. Never invent calendar enable, reminder send, automation arm, or filing
+4. Slice 2: consume into `CANDIDATE_ONLY`
+   `compliance_obligation_calendar_candidate` with null plans; live ingress
+   forces `allow_arm_automation=false` and `allow_submit_filing=false`.
+   Label-only `INVOKE_ARM_AUTOMATION` / `INVOKE_SUBMIT_FILING` modes
+   exist for unit tests only.
+5. Never invent calendar enable, reminder send, automation arm, or filing
    submit from cue detection alone.
-5. Engineering-gated: ledger `production_approved=false` remains false.
+6. Engineering-gated: ledger `production_approved=false` remains false.
 
 ## Rejected
 
@@ -46,9 +51,12 @@ filing submit.
 | Arm reminder automation from cues | Explicit opt-in + delivery policy required |
 | Submit filings from cues | Legal filing authority required |
 | Close GAP-P2-008 / GAP-P0-001 | Honesty + security review still required |
+| Live allow_arm_automation / allow_submit_filing | Would invent calendar authority |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_53_COMPLIANCE_OBLIGATION_CALENDAR.md`
 - `docs/mokxya-ai/baselines/MAI_53_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_53_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/compliance_obligation_calendar_service.py`
+- `erp_bot/src/oip/modules/conversation/application/compliance_obligation_calendar_consume_service.py`

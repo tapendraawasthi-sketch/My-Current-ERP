@@ -1,0 +1,29 @@
+{
+  "phase": "MAI-53",
+  "slice": "2",
+  "runtime_version": "mai-53.0.2-slice2",
+  "authority": "ADR_0070",
+  "frozen_sets": [
+    {
+      "id": "compliance_obligation_calendar_consume_v1",
+      "path": "evals/mai53/frozen/compliance_obligation_calendar_consume_v1.jsonl",
+      "sha256": "3e6d97b14f1f6138fd8efe8edb9e1de060743f445baa5bcc35b8fca614bfc1c8",
+      "row_count": 6
+    }
+  ],
+  "honesty": {
+    "default_consume_mode": "CANDIDATE_ONLY",
+    "allow_arm_automation": false,
+    "allow_submit_filing": false,
+    "compliance_calendar_enabled": false,
+    "obligation_created": false,
+    "deadline_scheduled": false,
+    "reminder_sent": false,
+    "automation_armed": false,
+    "calendar_synced": false,
+    "filing_submitted": false,
+    "obligation_closed": false,
+    "production_approved": false,
+    "gap_p2_008": "OPEN"
+  }
+}

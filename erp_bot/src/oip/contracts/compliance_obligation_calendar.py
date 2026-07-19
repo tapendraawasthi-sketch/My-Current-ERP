@@ -40,7 +40,7 @@ class ComplianceObligationCalendarBundleV1(ContractBase):
     analysis_status: ComplianceObligationCalendarStatus = (
         ComplianceObligationCalendarStatus.NOT_RUN
     )
-    runtime_version: str = "mai-53.0.1-slice1"
+    runtime_version: str = "mai-53.0.2-slice2"
     source_authority: str = "REQUEST"
     compliance_obligation_calendar_readiness: (
         ComplianceObligationCalendarReadiness

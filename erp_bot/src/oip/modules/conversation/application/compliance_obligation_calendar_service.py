@@ -1,6 +1,7 @@
 """MAI-53 — compliance obligation / calendar policy (never arms automation).
 
 Slice 1: declare candidate compliance/calendar policy from cue detection.
+Slice 2 consume is in compliance_obligation_calendar_consume_service.
 Never claims calendar enabled, obligation created, reminder sent, or filing submitted.
 """
 
@@ -17,7 +18,7 @@ from ....contracts.compliance_obligation_calendar import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-53.0.1-slice1"
+RUNTIME_VERSION = "mai-53.0.2-slice2"
 AUTHORITY = "ADR_0070"
 
 _OBLIGATION = re.compile(

@@ -1230,17 +1230,21 @@ class CanonicalOipRequestAdapter:
                     "ca_firm_engagement_workpaper_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-53: compliance obligation / calendar (never arms automation).
+        # MAI-53: compliance obligation / calendar + candidate consume.
         if canonical.compliance_obligation_calendar_bundle is not None:
             try:
+                from ...modules.conversation.application.compliance_obligation_calendar_consume_service import (
+                    enrich_coc_metadata_with_consume,
+                )
                 from ...modules.conversation.application.compliance_obligation_calendar_service import (
                     compliance_obligation_calendar_to_metadata,
                 )
 
+                base_meta = compliance_obligation_calendar_to_metadata(
+                    canonical.compliance_obligation_calendar_bundle
+                )
                 metadata["compliance_obligation_calendar"] = (
-                    compliance_obligation_calendar_to_metadata(
-                        canonical.compliance_obligation_calendar_bundle
-                    )
+                    enrich_coc_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 coc = canonical.compliance_obligation_calendar_bundle
@@ -1257,6 +1261,10 @@ class CanonicalOipRequestAdapter:
                     "filing_submitted": False,
                     "production_approved": False,
                     "gap_p2_008_status": "OPEN",
+                    "compliance_obligation_calendar_consume_mode": (
+                        "UNCHANGED"
+                    ),
+                    "compliance_obligation_calendar_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

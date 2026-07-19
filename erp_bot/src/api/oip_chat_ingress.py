@@ -4023,12 +4023,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent engagement open.
 
-    # MAI-53: compliance obligation / calendar (never arms automation).
+    # MAI-53: compliance obligation / calendar + candidate consume.
     coc_ev = recorder.begin_stage(
         mai03_obs.TraceStage.COMPLIANCE_OBLIGATION_CALENDAR_STARTED,
         component="conversation.compliance_obligation_calendar",
     )
     try:
+        from ..oip.modules.conversation.application.compliance_obligation_calendar_consume_service import (
+            assert_compliance_obligation_calendar_consume_authority,
+            compliance_obligation_calendar_consume_observability,
+        )
         from ..oip.modules.conversation.application.compliance_obligation_calendar_service import (
             assert_compliance_obligation_calendar_authority,
             attach_compliance_obligation_calendar_to_request,
@@ -4039,11 +4043,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.compliance_obligation_calendar_bundle
         assert_compliance_obligation_calendar_authority(bundle)
+        consume_obs = compliance_obligation_calendar_consume_observability(
+            updated,
+            allow_arm_automation=False,
+            allow_submit_filing=False,
+        )
+        assert_compliance_obligation_calendar_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             coc_ev,
             version_map={
-                "compliance_obligation_calendar": "mai-53.0.1-slice1",
+                "compliance_obligation_calendar": "mai-53.0.2-slice2",
             },
             safe_attributes={
                 "compliance_obligation_calendar_status": (
@@ -4059,6 +4069,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "compliance_obligation_calendar_consume_mode": (
+                    consume_obs.get(
+                        "compliance_obligation_calendar_consume_mode"
+                    )
+                ),
+                "compliance_obligation_calendar_consume_ready": bool(
+                    consume_obs.get(
+                        "compliance_obligation_calendar_consume_ready"
+                    )
+                ),
                 "calendar_authority_claimed": False,
                 "compliance_calendar_enabled": False,
                 "obligation_created": False,
@@ -4089,6 +4109,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "compliance_obligation_calendar_consume_mode": (
+                    consume_obs.get(
+                        "compliance_obligation_calendar_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001
