@@ -98,6 +98,86 @@
       "title": "AnalysisStatus",
       "type": "string"
     },
+    "BooleanFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "title": "Normalized Value",
+          "type": "boolean"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "boolean",
+          "default": "boolean",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "BooleanFieldValueV1",
+      "type": "object"
+    },
     "CalibrationStatus": {
       "enum": [
         "UNCALIBRATED",
@@ -475,6 +555,134 @@
       "title": "CorrectionTargetKind",
       "type": "string"
     },
+    "DateCalendar": {
+      "enum": [
+        "BS",
+        "AD",
+        "UNKNOWN"
+      ],
+      "title": "DateCalendar",
+      "type": "string"
+    },
+    "DateFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/DateValueV1"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "date",
+          "default": "date",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "DateFieldValueV1",
+      "type": "object"
+    },
+    "DateValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "calendar": {
+          "$ref": "#/$defs/DateCalendar",
+          "default": "UNKNOWN"
+        },
+        "conversion_status": {
+          "default": "not_converted",
+          "title": "Conversion Status",
+          "type": "string"
+        },
+        "normalized_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalized Date"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "precision": {
+          "default": "unknown",
+          "title": "Precision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "original_text"
+      ],
+      "title": "DateValueV1",
+      "type": "object"
+    },
     "DiscourseMentionV1": {
       "additionalProperties": false,
       "properties": {
@@ -667,6 +875,106 @@
       "title": "DomainLexiconStatus",
       "type": "string"
     },
+    "DurationFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/DurationV1"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "duration",
+          "default": "duration",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "DurationFieldValueV1",
+      "type": "object"
+    },
+    "DurationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "maxLength": 32,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "DurationV1",
+      "type": "object"
+    },
     "EligibilityDecision": {
       "enum": [
         "GENERATE",
@@ -679,6 +987,273 @@
       ],
       "title": "EligibilityDecision",
       "type": "string"
+    },
+    "EventFrameV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguous_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Ambiguous Fields",
+          "type": "array"
+        },
+        "confidence_by_field": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Confidence By Field",
+          "type": "object"
+        },
+        "dates_and_periods": {
+          "default": [],
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "boolean": "#/$defs/BooleanFieldValueV1",
+                "date": "#/$defs/DateFieldValueV1",
+                "duration": "#/$defs/DurationFieldValueV1",
+                "identifier": "#/$defs/IdentifierFieldValueV1",
+                "money": "#/$defs/MoneyFieldValueV1",
+                "percentage": "#/$defs/PercentageFieldValueV1",
+                "quantity": "#/$defs/QuantityFieldValueV1",
+                "text": "#/$defs/TextFieldValueV1",
+                "unknown_number": "#/$defs/UnknownNumberFieldValueV1"
+              },
+              "propertyName": "value_type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/MoneyFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/QuantityFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/PercentageFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/DurationFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/DateFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/IdentifierFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/TextFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/BooleanFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/UnknownNumberFieldValueV1"
+              }
+            ]
+          },
+          "title": "Dates And Periods",
+          "type": "array"
+        },
+        "document_references": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Document References",
+          "type": "array"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "execution_success": {
+          "default": null,
+          "title": "Execution Success",
+          "type": "null"
+        },
+        "explicit_values": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Explicit Values",
+          "type": "array"
+        },
+        "frame_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "frame_version": {
+          "default": "1",
+          "title": "Frame Version",
+          "type": "string"
+        },
+        "inferred_candidates": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Inferred Candidates",
+          "type": "array"
+        },
+        "inherited_context": {
+          "additionalProperties": true,
+          "title": "Inherited Context",
+          "type": "object"
+        },
+        "items": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "lifecycle_state": {
+          "$ref": "#/$defs/LifecycleState",
+          "default": "UNKNOWN"
+        },
+        "locations": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Locations",
+          "type": "array"
+        },
+        "missing_required_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Required Fields",
+          "type": "array"
+        },
+        "ontology_version": {
+          "default": "none",
+          "title": "Ontology Version",
+          "type": "string"
+        },
+        "parties": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Parties",
+          "type": "array"
+        },
+        "payment_terms": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Payment Terms",
+          "type": "array"
+        },
+        "prohibited_assumptions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Prohibited Assumptions",
+          "type": "array"
+        },
+        "receipt_id": {
+          "default": null,
+          "title": "Receipt Id",
+          "type": "null"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_evidence": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceReferenceV1"
+          },
+          "title": "Source Evidence",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/FrameStatus",
+          "default": "NOT_RUN"
+        },
+        "tax_clues": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Tax Clues",
+          "type": "array"
+        },
+        "values": {
+          "default": [],
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "boolean": "#/$defs/BooleanFieldValueV1",
+                "date": "#/$defs/DateFieldValueV1",
+                "duration": "#/$defs/DurationFieldValueV1",
+                "identifier": "#/$defs/IdentifierFieldValueV1",
+                "money": "#/$defs/MoneyFieldValueV1",
+                "percentage": "#/$defs/PercentageFieldValueV1",
+                "quantity": "#/$defs/QuantityFieldValueV1",
+                "text": "#/$defs/TextFieldValueV1",
+                "unknown_number": "#/$defs/UnknownNumberFieldValueV1"
+              },
+              "propertyName": "value_type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/MoneyFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/QuantityFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/PercentageFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/DurationFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/DateFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/IdentifierFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/TextFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/BooleanFieldValueV1"
+              },
+              {
+                "$ref": "#/$defs/UnknownNumberFieldValueV1"
+              }
+            ]
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "frame_id"
+      ],
+      "title": "EventFrameV1",
+      "type": "object"
     },
     "EventSpecAnalysisStatus": {
       "enum": [
@@ -828,7 +1403,7 @@
           "type": "object"
         },
         "runtime_version": {
-          "default": "mai-18.0.1-slice1",
+          "default": "mai-18.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },
@@ -896,6 +1471,142 @@
         "evidence_id"
       ],
       "title": "EvidenceReferenceV1",
+      "type": "object"
+    },
+    "FieldValidationStatus": {
+      "enum": [
+        "VALID",
+        "AMBIGUOUS",
+        "MISSING",
+        "INVALID",
+        "UNKNOWN"
+      ],
+      "title": "FieldValidationStatus",
+      "type": "string"
+    },
+    "FrameStatus": {
+      "enum": [
+        "EMPTY",
+        "PARTIAL",
+        "COMPLETE",
+        "INVALID",
+        "NOT_RUN"
+      ],
+      "title": "FrameStatus",
+      "type": "string"
+    },
+    "IdentifierFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/IdentifierV1"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "identifier",
+          "default": "identifier",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "IdentifierFieldValueV1",
+      "type": "object"
+    },
+    "IdentifierV1": {
+      "additionalProperties": false,
+      "properties": {
+        "display_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Display Value"
+        },
+        "namespace": {
+          "default": "generic",
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Namespace",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "IdentifierV1",
       "type": "object"
     },
     "InputChannelV1": {
@@ -1263,6 +1974,18 @@
       "title": "LanguageFrameV1",
       "type": "object"
     },
+    "LifecycleState": {
+      "enum": [
+        "PLANNED",
+        "OCCURRED",
+        "PARTIALLY_SETTLED",
+        "SETTLED",
+        "REVERSED",
+        "UNKNOWN"
+      ],
+      "title": "LifecycleState",
+      "type": "string"
+    },
     "LinguisticRegisterKind": {
       "enum": [
         "SHOP_INFORMAL",
@@ -1359,6 +2082,120 @@
       ],
       "title": "MentionResolutionStatus",
       "type": "string"
+    },
+    "MoneyFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/MoneyV1"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "money",
+          "default": "money",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "MoneyFieldValueV1",
+      "type": "object"
+    },
+    "MoneyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "title": "Amount",
+          "type": "string"
+        },
+        "currency": {
+          "default": "NPR",
+          "maxLength": 8,
+          "minLength": 3,
+          "title": "Currency",
+          "type": "string"
+        },
+        "scale": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "MoneyV1",
+      "type": "object"
     },
     "NormalizationBundleV1": {
       "additionalProperties": false,
@@ -2169,6 +3006,99 @@
       "title": "OodSignalV1",
       "type": "object"
     },
+    "PercentageFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/PercentageV1"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "percentage",
+          "default": "percentage",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "PercentageFieldValueV1",
+      "type": "object"
+    },
+    "PercentageV1": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "PercentageV1",
+      "type": "object"
+    },
     "ProtectedSpanInteraction": {
       "enum": [
         "OUTSIDE_PROTECTED",
@@ -2178,6 +3108,123 @@
       ],
       "title": "ProtectedSpanInteraction",
       "type": "string"
+    },
+    "ProvenanceKind": {
+      "enum": [
+        "EXPLICIT",
+        "CONTEXT_RESOLVED",
+        "ERP_RETRIEVED",
+        "KNOWLEDGE_RETRIEVED",
+        "DETERMINISTIC_CALCULATION",
+        "INFERRED_CANDIDATE"
+      ],
+      "title": "ProvenanceKind",
+      "type": "string"
+    },
+    "QuantityFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/QuantityV1"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "quantity",
+          "default": "quantity",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "QuantityFieldValueV1",
+      "type": "object"
+    },
+    "QuantityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "title": "Amount",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "QuantityV1",
+      "type": "object"
     },
     "ReconstructionIntegrityV1": {
       "additionalProperties": false,
@@ -2754,6 +3801,86 @@
         "original_text"
       ],
       "title": "SpanAnnotationV1",
+      "type": "object"
+    },
+    "TextFieldValueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "normalized_value": {
+          "title": "Normalized Value",
+          "type": "string"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "text",
+          "default": "text",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "normalized_value"
+      ],
+      "title": "TextFieldValueV1",
       "type": "object"
     },
     "TransliterationBundleV1": {
@@ -3454,6 +4581,99 @@
       "title": "UncertaintyClass",
       "type": "string"
     },
+    "UnknownNumberFieldValueV1": {
+      "additionalProperties": false,
+      "description": "Number whose accounting role is unknown — never silently money.",
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceReferenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field_name": {
+          "minLength": 1,
+          "title": "Field Name",
+          "type": "string"
+        },
+        "original_surface": {
+          "default": "",
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceKind",
+          "default": "EXPLICIT"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "surface_number": {
+          "title": "Surface Number",
+          "type": "string"
+        },
+        "unit_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit Hint"
+        },
+        "validation_status": {
+          "$ref": "#/$defs/FieldValidationStatus",
+          "default": "VALID"
+        },
+        "value_type": {
+          "const": "unknown_number",
+          "default": "unknown_number",
+          "title": "Value Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "surface_number"
+      ],
+      "title": "UnknownNumberFieldValueV1",
+      "type": "object"
+    },
     "ViewType": {
       "enum": [
         "RAW",
@@ -3518,6 +4738,17 @@
       "format": "date-time",
       "title": "Created At",
       "type": "string"
+    },
+    "event_frame": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EventFrameV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "event_spec_registry_bundle": {
       "anyOf": [

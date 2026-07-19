@@ -236,6 +236,25 @@ class CanonicalOipRequestAdapter:
                     "selected_spec_id": es.selected_spec_id,
                     "is_execution_authority": False,
                 }
+        # MAI-18 slice 2: EventFrame skeleton (missing fields; no values).
+        if canonical.event_frame is not None:
+            try:
+                from ...modules.conversation.application.event_spec_registry_service import (
+                    event_frame_to_metadata,
+                )
+
+                metadata["event_frame"] = event_frame_to_metadata(
+                    canonical.event_frame
+                )
+            except Exception:  # noqa: BLE001
+                ef = canonical.event_frame
+                metadata["event_frame"] = {
+                    "frame_id": ef.frame_id,
+                    "event_type": ef.event_type,
+                    "status": ef.status.value,
+                    "missing_required_fields": list(ef.missing_required_fields),
+                    "authorizes_posting": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

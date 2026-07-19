@@ -149,7 +149,7 @@
       "type": "object"
     },
     "runtime_version": {
-      "default": "mai-18.0.1-slice1",
+      "default": "mai-18.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

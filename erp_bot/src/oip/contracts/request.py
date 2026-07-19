@@ -16,6 +16,7 @@ from .language import LanguageFrameV1
 from .object_reference import ObjectReferenceBundleV1
 from .reference_coreference import ReferenceCoreferenceBundleV1
 from .registry import get_contract_registry
+from .event_frame import EventFrameV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -139,8 +140,10 @@ class CanonicalAIRequestV1(ContractBase):
     context_assembly_bundle: ContextAssemblyBundleV1 | None = None
     # MAI-17: hierarchical router + OOD (annotation only; never execution authority).
     router_decision_bundle: RouterDecisionBundleV1 | None = None
-    # MAI-18: event specification registry candidates (never fills EventFrame).
+    # MAI-18: event specification registry candidates.
     event_spec_registry_bundle: EventSpecRegistryBundleV1 | None = None
+    # MAI-18 slice 2: EventFrame skeleton from selected spec (no value extraction).
+    event_frame: EventFrameV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

@@ -1,14 +1,18 @@
-"""MAI-18 slice 1 — event specification registry annotation.
+"""MAI-18 — event specification registry + EventFrame skeleton.
 
-Deterministic lookup from MAI-17 router keys. Never fills EventFrame,
-never posts, never merges drafts, never grants execution authority.
+Slice 1: deterministic lookup from MAI-17 router keys.
+Slice 2: project selected spec into EventFrame skeleton (missing required
+fields only; no value extraction). Never posts, never merges drafts,
+never grants execution authority. MAI-19 owns structured extraction.
 """
 
 from __future__ import annotations
 
+import uuid
 from dataclasses import dataclass
 from typing import Any
 
+from ....contracts.event_frame import EventFrameV1, FrameStatus, LifecycleState
 from ....contracts.event_spec_registry import (
     EventSpecAnalysisStatus,
     EventSpecCandidateV1,
@@ -16,7 +20,7 @@ from ....contracts.event_spec_registry import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-18.0.1-slice1"
+RUNTIME_VERSION = "mai-18.0.2-slice2"
 
 
 @dataclass(frozen=True)
@@ -378,11 +382,89 @@ def build_event_spec_registry_bundle(
     )
 
 
+def _selected_candidate(
+    bundle: EventSpecRegistryBundleV1 | None,
+) -> EventSpecCandidateV1 | None:
+    if bundle is None:
+        return None
+    for c in bundle.candidates:
+        if c.selected:
+            return c
+    if bundle.selected_spec_id:
+        for c in bundle.candidates:
+            if c.spec_id == bundle.selected_spec_id:
+                return c
+    return bundle.candidates[0] if bundle.candidates else None
+
+
+def build_event_frame_skeleton(
+    request: CanonicalAIRequestV1,
+    *,
+    registry: EventSpecRegistryBundleV1 | None = None,
+) -> EventFrameV1:
+    """Build EMPTY/PARTIAL EventFrame from selected spec — no value extraction."""
+    bundle = registry or request.event_spec_registry_bundle
+    selected = _selected_candidate(bundle)
+    if selected is None:
+        return EventFrameV1(
+            frame_id=f"ef-{uuid.uuid4().hex[:12]}",
+            event_type="unknown",
+            lifecycle_state=LifecycleState.UNKNOWN,
+            missing_required_fields=(),
+            prohibited_assumptions=(
+                "DO_NOT_MUTATE_LEDGER",
+                "DO_NOT_CREATE_DRAFT",
+            ),
+            ontology_version="mai-18-unknown",
+            status=FrameStatus.EMPTY,
+            inherited_context={
+                "source": "MAI18_EVENT_SPEC_SKELETON",
+                "runtime_version": RUNTIME_VERSION,
+                "selected_spec_id": None,
+            },
+        )
+
+    missing = tuple(selected.required_fields)
+    if selected.event_type in {"unknown", "dialogue", "accounting_qa"} and not missing:
+        status = FrameStatus.EMPTY
+    elif missing:
+        status = FrameStatus.PARTIAL
+    else:
+        status = FrameStatus.EMPTY
+
+    return EventFrameV1(
+        frame_id=f"ef-{uuid.uuid4().hex[:12]}",
+        event_type=selected.event_type or "unknown",
+        lifecycle_state=LifecycleState.UNKNOWN,
+        missing_required_fields=missing,
+        prohibited_assumptions=tuple(selected.prohibited_assumptions),
+        ontology_version=selected.spec_id,
+        status=status,
+        inferred_candidates=(),
+        explicit_values=(),
+        inherited_context={
+            "source": "MAI18_EVENT_SPEC_SKELETON",
+            "runtime_version": RUNTIME_VERSION,
+            "selected_spec_id": selected.spec_id,
+            "intent_family": selected.intent_family,
+            "intent_hint": selected.intent_hint,
+            "optional_fields": list(selected.optional_fields),
+            "request_id": request.request_id,
+        },
+    )
+
+
 def attach_event_spec_registry_to_request(
     request: CanonicalAIRequestV1,
 ) -> CanonicalAIRequestV1:
     bundle = build_event_spec_registry_bundle(request)
-    return request.model_copy(update={"event_spec_registry_bundle": bundle})
+    frame = build_event_frame_skeleton(request, registry=bundle)
+    return request.model_copy(
+        update={
+            "event_spec_registry_bundle": bundle,
+            "event_frame": frame,
+        }
+    )
 
 
 def event_spec_registry_to_metadata(
@@ -411,4 +493,22 @@ def event_spec_registry_to_metadata(
             }
             for c in bundle.candidates
         ],
+    }
+
+
+def event_frame_to_metadata(frame: EventFrameV1 | None) -> dict[str, Any]:
+    if frame is None:
+        return {}
+    return {
+        "frame_id": frame.frame_id,
+        "event_type": frame.event_type,
+        "status": frame.status.value,
+        "missing_required_fields": list(frame.missing_required_fields),
+        "prohibited_assumptions": list(frame.prohibited_assumptions),
+        "ontology_version": frame.ontology_version,
+        "selected_spec_id": (frame.inherited_context or {}).get("selected_spec_id"),
+        "runtime_version": (frame.inherited_context or {}).get("runtime_version"),
+        "authorizes_posting": False,
+        "value_count": len(frame.values),
+        "explicit_value_count": len(frame.explicit_values),
     }

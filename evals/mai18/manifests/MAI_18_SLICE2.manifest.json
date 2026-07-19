@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai18-slice2-v1",
+  "dataset_hash": "743b19f4e45b10544524a6971ee37c51274b6ccd6179af40d58ee240e497697c",
+  "phase": "MAI-18",
+  "slice": "SLICE2_EVENT_FRAME_SKELETON",
+  "runtime_version": "mai-18.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai18/frozen/event_frame_skeleton_v1.jsonl",
+      "sha256": "743b19f4e45b10544524a6971ee37c51274b6ccd6179af40d58ee240e497697c",
+      "case_count": 6,
+      "suite_id": "event_frame_skeleton_v1"
+    }
+  ]
+}

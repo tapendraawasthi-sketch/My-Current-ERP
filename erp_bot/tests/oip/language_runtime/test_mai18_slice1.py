@@ -44,7 +44,8 @@ def _routed(text: str) -> CanonicalAIRequestV1:
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-18.0.1-slice1"
+    # Slice 2 bumps the shared runtime constant; slice-1 contracts still hold.
+    assert RUNTIME_VERSION.startswith("mai-18.")
 
 
 def test_purchase_selects_purchase_spec() -> None:

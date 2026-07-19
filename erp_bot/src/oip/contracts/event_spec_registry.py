@@ -41,7 +41,7 @@ class EventSpecCandidateV1(ContractBase):
 class EventSpecRegistryBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: EventSpecAnalysisStatus = EventSpecAnalysisStatus.NOT_RUN
-    runtime_version: str = "mai-18.0.1-slice1"
+    runtime_version: str = "mai-18.0.2-slice2"
     source_authority: str = "REQUEST"
     candidates: tuple[EventSpecCandidateV1, ...] = ()
     selected_spec_id: str | None = None

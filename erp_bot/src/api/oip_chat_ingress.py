@@ -1089,19 +1089,28 @@ async def build_canonical_ai_request(
         if updated.raw_text != canonical.raw_text:
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.event_spec_registry_bundle
+        frame = updated.event_frame
         if bundle is not None and (
             bundle.silent_applications != 0
             or bundle.draft_mutations != 0
             or bundle.is_execution_authority
         ):
             raise RuntimeError("EVENT_SPEC_REGISTRY_MUTATION")
+        if frame is not None and (
+            frame.authorizes_posting
+            or frame.receipt_id is not None
+            or frame.execution_success is not None
+            or len(frame.values) != 0
+            or len(frame.explicit_values) != 0
+        ):
+            raise RuntimeError("EVENT_FRAME_SKELETON_MUTATION")
         canonical = updated
         recorder.complete_stage(
             es_ev,
             outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
             component_versions={
                 "event_spec_registry": (
-                    bundle.runtime_version if bundle else "mai-18.0.1-slice1"
+                    bundle.runtime_version if bundle else "mai-18.0.2-slice2"
                 ),
             },
             safe_attributes={
@@ -1114,6 +1123,12 @@ async def build_canonical_ai_request(
                 "event_spec_candidate_count": (
                     len(bundle.candidates) if bundle else 0
                 ),
+                "event_frame_status": (
+                    frame.status.value if frame else None
+                ),
+                "event_frame_missing_count": (
+                    len(frame.missing_required_fields) if frame else 0
+                ),
             },
         )
         recorder.record_event(
@@ -1123,6 +1138,9 @@ async def build_canonical_ai_request(
             safe_attributes={
                 "event_spec_selected": (
                     bundle.selected_spec_id if bundle else None
+                ),
+                "event_frame_status": (
+                    frame.status.value if frame else None
                 ),
             },
         )
