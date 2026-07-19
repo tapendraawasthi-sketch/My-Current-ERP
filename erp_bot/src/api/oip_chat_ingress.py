@@ -2706,12 +2706,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent NFRS/NAS success.
 
-    # MAI-40: financial close / adjustment assistance (never posts).
+    # MAI-40: financial close / adjustment + candidate consume (never posts).
     fcaa_ev = recorder.begin_stage(
         mai03_obs.TraceStage.FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_STARTED,
         component="conversation.financial_close_adjustment_assistance",
     )
     try:
+        from ..oip.modules.conversation.application.financial_close_adjustment_assistance_consume_service import (
+            assert_close_assist_consume_authority,
+            close_assist_consume_observability,
+        )
         from ..oip.modules.conversation.application.financial_close_adjustment_assistance_service import (
             assert_financial_close_adjustment_assistance_authority,
             attach_financial_close_adjustment_assistance_to_request,
@@ -2724,11 +2728,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.financial_close_adjustment_assistance_bundle
         assert_financial_close_adjustment_assistance_authority(bundle)
+        consume_obs = close_assist_consume_observability(
+            updated,
+            allow_close_post=False,
+            allow_adjustment_post=False,
+        )
+        assert_close_assist_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             fcaa_ev,
             version_map={
-                "financial_close_adjustment_assistance": "mai-40.0.1-slice1",
+                "financial_close_adjustment_assistance": "mai-40.0.2-slice2",
             },
             safe_attributes={
                 "close_assist_status": (
@@ -2739,6 +2749,12 @@ async def build_canonical_ai_request(
                 ),
                 "pilot_scope": "FINANCIAL_CLOSE_ADJUSTMENT_ONLY",
                 "adjustment_status": "CANDIDATE_ASSISTANCE_ONLY",
+                "close_assist_consume_mode": consume_obs.get(
+                    "close_assist_consume_mode"
+                ),
+                "close_assist_consume_ready": bool(
+                    consume_obs.get("close_assist_consume_ready")
+                ),
                 "close_posted": False,
                 "adjustments_posted": False,
                 "books_locked": False,
@@ -2750,6 +2766,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_close_post": False,
+                "allow_adjustment_post": False,
             },
         )
         recorder.record_event(
@@ -2765,6 +2783,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "close_assist_consume_mode": consume_obs.get(
+                    "close_assist_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

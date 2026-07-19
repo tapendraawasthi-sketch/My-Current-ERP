@@ -3430,7 +3430,7 @@
           "type": "array"
         },
         "runtime_version": {
-          "default": "mai-40.0.1-slice1",
+          "default": "mai-40.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },

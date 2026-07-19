@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai40-slice2-v1",
+  "dataset_hash": "d4cce32043887db797818615385bc8c076c8f2a71dc12a12130e9e70aa995dee",
+  "phase": "MAI-40",
+  "slice": "SLICE2_CLOSE_ASSIST_CANDIDATE_CONSUME",
+  "runtime_version": "mai-40.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai40/frozen/close_assist_consume_v1.jsonl",
+      "sha256": "d4cce32043887db797818615385bc8c076c8f2a71dc12a12130e9e70aa995dee",
+      "case_count": 6,
+      "suite_id": "close_assist_consume_v1"
+    }
+  ]
+}

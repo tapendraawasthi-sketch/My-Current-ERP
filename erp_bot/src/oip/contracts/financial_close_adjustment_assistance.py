@@ -37,7 +37,7 @@ class FinancialCloseAdjustmentAssistanceBundleV1(ContractBase):
     analysis_status: FinancialCloseAdjustmentAssistanceStatus = (
         FinancialCloseAdjustmentAssistanceStatus.NOT_RUN
     )
-    runtime_version: str = "mai-40.0.1-slice1"
+    runtime_version: str = "mai-40.0.2-slice2"
     source_authority: str = "REQUEST"
     close_assist_readiness: CloseAssistReadiness = (
         CloseAssistReadiness.NOT_APPLICABLE

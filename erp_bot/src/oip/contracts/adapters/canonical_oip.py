@@ -768,17 +768,21 @@ class CanonicalOipRequestAdapter:
                     "nfrs_nas_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-40: financial close / adjustment assistance (never posts).
+        # MAI-40: financial close / adjustment + candidate consume.
         if canonical.financial_close_adjustment_assistance_bundle is not None:
             try:
+                from ...modules.conversation.application.financial_close_adjustment_assistance_consume_service import (
+                    enrich_fcaa_metadata_with_consume,
+                )
                 from ...modules.conversation.application.financial_close_adjustment_assistance_service import (
                     financial_close_adjustment_assistance_to_metadata,
                 )
 
+                base_meta = financial_close_adjustment_assistance_to_metadata(
+                    canonical.financial_close_adjustment_assistance_bundle
+                )
                 metadata["financial_close_adjustment_assistance"] = (
-                    financial_close_adjustment_assistance_to_metadata(
-                        canonical.financial_close_adjustment_assistance_bundle
-                    )
+                    enrich_fcaa_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 fcaa = canonical.financial_close_adjustment_assistance_bundle
@@ -792,6 +796,8 @@ class CanonicalOipRequestAdapter:
                     "books_locked": False,
                     "period_closed": False,
                     "gap_p2_008_status": "OPEN",
+                    "close_assist_consume_mode": "UNCHANGED",
+                    "close_assist_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

@@ -21,7 +21,7 @@ from ....contracts.nfrs_nas_policy_disclosure_pilot import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-40.0.1-slice1"
+RUNTIME_VERSION = "mai-40.0.2-slice2"
 AUTHORITY = "ADR_0057"
 
 _CLOSE = re.compile(
