@@ -388,7 +388,14 @@ Gate:
   Focused evals + spot pilot samples; applied_response_rewrite remains false
   unless a reviewed rewrite policy is accepted.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_08_RESPONSE_LANGUAGE_LIVE.md
+  docs/mokxya-ai/decisions/ADR_0082_RESPONSE_LANGUAGE_LIVE_PARITY.md
+  docs/mokxya-ai/MAI_RESPONSE_LANGUAGE_REGISTRY.json
+  erp_bot/src/oip/modules/conversation/application/response_language_live_policy.py
+  evals/mai11/frozen/response_language_live_parity_v1.jsonl
+  erp_bot/tests/oip/language_runtime/test_mai_next08_response_language_live.py
 Depends on: NEXT-07 optional; may run after NEXT-06
 
 
@@ -671,7 +678,7 @@ NEXT-04  | DONE   | ADR_0074 + sync registry | GAP-P1-002 REDUCED (runtime dual 
 NEXT-05  | DONE   | ADR_0075 + NEXT_05_CONFIRM_PATH_HONESTY.md | Model B tokens; NL never posts
 NEXT-06  | DONE   | NEXT_06_MAI04_LANGUAGE_SUITE_REPROOF.md | ctx+num green; multi HR waived
 NEXT-07  | DONE   | ADR_0076 + NEXT_07_NLU_LANGUAGE_CONSUME.md | concept+number-role consume
-NEXT-08  | OPEN   |                   | MAI-11 live
+NEXT-08  | DONE   | ADR_0082 + NEXT_08_RESPONSE_LANGUAGE_LIVE.md | MAI-11 scaffold live
 NEXT-09  | OPEN   |                   | linguist sample
 NEXT-10  | DONE   | ADR_0077 + NEXT_10_LAUNCH_EVENT_SPEC_FREEZE.md | sales/purchase/report freeze
 NEXT-11  | DONE   | ADR_0078 + NEXT_11_CALC_AUTHORITY_HONESTY.md | GAP-P2-002 REDUCED
@@ -688,8 +695,8 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-08
-  last_shipped_step = NEXT-14
+  recommended_next_step = NEXT-09
+  last_shipped_step = NEXT-08
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -702,6 +709,7 @@ Active pointer (update on each go):
   e2e_launch_slice = ADR_0079 sales/purchase/Ask verticals; not production_approved
   knowledge_citation = ADR_0080 force-abstain; GAP-P2-008 REDUCED (not CLOSED)
   prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
+  response_language_live = ADR_0082 scaffold parity; applied_response_rewrite=false
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

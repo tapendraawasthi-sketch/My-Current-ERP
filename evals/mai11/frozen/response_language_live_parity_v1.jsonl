@@ -1,0 +1,30 @@
+{"id": "RL-001", "expected_response_language": "ENGLISH", "family": "sale", "scaffold_key": "unsupported_launch", "raw_text": "Sold 10 kg rice to Ram for 5000", "must_not_be_english_only": false}
+{"id": "RL-002", "expected_response_language": "ENGLISH", "family": "purchase", "scaffold_key": "unsupported_launch", "raw_text": "Bought sugar from Shyam for 2000", "must_not_be_english_only": false}
+{"id": "RL-003", "expected_response_language": "ENGLISH", "family": "clarify", "scaffold_key": "clarify_missing", "raw_text": "Need to bill but missing party name", "must_not_be_english_only": false}
+{"id": "RL-004", "expected_response_language": "ENGLISH", "family": "report", "scaffold_key": "unsupported_launch", "raw_text": "Show me the balance sheet", "must_not_be_english_only": false}
+{"id": "RL-005", "expected_response_language": "ENGLISH", "family": "refuse", "scaffold_key": "unsupported_launch", "raw_text": "Delete all invoices please", "must_not_be_english_only": false}
+{"id": "RL-006", "expected_response_language": "ENGLISH", "family": "sale", "scaffold_key": "unsupported_launch", "raw_text": "Create sales invoice for customer Anita", "must_not_be_english_only": false}
+{"id": "RL-007", "expected_response_language": "ENGLISH", "family": "purchase", "scaffold_key": "unsupported_launch", "raw_text": "Purchase invoice for vendor Himal Traders", "must_not_be_english_only": false}
+{"id": "RL-008", "expected_response_language": "ENGLISH", "family": "clarify", "scaffold_key": "clarify_missing", "raw_text": "Invoice amount is incomplete", "must_not_be_english_only": false}
+{"id": "RL-009", "expected_response_language": "ENGLISH", "family": "report", "scaffold_key": "unsupported_launch", "raw_text": "What is trial balance for this year", "must_not_be_english_only": false}
+{"id": "RL-010", "expected_response_language": "ENGLISH", "family": "refuse", "scaffold_key": "ask_mode_mutation", "raw_text": "Post this journal without confirmation", "must_not_be_english_only": false}
+{"id": "RL-011", "expected_response_language": "NEPALI_DEVANAGARI", "family": "sale", "scaffold_key": "unsupported_launch", "raw_text": "रामलाई ५००० को चामल बेचेको", "must_not_be_english_only": true}
+{"id": "RL-012", "expected_response_language": "NEPALI_DEVANAGARI", "family": "purchase", "scaffold_key": "unsupported_launch", "raw_text": "श्यामबाट चिनी किनेको दुई हजारमा", "must_not_be_english_only": true}
+{"id": "RL-013", "expected_response_language": "NEPALI_DEVANAGARI", "family": "clarify", "scaffold_key": "clarify_missing", "raw_text": "पार्टीको नाम छैन बिल बनाउन", "must_not_be_english_only": true}
+{"id": "RL-014", "expected_response_language": "NEPALI_DEVANAGARI", "family": "report", "scaffold_key": "unsupported_launch", "raw_text": "ब्यालेन्स सिट देखाउनुहोस्", "must_not_be_english_only": true}
+{"id": "RL-015", "expected_response_language": "NEPALI_DEVANAGARI", "family": "refuse", "scaffold_key": "unsupported_launch", "raw_text": "सबै इनभ्वाइस मेटिदिनुहोस्", "must_not_be_english_only": true}
+{"id": "RL-016", "expected_response_language": "NEPALI_DEVANAGARI", "family": "sale", "scaffold_key": "unsupported_launch", "raw_text": "ग्राहक अनितालाई बिक्री इनभ्वाइस", "must_not_be_english_only": true}
+{"id": "RL-017", "expected_response_language": "NEPALI_DEVANAGARI", "family": "purchase", "scaffold_key": "unsupported_launch", "raw_text": "हिमाल ट्रेडर्सबाट खरिद इनभ्वाइस", "must_not_be_english_only": true}
+{"id": "RL-018", "expected_response_language": "NEPALI_DEVANAGARI", "family": "clarify", "scaffold_key": "clarify_missing", "raw_text": "रकम अपूर्ण छ", "must_not_be_english_only": true}
+{"id": "RL-019", "expected_response_language": "NEPALI_DEVANAGARI", "family": "report", "scaffold_key": "unsupported_launch", "raw_text": "ट्रायल ब्यालेन्स देखाउनुहोस्", "must_not_be_english_only": true}
+{"id": "RL-020", "expected_response_language": "NEPALI_DEVANAGARI", "family": "refuse", "scaffold_key": "ask_mode_mutation", "raw_text": "पुष्टि बिना जर्नल पोस्ट गर", "must_not_be_english_only": true}
+{"id": "RL-021", "expected_response_language": "ROMANIZED_NEPALI", "family": "sale", "scaffold_key": "unsupported_launch", "raw_text": "Ram lai 5000 ko chamal becheko", "must_not_be_english_only": true}
+{"id": "RL-022", "expected_response_language": "ROMANIZED_NEPALI", "family": "purchase", "scaffold_key": "unsupported_launch", "raw_text": "Shyam bata chini kineko dui hazar ma", "must_not_be_english_only": true}
+{"id": "RL-023", "expected_response_language": "ROMANIZED_NEPALI", "family": "clarify", "scaffold_key": "clarify_missing", "raw_text": "party name chaina bill banauna", "must_not_be_english_only": true}
+{"id": "RL-024", "expected_response_language": "ROMANIZED_NEPALI", "family": "report", "scaffold_key": "unsupported_launch", "raw_text": "balance sheet dekhaunu hos", "must_not_be_english_only": true}
+{"id": "RL-025", "expected_response_language": "ROMANIZED_NEPALI", "family": "refuse", "scaffold_key": "unsupported_launch", "raw_text": "sabai invoice metidine", "must_not_be_english_only": true}
+{"id": "RL-026", "expected_response_language": "ROMANIZED_NEPALI", "family": "sale", "scaffold_key": "unsupported_launch", "raw_text": "customer Anita lai bikri invoice", "must_not_be_english_only": true}
+{"id": "RL-027", "expected_response_language": "ROMANIZED_NEPALI", "family": "purchase", "scaffold_key": "unsupported_launch", "raw_text": "Himal Traders bata kharid invoice", "must_not_be_english_only": true}
+{"id": "RL-028", "expected_response_language": "ROMANIZED_NEPALI", "family": "clarify", "scaffold_key": "clarify_missing", "raw_text": "amount apurna chha continue garna", "must_not_be_english_only": true}
+{"id": "RL-029", "expected_response_language": "ROMANIZED_NEPALI", "family": "report", "scaffold_key": "unsupported_launch", "raw_text": "trial balance dekhaunu", "must_not_be_english_only": true}
+{"id": "RL-030", "expected_response_language": "ROMANIZED_NEPALI", "family": "refuse", "scaffold_key": "ask_mode_mutation", "raw_text": "confirm bina journal post gar", "must_not_be_english_only": true}

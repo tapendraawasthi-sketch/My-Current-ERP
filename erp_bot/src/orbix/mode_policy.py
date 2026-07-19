@@ -187,13 +187,40 @@ def mode_restriction_payload(
     }
 
 
-def ask_mode_mutation_message(operation: str | None = None) -> str:
+def ask_mode_mutation_message(
+    operation: str | None = None,
+    *,
+    response_language: str | None = None,
+    raw_text: str | None = None,
+) -> str:
+    """Ask-mode refuse scaffold. NEXT-08: language-aware when lang/raw_text given."""
     op = f" ({operation})" if operation else ""
-    return (
-        f"I can explain or preview the entry in Ask Mode{op}, "
-        "but posting or creating ERP records requires **Accountant Mode**.\n\n"
-        "Switch to Accountant Mode to create or modify authorized ERP records."
-    )
+    try:
+        try:
+            from oip.modules.conversation.application.response_language_live_policy import (
+                scaffold_string,
+            )
+        except ImportError:  # pragma: no cover
+            from src.oip.modules.conversation.application.response_language_live_policy import (
+                scaffold_string,
+            )
+
+        base = scaffold_string(
+            "ask_mode_mutation",
+            response_language,
+            raw_text=raw_text,
+        )
+        if operation and "Ask Mode" in base:
+            return base.replace("Ask Mode", f"Ask Mode{op}", 1)
+        if operation:
+            return f"{base}\n\n({operation})"
+        return base
+    except Exception:  # noqa: BLE001
+        return (
+            f"I can explain or preview the entry in Ask Mode{op}, "
+            "but posting or creating ERP records requires **Accountant Mode**.\n\n"
+            "Switch to Accountant Mode to create or modify authorized ERP records."
+        )
 
 
 def user_may_post_purchase(*, role: str | None, permissions: dict[str, Any] | None = None) -> bool:

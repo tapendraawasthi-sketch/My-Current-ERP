@@ -15,13 +15,7 @@ AUTHORITY = "ADR_0077"
 STEP = "NEXT-10"
 DECISION = "NARROW_LAUNCH_EVENT_SPEC_FREEZE"
 
-_UNSUPPORTED_SAFE_MESSAGE = (
-    "That action is not in the current AI launch set. "
-    "For the first public slice I can help with sales or purchase invoice "
-    "drafts (Accountant Mode) and company reports: balance sheet, profit & loss, "
-    "trial balance, or account ledger (Ask Mode). "
-    "Please rephrase to one of those, or use the ERP screens for other actions."
-)
+# Default EN scaffold; NEXT-08 selects by response language via policy catalog.
 
 _SALE = re.compile(
     r"(?i)\b(sold|sale|sales|becheko|bech|bikri|invoice\s+to\s+customer)\b"
@@ -118,13 +112,22 @@ def assert_launch_event_honesty(claim: Mapping[str, Any] | None = None) -> None:
         raise RuntimeError("SILENT_DRAFT_WRITE_FORBIDDEN")
 
 
-def unsupported_launch_message(family: str | None = None) -> str:
+def unsupported_launch_message(
+    family: str | None = None,
+    *,
+    response_language: str | None = None,
+    raw_text: str | None = None,
+) -> str:
+    from .response_language_live_policy import scaffold_string
+
+    base = scaffold_string(
+        "unsupported_launch",
+        response_language,
+        raw_text=raw_text,
+    )
     if family:
-        return (
-            f"{_UNSUPPORTED_SAFE_MESSAGE} "
-            f"(unsupported family: {family})"
-        )
-    return _UNSUPPORTED_SAFE_MESSAGE
+        return f"{base} (unsupported family: {family})"
+    return base
 
 
 def classify_launch_family(
@@ -235,9 +238,15 @@ def evaluate_launch_event_freeze(
     if is_launch_supported_family(family):
         return None
 
+    from .response_language_live_policy import infer_response_language
+
+    lang = infer_response_language(message)
     return {
         "family": family,
-        "text": unsupported_launch_message(family),
+        "text": unsupported_launch_message(
+            family, response_language=lang, raw_text=message
+        ),
+        "response_language": lang,
         "intent": "launch_event_unsupported",
         "method": "mai_next10_launch_event_freeze",
         "error_code": "LAUNCH_EVENT_UNSUPPORTED",
@@ -246,4 +255,5 @@ def evaluate_launch_event_freeze(
         "is_execution_authority": False,
         "draft_mutations": 0,
         "silent_applications": 0,
+        "applied_response_rewrite": False,
     }

@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_RESPONSE_LANGUAGE_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0082",
+  "step": "NEXT-08",
+  "decision": "RESPONSE_LANGUAGE_LIVE_PARITY",
+  "extends": "ADR_0028",
+  "capability": "MAI-11",
+  "honesty": {
+    "production_approved": false,
+    "applied_response_rewrite": false,
+    "sole_nlu": false,
+    "literary_nepali_claimed": false,
+    "is_execution_authority": false,
+    "gap_p1_009_closed": false,
+    "gap_p1_012_closed": false
+  },
+  "policies": {
+    "scaffold_languages": [
+      "ENGLISH",
+      "NEPALI_DEVANAGARI",
+      "ROMANIZED_NEPALI",
+      "MIXED"
+    ],
+    "scaffold_keys": [
+      "unsupported_launch",
+      "clarify_missing",
+      "ask_mode_mutation",
+      "confirm_preview_label"
+    ],
+    "claim_level": "STABLE_USEFUL_PARITY",
+    "sse_rewrite": false
+  },
+  "frozen_samples": {
+    "path": "evals/mai11/frozen/response_language_live_parity_v1.jsonl",
+    "min_count": 30,
+    "per_language_min": 10
+  },
+  "known_gaps": [
+    "khata preview/confirm bodies may remain English until separately wired",
+    "mode_aware_erp free-text replies still LLM-driven; scaffolds only cover freeze/clarify/Ask-mutation",
+    "GAP-P1-009 / GAP-P1-012 OPEN until NEXT-09 linguist/product review"
+  ],
+  "gate_owners": [
+    "erp_bot/src/oip/modules/conversation/application/response_language_live_policy.py",
+    "erp_bot/src/oip/modules/conversation/application/launch_event_spec_policy.py",
+    "erp_bot/src/oip/modules/conversation/application/clarification_plan_service.py",
+    "erp_bot/src/orbix/mode_policy.py"
+  ],
+  "forbidden_claims": [
+    "production_approved=true",
+    "applied_response_rewrite=true",
+    "sole_nlu=true",
+    "literary_nepali_claimed=true",
+    "gap_p1_009_closed=true",
+    "gap_p1_012_closed=true"
+  ]
+}

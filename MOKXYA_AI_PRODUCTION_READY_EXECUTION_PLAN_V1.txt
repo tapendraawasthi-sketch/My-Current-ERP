@@ -10,8 +10,8 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = NEXT-14 / PR-A1
-  recommended_next_step = NEXT-08 / PR-A2
+  last_shipped_step = NEXT-08 / PR-A2
+  recommended_next_step = NEXT-09 / PR-A3
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
 
@@ -578,7 +578,7 @@ Optional parallel: PR-H1 / PR-H2 anytime.
 Step     | Status | Commit / evidence | Notes
 ---------|--------|-------------------|------
 PR-A1    | DONE   | ADR_0081 + NEXT_14_PROD_RETRIEVAL.md | GAP-P2-001 REDUCED
-PR-A2    | OPEN   |                   | NEXT-08 response language
+PR-A2    | DONE   | ADR_0082 + NEXT_08_RESPONSE_LANGUAGE_LIVE.md | NEXT-08 scaffold live
 PR-A3    | OPEN   |                   | NEXT-09 linguist sample
 PR-B1    | OPEN   |                   | staging golden path
 PR-B2    | OPEN   |                   | GAP-P0-001 residual
@@ -598,8 +598,8 @@ Already DONE before this plan (do not reopen as PR work):
   NEXT-00…07, NEXT-10…13 = foundation complete
 
 Active pointer:
-  recommended_next_step = PR-A2 / NEXT-08
-  last_shipped_step = NEXT-14 / PR-A1
+  recommended_next_step = PR-A3 / NEXT-09
+  last_shipped_step = NEXT-08 / PR-A2
   production_approved = false
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE
 

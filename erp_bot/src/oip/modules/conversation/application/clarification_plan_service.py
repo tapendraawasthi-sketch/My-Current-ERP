@@ -228,6 +228,9 @@ def should_surface_clarification_plan(
 
 def clarification_plan_user_message(
     clarification_plan: Mapping[str, Any] | None = None,
+    *,
+    response_language: str | None = None,
+    raw_text: str | None = None,
 ) -> str:
     if isinstance(clarification_plan, Mapping):
         q = clarification_plan.get("question_text")
@@ -236,7 +239,20 @@ def clarification_plan_user_message(
         primary = clarification_plan.get("primary_field")
         if primary:
             return _question_for(str(primary))
-    return "Please provide the missing details to continue."
+        response_language = response_language or clarification_plan.get(
+            "response_language"
+        )
+        raw_text = raw_text or clarification_plan.get("raw_text")
+    try:
+        from .response_language_live_policy import scaffold_string
+
+        return scaffold_string(
+            "clarify_missing",
+            response_language,
+            raw_text=raw_text if isinstance(raw_text, str) else None,
+        )
+    except Exception:  # noqa: BLE001
+        return "Please provide the missing details to continue."
 
 
 __all__ = [
