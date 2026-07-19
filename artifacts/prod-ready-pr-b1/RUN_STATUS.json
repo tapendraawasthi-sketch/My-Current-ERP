@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-B1",
+  "authority": "ADR_0084",
+  "as_of": "2026-07-19",
+  "engineering_pack_ready": true,
+  "staging_attestation_complete": false,
+  "production_approved": false,
+  "connected_run": {
+    "status": "FAIL",
+    "environment": "local_dev_127.0.0.1:8765",
+    "command": "ORBIX_E2E_CONNECTED=true npx playwright test e2e/orbix-next12-launch-slice.spec.ts e2e/orbix-connected.spec.ts e2e/orbix-sales-connected.spec.ts e2e/orbix-sync.spec.ts",
+    "log": "artifacts/prod-ready-pr-b1/connected/CONNECTED_SUMMARY.md",
+    "local_full_log_gitignored": "artifacts/prod-ready-pr-b1/connected/playwright-pr-b1.log",
+    "summary": {
+      "passed": 1,
+      "failed": 13,
+      "skipped": 5,
+      "did_not_run": 5
+    },
+    "notes": [
+      "Health/ready API path passed",
+      "SSE chat paths returned general_error / null complete (provider/auth env likely incomplete locally)",
+      "Browser specs blocked: Playwright chromium_headless_shell missing in agent cache",
+      "Staging URL attestation still required for PR-C"
+    ]
+  },
+  "manual_run": {
+    "status": "PENDING",
+    "operator": null,
+    "attestation_path": "artifacts/prod-ready-pr-b1/manual/"
+  },
+  "critical_rows": [
+    {
+      "id": "auto_next12_purchase",
+      "status": "FAIL",
+      "ticket": "TICKET-PR-B1-002"
+    },
+    {
+      "id": "auto_next12_sales",
+      "status": "FAIL",
+      "ticket": "TICKET-PR-B1-002"
+    },
+    {
+      "id": "auto_next12_ask_report",
+      "status": "FAIL",
+      "ticket": "TICKET-PR-B1-002"
+    },
+    {
+      "id": "auto_connected_purchase",
+      "status": "FAIL",
+      "ticket": "TICKET-PR-B1-002"
+    },
+    {
+      "id": "auto_sales_connected",
+      "status": "FAIL",
+      "ticket": "TICKET-PR-B1-002"
+    },
+    {
+      "id": "auto_sync",
+      "status": "PARTIAL",
+      "ticket": "TICKET-PR-B1-002",
+      "note": "Some sync specs did not fully execute after earlier failures"
+    },
+    {
+      "id": "manual_romanized_purchase",
+      "status": "PENDING",
+      "ticket": "TICKET-PR-B1-001"
+    },
+    {
+      "id": "manual_devanagari_sale",
+      "status": "PENDING",
+      "ticket": "TICKET-PR-B1-001"
+    },
+    {
+      "id": "manual_english_sale",
+      "status": "PENDING",
+      "ticket": "TICKET-PR-B1-001"
+    },
+    {
+      "id": "manual_ask_balance_sheet",
+      "status": "PENDING",
+      "ticket": "TICKET-PR-B1-001"
+    },
+    {
+      "id": "manual_ask_sale_refuse",
+      "status": "PENDING",
+      "ticket": "TICKET-PR-B1-001"
+    },
+    {
+      "id": "manual_ask_fake_cite",
+      "status": "PENDING",
+      "ticket": "TICKET-PR-B1-001"
+    }
+  ],
+  "blocks_pr_c": true,
+  "allows_pr_b_residual_parallel": true
+}

@@ -51,7 +51,7 @@ backend/.env
 erp_bot/.env
 
 # UI QA / Playwright artifacts (dev only)
-artifacts/
+artifacts/*
 !artifacts/prod-ready-pr-b1/
 !artifacts/prod-ready-pr-b1/**
 artifacts/prod-ready-pr-b1/connected/*.log
