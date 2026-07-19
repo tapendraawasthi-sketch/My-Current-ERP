@@ -35,7 +35,7 @@ class LinguisticRegisterKind(str, Enum):
 class ResponseRegisterBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: ResponseRegisterStatus = ResponseRegisterStatus.NOT_RUN
-    runtime_version: str = "mai-11.0.1-slice1"
+    runtime_version: str = "mai-11.0.2-slice2"
     offset_unit: str = "UNICODE_CODE_POINT"
     source_authority: str = "RAW"
     response_language: ResponseLanguageKind = ResponseLanguageKind.UNKNOWN

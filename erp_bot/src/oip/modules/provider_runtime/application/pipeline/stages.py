@@ -123,6 +123,9 @@ class ExecutionContextStage:
             return context
         policy_decisions = dict(route.policy_decisions or {})
         grounding_meta = _build_execution_grounding(policy_decisions)
+        response_register = policy_decisions.get("response_register")
+        if not isinstance(response_register, dict):
+            response_register = {}
         context.context = ExecutionContext(
             context_id=str(uuid.uuid4()),
             execution_id=execution.execution_id,
@@ -142,6 +145,7 @@ class ExecutionContextStage:
             metadata={
                 "estimated_tokens": route.estimated_tokens,
                 **grounding_meta,
+                "response_register": response_register,
             },
         )
         context.prompt = _resolve_provider_prompt(route=route, policy_decisions=policy_decisions)

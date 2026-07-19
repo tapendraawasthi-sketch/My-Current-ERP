@@ -1,15 +1,15 @@
 # MAI-11 — Response Language and Register Policy
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0028](decisions/ADR_0028_RESPONSE_LANGUAGE_AND_REGISTER_POLICY_AUTHORITY.md)  
-**Runtime:** `mai-11.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-11.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
 Decide which language/script and register the assistant should use when
-replying — mirroring the user when confident — without silently rewriting
-raw input or model text in slice 1.
+replying — mirroring the user when confident — and consume that policy in
+provider system prompts without rewriting SSE/model output text.
 
 ## Slice 1
 
@@ -20,18 +20,26 @@ raw input or model text in slice 1.
 4. Wire attach after MAI-10 in `oip_chat_ingress`
 5. `evals/mai11` fixtures + baseline
 
-## Gates (slice 1)
+## Slice 2
+
+1. `prompt_directive.py` — format policy into a system-prompt block
+2. Canonical adapter emits `metadata.response_register`
+3. Orchestrator forwards policy into route `policy_decisions`
+4. Provider `HttpProviderAdapter` appends directive to system prompt
+5. Still `applied_response_rewrite=false` (guide model; no post-hoc rewrite)
+
+## Gates
 
 | Case | Expect |
 |------|--------|
-| Mostly Devanagari shop text | response=`NEPALI_DEVANAGARI` |
-| Mostly romanized (`aaja ko bikri`) | response=`ROMANIZED_NEPALI` |
-| Formal EN accounting | response=`ENGLISH`, register=`ACCOUNTING_FORMAL` |
-| `tapai` / `hajur` | register=`SHOP_INFORMAL` |
-| Bundle | `silent_applications=0`; raw unchanged |
+| Romanized shop text | directive contains `ROMANIZED_NEPALI` |
+| Devanagari shop text | directive contains `NEPALI_DEVANAGARI` |
+| Formal EN accounting | directive contains `ACCOUNTING_FORMAL` |
+| Provider system prompt | includes MAI-11 policy block when metadata present |
+| Bundle | `silent_applications=0`; no SSE rewrite |
 
 ## Non-goals
 
-- Rewriting model SSE output in ingress
+- Post-hoc rewriting of model SSE tokens
 - Linguist / production approval
 - MAI-12 training pipeline

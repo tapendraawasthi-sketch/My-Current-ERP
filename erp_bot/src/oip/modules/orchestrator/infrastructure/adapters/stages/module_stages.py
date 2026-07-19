@@ -550,6 +550,40 @@ class ExecutionStageAdapter(WorkflowStagePort):
             # Soft-fail: ungrounded execution is better than blocking chat.
             pass
 
+        # MAI-11: forward response-register policy into provider metadata (always).
+        try:
+            response_register: dict[str, Any] = {}
+            if isinstance(context.metadata, dict):
+                raw_rr = context.metadata.get("response_register")
+                if isinstance(raw_rr, dict):
+                    response_register = dict(raw_rr)
+            if not response_register and context.message:
+                from src.oip.modules.language_runtime.application.language_analyzer import (
+                    analyze_language,
+                )
+                from src.oip.modules.language_runtime.response_register.application.prompt_directive import (
+                    bundle_to_metadata,
+                )
+                from src.oip.modules.language_runtime.response_register.application.response_register_service import (
+                    build_response_register_bundle,
+                )
+
+                frame = analyze_language(context.message)
+                response_register = bundle_to_metadata(
+                    build_response_register_bundle(frame)
+                )
+            if response_register:
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "response_register": response_register,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            pass
+
         model_ev = _mai03_safe_stage("MODEL_REQUEST_STARTED")
         try:
             execution = await self._ports.provider_runtime.start_execution(route=route)  # type: ignore[union-attr]

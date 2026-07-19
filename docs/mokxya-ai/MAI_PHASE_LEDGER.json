@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-11",
-  "active_phase_note": "MAI-11 slice 1 IN_PROGRESS (ADR_0028); response language/register; MAI-10 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-11 slice 2 IN_PROGRESS (ADR_0028); prompt directive consumption; MAI-10 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -1974,19 +1974,24 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-11.0.1-slice1",
-      "slice": "SLICE1_RESPONSE_REGISTER_POLICY",
+      "runtime_version": "mai-11.0.2-slice2",
+      "slice": "SLICE2_PROMPT_DIRECTIVE_CONSUMPTION",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_11_RESPONSE_LANGUAGE_AND_REGISTER_POLICY.md",
         "docs/mokxya-ai/decisions/ADR_0028_RESPONSE_LANGUAGE_AND_REGISTER_POLICY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_11_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai11/manifests/MAI_11_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_11_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai11/manifests/MAI_11_SLICE1.manifest.json",
+        "evals/mai11/manifests/MAI_11_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "erp_bot/src/oip/modules/language_runtime/response_register/",
+        "prompt_directive.py",
+        "canonical_oip metadata.response_register",
+        "HttpProviderAdapter system prompt append",
+        "orchestrator forwards policy_decisions.response_register",
         "erp_bot/src/oip/contracts/response_register.py",
-        "oip_chat_ingress RESPONSE_REGISTER after MAI-10",
-        "LanguageFrame.dominant_response_language + linguistic_register filled"
+        "oip_chat_ingress RESPONSE_REGISTER after MAI-10"
       ],
       "blockers": [
         "production_approved=false"
@@ -1995,7 +2000,7 @@
         "MAI-10"
       ],
       "recommended_order": 11,
-      "closure_note": "Slice 1 IN_PROGRESS: policy annotation only; prompt consumption deferred."
+      "closure_note": "Slice 2: prompt directive consumption; applied_response_rewrite remains false."
     },
     {
       "id": "MAI-12",

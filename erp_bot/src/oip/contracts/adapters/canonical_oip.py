@@ -82,6 +82,27 @@ class CanonicalOipRequestAdapter:
         }
         if canonical.active_draft_reference:
             metadata["active_draft_reference"] = canonical.active_draft_reference
+        # MAI-11: pass response language/register policy into orchestrator metadata
+        # (annotation only — never authority for posting).
+        frame = canonical.language_frame
+        if frame is not None and frame.response_register_bundle is not None:
+            try:
+                from ...modules.language_runtime.response_register.application.prompt_directive import (
+                    bundle_to_metadata,
+                )
+
+                metadata["response_register"] = bundle_to_metadata(
+                    frame.response_register_bundle
+                )
+            except Exception:  # noqa: BLE001
+                bundle = frame.response_register_bundle
+                metadata["response_register"] = {
+                    "response_language": bundle.response_language.value,
+                    "linguistic_register": bundle.linguistic_register.value,
+                    "mirror_user_language": bool(bundle.mirror_user_language),
+                    "runtime_version": bundle.runtime_version,
+                    "applied_response_rewrite": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

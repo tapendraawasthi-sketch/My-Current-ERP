@@ -12,7 +12,7 @@ from src.oip.modules.language_runtime.response_register.application.response_reg
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-11.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-11.")
 
 
 def test_devanagari_shop_response_language() -> None:

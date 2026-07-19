@@ -1,7 +1,7 @@
 # ADR_0028 — Response Language and Register Policy Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-11-RESPONSE-LANGUAGE-AND-REGISTER-POLICY (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-11-RESPONSE-LANGUAGE-AND-REGISTER-POLICY (slice 2)
 - **Extends:** ADR_0006, ADR_0025, ADR_0027
 
 ## Context
@@ -16,7 +16,7 @@ appropriate register (shop informal vs accounting formal).
 
 1. MAI-11 owns **response language + register policy** via
    `ResponseRegisterBundleV1` on `LanguageFrame` — annotation / policy only;
-   never mutates raw user text; never auto-rewrites model output in slice 1.
+   never mutates raw user text.
 2. Policy sets `dominant_response_language` and `linguistic_register` on the
    frame from distribution + code-mix + honorific/accounting cues.
 3. Response language taxonomy: `NEPALI_DEVANAGARI`, `ROMANIZED_NEPALI`,
@@ -25,15 +25,17 @@ appropriate register (shop informal vs accounting formal).
    `UNKNOWN`.
 5. Mirror-user recommendation is explicit (`mirror_user_language=true` when
    confident); MIXED / UNKNOWN must not force a single script rewrite.
-6. Slice 1 is engineering-gated: `production_approved=false`. Prompt/template
-   consumption is slice 2+.
+6. **Slice 2:** policy is consumed as a versioned system-prompt directive via
+   `metadata.response_register` → provider `_system_prompt`. Still
+   `applied_response_rewrite=false` — guide the model; do not rewrite SSE text.
+7. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
-| Keep prompt-only tone | Unversioned; not measurable |
-| Silent response rewrite in ingress | Silent mutation |
+| Keep prompt-only unversioned tone | Not measurable / not on LanguageFrame |
+| Silent SSE rewrite in ingress | Silent mutation |
 | Always reply Devanagari | Breaks romanized shop users |
 
 ## Related

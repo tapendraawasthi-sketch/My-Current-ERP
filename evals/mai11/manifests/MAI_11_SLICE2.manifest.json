@@ -1,0 +1,21 @@
+{
+  "dataset_version": "mai11-slice2-v1",
+  "dataset_hash": "6335892441dffc43929c12db657fff0212f9f8ed19f2e7c5f4d192e353ae7407",
+  "phase": "MAI-11",
+  "slice": "SLICE2_PROMPT_DIRECTIVE_CONSUMPTION",
+  "runtime_version": "mai-11.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai11/frozen/response_register_critical_v1.jsonl",
+      "sha256": "7182c351d6c07a9f1493ad385aacf87575f595a34478cc81d59e6b8205254375",
+      "case_count": 8,
+      "suite_id": "response_register_critical_v1"
+    },
+    {
+      "path": "evals/mai11/frozen/response_register_prompt_v1.jsonl",
+      "sha256": "c8def0c64c5e0fe14d9f7da150c4b46b03422cb16356566abb970b4f9e9301a7",
+      "case_count": 6,
+      "suite_id": "response_register_prompt_v1"
+    }
+  ]
+}

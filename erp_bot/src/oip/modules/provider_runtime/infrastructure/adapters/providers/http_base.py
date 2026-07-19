@@ -187,6 +187,17 @@ class HttpProviderAdapter(ProviderAdapterPort):
             f"{tool_hint}"
         )
         meta = context.metadata or {}
+        # MAI-11: append response language/register directive before grounding.
+        try:
+            from src.oip.modules.language_runtime.response_register.application.prompt_directive import (
+                append_response_register_to_system_prompt,
+            )
+
+            base = append_response_register_to_system_prompt(
+                base, meta.get("response_register")
+            )
+        except Exception:
+            pass
         grounding = meta.get("grounding_block") or ""
         if grounding:
             try:
