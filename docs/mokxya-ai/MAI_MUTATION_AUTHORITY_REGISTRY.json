@@ -37,7 +37,7 @@
       "status": "ACTIVE",
       "entry": "packages/backend/src/routes/khata.ts::executeKhataConfirm",
       "gated_for_ai": true,
-      "notes": "Parallel Postgres path; not denied in NEXT-02; must not be claimed as OEC."
+      "notes": "PR-B2/ADR_0085: HARD_DENY when Orbix launch markers present on sale/purchase overlap intents; unmarked legacy khata still ACTIVE."
     },
     {
       "id": "VOUCHER_SLICE_UI",

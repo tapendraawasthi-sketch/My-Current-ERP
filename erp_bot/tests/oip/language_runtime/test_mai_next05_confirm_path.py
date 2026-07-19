@@ -83,7 +83,7 @@ def test_adr_gap_ledger_pointer() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B2"
+    assert ledger["recommended_next_step"] == "PR-B3"
     assert "NEXT-05" in ledger.get("completed_next_steps", [])
     assert ledger.get("confirm_path_authority", {}).get("authority") == "ADR_0075"
 
@@ -92,5 +92,5 @@ def test_adr_gap_ledger_pointer() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-B2"
+    assert matrix["recommended_next_step"] == "PR-B3"
     assert "NEXT-05" in matrix.get("completed_steps", [])

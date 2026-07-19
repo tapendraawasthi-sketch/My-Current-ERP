@@ -11,6 +11,7 @@ export default defineConfig({
       "src/__tests__/orbix/**/*.test.ts",
       "packages/backend/src/middleware/khataConfirmAuth.test.ts",
       "packages/backend/src/middleware/correlation.test.ts",
+      "packages/backend/src/lib/launchMutationDeny.test.ts",
     ],
     setupFiles: ["src/__tests__/accounting/setup.ts"],
     pool: "forks",

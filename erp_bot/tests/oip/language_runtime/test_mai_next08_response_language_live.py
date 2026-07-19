@@ -173,7 +173,7 @@ def test_pointer_next09_and_artifacts() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B2"
+    assert ledger["recommended_next_step"] == "PR-B3"
     assert "NEXT-08" in ledger.get("completed_next_steps", [])
     assert ledger.get("response_language_live", {}).get("authority") == "ADR_0082"
 
@@ -182,7 +182,7 @@ def test_pointer_next09_and_artifacts() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-B2"
+    assert matrix["recommended_next_step"] == "PR-B3"
     assert "NEXT-08" in matrix.get("completed_steps", [])
     phases = {p["id"]: p for p in matrix["phases"]}
     assert "NEXT-08" in phases["MAI-11"]["note"] or "scaffold" in phases["MAI-11"][

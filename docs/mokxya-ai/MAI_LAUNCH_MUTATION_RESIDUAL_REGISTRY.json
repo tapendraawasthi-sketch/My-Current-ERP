@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_LAUNCH_MUTATION_RESIDUAL_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0085",
+  "step": "PR-B2",
+  "decision": "LAUNCH_MUTATION_RESIDUAL_HARD_DENY",
+  "extends": "ADR_0072",
+  "gap_p0_001": {
+    "register_status": "REDUCED",
+    "runtime_status": "OPEN",
+    "closed": false,
+    "runtime_status_reason": "Launch-marked Node/OEC hard-denied; VOUCHER_SLICE_UI + unmarked Node remain; oec_sole=false"
+  },
+  "product_mutation_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+  "launch_events": ["sales_invoice_draft", "purchase_invoice_draft"],
+  "node_overlap_intents": [
+    "khata_purchase",
+    "khata_cash_sale",
+    "khata_credit_sale"
+  ],
+  "policies": {
+    "node_khata_hard_deny_when_launch_marked": true,
+    "oec_hard_deny_on_launch_events": true,
+    "nl_assent_posts": false,
+    "allow_confirm_dispatch": false,
+    "allow_oec_dispatch": false,
+    "dual_silent_writer_on_launch_path": false
+  },
+  "residual_writers": [
+    {
+      "id": "VOUCHER_SLICE_UI",
+      "status": "ACTIVE",
+      "notes": "Manual invoice UI; not Orbix launch confirm path"
+    },
+    {
+      "id": "NODE_KHATA_CONFIRM",
+      "status": "ACTIVE_LEGACY_UNMARKED",
+      "notes": "Allowed only without Orbix launch markers"
+    },
+    {
+      "id": "OEC_ACTION_RUNTIME",
+      "status": "PARTIAL_NOT_PRODUCT",
+      "notes": "Hard-denied for launch; not sole authority"
+    }
+  ],
+  "honesty": {
+    "production_approved": false,
+    "oec_is_sole_mutation_authority": false,
+    "dual_writers_present": true,
+    "dual_silent_writer_on_launch_path": false,
+    "gap_p0_001_closed": false,
+    "is_execution_authority": false
+  },
+  "gate_owners": [
+    "packages/backend/src/lib/launchMutationDeny.ts",
+    "packages/backend/src/routes/khata.ts",
+    "erp_bot/src/oip/modules/conversation/application/launch_mutation_residual_policy.py",
+    "src/lib/ekhata/orbixPostingService.ts::executeOrbixConfirm"
+  ],
+  "forbidden_claims": [
+    "oec_is_sole_mutation_authority=true",
+    "gap_p0_001_closed=true",
+    "dual_silent_writer_on_launch_path=true",
+    "production_approved=true",
+    "nl_assent_posts=true",
+    "allow_oec_dispatch=true"
+  ]
+}

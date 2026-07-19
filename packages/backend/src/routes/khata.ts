@@ -8,6 +8,7 @@ import {
   readTraceLocals,
   safeRouteLog,
 } from "../middleware/correlation.js";
+import { evaluateNodeKhataLaunchDeny } from "../lib/launchMutationDeny.js";
 
 const router = Router();
 
@@ -396,6 +397,40 @@ router.post(
 
   if (!KHATA_ACCOUNTS[intent]) {
     return sendError(res, "Unsupported khata intent", 400);
+  }
+
+  // PR-B2 / ADR_0085 — hard-deny Node confirm when Orbix launch markers present.
+  const launchDeny = evaluateNodeKhataLaunchDeny({
+    intent,
+    launch_event_id: str(req.body?.launch_event_id),
+    channel: str(req.body?.channel) || str(req.body?.source),
+    source: str(req.body?.source),
+    product_mutation_path: str(req.body?.product_mutation_path),
+    confirm_token: str(req.body?.confirm_token),
+  });
+  if (launchDeny.deny) {
+    if (trace) {
+      void safeRouteLog({
+        route: "/khata/confirm",
+        method: "POST",
+        status: 403,
+        duration_ms: Date.now() - started,
+        correlation_id: trace.correlationId,
+        request_id: trace.requestId,
+        trace_reference: trace.traceReference,
+        outcome_code: launchDeny.error_code || "LAUNCH_MUTATION_DENIED",
+      });
+    }
+    res.status(403).json({
+      success: false,
+      error: launchDeny.message || "Launch mutation denied on Node khata confirm",
+      error_code: launchDeny.error_code,
+      draft_mutations: 0,
+      authority: launchDeny.authority,
+      product_mutation_path: launchDeny.product_mutation_path,
+      timestamp: new Date().toISOString(),
+    });
+    return;
   }
 
   // TODO: enforce FREE_TIER_MONTHLY_LIMIT server-side when threshold is confirmed.
