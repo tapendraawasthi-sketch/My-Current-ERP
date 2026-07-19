@@ -96,7 +96,8 @@ def cutover_identity_card() -> dict[str, Any]:
         "default_active": True,
         "overlay_enabled": False,
         "mai_08": "PASSED_ENGINEERING",
-        "mai_09": "IN_PROGRESS",
+        "mai_09": "PASSED_ENGINEERING",
+        "mai_10": "IN_PROGRESS",
     }
 
 

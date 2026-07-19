@@ -392,7 +392,8 @@ Severity legend:
 - **Current mitigation:** Harness measures; product not tuned in MAI-04
 - **Required remediation:** Dedicated number-role pipeline
 - **Recommended MAI phase:** MAI-09
-- **Status:** OPEN
+- **Status:** REDUCED (not closed)
+- **Progress (2026-07-19):** MAI-09 `PASSED_ENGINEERING` — duration/ID/unknown defaults, word numerals, BS/AD candidates on LanguageFrame. Does **not** claim full MAI-04 `number_roles_v1` suite green or production approval.
 
 ### GAP-P1-008 — Turn-relation / stale-draft topic change weak (MAI-04 baseline)
 

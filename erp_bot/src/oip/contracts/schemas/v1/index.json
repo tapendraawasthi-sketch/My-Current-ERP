@@ -7,6 +7,7 @@
     "TransliterationBundleV1",
     "TypoCodeMixBundleV1",
     "NumberRoleBundleV1",
+    "DomainLexiconBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

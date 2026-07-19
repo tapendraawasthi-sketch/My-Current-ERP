@@ -158,6 +158,146 @@
       "title": "ConfidenceV1",
       "type": "object"
     },
+    "DomainConceptCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguous": {
+          "default": false,
+          "title": "Ambiguous",
+          "type": "boolean"
+        },
+        "applied": {
+          "default": false,
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "concept_id": {
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "language_form": {
+          "default": "UNKNOWN",
+          "title": "Language Form",
+          "type": "string"
+        },
+        "raw_end": {
+          "minimum": 0,
+          "title": "Raw End",
+          "type": "integer"
+        },
+        "raw_start": {
+          "minimum": 0,
+          "title": "Raw Start",
+          "type": "integer"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "surface": {
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "surface",
+        "concept_id",
+        "raw_start",
+        "raw_end"
+      ],
+      "title": "DomainConceptCandidateV1",
+      "type": "object"
+    },
+    "DomainLexiconBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/DomainLexiconStatus",
+          "default": "NOT_RUN"
+        },
+        "candidate_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "candidates": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DomainConceptCandidateV1"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "ontology_version": {
+          "default": "mai-10.seed.v1",
+          "title": "Ontology Version",
+          "type": "string"
+        },
+        "runtime_version": {
+          "default": "mai-10.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "RAW",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "DomainLexiconBundleV1",
+      "type": "object"
+    },
+    "DomainLexiconStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "DomainLexiconStatus",
+      "type": "string"
+    },
     "EligibilityDecision": {
       "enum": [
         "GENERATE",
@@ -478,7 +618,7 @@
           "type": "string"
         },
         "runtime_version": {
-          "default": "mai-09.0.1-slice1",
+          "default": "mai-09.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },
@@ -1506,6 +1646,17 @@
       },
       "title": "Date Candidates",
       "type": "array"
+    },
+    "domain_lexicon_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DomainLexiconBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "dominant_response_language": {
       "anyOf": [

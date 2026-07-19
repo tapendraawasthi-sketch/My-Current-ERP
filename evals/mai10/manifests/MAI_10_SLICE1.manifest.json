@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai10-slice1-v1",
+  "dataset_hash": "e79575577c12ae78140a5d446bfad9b8c78d4f150cfed73281fa18e019543658",
+  "phase": "MAI-10",
+  "slice": "SLICE1_SEED_CONCEPT_LEXICON",
+  "runtime_version": "mai-10.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai10/frozen/domain_concepts_critical_v1.jsonl",
+      "sha256": "b4704291fdf9eb516e66c73adac1766931273bc09f5229b7f892c677c53d8306",
+      "case_count": 8,
+      "suite_id": "domain_concepts_critical_v1"
+    }
+  ]
+}

@@ -566,6 +566,72 @@ async def build_canonical_ai_request(
             except Exception:  # noqa: BLE001
                 pass
 
+    # MAI-10: domain lexicon / concept ontology candidates (annotation only).
+    frame = canonical.language_frame
+    if frame is not None:
+        dl_ev = recorder.start_stage(
+            mai03_obs.TraceStage.DOMAIN_LEXICON_STARTED,
+            component="language_runtime.domain_lexicon",
+        )
+        try:
+            from ..oip.modules.language_runtime.domain_lexicon.application.domain_lexicon_service import (
+                attach_domain_lexicon_to_frame,
+            )
+
+            updated = attach_domain_lexicon_to_frame(frame)
+            if updated.raw_text != canonical.raw_text:
+                raise RuntimeError("RAW_TEXT_MUTATION")
+            bundle = updated.domain_lexicon_bundle
+            if bundle is not None and bundle.silent_applications != 0:
+                raise RuntimeError("SILENT_APPLICATIONS_NONZERO")
+            canonical = canonical.model_copy(update={"language_frame": updated})
+            recorder.complete_stage(
+                dl_ev,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                component_versions={
+                    "domain_lexicon": (bundle.runtime_version if bundle else "mai-10.0.1-slice1"),
+                },
+                safe_attributes={
+                    "domain_lexicon_status": bundle.analysis_status.value if bundle else "FAILED",
+                    "domain_lexicon_candidate_count": bundle.candidate_count if bundle else 0,
+                },
+            )
+            recorder.record_event(
+                mai03_obs.TraceStage.DOMAIN_LEXICON_COMPLETED,
+                mai03_obs.TraceStatus.COMPLETED,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                safe_attributes={
+                    "domain_lexicon_candidate_count": bundle.candidate_count if bundle else 0,
+                },
+            )
+        except Exception:  # noqa: BLE001
+            recorder.fail_stage(dl_ev, safe_error_code="DOMAIN_LEXICON_FAILED")
+            recorder.record_event(
+                mai03_obs.TraceStage.DOMAIN_LEXICON_FAILED,
+                mai03_obs.TraceStatus.FAILED,
+                safe_error_code="DOMAIN_LEXICON_FAILED",
+            )
+            try:
+                from ..oip.contracts.domain_lexicon import (
+                    DomainLexiconBundleV1,
+                    DomainLexiconStatus,
+                )
+
+                fail_bundle = DomainLexiconBundleV1(
+                    analysis_status=DomainLexiconStatus.FAILED,
+                    warnings=("DOMAIN_LEXICON_FAILED",),
+                    error_codes=("DOMAIN_LEXICON_FAILED",),
+                )
+                canonical = canonical.model_copy(
+                    update={
+                        "language_frame": frame.model_copy(
+                            update={"domain_lexicon_bundle": fail_bundle}
+                        )
+                    }
+                )
+            except Exception:  # noqa: BLE001
+                pass
+
     return canonical
 
 

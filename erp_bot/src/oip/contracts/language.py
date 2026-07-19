@@ -13,6 +13,7 @@ from .registry import get_contract_registry
 from .transliteration import TransliterationBundleV1
 from .typo_code_mix import TypoCodeMixBundleV1
 from .number_roles import NumberRoleBundleV1
+from .domain_lexicon import DomainLexiconBundleV1
 
 
 class AnalysisStatus(str, Enum):
@@ -73,6 +74,8 @@ class LanguageFrameV1(ContractBase):
     typo_code_mix_bundle: TypoCodeMixBundleV1 | None = None
     # MAI-09: number / duration / ID role candidates
     number_role_bundle: NumberRoleBundleV1 | None = None
+    # MAI-10: domain concept lexicon candidates
+    domain_lexicon_bundle: DomainLexiconBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

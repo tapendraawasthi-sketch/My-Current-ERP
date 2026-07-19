@@ -1,6 +1,6 @@
 {
   "$defs": {
-    "NumberRoleCandidateV1": {
+    "DomainConceptCandidateV1": {
       "additionalProperties": false,
       "properties": {
         "ambiguous": {
@@ -17,17 +17,14 @@
           "title": "Candidate Id",
           "type": "string"
         },
-        "normalized_value": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Normalized Value"
+        "concept_id": {
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "language_form": {
+          "default": "UNKNOWN",
+          "title": "Language Form",
+          "type": "string"
         },
         "raw_end": {
           "minimum": 0,
@@ -47,66 +44,37 @@
           "title": "Reason Codes",
           "type": "array"
         },
-        "role": {
-          "$ref": "#/$defs/NumberRoleKind"
-        },
         "surface": {
           "title": "Surface",
           "type": "string"
-        },
-        "unit": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Unit"
         }
       },
       "required": [
         "candidate_id",
         "surface",
-        "role",
+        "concept_id",
         "raw_start",
         "raw_end"
       ],
-      "title": "NumberRoleCandidateV1",
+      "title": "DomainConceptCandidateV1",
       "type": "object"
     },
-    "NumberRoleKind": {
-      "enum": [
-        "amount",
-        "quantity",
-        "duration",
-        "percentage",
-        "invoice_number",
-        "identifier",
-        "date",
-        "unknown"
-      ],
-      "title": "NumberRoleKind",
-      "type": "string"
-    },
-    "NumberRoleStatus": {
+    "DomainLexiconStatus": {
       "enum": [
         "NOT_RUN",
         "COMPLETE",
         "PARTIAL",
         "FAILED"
       ],
-      "title": "NumberRoleStatus",
+      "title": "DomainLexiconStatus",
       "type": "string"
     }
   },
-  "$id": "https://mokxya.local/contracts/v1/NumberRoleBundleV1.json",
+  "$id": "https://mokxya.local/contracts/v1/DomainLexiconBundleV1.json",
   "additionalProperties": false,
   "properties": {
     "analysis_status": {
-      "$ref": "#/$defs/NumberRoleStatus",
+      "$ref": "#/$defs/DomainLexiconStatus",
       "default": "NOT_RUN"
     },
     "candidate_count": {
@@ -118,7 +86,7 @@
     "candidates": {
       "default": [],
       "items": {
-        "$ref": "#/$defs/NumberRoleCandidateV1"
+        "$ref": "#/$defs/DomainConceptCandidateV1"
       },
       "title": "Candidates",
       "type": "array"
@@ -136,8 +104,13 @@
       "title": "Offset Unit",
       "type": "string"
     },
+    "ontology_version": {
+      "default": "mai-10.seed.v1",
+      "title": "Ontology Version",
+      "type": "string"
+    },
     "runtime_version": {
-      "default": "mai-09.0.2-slice2",
+      "default": "mai-10.0.1-slice1",
       "title": "Runtime Version",
       "type": "string"
     },
@@ -165,7 +138,7 @@
       "type": "array"
     }
   },
-  "title": "NumberRoleBundleV1",
+  "title": "DomainLexiconBundleV1",
   "type": "object",
   "x-mai-schema-version": "1.0.0"
 }

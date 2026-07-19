@@ -1,9 +1,10 @@
 # MAI-09 — Number, Date, Money, Quantity, Duration, and ID Roles
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0026](decisions/ADR_0026_NUMBER_ROLE_AUTHORITY.md)  
-**Runtime:** `mai-09.0.2-slice2`
+**Runtime:** `mai-09.0.2-slice2`  
+**Closure:** [MAI_09_ENGINEERING_CLOSURE.md](baselines/MAI_09_ENGINEERING_CLOSURE.md)
 
 ## Objective
 

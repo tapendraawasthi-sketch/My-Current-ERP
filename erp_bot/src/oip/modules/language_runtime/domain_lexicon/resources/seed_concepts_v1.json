@@ -1,0 +1,151 @@
+{
+  "ontology_version": "mai-10.seed.v1",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "concepts": [
+    {
+      "concept_id": "CONCEPT_SALES",
+      "surfaces": [
+        {"text": "sales", "language_form": "ENGLISH"},
+        {"text": "sale", "language_form": "ENGLISH"},
+        {"text": "sold", "language_form": "ENGLISH"},
+        {"text": "bikri", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "becheko", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "beche", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "bech", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "बिक्री", "language_form": "DEVANAGARI"},
+        {"text": "सेल", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_PURCHASE",
+      "surfaces": [
+        {"text": "purchase", "language_form": "ENGLISH"},
+        {"text": "bought", "language_form": "ENGLISH"},
+        {"text": "kharid", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "kineko", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "kinyo", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "खरिद", "language_form": "DEVANAGARI"},
+        {"text": "पर्चेज", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_CREDIT",
+      "surfaces": [
+        {"text": "credit", "language_form": "ENGLISH"},
+        {"text": "udhaar", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "udhar", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "udharo", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "dhari", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "उधारो", "language_form": "DEVANAGARI"},
+        {"text": "क्रेडिट", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_PAYMENT_CASH",
+      "surfaces": [
+        {"text": "payment", "language_form": "ENGLISH"},
+        {"text": "cash", "language_form": "ENGLISH"},
+        {"text": "nagad", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "paisa", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "नगद", "language_form": "DEVANAGARI"},
+        {"text": "क्यास", "language_form": "DEVANAGARI"},
+        {"text": "पेमेन्ट", "language_form": "DEVANAGARI"},
+        {"text": "पैसा", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_EXPENSE",
+      "surfaces": [
+        {"text": "expense", "language_form": "ENGLISH"},
+        {"text": "kharcha", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "खर्च", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_BALANCE",
+      "surfaces": [
+        {"text": "balance", "language_form": "ENGLISH"},
+        {"text": "baaki", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "baki", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "bakaya", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "बाँकी", "language_form": "DEVANAGARI"},
+        {"text": "ब्यालेन्स", "language_form": "DEVANAGARI"},
+        {"text": "शेष", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_VAT",
+      "surfaces": [
+        {"text": "vat", "language_form": "ENGLISH"},
+        {"text": "भ्याट", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_DISCOUNT",
+      "surfaces": [
+        {"text": "discount", "language_form": "ENGLISH"},
+        {"text": "डिस्काउन्ट", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_INVOICE",
+      "surfaces": [
+        {"text": "invoice", "language_form": "ENGLISH"},
+        {"text": "bill", "language_form": "ENGLISH"},
+        {"text": "इनभ्वाइस", "language_form": "DEVANAGARI"},
+        {"text": "बिल", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_REPORT",
+      "surfaces": [
+        {"text": "report", "language_form": "ENGLISH"},
+        {"text": "trial balance", "language_form": "ENGLISH"},
+        {"text": "profit", "language_form": "ENGLISH"},
+        {"text": "loss", "language_form": "ENGLISH"},
+        {"text": "रिपोर्ट", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_RENT",
+      "surfaces": [
+        {"text": "rent", "language_form": "ENGLISH"},
+        {"text": "bhada", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "भाडा", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_INTEREST",
+      "surfaces": [
+        {"text": "interest", "language_form": "ENGLISH"},
+        {"text": "byaj", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "ब्याज", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_CUSTOMER",
+      "surfaces": [
+        {"text": "customer", "language_form": "ENGLISH"},
+        {"text": "party", "language_form": "ENGLISH"},
+        {"text": "कस्टमर", "language_form": "DEVANAGARI"},
+        {"text": "पार्टी", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_SUPPLIER",
+      "surfaces": [
+        {"text": "supplier", "language_form": "ENGLISH"},
+        {"text": "सप्लायर", "language_form": "DEVANAGARI"}
+      ]
+    },
+    {
+      "concept_id": "CONCEPT_STOCK",
+      "surfaces": [
+        {"text": "stock", "language_form": "ENGLISH"},
+        {"text": "mal", "language_form": "ROMANIZED_NEPALI"},
+        {"text": "स्टक", "language_form": "DEVANAGARI"},
+        {"text": "माल", "language_form": "DEVANAGARI"}
+      ]
+    }
+  ]
+}

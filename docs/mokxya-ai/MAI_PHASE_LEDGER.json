@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-09",
-  "active_phase_note": "MAI-09 slice 2 IN_PROGRESS (ADR_0026); word numerals + BS/AD; MAI-08 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-10",
+  "active_phase_note": "MAI-10 slice 1 IN_PROGRESS (ADR_0027); domain lexicon seed; MAI-09 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -1899,7 +1899,7 @@
     {
       "id": "MAI-09",
       "title": "NUMBER, DATE, MONEY, QUANTITY, DURATION, AND ID ROLES",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -1910,6 +1910,7 @@
         "docs/mokxya-ai/decisions/ADR_0026_NUMBER_ROLE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_09_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_09_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_09_ENGINEERING_CLOSURE.md",
         "evals/mai09/manifests/MAI_09_SLICE1.manifest.json",
         "evals/mai09/manifests/MAI_09_SLICE2.manifest.json"
       ],
@@ -1922,29 +1923,44 @@
         "evaluation pipeline_adapter uses parse_number_roles"
       ],
       "blockers": [
+        "GAP-P1-007 remains REDUCED (not closed)",
         "production_approved=false"
       ],
       "dependencies": [
         "MAI-08"
       ],
       "recommended_order": 9,
-      "closure_note": "Slice 2: word numerals + BS/AD conversion. MAI-10 NOT_STARTED."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-10. production_approved=false."
     },
     {
       "id": "MAI-10",
       "title": "DOMAIN LEXICON AND CONCEPT ONTOLOGY",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "NP KB lexicon indexes",
-        "Falcon/nepal-ai maps"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-10.0.1-slice1",
+      "slice": "SLICE1_SEED_CONCEPT_LEXICON",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_10_DOMAIN_LEXICON_AND_CONCEPT_ONTOLOGY.md",
+        "docs/mokxya-ai/decisions/ADR_0027_DOMAIN_LEXICON_AND_CONCEPT_ONTOLOGY_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_10_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai10/manifests/MAI_10_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/language_runtime/domain_lexicon/",
+        "erp_bot/src/oip/contracts/domain_lexicon.py",
+        "oip_chat_ingress DOMAIN_LEXICON after MAI-09",
+        "seed_concepts_v1.json"
+      ],
+      "blockers": [
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-09"
       ],
-      "recommended_order": 10
+      "recommended_order": 10,
+      "closure_note": "Slice 1 IN_PROGRESS: seed concept lexicon candidates. Planner keywords not replaced."
     },
     {
       "id": "MAI-11",
