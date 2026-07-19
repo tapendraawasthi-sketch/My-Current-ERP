@@ -840,6 +840,34 @@ class CanonicalOipRequestAdapter:
                     "domain_release_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-42: judicial/decision intelligence policy (never judicial authority).
+        if canonical.judicial_decision_intelligence_bundle is not None:
+            try:
+                from ...modules.conversation.application.judicial_decision_intelligence_service import (
+                    judicial_decision_intelligence_to_metadata,
+                )
+
+                metadata["judicial_decision_intelligence"] = (
+                    judicial_decision_intelligence_to_metadata(
+                        canonical.judicial_decision_intelligence_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                jdi = canonical.judicial_decision_intelligence_bundle
+                metadata["judicial_decision_intelligence"] = {
+                    "analysis_status": jdi.analysis_status.value,
+                    "runtime_version": jdi.runtime_version,
+                    "judicial_decision_readiness": (
+                        jdi.judicial_decision_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "judicial_authority_claimed": False,
+                    "headnote_as_binding_rule": False,
+                    "subsequent_treatment_definitive": False,
+                    "case_retrieved": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

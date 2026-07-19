@@ -2894,6 +2894,81 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent domain release.
 
+    # MAI-42: judicial/decision intelligence policy (never judicial authority).
+    jdi_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.JUDICIAL_DECISION_INTELLIGENCE_STARTED,
+        component="conversation.judicial_decision_intelligence",
+    )
+    try:
+        from ..oip.modules.conversation.application.judicial_decision_intelligence_service import (
+            assert_judicial_decision_intelligence_authority,
+            attach_judicial_decision_intelligence_to_request,
+        )
+
+        updated = attach_judicial_decision_intelligence_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.judicial_decision_intelligence_bundle
+        assert_judicial_decision_intelligence_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            jdi_ev,
+            version_map={
+                "judicial_decision_intelligence": "mai-42.0.1-slice1",
+            },
+            safe_attributes={
+                "judicial_decision_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "judicial_decision_readiness": (
+                    bundle.judicial_decision_readiness.value if bundle else None
+                ),
+                "pilot_scope": "JUDICIAL_DECISION_CANDIDATE_ONLY",
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "judicial_authority_claimed": False,
+                "headnote_as_binding_rule": False,
+                "subsequent_treatment_definitive": False,
+                "case_retrieved": False,
+                "holdings_extracted": False,
+                "citator_links_claimed": False,
+                "paragraph_anchors_claimed": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.JUDICIAL_DECISION_INTELLIGENCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            jdi_ev,
+            safe_error_code="JUDICIAL_DECISION_INTELLIGENCE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.JUDICIAL_DECISION_INTELLIGENCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="JUDICIAL_DECISION_INTELLIGENCE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent judicial authority.
+
     return canonical
 
 

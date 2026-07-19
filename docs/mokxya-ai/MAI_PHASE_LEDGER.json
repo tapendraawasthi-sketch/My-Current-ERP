@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-41",
-  "active_phase_note": "MAI-41 slice 2 IN_PROGRESS (ADR_0058); domain-release-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-42",
+  "active_phase_note": "MAI-42 slice 1 IN_PROGRESS (ADR_0059); judicial/decision intelligence policy (never judicial authority); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3104,7 +3104,7 @@
     {
       "id": "MAI-41",
       "title": "BROADER NEPAL BUSINESS-LAW DOMAIN RELEASES",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -3115,6 +3115,7 @@
         "docs/mokxya-ai/decisions/ADR_0058_BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_41_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_41_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_41_ENGINEERING_CLOSURE.md",
         "evals/mai41/manifests/MAI_41_SLICE1.manifest.json",
         "evals/mai41/manifests/MAI_41_SLICE2.manifest.json"
       ],
@@ -3138,20 +3139,43 @@
         "MAI-40"
       ],
       "recommended_order": 41,
-      "closure_note": "Slice 2: CANDIDATE_ONLY domain-release candidates; never release; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: domain-release POLICY + CANDIDATE_ONLY candidates; never release; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-42",
       "title": "JUDICIAL/DECISION INTELLIGENCE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-42.0.1-slice1",
+      "slice": "SLICE1_JUDICIAL_DECISION_POLICY",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_42_JUDICIAL_DECISION_INTELLIGENCE.md",
+        "docs/mokxya-ai/decisions/ADR_0059_JUDICIAL_DECISION_INTELLIGENCE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_42_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai42/manifests/MAI_42_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "judicial_decision_intelligence_service.py (policy annotation)",
+        "JudicialDecisionIntelligenceBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress JUDICIAL_DECISION_INTELLIGENCE after BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE",
+        "release_status=NOT_RELEASED; judicial_authority_claimed=false; headnote_as_binding_rule=false; subsequent_treatment_definitive=false; case_retrieved=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-41"
       ],
-      "recommended_order": 42
+      "recommended_order": 42,
+      "closure_note": "Slice 1: judicial/decision POLICY_DECLARED; never retrieve/claim judicial authority; GAP-P2-008 open."
     },
     {
       "id": "MAI-43",

@@ -1,7 +1,7 @@
 # MAI-41 — Broader Nepal Business-Law Domain Releases
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0058](decisions/ADR_0058_BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_AUTHORITY.md)  
 **Runtime:** `mai-41.0.2-slice2` (engineering; not production-approved)
 

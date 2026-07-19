@@ -44,6 +44,9 @@ from .financial_close_adjustment_assistance import (
 from .broader_nepal_business_law_domain_release import (
     BroaderNepalBusinessLawDomainReleaseBundleV1,
 )
+from .judicial_decision_intelligence import (
+    JudicialDecisionIntelligenceBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -232,6 +235,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-41: broader Nepal business-law domain release (never releases).
     broader_nepal_business_law_domain_release_bundle: (
         BroaderNepalBusinessLawDomainReleaseBundleV1 | None
+    ) = None
+    # MAI-42: judicial/decision intelligence (never judicial authority).
+    judicial_decision_intelligence_bundle: (
+        JudicialDecisionIntelligenceBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

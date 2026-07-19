@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai42-slice1-v1",
+  "dataset_hash": "c40c2a8edae7f9638017a8696693376c1fa36231e58821029e7fd4292e81219c",
+  "phase": "MAI-42",
+  "slice": "SLICE1_JUDICIAL_DECISION_POLICY",
+  "runtime_version": "mai-42.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai42/frozen/judicial_decision_intelligence_v1.jsonl",
+      "sha256": "c40c2a8edae7f9638017a8696693376c1fa36231e58821029e7fd4292e81219c",
+      "case_count": 6,
+      "suite_id": "judicial_decision_intelligence_v1"
+    }
+  ]
+}

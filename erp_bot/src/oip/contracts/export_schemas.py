@@ -83,6 +83,9 @@ from .financial_close_adjustment_assistance import (
 from .broader_nepal_business_law_domain_release import (
     BroaderNepalBusinessLawDomainReleaseBundleV1,
 )
+from .judicial_decision_intelligence import (
+    JudicialDecisionIntelligenceBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -158,6 +161,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "BroaderNepalBusinessLawDomainReleaseBundleV1",
         BroaderNepalBusinessLawDomainReleaseBundleV1,
+    ),
+    (
+        "JudicialDecisionIntelligenceBundleV1",
+        JudicialDecisionIntelligenceBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
