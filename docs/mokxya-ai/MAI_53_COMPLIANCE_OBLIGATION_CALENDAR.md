@@ -1,7 +1,7 @@
 # MAI-53 — Compliance Obligation And Calendar Automation
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0070](decisions/ADR_0070_COMPLIANCE_OBLIGATION_CALENDAR_AUTHORITY.md)  
 **Runtime:** `mai-53.0.2-slice2` (engineering; not production-approved)
 
