@@ -83,12 +83,16 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
         lex = policy_decisions.get("lexical_index")
         if not isinstance(lex, dict):
             lex = None
+        vec = policy_decisions.get("vector_index")
+        if not isinstance(vec, dict):
+            vec = None
         grounding = build_prompt_grounding(
             user_message,
             knowledge_snippets=snippets,
             top_k=5,
             knowledge_source_governance=gov,
             lexical_index=lex,
+            vector_index=vec,
         )
         return grounding.to_metadata()
     except Exception:

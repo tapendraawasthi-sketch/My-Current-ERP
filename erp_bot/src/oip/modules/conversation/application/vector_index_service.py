@@ -1,21 +1,24 @@
-"""MAI-28 — multilingual vector index readiness annotation.
+"""MAI-28 — multilingual vector index readiness + optional non-prod consume.
 
 Slice 1: probe Chroma semantic index presence when knowledge-source governance
 is COMPLETE. Current backend is CHROMA_OLLAMA → production_eligible=false.
-Never embeds, queries, mutates indexes, or claims citation verification.
+Slice 2: optional semantic filler only when explicitly allow-listed and never
+as a production requirement; lexical remains authoritative.
+Never mutates indexes or claims citation verification on the annotation bundle.
 """
 
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.knowledge_source_governance import KnowledgeSourceGovernanceStatus
 from ....contracts.request import CanonicalAIRequestV1
 from ....contracts.vector_index import VectorIndexBundleV1, VectorIndexStatus
 
-RUNTIME_VERSION = "mai-28.0.1-slice1"
+RUNTIME_VERSION = "mai-28.0.2-slice2"
 AUTHORITY = "ADR_0045"
 
 
@@ -104,7 +107,7 @@ def build_vector_index_bundle(
         "OLLAMA_REQUIRED_FOR_EMBED",
         "NOT_PRODUCTION_ELIGIBLE",
         "CITATIONS_NOT_VERIFIED",
-        "NO_EMBED_OR_QUERY",
+        "LEXICAL_REMAINS_AUTHORITATIVE",
     ]
     warnings: list[str] = ["PROD_MUST_USE_LEXICAL_NOT_VECTOR"]
     if not index_present:
@@ -185,4 +188,91 @@ def vector_index_to_metadata(
         "query_executions": bundle.query_executions,
         "embed_invocations": bundle.embed_invocations,
         "is_execution_authority": False,
+        "lexical_authoritative": True,
+        "retrieval_mode": "ANNOTATION_ONLY",
     }
+
+
+def _as_vector_meta(
+    vector_index: Mapping[str, Any] | VectorIndexBundleV1 | None,
+) -> dict[str, Any] | None:
+    if vector_index is None:
+        return None
+    if isinstance(vector_index, VectorIndexBundleV1):
+        return vector_index_to_metadata(vector_index)
+    if isinstance(vector_index, Mapping):
+        return dict(vector_index)
+    return None
+
+
+def env_allows_non_prod_semantic() -> bool:
+    raw = os.environ.get("ORBIX_NP_KB_ALLOW_NON_PROD_SEMANTIC", "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def should_allow_non_prod_semantic_consume(
+    vector_index: Mapping[str, Any] | VectorIndexBundleV1 | None,
+    *,
+    semantic_enabled_requested: bool,
+    allow_non_prod_semantic: bool | None = None,
+) -> bool:
+    """Optional Chroma filler: explicit allow + COMPLETE + chroma; never prod."""
+    data = _as_vector_meta(vector_index)
+    if data is None:
+        return False
+    allow = (
+        env_allows_non_prod_semantic()
+        if allow_non_prod_semantic is None
+        else bool(allow_non_prod_semantic)
+    )
+    if not allow or not semantic_enabled_requested:
+        return False
+    # Fail-closed against false production / authority claims.
+    if data.get("production_eligible") is True:
+        return False
+    if data.get("is_execution_authority") is True:
+        return False
+    if data.get("citations_verified") is True:
+        return False
+    if str(data.get("analysis_status") or "") != VectorIndexStatus.COMPLETE.value:
+        return False
+    return bool(data.get("chroma_present")) and bool(data.get("index_present"))
+
+
+def should_force_semantic_off_for_vector_policy(
+    vector_index: Mapping[str, Any] | VectorIndexBundleV1 | None,
+    *,
+    semantic_enabled_requested: bool,
+    allow_non_prod_semantic: bool | None = None,
+) -> bool:
+    """When vector annotation is present, block unallowlisted semantic use."""
+    data = _as_vector_meta(vector_index)
+    if data is None:
+        return False
+    if not semantic_enabled_requested:
+        return False
+    return not should_allow_non_prod_semantic_consume(
+        data,
+        semantic_enabled_requested=semantic_enabled_requested,
+        allow_non_prod_semantic=allow_non_prod_semantic,
+    )
+
+
+def resolve_vector_retrieval_mode(
+    vector_index: Mapping[str, Any] | VectorIndexBundleV1 | None,
+    *,
+    semantic_enabled_requested: bool,
+    allow_non_prod_semantic: bool | None = None,
+) -> str:
+    if should_allow_non_prod_semantic_consume(
+        vector_index,
+        semantic_enabled_requested=semantic_enabled_requested,
+        allow_non_prod_semantic=allow_non_prod_semantic,
+    ):
+        return "LEXICAL_PLUS_NON_PROD_SEMANTIC"
+    data = _as_vector_meta(vector_index)
+    if data is None:
+        return "UNCHANGED"
+    if data.get("production_eligible") is True:
+        return "BLOCKED"
+    return "LEXICAL_AUTHORITATIVE"

@@ -20,7 +20,7 @@ class VectorIndexStatus(str, Enum):
 class VectorIndexBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: VectorIndexStatus = VectorIndexStatus.NOT_RUN
-    runtime_version: str = "mai-28.0.1-slice1"
+    runtime_version: str = "mai-28.0.2-slice2"
     source_authority: str = "REQUEST"
     index_present: bool = False
     chroma_present: bool = False

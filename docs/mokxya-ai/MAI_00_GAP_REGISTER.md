@@ -451,7 +451,7 @@ Severity legend:
 - **Dependencies:** knowledge governance
 - **Acceptance condition:** Prod retrieval does not require Ollama
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-27 `PASSED_ENGINEERING` (LEXICAL_ONLY). MAI-28 slice 1 annotates Chroma/Ollama vector readiness with `production_eligible=false`. Does **not** close the gap (prod still must not require Ollama; hybrid/citation honesty via MAI-29–30).
+- **Progress (2026-07-19):** MAI-27 `PASSED_ENGINEERING` (LEXICAL_ONLY). MAI-28 slice 2 defaults semantic off; optional non-prod filler requires `ORBIX_NP_KB_ALLOW_NON_PROD_SEMANTIC` + semantic enabled. Does **not** close the gap (prod still must not require Ollama; hybrid/citation honesty via MAI-29–30).
 
 ### GAP-P2-002 — Frontend calculates authoritative-looking totals
 

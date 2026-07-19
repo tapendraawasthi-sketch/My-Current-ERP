@@ -1761,7 +1761,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             vec_ev,
             version_map={
-                "vector_index": "mai-28.0.1-slice1",
+                "vector_index": "mai-28.0.2-slice2",
             },
             safe_attributes={
                 "vector_index_status": (

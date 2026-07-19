@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai28-slice2-v1",
+  "dataset_hash": "cdcbd597b5d483ad6b499e22713c0b6e65d3f7b6b8dcd0b853daa8b096057f36",
+  "phase": "MAI-28",
+  "slice": "SLICE2_NON_PROD_SEMANTIC_CONSUME",
+  "runtime_version": "mai-28.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai28/frozen/vector_index_consume_v1.jsonl",
+      "sha256": "cdcbd597b5d483ad6b499e22713c0b6e65d3f7b6b8dcd0b853daa8b096057f36",
+      "case_count": 6,
+      "suite_id": "vector_index_consume_v1"
+    }
+  ]
+}

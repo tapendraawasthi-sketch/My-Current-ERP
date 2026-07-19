@@ -558,12 +558,15 @@ def interpret_user_text(
     cfg: NpKbConfig | None = None,
     knowledge_source_governance: Mapping[str, Any] | None = None,
     lexical_index: Mapping[str, Any] | None = None,
+    vector_index: Mapping[str, Any] | None = None,
+    allow_non_prod_semantic: bool | None = None,
 ) -> NpKbInterpretResult:
     """Main adapter entry: detect → protect → normalize → retrieve → cite.
 
     Never posts transactions. execution_allowed is always False from KB path.
     MAI-24: optional knowledge_source_governance filters collections / skips OOD.
     MAI-27: optional lexical_index prefers SQLITE FTS and forces semantic off.
+    MAI-28: optional non-prod semantic filler only when explicitly allow-listed.
     """
     from dataclasses import replace
 
@@ -585,6 +588,8 @@ def interpret_user_text(
         else None
     )
     lex = lexical_index if isinstance(lexical_index, Mapping) else None
+    vec = vector_index if isinstance(vector_index, Mapping) else None
+    semantic_requested = bool(cfg.semantic_enabled)
     try:
         from src.oip.modules.conversation.application.knowledge_source_governance_service import (
             filter_citations_by_governance,
@@ -608,6 +613,17 @@ def interpret_user_text(
         resolve_lexical_retrieval_mode = None  # type: ignore[assignment]
         should_block_retrieval_for_lexical_index = None  # type: ignore[assignment]
         should_prefer_lexical_retrieval = None  # type: ignore[assignment]
+
+    try:
+        from src.oip.modules.conversation.application.vector_index_service import (
+            resolve_vector_retrieval_mode,
+            should_allow_non_prod_semantic_consume,
+            should_force_semantic_off_for_vector_policy,
+        )
+    except Exception:  # noqa: BLE001
+        resolve_vector_retrieval_mode = None  # type: ignore[assignment]
+        should_allow_non_prod_semantic_consume = None  # type: ignore[assignment]
+        should_force_semantic_off_for_vector_policy = None  # type: ignore[assignment]
 
     if (
         should_skip_retrieval_for_governance is not None
@@ -647,6 +663,49 @@ def interpret_user_text(
         obs["ollama_required"] = False
         obs["vector_backend_required"] = False
         obs["citations_verified"] = False
+
+    # MAI-28: vector annotation present → semantic only via explicit non-prod gate.
+    if (
+        should_force_semantic_off_for_vector_policy is not None
+        and should_force_semantic_off_for_vector_policy(
+            vec,
+            semantic_enabled_requested=semantic_requested,
+            allow_non_prod_semantic=allow_non_prod_semantic,
+        )
+    ):
+        cfg = replace(cfg, lexical_enabled=True, semantic_enabled=False)
+        obs["semantic_blocked_by_vector_policy"] = True
+        obs["production_eligible"] = False
+        obs["lexical_authoritative"] = True
+        if resolve_vector_retrieval_mode is not None:
+            obs["vector_retrieval_mode"] = resolve_vector_retrieval_mode(
+                vec,
+                semantic_enabled_requested=semantic_requested,
+                allow_non_prod_semantic=allow_non_prod_semantic,
+            )
+
+    if (
+        should_allow_non_prod_semantic_consume is not None
+        and should_allow_non_prod_semantic_consume(
+            vec,
+            semantic_enabled_requested=semantic_requested,
+            allow_non_prod_semantic=allow_non_prod_semantic,
+        )
+    ):
+        cfg = replace(cfg, lexical_enabled=True, semantic_enabled=True)
+        obs["semantic_non_prod_filler"] = True
+        obs["semantic_forced_off"] = False
+        obs["lexical_authoritative"] = True
+        obs["production_eligible"] = False
+        obs["ollama_required"] = True
+        obs["citations_verified"] = False
+        obs["retrieval_mode"] = "LEXICAL_PLUS_NON_PROD_SEMANTIC"
+        if resolve_vector_retrieval_mode is not None:
+            obs["vector_retrieval_mode"] = resolve_vector_retrieval_mode(
+                vec,
+                semantic_enabled_requested=semantic_requested,
+                allow_non_prod_semantic=allow_non_prod_semantic,
+            )
 
     allowed_collections = (
         resolve_allowed_collections(gov)
@@ -728,8 +787,14 @@ def interpret_user_text(
                 len(allowed_collections) if allowed_collections is not None else None
             ),
             "lexical_preferred": bool(obs.get("lexical_preferred")),
+            "lexical_authoritative": bool(
+                obs.get("lexical_authoritative", obs.get("lexical_preferred"))
+            ),
             "retrieval_mode": obs.get("retrieval_mode") or "UNCHANGED",
-            "ollama_required": False,
+            "vector_retrieval_mode": obs.get("vector_retrieval_mode"),
+            "semantic_non_prod_filler": bool(obs.get("semantic_non_prod_filler")),
+            "production_eligible": False,
+            "ollama_required": bool(obs.get("ollama_required", False)),
             "citations_verified": False,
             "blocked_mutation_rate_note": "KB path cannot mutate; gated by authoritative ERP services",
         }
@@ -758,6 +823,8 @@ def enrich_nlu_context(
     top_k: int | None = None,
     knowledge_source_governance: Mapping[str, Any] | None = None,
     lexical_index: Mapping[str, Any] | None = None,
+    vector_index: Mapping[str, Any] | None = None,
+    allow_non_prod_semantic: bool | None = None,
 ) -> dict[str, Any]:
     """Optional NLU enrichment payload for hybrid search / conversation layers.
 
@@ -772,6 +839,8 @@ def enrich_nlu_context(
         cfg=cfg,
         knowledge_source_governance=knowledge_source_governance,
         lexical_index=lexical_index,
+        vector_index=vector_index,
+        allow_non_prod_semantic=allow_non_prod_semantic,
     )
     payload = result.to_optional_metadata().get("np_kb", {})
     if not payload.get("enabled"):

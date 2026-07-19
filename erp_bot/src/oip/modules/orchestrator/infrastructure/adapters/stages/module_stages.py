@@ -661,6 +661,29 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             lexical_index = {}
 
+        # MAI-28: forward vector index (non-prod only; never claim production).
+        vector_index: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_vec = context.metadata.get("vector_index")
+                if isinstance(raw_vec, dict):
+                    vector_index = dict(raw_vec)
+            if vector_index:
+                vector_index["production_eligible"] = False
+                vector_index["citations_verified"] = False
+                vector_index["is_execution_authority"] = False
+                vector_index["lexical_authoritative"] = True
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "vector_index": vector_index,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            vector_index = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding
@@ -676,6 +699,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 top_k=5,
                 knowledge_source_governance=knowledge_source_governance or None,
                 lexical_index=lexical_index or None,
+                vector_index=vector_index or None,
             )
             grounded_meta = grounding.to_metadata()
             route = route.model_copy(
