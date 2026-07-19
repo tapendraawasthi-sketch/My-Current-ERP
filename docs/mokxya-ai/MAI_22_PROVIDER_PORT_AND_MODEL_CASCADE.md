@@ -1,7 +1,7 @@
 # MAI-22 — Provider Port and Model Cascade
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2)  
 **Authority:** [ADR_0039](decisions/ADR_0039_PROVIDER_CASCADE_AUTHORITY.md)  
 **Runtime:** `mai-22.0.2-slice2` (engineering; not production-approved)
 

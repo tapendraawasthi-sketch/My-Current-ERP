@@ -24,6 +24,7 @@
     "ClarificationTargetV1",
     "TypedPlanBundleV1",
     "ProviderCascadeBundleV1",
+    "PromptRegistryBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

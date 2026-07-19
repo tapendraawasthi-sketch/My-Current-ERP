@@ -308,6 +308,24 @@ class CanonicalOipRequestAdapter:
                     "selected_provider_id": pc.selected_provider_id,
                     "is_execution_authority": False,
                 }
+        # MAI-23: prompt registry annotation (no model invocation).
+        if canonical.prompt_registry_bundle is not None:
+            try:
+                from ...modules.conversation.application.prompt_registry_service import (
+                    prompt_registry_to_metadata,
+                )
+
+                metadata["prompt_registry"] = prompt_registry_to_metadata(
+                    canonical.prompt_registry_bundle
+                )
+            except Exception:  # noqa: BLE001
+                pr = canonical.prompt_registry_bundle
+                metadata["prompt_registry"] = {
+                    "analysis_status": pr.analysis_status.value,
+                    "runtime_version": pr.runtime_version,
+                    "selected_prompt_template_id": pr.selected_prompt_template_id,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

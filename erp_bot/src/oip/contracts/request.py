@@ -20,6 +20,7 @@ from .clarification_plan import ClarificationPlanBundleV1
 from .event_frame import EventFrameV1
 from .typed_plan import TypedPlanBundleV1
 from .provider_cascade import ProviderCascadeBundleV1
+from .prompt_registry import PromptRegistryBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -153,6 +154,8 @@ class CanonicalAIRequestV1(ContractBase):
     typed_plan_bundle: TypedPlanBundleV1 | None = None
     # MAI-22: provider cascade annotation (no model invocation).
     provider_cascade_bundle: ProviderCascadeBundleV1 | None = None
+    # MAI-23: prompt template + structured-output schema refs (annotation only).
+    prompt_registry_bundle: PromptRegistryBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

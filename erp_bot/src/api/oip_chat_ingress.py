@@ -1405,6 +1405,64 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent cascade.
 
+    # MAI-23: prompt registry annotation (no model invocation).
+    pr_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.PROMPT_REGISTRY_STARTED,
+        component="conversation.prompt_registry",
+    )
+    try:
+        from ..oip.modules.conversation.application.prompt_registry_service import (
+            assert_prompt_registry_authority,
+            attach_prompt_registry_to_request,
+        )
+
+        updated = attach_prompt_registry_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.prompt_registry_bundle
+        assert_prompt_registry_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            pr_ev,
+            version_map={
+                "prompt_registry": "mai-23.0.1-slice1",
+            },
+            safe_attributes={
+                "prompt_registry_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "prompt_template_id": (
+                    bundle.selected_prompt_template_id if bundle else None
+                ),
+                "structured_output_schema_ref": (
+                    bundle.structured_output_schema_ref if bundle else None
+                ),
+                "model_invocations": (
+                    bundle.model_invocations if bundle else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.PROMPT_REGISTRY_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "prompt_template_id": (
+                    bundle.selected_prompt_template_id if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(pr_ev, safe_error_code="PROMPT_REGISTRY_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.PROMPT_REGISTRY_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="PROMPT_REGISTRY_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent prompt refs.
+
     return canonical
 
 

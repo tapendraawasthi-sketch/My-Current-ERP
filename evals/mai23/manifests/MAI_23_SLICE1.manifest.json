@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai23-slice1-v1",
+  "dataset_hash": "b20bfd626088b6f1bc3289b0dd75b207533bc1475b69e098d2af6e418f891d00",
+  "phase": "MAI-23",
+  "slice": "SLICE1_PROMPT_REGISTRY_ANNOTATION",
+  "runtime_version": "mai-23.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai23/frozen/prompt_registry_v1.jsonl",
+      "sha256": "b20bfd626088b6f1bc3289b0dd75b207533bc1475b69e098d2af6e418f891d00",
+      "case_count": 6,
+      "suite_id": "prompt_registry_v1"
+    }
+  ]
+}
