@@ -18,7 +18,7 @@ from ....contracts.security_tenant_red_team import (
     SecurityTenantRedTeamStatus,
 )
 
-RUNTIME_VERSION = "mai-44.0.1-slice1"
+RUNTIME_VERSION = "mai-44.0.2-slice2"
 AUTHORITY = "ADR_0061"
 
 _TENANT = re.compile(

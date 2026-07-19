@@ -23,7 +23,7 @@ Severity legend:
 - **Dependencies:** ADR-0001 acceptance; sync map
 - **Acceptance condition:** Single documented write authority enforced by tests; alternate paths classified and gated
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-34 slices 1–2 annotate confirm/OEC policy and emit `CANDIDATE_ONLY` `confirm_oec_candidate` (`nl_assent_posts=false`, `product_mutation_path=DEXIE_EXECUTE_ORBIX_CONFIRM`, `action_to_oec_status=NOT_PRODUCT_PATH`, `gap_p0_001_status=OPEN`). Live `allow_confirm_dispatch` / `allow_oec_dispatch` forced false. MAI-44 slice 1 declares security/tenant red-team policy only (`isolation_proven=false`, `confirmation_attacks_blocked_proven=false`, `pen_review_passed=false`, `production_security_approved=false`, `gap_p0_001_status=OPEN`). Does **not** close the gap (dual writers still active; no token mint / OEC / Dexie post; no pen-test pass).
+- **Progress (2026-07-19):** MAI-34 slices 1–2 annotate confirm/OEC policy and emit `CANDIDATE_ONLY` `confirm_oec_candidate` (`nl_assent_posts=false`, `product_mutation_path=DEXIE_EXECUTE_ORBIX_CONFIRM`, `action_to_oec_status=NOT_PRODUCT_PATH`, `gap_p0_001_status=OPEN`). Live `allow_confirm_dispatch` / `allow_oec_dispatch` forced false. MAI-44 slices 1–2 declare security/tenant red-team policy and emit `CANDIDATE_ONLY` `security_red_team_candidate` (`allow_pen_review=false`, `allow_zero_critical_claim=false`, `isolation_proven=false`, `pen_review_passed=false`, `production_security_approved=false`, `gap_p0_001_status=OPEN`). Does **not** close the gap (dual writers still active; no token mint / OEC / Dexie post; no pen-test pass).
 
 ### GAP-P1-010 — Transliteration V1 target labels contradict English/name identity safety
 
@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–43 `PASSED_ENGINEERING`. MAI-44 slice 1 declares security/tenant red-team policy only (`release_status=NOT_RELEASED`, `isolation_proven=false`, `zero_critical_findings_claimed=false`, `pen_review_passed=false`, `gap_p0_001_status=OPEN`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–43 `PASSED_ENGINEERING`. MAI-44 slices 1–2 declare security/tenant red-team policy and emit `CANDIDATE_ONLY` `security_red_team_candidate` (`release_status=NOT_RELEASED`, `allow_pen_review=false`, `allow_zero_critical_claim=false`, `isolation_proven=false`, `zero_critical_findings_claimed=false`, `pen_review_passed=false`, `gap_p0_001_status=OPEN`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

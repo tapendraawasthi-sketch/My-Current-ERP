@@ -1,9 +1,9 @@
 # MAI-44 — Security and Tenant Red Team
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0061](decisions/ADR_0061_SECURITY_TENANT_RED_TEAM_AUTHORITY.md)  
-**Runtime:** `mai-44.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-44.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
@@ -23,11 +23,20 @@ production security approval.
    `pen_review_passed=false`; `production_security_approved=false`
 7. GAP-P0-001 OPEN; GAP-P2-008 OPEN
 
+## Slice 2
+
+1. `resolve_security_red_team_consume_mode` / `build_security_red_team_candidate`
+2. Default `CANDIDATE_ONLY` — threat model / suite / finding / remediation / pen package null
+3. Fake pen-pass claim → `BLOCKED`; non-pilot → `SKIP`
+4. Live path forces `allow_pen_review=false` / `allow_zero_critical_claim=false`
+5. Metadata: `security_red_team_consume_ready` + `security_red_team_candidate`
+
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Tenant / authz / confirm / injection / doc / secret cues | COMPLETE → `POLICY_DECLARED` |
+| Tenant / authz / confirm / injection / doc / secret cues | COMPLETE → `CANDIDATE_ONLY` |
+| Fake pen_review_passed claim | `BLOCKED` |
 | Purchase / VAT / legal-only without security cues | SKIP |
 | Any live path | never claim pen-test pass / zero critical; gaps OPEN |
 

@@ -40,7 +40,7 @@ class SecurityTenantRedTeamBundleV1(ContractBase):
     analysis_status: SecurityTenantRedTeamStatus = (
         SecurityTenantRedTeamStatus.NOT_RUN
     )
-    runtime_version: str = "mai-44.0.1-slice1"
+    runtime_version: str = "mai-44.0.2-slice2"
     source_authority: str = "REQUEST"
     security_red_team_readiness: SecurityRedTeamReadiness = (
         SecurityRedTeamReadiness.NOT_APPLICABLE

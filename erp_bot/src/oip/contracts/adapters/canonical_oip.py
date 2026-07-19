@@ -909,17 +909,21 @@ class CanonicalOipRequestAdapter:
                     "continuous_change_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-44: security/tenant red-team policy (never pen-test pass claim).
+        # MAI-44: security/tenant red-team + candidate consume.
         if canonical.security_tenant_red_team_bundle is not None:
             try:
+                from ...modules.conversation.application.security_tenant_red_team_consume_service import (
+                    enrich_strt_metadata_with_consume,
+                )
                 from ...modules.conversation.application.security_tenant_red_team_service import (
                     security_tenant_red_team_to_metadata,
                 )
 
+                base_meta = security_tenant_red_team_to_metadata(
+                    canonical.security_tenant_red_team_bundle
+                )
                 metadata["security_tenant_red_team"] = (
-                    security_tenant_red_team_to_metadata(
-                        canonical.security_tenant_red_team_bundle
-                    )
+                    enrich_strt_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 strt = canonical.security_tenant_red_team_bundle
@@ -936,6 +940,8 @@ class CanonicalOipRequestAdapter:
                     "production_security_approved": False,
                     "gap_p0_001_status": "OPEN",
                     "gap_p2_008_status": "OPEN",
+                    "security_red_team_consume_mode": "UNCHANGED",
+                    "security_red_team_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

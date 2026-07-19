@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai44-slice2-v1",
+  "dataset_hash": "b92800186bf8e8c389535f21b23477cb9ab5d6f700df368a676bd6953de44451",
+  "phase": "MAI-44",
+  "slice": "SLICE2_SECURITY_RED_TEAM_CANDIDATE_CONSUME",
+  "runtime_version": "mai-44.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai44/frozen/security_red_team_consume_v1.jsonl",
+      "sha256": "b92800186bf8e8c389535f21b23477cb9ab5d6f700df368a676bd6953de44451",
+      "case_count": 6,
+      "suite_id": "security_red_team_consume_v1"
+    }
+  ]
+}

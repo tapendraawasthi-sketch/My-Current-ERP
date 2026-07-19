@@ -3086,12 +3086,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent change apply.
 
-    # MAI-44: security/tenant red-team policy (never pen-test pass claim).
+    # MAI-44: security/tenant red-team + candidate consume.
     strt_ev = recorder.begin_stage(
         mai03_obs.TraceStage.SECURITY_TENANT_RED_TEAM_STARTED,
         component="conversation.security_tenant_red_team",
     )
     try:
+        from ..oip.modules.conversation.application.security_tenant_red_team_consume_service import (
+            assert_security_red_team_consume_authority,
+            security_red_team_consume_observability,
+        )
         from ..oip.modules.conversation.application.security_tenant_red_team_service import (
             assert_security_tenant_red_team_authority,
             attach_security_tenant_red_team_to_request,
@@ -3102,11 +3106,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.security_tenant_red_team_bundle
         assert_security_tenant_red_team_authority(bundle)
+        consume_obs = security_red_team_consume_observability(
+            updated,
+            allow_pen_review=False,
+            allow_zero_critical_claim=False,
+        )
+        assert_security_red_team_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             strt_ev,
             version_map={
-                "security_tenant_red_team": "mai-44.0.1-slice1",
+                "security_tenant_red_team": "mai-44.0.2-slice2",
             },
             safe_attributes={
                 "security_red_team_status": (
@@ -3118,6 +3128,12 @@ async def build_canonical_ai_request(
                 "pilot_scope": "SECURITY_TENANT_RED_TEAM_CANDIDATE_ONLY",
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "security_red_team_consume_mode": consume_obs.get(
+                    "security_red_team_consume_mode"
+                ),
+                "security_red_team_consume_ready": bool(
+                    consume_obs.get("security_red_team_consume_ready")
+                ),
                 "security_authority_claimed": False,
                 "isolation_proven": False,
                 "zero_critical_findings_claimed": False,
@@ -3133,6 +3149,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_pen_review": False,
+                "allow_zero_critical_claim": False,
             },
         )
         recorder.record_event(
@@ -3148,6 +3166,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "security_red_team_consume_mode": consume_obs.get(
+                    "security_red_team_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

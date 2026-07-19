@@ -1,7 +1,7 @@
 # ADR_0061 — Security and Tenant Red Team Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-44-SECURITY-AND-TENANT-RED-TEAM (slice 1)
+- **Phase:** MAI-44-SECURITY-AND-TENANT-RED-TEAM (slice 2)
 - **Extends:** ADR_0001, ADR_0002
 
 ## Context
@@ -34,19 +34,27 @@ approval. GAP-P0-001 and GAP-P2-008 remain open.
    `gap_p2_008_status=OPEN`.
 4. Never invent pen-test pass, zero-critical claims, or production security
    approval from cue detection alone.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `security_red_team_candidate` /
+   `security_red_team_consume_mode` (`CANDIDATE_ONLY` default for
+   POLICY_DECLARED / SCOPE_PARTIAL; `BLOCKED` for fake authority;
+   `SKIP` for non-pilot). Live path forces `allow_pen_review=false`
+   and `allow_zero_critical_claim=false` — does **not** claim pen-test
+   pass or zero critical findings. Gaps stay OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-36 research COMPLETE | Security red team ≠ legal research |
-| Claim zero critical findings in slice 1 | Pen review / remediation required |
+| Claim zero critical findings in slice 1–2 | Pen review / remediation required |
+| Live pen-review pass in slice 2 | Authority / honesty risk |
 | Close GAP-P0-001 / GAP-P2-008 | Honesty review still required |
 | Production security approval | Residual risks must be owner-accepted |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_44_SECURITY_TENANT_RED_TEAM.md`
-- `docs/mokxya-ai/baselines/MAI_44_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_44_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/security_tenant_red_team_service.py`
+- `erp_bot/src/oip/modules/conversation/application/security_tenant_red_team_consume_service.py`
