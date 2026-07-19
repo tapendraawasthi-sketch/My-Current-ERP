@@ -1529,6 +1529,284 @@
       "title": "DomainPortSupportStatus",
       "type": "string"
     },
+    "DraftConcurrencyPolicy": {
+      "enum": [
+        "OPTIMISTIC_EXPECTED_VERSION",
+        "UNKNOWN"
+      ],
+      "title": "DraftConcurrencyPolicy",
+      "type": "string"
+    },
+    "DraftDurabilityStatus": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "EPHEMERAL_LOCAL_JSON",
+        "NOT_PRODUCTION_AUTHORITY",
+        "AGGREGATE_PENDING"
+      ],
+      "title": "DraftDurabilityStatus",
+      "type": "string"
+    },
+    "DraftVersionPolicy": {
+      "enum": [
+        "MONOTONIC_INT_BUMP",
+        "UNKNOWN"
+      ],
+      "title": "DraftVersionPolicy",
+      "type": "string"
+    },
+    "DurableVersionedDraftBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregate_written": {
+          "default": false,
+          "title": "Aggregate Written",
+          "type": "boolean"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/DurableVersionedDraftStatus",
+          "default": "NOT_RUN"
+        },
+        "concurrency_policy": {
+          "$ref": "#/$defs/DraftConcurrencyPolicy",
+          "default": "OPTIMISTIC_EXPECTED_VERSION"
+        },
+        "cross_company_access": {
+          "default": "DENY",
+          "title": "Cross Company Access",
+          "type": "string"
+        },
+        "dexie_invoked": {
+          "default": false,
+          "title": "Dexie Invoked",
+          "type": "boolean"
+        },
+        "dexie_is_calc_authority_on_confirm": {
+          "default": true,
+          "title": "Dexie Is Calc Authority On Confirm",
+          "type": "boolean"
+        },
+        "draft_aggregate_ready": {
+          "default": false,
+          "title": "Draft Aggregate Ready",
+          "type": "boolean"
+        },
+        "draft_module_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Module Id"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "durability_status": {
+          "$ref": "#/$defs/DraftDurabilityStatus",
+          "default": "NOT_APPLICABLE"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "known_store_filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Store Filename"
+        },
+        "load_invoked": {
+          "default": false,
+          "title": "Load Invoked",
+          "type": "boolean"
+        },
+        "local_json_is_production_authority": {
+          "default": false,
+          "title": "Local Json Is Production Authority",
+          "type": "boolean"
+        },
+        "mode_aware_invoked": {
+          "default": false,
+          "title": "Mode Aware Invoked",
+          "type": "boolean"
+        },
+        "orbix_drafts_api_invoked": {
+          "default": false,
+          "title": "Orbix Drafts Api Invoked",
+          "type": "boolean"
+        },
+        "production_store_authority": {
+          "default": false,
+          "title": "Production Store Authority",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "requires_expected_version_on_write": {
+          "default": true,
+          "title": "Requires Expected Version On Write",
+          "type": "boolean"
+        },
+        "runtime_version": {
+          "default": "mai-32.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "save_invoked": {
+          "default": false,
+          "title": "Save Invoked",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "selected_draft_entrypoint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Draft Entrypoint"
+        },
+        "selected_port_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Port Id"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "stale_write_outcome": {
+          "default": "CONFLICT",
+          "title": "Stale Write Outcome",
+          "type": "string"
+        },
+        "start_or_merge_invoked": {
+          "default": false,
+          "title": "Start Or Merge Invoked",
+          "type": "boolean"
+        },
+        "store_backend": {
+          "default": "LOCAL_JSON_SESSION",
+          "title": "Store Backend",
+          "type": "string"
+        },
+        "store_file_present": {
+          "default": false,
+          "title": "Store File Present",
+          "type": "boolean"
+        },
+        "store_ready_for_annotation": {
+          "default": false,
+          "title": "Store Ready For Annotation",
+          "type": "boolean"
+        },
+        "store_ready_for_production": {
+          "default": false,
+          "title": "Store Ready For Production",
+          "type": "boolean"
+        },
+        "store_root_env": {
+          "default": "ORBIX_DRAFT_STORE_DIR",
+          "title": "Store Root Env",
+          "type": "string"
+        },
+        "store_root_present": {
+          "default": false,
+          "title": "Store Root Present",
+          "type": "boolean"
+        },
+        "store_root_resolved": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Store Root Resolved"
+        },
+        "tenant_isolation_required": {
+          "default": true,
+          "title": "Tenant Isolation Required",
+          "type": "boolean"
+        },
+        "version_field_name": {
+          "default": "version",
+          "title": "Version Field Name",
+          "type": "string"
+        },
+        "version_policy": {
+          "$ref": "#/$defs/DraftVersionPolicy",
+          "default": "MONOTONIC_INT_BUMP"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "DurableVersionedDraftBundleV1",
+      "type": "object"
+    },
+    "DurableVersionedDraftStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "DurableVersionedDraftStatus",
+      "type": "string"
+    },
     "DurationFieldValueV1": {
       "additionalProperties": false,
       "properties": {
@@ -7073,6 +7351,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/DomainPortMappingBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "durable_versioned_draft_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DurableVersionedDraftBundleV1"
         },
         {
           "type": "null"

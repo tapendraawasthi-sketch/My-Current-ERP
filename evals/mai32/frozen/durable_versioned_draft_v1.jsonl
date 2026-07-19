@@ -1,0 +1,6 @@
+{"case_id": "mai32_dvd__purchase", "suite_id": "durable_versioned_draft_v1", "text": "Ram bata 500 ko saman kine", "expected_status": "COMPLETE", "expected_durability": "EPHEMERAL_LOCAL_JSON", "expected_module": "purchase_draft", "prohibited_for_training": true}
+{"case_id": "mai32_dvd__purchase_en", "suite_id": "durable_versioned_draft_v1", "text": "bought rice from Ram for Rs 500 cash", "expected_status": "COMPLETE", "expected_durability": "EPHEMERAL_LOCAL_JSON", "expected_module": "purchase_draft", "prohibited_for_training": true}
+{"case_id": "mai32_dvd__report", "suite_id": "durable_versioned_draft_v1", "text": "show balance sheet", "expected_status": "SKIP", "expected_durability": "NOT_APPLICABLE", "prohibited_for_training": true}
+{"case_id": "mai32_dvd__ood", "suite_id": "durable_versioned_draft_v1", "text": "asdf qwer zxcv", "expected_status": "SKIP", "prohibited_for_training": true}
+{"case_id": "mai32_dvd__sales", "suite_id": "durable_versioned_draft_v1", "text": "sold goods to Ram for Rs 500 cash", "expected_status": "COMPLETE", "expected_durability": "EPHEMERAL_LOCAL_JSON", "expected_module": "sales_draft", "prohibited_for_training": true}
+{"case_id": "mai32_dvd__ledger", "suite_id": "durable_versioned_draft_v1", "text": "show ledger balance report for cash account", "expected_status": "SKIP", "prohibited_for_training": true}

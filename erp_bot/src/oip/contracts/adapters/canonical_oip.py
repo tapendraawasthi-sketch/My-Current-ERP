@@ -519,6 +519,30 @@ class CanonicalOipRequestAdapter:
                     "port_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-32: durable versioned draft readiness (never writes).
+        if canonical.durable_versioned_draft_bundle is not None:
+            try:
+                from ...modules.conversation.application.durable_versioned_draft_service import (
+                    durable_versioned_draft_to_metadata,
+                )
+
+                metadata["durable_versioned_draft"] = (
+                    durable_versioned_draft_to_metadata(
+                        canonical.durable_versioned_draft_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                dvd = canonical.durable_versioned_draft_bundle
+                metadata["durable_versioned_draft"] = {
+                    "analysis_status": dvd.analysis_status.value,
+                    "runtime_version": dvd.runtime_version,
+                    "durability_status": dvd.durability_status.value,
+                    "production_store_authority": False,
+                    "save_invoked": False,
+                    "draft_mutations": 0,
+                    "draft_aggregate_ready": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

@@ -1999,6 +1999,71 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent port success.
 
+    # MAI-32: durable versioned draft readiness (never save_*/aggregate write).
+    dvd_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.DURABLE_VERSIONED_DRAFT_STARTED,
+        component="conversation.durable_versioned_draft",
+    )
+    try:
+        from ..oip.modules.conversation.application.durable_versioned_draft_service import (
+            assert_durable_versioned_draft_authority,
+            attach_durable_versioned_draft_to_request,
+        )
+
+        updated = attach_durable_versioned_draft_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.durable_versioned_draft_bundle
+        assert_durable_versioned_draft_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            dvd_ev,
+            version_map={
+                "durable_versioned_draft": "mai-32.0.1-slice1",
+            },
+            safe_attributes={
+                "durable_versioned_draft_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "durability_status": (
+                    bundle.durability_status.value if bundle else None
+                ),
+                "draft_module_id": (
+                    bundle.draft_module_id if bundle else None
+                ),
+                "production_store_authority": False,
+                "draft_aggregate_ready": False,
+                "save_invoked": False,
+                "draft_mutations": 0,
+                "store_ready_for_production": False,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.DURABLE_VERSIONED_DRAFT_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "store_ready_for_annotation": (
+                    bool(bundle.store_ready_for_annotation) if bundle else False
+                ),
+                "known_store_filename": (
+                    bundle.known_store_filename if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            dvd_ev, safe_error_code="DURABLE_VERSIONED_DRAFT_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.DURABLE_VERSIONED_DRAFT_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="DURABLE_VERSIONED_DRAFT_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent store/write success.
+
     return canonical
 
 

@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai32-slice1-v1",
+  "dataset_hash": "bb5a4a3b69aa5e1bff6ecfea91da2b7ca699485253d1b944283f5e9efe758bd1",
+  "phase": "MAI-32",
+  "slice": "SLICE1_DRAFT_DURABILITY_READINESS_ANNOTATION",
+  "runtime_version": "mai-32.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai32/frozen/durable_versioned_draft_v1.jsonl",
+      "sha256": "bb5a4a3b69aa5e1bff6ecfea91da2b7ca699485253d1b944283f5e9efe758bd1",
+      "case_count": 6,
+      "suite_id": "durable_versioned_draft_v1"
+    }
+  ]
+}

@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-31",
-  "active_phase_note": "MAI-31 slice 2 IN_PROGRESS (ADR_0048); draft payload-candidate consume (PAYLOAD_ONLY); no live start_or_merge",
+  "recommended_next_phase": "MAI-32",
+  "active_phase_note": "MAI-32 slice 1 IN_PROGRESS (ADR_0049); durable draft readiness annotation; MAI-31 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2708,7 +2708,7 @@
     {
       "id": "MAI-31",
       "title": "EVENTFRAME TO EXISTING DOMAIN PORTS",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2719,6 +2719,7 @@
         "docs/mokxya-ai/decisions/ADR_0048_EVENTFRAME_DOMAIN_PORT_MAPPING_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_31_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_31_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_31_ENGINEERING_CLOSURE.md",
         "evals/mai31/manifests/MAI_31_SLICE1.manifest.json",
         "evals/mai31/manifests/MAI_31_SLICE2.manifest.json"
       ],
@@ -2741,22 +2742,42 @@
         "MAI-30"
       ],
       "recommended_order": 31,
-      "closure_note": "Slice 2: PAYLOAD_ONLY draft payload candidates; never live start_or_merge/mode_aware/Dexie."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-32. production_approved=false. Gaps unchanged."
     },
     {
       "id": "MAI-32",
       "title": "DURABLE VERSIONED DRAFTS",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "khata *_draft.py"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-32.0.1-slice1",
+      "slice": "SLICE1_DRAFT_DURABILITY_READINESS_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_32_DURABLE_VERSIONED_DRAFTS.md",
+        "docs/mokxya-ai/decisions/ADR_0049_DURABLE_VERSIONED_DRAFT_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_32_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai32/manifests/MAI_32_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "durable_versioned_draft_service.py (policy + store readiness annotation)",
+        "DurableVersionedDraftBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress DURABLE_VERSIONED_DRAFT after DOMAIN_PORT_MAPPING",
+        "save_invoked=false; draft_mutations=0; production_store_authority=false"
+      ],
+      "blockers": [
+        "GAP-P0-001 must not worsen (no new posting writer)",
+        "DraftAggregate / durable write deferred to slice 2+",
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-31"
       ],
-      "recommended_order": 32
+      "recommended_order": 32,
+      "closure_note": "Slice 1: durable draft readiness / version policy annotation only; never save_*."
     },
     {
       "id": "MAI-33",

@@ -1,7 +1,7 @@
 # MAI-31 — EventFrame to Existing Domain Ports
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0048](decisions/ADR_0048_EVENTFRAME_DOMAIN_PORT_MAPPING_AUTHORITY.md)  
 **Runtime:** `mai-31.0.2-slice2` (engineering; not production-approved)
 
