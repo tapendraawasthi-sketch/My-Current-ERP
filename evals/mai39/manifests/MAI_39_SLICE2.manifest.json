@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai39-slice2-v1",
+  "dataset_hash": "ec543decd8168b6dfc6165da0e18cb4f395f2756bbb130246e2ee61b8f6b23d1",
+  "phase": "MAI-39",
+  "slice": "SLICE2_NFRS_NAS_CANDIDATE_CONSUME",
+  "runtime_version": "mai-39.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai39/frozen/nfrs_nas_consume_v1.jsonl",
+      "sha256": "ec543decd8168b6dfc6165da0e18cb4f395f2756bbb130246e2ee61b8f6b23d1",
+      "case_count": 6,
+      "suite_id": "nfrs_nas_consume_v1"
+    }
+  ]
+}

@@ -22,7 +22,7 @@ from ....contracts.nfrs_nas_policy_disclosure_pilot import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-39.0.1-slice1"
+RUNTIME_VERSION = "mai-39.0.2-slice2"
 AUTHORITY = "ADR_0056"
 
 _NFRS = re.compile(r"\b(?:NFRS|Nepal\s+Financial\s+Reporting\s+Standards?)\b", re.I)

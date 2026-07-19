@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-39",
-  "active_phase_note": "MAI-39 slice 1 IN_PROGRESS (ADR_0056); NFRS/NAS policy/mapping/disclosure pilot (never files); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-39 slice 2 IN_PROGRESS (ADR_0056); NFRS/NAS-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3028,19 +3028,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-39.0.1-slice1",
-      "slice": "SLICE1_NFRS_NAS_POLICY_ANNOTATION",
+      "runtime_version": "mai-39.0.2-slice2",
+      "slice": "SLICE2_NFRS_NAS_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_39_NFRS_NAS_POLICY_MAPPING_DISCLOSURE_PILOT.md",
         "docs/mokxya-ai/decisions/ADR_0056_NFRS_NAS_POLICY_DISCLOSURE_PILOT_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_39_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai39/manifests/MAI_39_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_39_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai39/manifests/MAI_39_SLICE1.manifest.json",
+        "evals/mai39/manifests/MAI_39_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "nfrs_nas_policy_disclosure_pilot_service.py (policy annotation)",
+        "nfrs_nas_policy_disclosure_pilot_consume_service.py (CANDIDATE_ONLY nfrs_nas_candidate)",
         "NfrsNasPolicyDisclosurePilotBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress NFRS_NAS_POLICY_DISCLOSURE_PILOT after TAX_CALCULATOR_RULE_INTEGRATION",
-        "mapping_status=CANDIDATE_MAPPINGS_ONLY; disclosure_status=NOT_FILED; standards_authority_claimed=false; filing_ready=false; gap_p2_008_status=OPEN"
+        "allow_mapping_execute=false; allow_disclosure_file=false; mapping_status=CANDIDATE_MAPPINGS_ONLY; disclosure_status=NOT_FILED; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3055,7 +3058,7 @@
         "MAI-38"
       ],
       "recommended_order": 39,
-      "closure_note": "Slice 1: NFRS/NAS/disclosure POLICY_DECLARED; never map/file; GAP-P2-008 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY NFRS/NAS candidates; never map/file; GAP-P2-008 open."
     },
     {
       "id": "MAI-40",

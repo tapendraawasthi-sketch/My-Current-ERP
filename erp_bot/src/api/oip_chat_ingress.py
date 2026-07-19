@@ -2614,12 +2614,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent calculator success.
 
-    # MAI-39: NFRS/NAS policy/mapping/disclosure pilot (never files).
+    # MAI-39: NFRS/NAS pilot + candidate consume (never maps/files).
     nfrs_ev = recorder.begin_stage(
         mai03_obs.TraceStage.NFRS_NAS_POLICY_DISCLOSURE_PILOT_STARTED,
         component="conversation.nfrs_nas_policy_disclosure_pilot",
     )
     try:
+        from ..oip.modules.conversation.application.nfrs_nas_policy_disclosure_pilot_consume_service import (
+            assert_nfrs_nas_consume_authority,
+            nfrs_nas_consume_observability,
+        )
         from ..oip.modules.conversation.application.nfrs_nas_policy_disclosure_pilot_service import (
             assert_nfrs_nas_policy_disclosure_pilot_authority,
             attach_nfrs_nas_policy_disclosure_pilot_to_request,
@@ -2630,11 +2634,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.nfrs_nas_policy_disclosure_pilot_bundle
         assert_nfrs_nas_policy_disclosure_pilot_authority(bundle)
+        consume_obs = nfrs_nas_consume_observability(
+            updated,
+            allow_mapping_execute=False,
+            allow_disclosure_file=False,
+        )
+        assert_nfrs_nas_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             nfrs_ev,
             version_map={
-                "nfrs_nas_policy_disclosure_pilot": "mai-39.0.1-slice1",
+                "nfrs_nas_policy_disclosure_pilot": "mai-39.0.2-slice2",
             },
             safe_attributes={
                 "nfrs_nas_status": (
@@ -2646,6 +2656,12 @@ async def build_canonical_ai_request(
                 "pilot_scope": "NFRS_NAS_DISCLOSURE_ONLY",
                 "mapping_status": "CANDIDATE_MAPPINGS_ONLY",
                 "disclosure_status": "NOT_FILED",
+                "nfrs_nas_consume_mode": consume_obs.get(
+                    "nfrs_nas_consume_mode"
+                ),
+                "nfrs_nas_consume_ready": bool(
+                    consume_obs.get("nfrs_nas_consume_ready")
+                ),
                 "standards_authority_claimed": False,
                 "mapping_executed": False,
                 "disclosure_filed": False,
@@ -2657,6 +2673,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_mapping_execute": False,
+                "allow_disclosure_file": False,
             },
         )
         recorder.record_event(
@@ -2672,6 +2690,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "nfrs_nas_consume_mode": consume_obs.get(
+                    "nfrs_nas_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

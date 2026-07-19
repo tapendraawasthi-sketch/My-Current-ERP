@@ -735,17 +735,21 @@ class CanonicalOipRequestAdapter:
                     "calculator_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-39: NFRS/NAS policy/mapping/disclosure pilot (never files).
+        # MAI-39: NFRS/NAS pilot + candidate consume.
         if canonical.nfrs_nas_policy_disclosure_pilot_bundle is not None:
             try:
+                from ...modules.conversation.application.nfrs_nas_policy_disclosure_pilot_consume_service import (
+                    enrich_nfrs_metadata_with_consume,
+                )
                 from ...modules.conversation.application.nfrs_nas_policy_disclosure_pilot_service import (
                     nfrs_nas_policy_disclosure_pilot_to_metadata,
                 )
 
+                base_meta = nfrs_nas_policy_disclosure_pilot_to_metadata(
+                    canonical.nfrs_nas_policy_disclosure_pilot_bundle
+                )
                 metadata["nfrs_nas_policy_disclosure_pilot"] = (
-                    nfrs_nas_policy_disclosure_pilot_to_metadata(
-                        canonical.nfrs_nas_policy_disclosure_pilot_bundle
-                    )
+                    enrich_nfrs_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 nfrs = canonical.nfrs_nas_policy_disclosure_pilot_bundle
@@ -760,6 +764,8 @@ class CanonicalOipRequestAdapter:
                     "disclosure_filed": False,
                     "filing_ready": False,
                     "gap_p2_008_status": "OPEN",
+                    "nfrs_nas_consume_mode": "UNCHANGED",
+                    "nfrs_nas_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

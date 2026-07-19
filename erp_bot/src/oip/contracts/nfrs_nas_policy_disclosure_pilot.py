@@ -37,7 +37,7 @@ class NfrsNasPolicyDisclosurePilotBundleV1(ContractBase):
     analysis_status: NfrsNasPolicyDisclosurePilotStatus = (
         NfrsNasPolicyDisclosurePilotStatus.NOT_RUN
     )
-    runtime_version: str = "mai-39.0.1-slice1"
+    runtime_version: str = "mai-39.0.2-slice2"
     source_authority: str = "REQUEST"
     nfrs_nas_readiness: NfrsNasPilotReadiness = NfrsNasPilotReadiness.NOT_APPLICABLE
     pilot_scope: str = "NFRS_NAS_DISCLOSURE_ONLY"
