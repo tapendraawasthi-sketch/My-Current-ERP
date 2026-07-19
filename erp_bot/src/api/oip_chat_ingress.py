@@ -1280,6 +1280,66 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent a plan.
 
+    # MAI-21: typed PlanV1 annotation (no tool execution).
+    tp_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.TYPED_PLAN_STARTED,
+        component="conversation.typed_plan",
+    )
+    try:
+        from ..oip.modules.conversation.application.typed_plan_service import (
+            attach_typed_plan_to_request,
+        )
+
+        updated = attach_typed_plan_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.typed_plan_bundle
+        if bundle is not None and (
+            bundle.is_execution_authority
+            or bundle.silent_applications != 0
+            or bundle.draft_mutations != 0
+            or bundle.tool_executions != 0
+            or bundle.proposed_tool_calls
+        ):
+            raise RuntimeError("TYPED_PLAN_AUTHORITY")
+        canonical = updated
+        plan = bundle.plan if bundle else None
+        recorder.complete_stage(
+            tp_ev,
+            version_map={
+                "typed_plan": "mai-21.0.1-slice1",
+            },
+            safe_attributes={
+                "typed_plan_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "typed_plan_event_type": (
+                    bundle.event_type if bundle else None
+                ),
+                "typed_plan_step_count": (
+                    len(plan.ordered_steps) if plan else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.TYPED_PLAN_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "typed_plan_id": (plan.plan_id if plan else None),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(tp_ev, safe_error_code="TYPED_PLAN_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.TYPED_PLAN_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="TYPED_PLAN_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent a plan.
+
     return canonical
 
 

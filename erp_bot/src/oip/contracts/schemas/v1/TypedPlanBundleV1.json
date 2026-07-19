@@ -1,0 +1,402 @@
+{
+  "$defs": {
+    "PlanStatus": {
+      "enum": [
+        "DRAFT",
+        "READY",
+        "RUNNING",
+        "COMPLETE",
+        "FAILED",
+        "CANCELLED"
+      ],
+      "title": "PlanStatus",
+      "type": "string"
+    },
+    "PlanStepV1": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "expected_output_type": {
+          "default": "unknown",
+          "title": "Expected Output Type",
+          "type": "string"
+        },
+        "operation_class": {
+          "minLength": 1,
+          "title": "Operation Class",
+          "type": "string"
+        },
+        "read_or_mutation": {
+          "$ref": "#/$defs/ReadOrMutation",
+          "default": "READ"
+        },
+        "status": {
+          "$ref": "#/$defs/StepStatus",
+          "default": "PENDING"
+        },
+        "step_id": {
+          "minLength": 1,
+          "title": "Step Id",
+          "type": "string"
+        },
+        "tool_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Name"
+        }
+      },
+      "required": [
+        "step_id",
+        "operation_class"
+      ],
+      "title": "PlanStepV1",
+      "type": "object"
+    },
+    "PlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_tools": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Tools",
+          "type": "array"
+        },
+        "max_steps": {
+          "default": 8,
+          "maximum": 64,
+          "minimum": 1,
+          "title": "Max Steps",
+          "type": "integer"
+        },
+        "mode": {
+          "default": "ask",
+          "title": "Mode",
+          "type": "string"
+        },
+        "objective": {
+          "minLength": 1,
+          "title": "Objective",
+          "type": "string"
+        },
+        "ordered_steps": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PlanStepV1"
+          },
+          "title": "Ordered Steps",
+          "type": "array"
+        },
+        "plan_id": {
+          "minLength": 1,
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "planner_version": {
+          "default": "none",
+          "title": "Planner Version",
+          "type": "string"
+        },
+        "prohibited_tools": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Prohibited Tools",
+          "type": "array"
+        },
+        "required_evidence": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Evidence",
+          "type": "array"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/PlanStatus",
+          "default": "DRAFT"
+        },
+        "stop_conditions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Stop Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "plan_id",
+        "objective"
+      ],
+      "title": "PlanV1",
+      "type": "object"
+    },
+    "ReadOrMutation": {
+      "enum": [
+        "READ",
+        "MUTATION"
+      ],
+      "title": "ReadOrMutation",
+      "type": "string"
+    },
+    "StepStatus": {
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "DONE",
+        "FAILED",
+        "SKIPPED"
+      ],
+      "title": "StepStatus",
+      "type": "string"
+    },
+    "ToolCallStatus": {
+      "enum": [
+        "PROPOSED",
+        "AUTHORIZED",
+        "DENIED",
+        "EXECUTING",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "ToolCallStatus",
+      "type": "string"
+    },
+    "ToolCallV1": {
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "$ref": "#/$defs/ToolOrigin",
+          "default": "DETERMINISTIC"
+        },
+        "policy_decision_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Decision Reference"
+        },
+        "read_or_mutation": {
+          "$ref": "#/$defs/ReadOrMutation",
+          "default": "READ"
+        },
+        "retry_policy": {
+          "default": "none",
+          "title": "Retry Policy",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ToolCallStatus",
+          "default": "PROPOSED"
+        },
+        "success": {
+          "default": null,
+          "title": "Success",
+          "type": "null"
+        },
+        "tenant_scope_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tenant Scope Reference"
+        },
+        "timeout_ms": {
+          "default": 30000,
+          "maximum": 600000,
+          "minimum": 1,
+          "title": "Timeout Ms",
+          "type": "integer"
+        },
+        "tool_call_id": {
+          "minLength": 1,
+          "title": "Tool Call Id",
+          "type": "string"
+        },
+        "tool_name": {
+          "minLength": 1,
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "tool_schema_version": {
+          "minLength": 1,
+          "title": "Tool Schema Version",
+          "type": "string"
+        },
+        "typed_arguments": {
+          "additionalProperties": true,
+          "title": "Typed Arguments",
+          "type": "object"
+        },
+        "typed_result": {
+          "default": null,
+          "title": "Typed Result",
+          "type": "null"
+        }
+      },
+      "required": [
+        "tool_call_id",
+        "tool_name",
+        "tool_schema_version"
+      ],
+      "title": "ToolCallV1",
+      "type": "object"
+    },
+    "ToolOrigin": {
+      "enum": [
+        "DETERMINISTIC",
+        "PLANNER",
+        "MODEL_PROPOSED"
+      ],
+      "title": "ToolOrigin",
+      "type": "string"
+    },
+    "TypedPlanAnalysisStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "TypedPlanAnalysisStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/TypedPlanBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_status": {
+      "$ref": "#/$defs/TypedPlanAnalysisStatus",
+      "default": "NOT_RUN"
+    },
+    "clarification_status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Clarification Status"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "event_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Event Type"
+    },
+    "plan": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PlanV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "proposed_tool_calls": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ToolCallV1"
+      },
+      "title": "Proposed Tool Calls",
+      "type": "array"
+    },
+    "runtime_version": {
+      "default": "mai-21.0.1-slice1",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "silent_applications": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Silent Applications",
+      "type": "integer"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "tool_executions": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Tool Executions",
+      "type": "integer"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "TypedPlanBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

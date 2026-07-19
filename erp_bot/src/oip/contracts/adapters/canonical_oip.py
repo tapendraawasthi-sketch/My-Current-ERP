@@ -273,6 +273,23 @@ class CanonicalOipRequestAdapter:
                     "primary_field": cp.primary_field,
                     "is_execution_authority": False,
                 }
+        # MAI-21: typed plan annotation (no tool execution).
+        if canonical.typed_plan_bundle is not None:
+            try:
+                from ...modules.conversation.application.typed_plan_service import (
+                    typed_plan_to_metadata,
+                )
+
+                metadata["typed_plan"] = typed_plan_to_metadata(
+                    canonical.typed_plan_bundle
+                )
+            except Exception:  # noqa: BLE001
+                tp = canonical.typed_plan_bundle
+                metadata["typed_plan"] = {
+                    "analysis_status": tp.analysis_status.value,
+                    "runtime_version": tp.runtime_version,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

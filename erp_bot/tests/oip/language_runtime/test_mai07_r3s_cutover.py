@@ -39,7 +39,8 @@ def test_active_identity_after_cutover():
     assert card["mai_17"] == "PASSED_ENGINEERING"
     assert card["mai_18"] == "PASSED_ENGINEERING"
     assert card["mai_19"] == "PASSED_ENGINEERING"
-    assert card["mai_20"] == "IN_PROGRESS"
+    assert card["mai_20"] == "PASSED_ENGINEERING"
+    assert card["mai_21"] == "IN_PROGRESS"
 
 
 def test_active_pack_hash_and_pipeline():

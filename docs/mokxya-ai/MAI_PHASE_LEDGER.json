@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-20",
-  "active_phase_note": "MAI-20 slice 2 IN_PROGRESS (ADR_0037); clarification plan consume gate; MAI-19 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-21",
+  "active_phase_note": "MAI-21 slice 1 IN_PROGRESS (ADR_0038); typed plan annotation; MAI-20 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2307,7 +2307,7 @@
     {
       "id": "MAI-20",
       "title": "INFORMATION-GAIN CLARIFICATION ENGINE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2318,6 +2318,7 @@
         "docs/mokxya-ai/decisions/ADR_0037_INFORMATION_GAIN_CLARIFICATION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_20_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_20_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_20_ENGINEERING_CLOSURE.md",
         "evals/mai20/manifests/MAI_20_SLICE1.manifest.json",
         "evals/mai20/manifests/MAI_20_SLICE2.manifest.json"
       ],
@@ -2336,24 +2337,38 @@
         "MAI-19"
       ],
       "recommended_order": 20,
-      "closure_note": "Slice 2: ASK plans surfaced in mode_aware; no draft writes; is_execution_authority=false."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-21. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-21",
       "title": "TYPED PLANNER AND TOOL LOOP",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-21.0.1-slice1",
+      "slice": "SLICE1_TYPED_PLAN_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_21_TYPED_PLANNER_AND_TOOL_LOOP.md",
+        "docs/mokxya-ai/decisions/ADR_0038_TYPED_PLANNER_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_21_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai21/manifests/MAI_21_SLICE1.manifest.json"
+      ],
       "implementation_evidence": [
-        "oip planner module — API import broken"
+        "typed_plan_service.py",
+        "TypedPlanBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress TYPED_PLAN after MAI-20",
+        "GAP-P0-004 closed (import fix; not a MAI-21 blocker)"
       ],
       "blockers": [
-        "GAP-P0-004"
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
       ],
       "dependencies": [
         "MAI-20"
       ],
-      "recommended_order": 21
+      "recommended_order": 21,
+      "closure_note": "Slice 1: COMPLETE EventFrame→DRAFT PlanV1 annotation; no tool execution; is_execution_authority=false."
     },
     {
       "id": "MAI-22",

@@ -1,7 +1,7 @@
 # MAI-20 — Information-Gain Clarification Engine
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2)  
 **Authority:** [ADR_0037](decisions/ADR_0037_INFORMATION_GAIN_CLARIFICATION_AUTHORITY.md)  
 **Runtime:** `mai-20.0.2-slice2` (engineering; not production-approved)
 

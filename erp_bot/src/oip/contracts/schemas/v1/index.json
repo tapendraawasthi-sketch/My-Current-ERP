@@ -22,6 +22,7 @@
     "EventSpecCandidateV1",
     "ClarificationPlanBundleV1",
     "ClarificationTargetV1",
+    "TypedPlanBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

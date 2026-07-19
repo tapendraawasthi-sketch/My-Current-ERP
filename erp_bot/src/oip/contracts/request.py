@@ -18,6 +18,7 @@ from .reference_coreference import ReferenceCoreferenceBundleV1
 from .registry import get_contract_registry
 from .clarification_plan import ClarificationPlanBundleV1
 from .event_frame import EventFrameV1
+from .typed_plan import TypedPlanBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -147,6 +148,8 @@ class CanonicalAIRequestV1(ContractBase):
     event_frame: EventFrameV1 | None = None
     # MAI-20: information-gain clarification plan (annotation only).
     clarification_plan_bundle: ClarificationPlanBundleV1 | None = None
+    # MAI-21: typed PlanV1 annotation (no tool execution).
+    typed_plan_bundle: TypedPlanBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod
