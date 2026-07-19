@@ -1904,6 +1904,149 @@
       "title": "InteractionModeV1",
       "type": "string"
     },
+    "KnowledgeSourceGovernanceBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_evaluation_corpus": {
+          "default": false,
+          "title": "Allow Evaluation Corpus",
+          "type": "boolean"
+        },
+        "allowed_retrieval_collections": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Retrieval Collections",
+          "type": "array"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/KnowledgeSourceGovernanceStatus",
+          "default": "NOT_RUN"
+        },
+        "blocked_retrieval_collections": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocked Retrieval Collections",
+          "type": "array"
+        },
+        "citation_required": {
+          "default": true,
+          "title": "Citation Required",
+          "type": "boolean"
+        },
+        "documents_retrieved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Retrieved",
+          "type": "integer"
+        },
+        "domain_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Domain Key"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "eligibility_policy": {
+          "default": "production_eligible",
+          "title": "Eligibility Policy",
+          "type": "string"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "index_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Index Mutations",
+          "type": "integer"
+        },
+        "intent_family": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intent Family"
+        },
+        "max_authority_level": {
+          "default": "GOVERNMENT",
+          "title": "Max Authority Level",
+          "type": "string"
+        },
+        "model_invocations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Invocations",
+          "type": "integer"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-24.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "KnowledgeSourceGovernanceBundleV1",
+      "type": "object"
+    },
+    "KnowledgeSourceGovernanceStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "KnowledgeSourceGovernanceStatus",
+      "type": "string"
+    },
     "LanguageFrameV1": {
       "additionalProperties": false,
       "properties": {
@@ -3487,7 +3630,7 @@
           "type": "array"
         },
         "runtime_version": {
-          "default": "mai-23.0.1-slice1",
+          "default": "mai-23.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },
@@ -5586,6 +5729,17 @@
     "input_channel": {
       "$ref": "#/$defs/InputChannelV1",
       "default": "text"
+    },
+    "knowledge_source_governance_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/KnowledgeSourceGovernanceBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "language_frame": {
       "anyOf": [

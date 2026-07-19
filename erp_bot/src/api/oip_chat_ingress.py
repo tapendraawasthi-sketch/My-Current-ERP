@@ -1463,6 +1463,65 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent prompt refs.
 
+    # MAI-24: knowledge source / document governance annotation (no retrieval).
+    ksg_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.KNOWLEDGE_SOURCE_GOVERNANCE_STARTED,
+        component="conversation.knowledge_source_governance",
+    )
+    try:
+        from ..oip.modules.conversation.application.knowledge_source_governance_service import (
+            assert_knowledge_source_governance_authority,
+            attach_knowledge_source_governance_to_request,
+        )
+
+        updated = attach_knowledge_source_governance_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.knowledge_source_governance_bundle
+        assert_knowledge_source_governance_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            ksg_ev,
+            version_map={
+                "knowledge_source_governance": "mai-24.0.1-slice1",
+            },
+            safe_attributes={
+                "knowledge_source_governance_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "domain_key": bundle.domain_key if bundle else None,
+                "allowed_collection_count": (
+                    len(bundle.allowed_retrieval_collections) if bundle else 0
+                ),
+                "allow_evaluation_corpus": (
+                    bundle.allow_evaluation_corpus if bundle else False
+                ),
+                "documents_retrieved": (
+                    bundle.documents_retrieved if bundle else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.KNOWLEDGE_SOURCE_GOVERNANCE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "domain_key": bundle.domain_key if bundle else None,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            ksg_ev, safe_error_code="KNOWLEDGE_SOURCE_GOVERNANCE_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.KNOWLEDGE_SOURCE_GOVERNANCE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="KNOWLEDGE_SOURCE_GOVERNANCE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent governance.
+
     return canonical
 
 

@@ -25,6 +25,7 @@
     "TypedPlanBundleV1",
     "ProviderCascadeBundleV1",
     "PromptRegistryBundleV1",
+    "KnowledgeSourceGovernanceBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

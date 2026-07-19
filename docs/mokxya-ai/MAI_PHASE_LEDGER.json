@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-23",
-  "active_phase_note": "MAI-23 slice 2 IN_PROGRESS (ADR_0040); prompt registry consume into system prompt; MAI-22 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-24",
+  "active_phase_note": "MAI-24 slice 1 IN_PROGRESS (ADR_0041); knowledge source governance annotation; MAI-23 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2411,7 +2411,7 @@
     {
       "id": "MAI-23",
       "title": "PROMPT REGISTRY AND STRUCTURED OUTPUT",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2422,6 +2422,7 @@
         "docs/mokxya-ai/decisions/ADR_0040_PROMPT_REGISTRY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_23_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_23_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_23_ENGINEERING_CLOSURE.md",
         "evals/mai23/manifests/MAI_23_SLICE1.manifest.json",
         "evals/mai23/manifests/MAI_23_SLICE2.manifest.json"
       ],
@@ -2441,22 +2442,39 @@
         "MAI-22"
       ],
       "recommended_order": 23,
-      "closure_note": "Slice 2: COMPLETE registry→system-prompt directive consume; model_invocations=0; is_execution_authority=false."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-24. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-24",
       "title": "KNOWLEDGE SOURCE AND DOCUMENT GOVERNANCE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "knowledgebase manifests/governance docs"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-24.0.1-slice1",
+      "slice": "SLICE1_KNOWLEDGE_SOURCE_GOVERNANCE_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_24_KNOWLEDGE_SOURCE_AND_DOCUMENT_GOVERNANCE.md",
+        "docs/mokxya-ai/decisions/ADR_0041_KNOWLEDGE_SOURCE_GOVERNANCE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_24_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai24/manifests/MAI_24_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "knowledge_source_governance_service.py",
+        "KnowledgeSourceGovernanceBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress KNOWLEDGE_SOURCE_GOVERNANCE after MAI-23",
+        "evaluation_only always blocked; no retrieval in slice 1"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-23"
       ],
-      "recommended_order": 24
+      "recommended_order": 24,
+      "closure_note": "Slice 1: COMPLETE non-OOD router→allowed/blocked collections; documents_retrieved=0; is_execution_authority=false."
     },
     {
       "id": "MAI-25",

@@ -326,6 +326,27 @@ class CanonicalOipRequestAdapter:
                     "selected_prompt_template_id": pr.selected_prompt_template_id,
                     "is_execution_authority": False,
                 }
+        # MAI-24: knowledge source governance (no retrieval).
+        if canonical.knowledge_source_governance_bundle is not None:
+            try:
+                from ...modules.conversation.application.knowledge_source_governance_service import (
+                    knowledge_source_governance_to_metadata,
+                )
+
+                metadata["knowledge_source_governance"] = (
+                    knowledge_source_governance_to_metadata(
+                        canonical.knowledge_source_governance_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                ksg = canonical.knowledge_source_governance_bundle
+                metadata["knowledge_source_governance"] = {
+                    "analysis_status": ksg.analysis_status.value,
+                    "runtime_version": ksg.runtime_version,
+                    "domain_key": ksg.domain_key,
+                    "allow_evaluation_corpus": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 
