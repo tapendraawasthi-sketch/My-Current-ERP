@@ -80,6 +80,9 @@ from .nfrs_nas_policy_disclosure_pilot import NfrsNasPolicyDisclosurePilotBundle
 from .financial_close_adjustment_assistance import (
     FinancialCloseAdjustmentAssistanceBundleV1,
 )
+from .broader_nepal_business_law_domain_release import (
+    BroaderNepalBusinessLawDomainReleaseBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -151,6 +154,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "FinancialCloseAdjustmentAssistanceBundleV1",
         FinancialCloseAdjustmentAssistanceBundleV1,
+    ),
+    (
+        "BroaderNepalBusinessLawDomainReleaseBundleV1",
+        BroaderNepalBusinessLawDomainReleaseBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

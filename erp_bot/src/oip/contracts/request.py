@@ -41,6 +41,9 @@ from .nfrs_nas_policy_disclosure_pilot import NfrsNasPolicyDisclosurePilotBundle
 from .financial_close_adjustment_assistance import (
     FinancialCloseAdjustmentAssistanceBundleV1,
 )
+from .broader_nepal_business_law_domain_release import (
+    BroaderNepalBusinessLawDomainReleaseBundleV1,
+)
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -225,6 +228,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-40: financial close / adjustment assistance (never posts).
     financial_close_adjustment_assistance_bundle: (
         FinancialCloseAdjustmentAssistanceBundleV1 | None
+    ) = None
+    # MAI-41: broader Nepal business-law domain release (never releases).
+    broader_nepal_business_law_domain_release_bundle: (
+        BroaderNepalBusinessLawDomainReleaseBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

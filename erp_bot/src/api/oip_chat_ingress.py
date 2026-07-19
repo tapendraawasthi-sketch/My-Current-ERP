@@ -2800,6 +2800,79 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent close success.
 
+    # MAI-41: broader Nepal business-law domain release (never releases).
+    bnbl_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_STARTED,
+        component="conversation.broader_nepal_business_law_domain_release",
+    )
+    try:
+        from ..oip.modules.conversation.application.broader_nepal_business_law_domain_release_service import (
+            assert_broader_nepal_business_law_domain_release_authority,
+            attach_broader_nepal_business_law_domain_release_to_request,
+        )
+
+        updated = attach_broader_nepal_business_law_domain_release_to_request(
+            canonical
+        )
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.broader_nepal_business_law_domain_release_bundle
+        assert_broader_nepal_business_law_domain_release_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            bnbl_ev,
+            version_map={
+                "broader_nepal_business_law_domain_release": "mai-41.0.1-slice1",
+            },
+            safe_attributes={
+                "domain_release_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "domain_release_readiness": (
+                    bundle.domain_release_readiness.value if bundle else None
+                ),
+                "pilot_scope": "BROADER_NEPAL_BUSINESS_LAW_CANDIDATE_ONLY",
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "domain_authority_claimed": False,
+                "domain_released": False,
+                "production_domain_eligible": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            bnbl_ev,
+            safe_error_code="BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="BROADER_NEPAL_BUSINESS_LAW_DOMAIN_RELEASE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent domain release.
+
     return canonical
 
 

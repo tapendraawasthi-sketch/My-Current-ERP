@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36/37/38/39 `PASSED_ENGINEERING`. MAI-40 slices 1–2 declare close/adjustment assistance and emit `CANDIDATE_ONLY` `close_assist_candidate` (`adjustment_status=CANDIDATE_ASSISTANCE_ONLY`, `allow_close_post=false`, `allow_adjustment_post=false`, `close_posted=false`, `books_locked=false`, `period_closed=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–40 `PASSED_ENGINEERING`. MAI-41 slice 1 declares broader Nepal business-law domain-release policy only (`release_status=NOT_RELEASED`, `domain_authority_claimed=false`, `domain_released=false`, `production_domain_eligible=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

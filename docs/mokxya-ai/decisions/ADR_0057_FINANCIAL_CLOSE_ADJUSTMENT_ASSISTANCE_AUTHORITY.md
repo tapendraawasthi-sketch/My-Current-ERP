@@ -1,7 +1,7 @@
 # ADR_0057 — Financial Close and Adjustment Assistance Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-40-FINANCIAL-CLOSE-ADJUSTMENT-ASSISTANCE (slice 2)
+- **Phase:** MAI-40-FINANCIAL-CLOSE-ADJUSTMENT-ASSISTANCE (PASSED_ENGINEERING; not production-approved)
 - **Extends:** ADR_0001, ADR_0056, ADR_0047
 
 ## Context

@@ -186,6 +186,188 @@
       "title": "BooleanFieldValueV1",
       "type": "object"
     },
+    "BroaderNepalBusinessLawDomainReleaseBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "amendment_applied": {
+          "default": false,
+          "title": "Amendment Applied",
+          "type": "boolean"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/BroaderNepalBusinessLawDomainReleaseStatus",
+          "default": "NOT_RUN"
+        },
+        "citations_verified": {
+          "default": false,
+          "title": "Citations Verified",
+          "type": "boolean"
+        },
+        "claims_verified": {
+          "default": false,
+          "title": "Claims Verified",
+          "type": "boolean"
+        },
+        "current_law_definitive": {
+          "default": false,
+          "title": "Current Law Definitive",
+          "type": "boolean"
+        },
+        "documents_retrieved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Retrieved",
+          "type": "integer"
+        },
+        "domain_authority_claimed": {
+          "default": false,
+          "title": "Domain Authority Claimed",
+          "type": "boolean"
+        },
+        "domain_release_readiness": {
+          "$ref": "#/$defs/DomainReleaseReadiness",
+          "default": "NOT_APPLICABLE"
+        },
+        "domain_released": {
+          "default": false,
+          "title": "Domain Released",
+          "type": "boolean"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "gap_p2_008_status": {
+          "default": "OPEN",
+          "title": "Gap P2 008 Status",
+          "type": "string"
+        },
+        "gold_questions_status": {
+          "default": "NOT_RELEASED",
+          "title": "Gold Questions Status",
+          "type": "string"
+        },
+        "in_scope_topics": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "In Scope Topics",
+          "type": "array"
+        },
+        "kb_retrieval_invoked": {
+          "default": false,
+          "title": "Kb Retrieval Invoked",
+          "type": "boolean"
+        },
+        "legal_effective_dates_proven": {
+          "default": false,
+          "title": "Legal Effective Dates Proven",
+          "type": "boolean"
+        },
+        "legal_proof_claimed": {
+          "default": false,
+          "title": "Legal Proof Claimed",
+          "type": "boolean"
+        },
+        "mutation_tools_allowed": {
+          "default": false,
+          "title": "Mutation Tools Allowed",
+          "type": "boolean"
+        },
+        "pilot_scope": {
+          "default": "BROADER_NEPAL_BUSINESS_LAW_CANDIDATE_ONLY",
+          "title": "Pilot Scope",
+          "type": "string"
+        },
+        "posting_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Posting Mutations",
+          "type": "integer"
+        },
+        "production_domain_eligible": {
+          "default": false,
+          "title": "Production Domain Eligible",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "release_status": {
+          "default": "NOT_RELEASED",
+          "title": "Release Status",
+          "type": "string"
+        },
+        "research_mode_bound": {
+          "default": false,
+          "title": "Research Mode Bound",
+          "type": "boolean"
+        },
+        "runtime_version": {
+          "default": "mai-41.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "specialist_signoff_status": {
+          "default": "NOT_SIGNED",
+          "title": "Specialist Signoff Status",
+          "type": "string"
+        },
+        "unsupported_topics": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Unsupported Topics",
+          "type": "array"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "BroaderNepalBusinessLawDomainReleaseBundleV1",
+      "type": "object"
+    },
+    "BroaderNepalBusinessLawDomainReleaseStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "BroaderNepalBusinessLawDomainReleaseStatus",
+      "type": "string"
+    },
     "CalcAuthorityOnConfirm": {
       "enum": [
         "DEXIE_DOMAIN_ENGINE",
@@ -1994,6 +2176,16 @@
         "NOT_APPLICABLE"
       ],
       "title": "DomainPortSupportStatus",
+      "type": "string"
+    },
+    "DomainReleaseReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "SCOPE_PARTIAL"
+      ],
+      "title": "DomainReleaseReadiness",
       "type": "string"
     },
     "DraftConcurrencyPolicy": {
@@ -9066,6 +9258,17 @@
       "additionalProperties": true,
       "title": "Active Ui Context",
       "type": "object"
+    },
+    "broader_nepal_business_law_domain_release_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BroaderNepalBusinessLawDomainReleaseBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "claim_citation_bundle": {
       "anyOf": [

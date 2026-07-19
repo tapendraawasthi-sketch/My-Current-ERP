@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai41-slice1-v1",
+  "dataset_hash": "1aedc1a47ad2808fa1412c6d9e9b1494b0c4fc8e35701c88b5a74c7570af03fc",
+  "phase": "MAI-41",
+  "slice": "SLICE1_DOMAIN_RELEASE_POLICY",
+  "runtime_version": "mai-41.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai41/frozen/broader_nepal_business_law_domain_release_v1.jsonl",
+      "sha256": "1aedc1a47ad2808fa1412c6d9e9b1494b0c4fc8e35701c88b5a74c7570af03fc",
+      "case_count": 6,
+      "suite_id": "broader_nepal_business_law_domain_release_v1"
+    }
+  ]
+}

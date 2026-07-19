@@ -1,9 +1,10 @@
 # MAI-40 — Financial Close and Adjustment Assistance
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0057](decisions/ADR_0057_FINANCIAL_CLOSE_ADJUSTMENT_ASSISTANCE_AUTHORITY.md)  
-**Runtime:** `mai-40.0.2-slice2` (engineering; not production-approved)
+**Runtime:** `mai-40.0.2-slice2` (engineering; not production-approved)  
+**Closure:** [MAI_40_ENGINEERING_CLOSURE.md](baselines/MAI_40_ENGINEERING_CLOSURE.md)
 
 ## Objective
 
