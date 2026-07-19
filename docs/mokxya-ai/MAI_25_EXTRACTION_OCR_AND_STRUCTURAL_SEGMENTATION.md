@@ -1,7 +1,7 @@
 # MAI-25 — Extraction, OCR, and Structural Segmentation
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0042](decisions/ADR_0042_STRUCTURAL_SEGMENTATION_AUTHORITY.md)  
 **Runtime:** `mai-25.0.2-slice2` (engineering; not production-approved)
 

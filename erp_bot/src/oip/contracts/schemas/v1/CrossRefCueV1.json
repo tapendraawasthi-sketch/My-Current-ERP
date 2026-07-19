@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "CrossRefCueKind": {
+      "enum": [
+        "DOCUMENT_REF",
+        "SECTION_REF",
+        "ACT_RULE_REF",
+        "SUPERSEDES_CUE",
+        "UNKNOWN"
+      ],
+      "title": "CrossRefCueKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/CrossRefCueV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "cue_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Cue Id",
+      "type": "string"
+    },
+    "end_offset": {
+      "default": 0,
+      "minimum": 0,
+      "title": "End Offset",
+      "type": "integer"
+    },
+    "kind": {
+      "$ref": "#/$defs/CrossRefCueKind",
+      "default": "UNKNOWN"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "start_offset": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Start Offset",
+      "type": "integer"
+    },
+    "surface": {
+      "default": "",
+      "title": "Surface",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cue_id"
+  ],
+  "title": "CrossRefCueV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

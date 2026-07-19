@@ -1627,6 +1627,63 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent OCR plans.
 
+    # MAI-26: temporal / amendment / cross-reference cues (never proven/applied).
+    tcr_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.TEMPORAL_CROSS_REF_STARTED,
+        component="conversation.temporal_cross_ref",
+    )
+    try:
+        from ..oip.modules.conversation.application.temporal_cross_ref_service import (
+            assert_temporal_cross_ref_authority,
+            attach_temporal_cross_ref_to_request,
+        )
+
+        updated = attach_temporal_cross_ref_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.temporal_cross_ref_bundle
+        assert_temporal_cross_ref_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            tcr_ev,
+            version_map={
+                "temporal_cross_ref": "mai-26.0.1-slice1",
+            },
+            safe_attributes={
+                "temporal_cross_ref_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "temporal_cue_count": (
+                    len(bundle.temporal_cues) if bundle else 0
+                ),
+                "cross_ref_cue_count": (
+                    len(bundle.cross_ref_cues) if bundle else 0
+                ),
+                "legal_effective_dates_proven": False,
+                "amendment_applied": False,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.TEMPORAL_CROSS_REF_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "as_of_candidate": bundle.as_of_candidate if bundle else None,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            tcr_ev, safe_error_code="TEMPORAL_CROSS_REF_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.TEMPORAL_CROSS_REF_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="TEMPORAL_CROSS_REF_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent temporal claims.
+
     return canonical
 
 

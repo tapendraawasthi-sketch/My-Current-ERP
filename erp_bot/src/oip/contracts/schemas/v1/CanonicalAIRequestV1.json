@@ -733,6 +733,62 @@
       "title": "CorrectionTargetKind",
       "type": "string"
     },
+    "CrossRefCueKind": {
+      "enum": [
+        "DOCUMENT_REF",
+        "SECTION_REF",
+        "ACT_RULE_REF",
+        "SUPERSEDES_CUE",
+        "UNKNOWN"
+      ],
+      "title": "CrossRefCueKind",
+      "type": "string"
+    },
+    "CrossRefCueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Cue Id",
+          "type": "string"
+        },
+        "end_offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "kind": {
+          "$ref": "#/$defs/CrossRefCueKind",
+          "default": "UNKNOWN"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "start_offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        },
+        "surface": {
+          "default": "",
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cue_id"
+      ],
+      "title": "CrossRefCueV1",
+      "type": "object"
+    },
     "DateCalendar": {
       "enum": [
         "BS",
@@ -4855,6 +4911,177 @@
       "title": "StructuralSegmentationStatus",
       "type": "string"
     },
+    "TemporalCrossRefBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "amendment_applied": {
+          "default": false,
+          "title": "Amendment Applied",
+          "type": "boolean"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/TemporalCrossRefStatus",
+          "default": "NOT_RUN"
+        },
+        "as_of_candidate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As Of Candidate"
+        },
+        "cross_ref_cues": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CrossRefCueV1"
+          },
+          "title": "Cross Ref Cues",
+          "type": "array"
+        },
+        "documents_mutated": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Mutated",
+          "type": "integer"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "legal_effective_dates_proven": {
+          "default": false,
+          "title": "Legal Effective Dates Proven",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-26.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "temporal_cues": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TemporalCueV1"
+          },
+          "title": "Temporal Cues",
+          "type": "array"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "TemporalCrossRefBundleV1",
+      "type": "object"
+    },
+    "TemporalCrossRefStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "TemporalCrossRefStatus",
+      "type": "string"
+    },
+    "TemporalCueKind": {
+      "enum": [
+        "AS_OF_DATE",
+        "FISCAL_YEAR",
+        "AMENDMENT_LANGUAGE",
+        "EFFECTIVE_FROM_CUE",
+        "UNKNOWN"
+      ],
+      "title": "TemporalCueKind",
+      "type": "string"
+    },
+    "TemporalCueV1": {
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Cue Id",
+          "type": "string"
+        },
+        "end_offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "kind": {
+          "$ref": "#/$defs/TemporalCueKind",
+          "default": "UNKNOWN"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "start_offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        },
+        "surface": {
+          "default": "",
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cue_id"
+      ],
+      "title": "TemporalCueV1",
+      "type": "object"
+    },
     "TextFieldValueV1": {
       "additionalProperties": false,
       "properties": {
@@ -6184,6 +6411,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/StructuralSegmentationBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "temporal_cross_ref_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TemporalCrossRefBundleV1"
         },
         {
           "type": "null"

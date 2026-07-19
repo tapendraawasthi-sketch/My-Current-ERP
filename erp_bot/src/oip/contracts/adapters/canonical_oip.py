@@ -387,6 +387,25 @@ class CanonicalOipRequestAdapter:
                     "ocr_execution_authorized": False,
                     "is_execution_authority": False,
                 }
+        # MAI-26: temporal / cross-ref cues (never proven/applied).
+        if canonical.temporal_cross_ref_bundle is not None:
+            try:
+                from ...modules.conversation.application.temporal_cross_ref_service import (
+                    temporal_cross_ref_to_metadata,
+                )
+
+                metadata["temporal_cross_ref"] = temporal_cross_ref_to_metadata(
+                    canonical.temporal_cross_ref_bundle
+                )
+            except Exception:  # noqa: BLE001
+                tcr = canonical.temporal_cross_ref_bundle
+                metadata["temporal_cross_ref"] = {
+                    "analysis_status": tcr.analysis_status.value,
+                    "runtime_version": tcr.runtime_version,
+                    "legal_effective_dates_proven": False,
+                    "amendment_applied": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

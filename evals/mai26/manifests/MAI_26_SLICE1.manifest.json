@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai26-slice1-v1",
+  "dataset_hash": "034dc8d54bec700db6d3140b6d3a16b7b4e8d8334c139b5a338bbfb8c339f8d9",
+  "phase": "MAI-26",
+  "slice": "SLICE1_TEMPORAL_CROSS_REF_ANNOTATION",
+  "runtime_version": "mai-26.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai26/frozen/temporal_cross_ref_v1.jsonl",
+      "sha256": "034dc8d54bec700db6d3140b6d3a16b7b4e8d8334c139b5a338bbfb8c339f8d9",
+      "case_count": 6,
+      "suite_id": "temporal_cross_ref_v1"
+    }
+  ]
+}

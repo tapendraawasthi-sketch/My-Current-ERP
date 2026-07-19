@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "TemporalCueKind": {
+      "enum": [
+        "AS_OF_DATE",
+        "FISCAL_YEAR",
+        "AMENDMENT_LANGUAGE",
+        "EFFECTIVE_FROM_CUE",
+        "UNKNOWN"
+      ],
+      "title": "TemporalCueKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/TemporalCueV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "cue_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Cue Id",
+      "type": "string"
+    },
+    "end_offset": {
+      "default": 0,
+      "minimum": 0,
+      "title": "End Offset",
+      "type": "integer"
+    },
+    "kind": {
+      "$ref": "#/$defs/TemporalCueKind",
+      "default": "UNKNOWN"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "start_offset": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Start Offset",
+      "type": "integer"
+    },
+    "surface": {
+      "default": "",
+      "title": "Surface",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cue_id"
+  ],
+  "title": "TemporalCueV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

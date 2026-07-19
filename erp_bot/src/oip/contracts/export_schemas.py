@@ -55,6 +55,11 @@ from .extraction_ocr_plan import (
     ExtractionOcrPlanBundleV1,
     ExtractionPlanStepV1,
 )
+from .temporal_cross_ref import (
+    CrossRefCueV1,
+    TemporalCrossRefBundleV1,
+    TemporalCueV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -89,6 +94,9 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("StructuralSegmentV1", StructuralSegmentV1),
     ("ExtractionOcrPlanBundleV1", ExtractionOcrPlanBundleV1),
     ("ExtractionPlanStepV1", ExtractionPlanStepV1),
+    ("TemporalCrossRefBundleV1", TemporalCrossRefBundleV1),
+    ("TemporalCueV1", TemporalCueV1),
+    ("CrossRefCueV1", CrossRefCueV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),
