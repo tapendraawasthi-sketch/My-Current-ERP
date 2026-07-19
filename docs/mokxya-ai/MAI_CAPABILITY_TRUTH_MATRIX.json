@@ -30,7 +30,7 @@
     {"id": "GAP-P1-009", "severity": "P1", "status": "OPEN", "blocks": ["multilingual_product", "NEXT-09"], "note": "NEXT-07 concept/number-role consume landed; multilingual product quality + NEXT-09 linguist still OPEN"},
     {"id": "GAP-P1-012", "severity": "P1", "status": "OPEN", "blocks": ["linguist_approval", "NEXT-09"]},
     {"id": "GAP-P2-001", "severity": "P2", "status": "OPEN", "blocks": ["prod_retrieval", "NEXT-14"]},
-    {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-12"], "note": "NEXT-11 ADR_0078 owners+labels; UI display estimates remain; not CLOSED"},
+    {"id": "GAP-P2-002", "severity": "P2", "status": "REDUCED", "blocks": ["calc_authority", "NEXT-20"], "note": "NEXT-11 ADR_0078 owners+labels; UI display estimates remain; not CLOSED"},
     {"id": "GAP-P2-008", "severity": "P2", "status": "OPEN", "blocks": ["citation_honesty", "NEXT-13"]}
   ],
   "phases": [
@@ -95,16 +95,16 @@
       "title": "Ask Mode — authorized company report questions",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-12", "NEXT-13", "NEXT-20"],
-      "note": "NEXT-10 freeze includes ask_company_report; still ANNOTATION_ONLY / not production."
+      "blocked_by": ["GAP-P2-008", "GAP-P2-001", "NEXT-13", "NEXT-20"],
+      "note": "NEXT-10/12 Ask report vertical evidenced; still ANNOTATION_ONLY / not production."
     },
     {
       "id": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
       "title": "Accountant Mode — sales/purchase draft+confirm (narrow)",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["GAP-P0-001", "GAP-P1-002", "GAP-P2-002", "NEXT-12", "NEXT-20"],
-      "note": "NEXT-10 freeze + NEXT-11 calc honesty; E2E still required (NEXT-12)."
+      "blocked_by": ["GAP-P0-001", "GAP-P1-002", "GAP-P2-002", "NEXT-20"],
+      "note": "NEXT-10..12 freeze+calc+E2E evidence; still not production_approved."
     },
     {
       "id": "LAUNCH-ASK-PRODUCT-HELP",
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-12",
+  "recommended_next_step": "NEXT-13",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11", "NEXT-12"]
 }

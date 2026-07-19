@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_E2E_LAUNCH_SLICE_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0079",
+  "step": "NEXT-12",
+  "decision": "E2E_LAUNCH_SLICE_EVIDENCE_PACK",
+  "honesty": {
+    "production_approved": false,
+    "is_execution_authority": false,
+    "oec_sole_mutation_authority": false,
+    "gap_p0_001_closed": false,
+    "gap_p1_002_closed": false,
+    "settlement_in_slice": false
+  },
+  "product_confirm_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+  "sync_authority": "EVENT_SYNC_QUEUE",
+  "verticals": [
+    {
+      "launch_event_id": "purchase_invoice_draft",
+      "mixed_language_sample": "Ram bata bike 1 pcs 50000 cash kineko",
+      "path": "utterance → clarify_if_needed → draft → preview → Model B confirm → receipt → sync pending≠synced",
+      "automated_evidence": [
+        "e2e/orbix-connected.spec.ts",
+        "e2e/orbix-next12-launch-slice.spec.ts",
+        "src/__tests__/orbix/postPurchaseTransaction.test.ts",
+        "src/__tests__/orbix/maiNext12LaunchSlice.test.ts"
+      ],
+      "requires_receipt": true,
+      "requires_audit_lineage": true,
+      "allows_mutation_on_ask": false
+    },
+    {
+      "launch_event_id": "sales_invoice_draft",
+      "mixed_language_sample": "sold bike 1 pcs 60000 cash to Sita",
+      "path": "utterance → clarify_if_needed → draft → preview → Model B confirm → receipt → sync pending≠synced",
+      "automated_evidence": [
+        "e2e/orbix-sales-connected.spec.ts",
+        "e2e/orbix-next12-launch-slice.spec.ts",
+        "src/__tests__/orbix/postSalesTransaction.test.ts",
+        "src/__tests__/orbix/maiNext12LaunchSlice.test.ts"
+      ],
+      "requires_receipt": true,
+      "requires_audit_lineage": true,
+      "allows_mutation_on_ask": false
+    },
+    {
+      "launch_event_id": "ask_company_report",
+      "mixed_language_sample": "balance sheet dekhaunu",
+      "path": "utterance → report_result; no confirm; zero ledger mutations",
+      "automated_evidence": [
+        "e2e/orbix-next12-launch-slice.spec.ts",
+        "src/__tests__/orbix/maiNext12LaunchSlice.test.ts",
+        "erp_bot/tests/oip/language_runtime/test_mai_next10_launch_event_freeze.py"
+      ],
+      "requires_receipt": false,
+      "requires_audit_lineage": false,
+      "allows_mutation_on_ask": false,
+      "notes": "Ask Mode report only; not citation-honest knowledge (GAP-P2-008 OPEN)."
+    }
+  ],
+  "policies": {
+    "dual_silent_writers_forbidden": true,
+    "nl_assent_posts": false,
+    "queued_must_not_label_synced": true,
+    "stale_preview_on_confirm": "REJECT"
+  },
+  "manual_script": "docs/mokxya-ai/baselines/NEXT_12_E2E_LAUNCH_SLICE.md#manual-script",
+  "forbidden_claims": [
+    "production_approved=true",
+    "oec_sole_mutation_authority=true",
+    "gap_p0_001_closed=true",
+    "settlement_in_slice=true",
+    "queued_labelled_synced_without_ack=true"
+  ]
+}

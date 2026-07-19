@@ -5,9 +5,24 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-12",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11"],
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..07 + NEXT-10..11 DONE. NEXT-11 ADR_0078 calc authority honesty; GAP-P2-002 REDUCED (not CLOSED). NEXT recommended=NEXT-12 (E2E launch slice). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-13",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-10", "NEXT-11", "NEXT-12"],
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..07 + NEXT-10..12 DONE. NEXT-12 ADR_0079 E2E launch slice evidence (sales/purchase/Ask). NEXT recommended=NEXT-13 (knowledge no-answer/citation). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "e2e_launch_slice": {
+    "authority": "ADR_0079",
+    "decision": "E2E_LAUNCH_SLICE_EVIDENCE_PACK",
+    "product_confirm_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+    "launch_event_ids": [
+      "sales_invoice_draft",
+      "purchase_invoice_draft",
+      "ask_company_report"
+    ],
+    "dual_silent_writers_forbidden": true,
+    "queued_must_not_label_synced": true,
+    "production_approved": false,
+    "is_execution_authority": false,
+    "registry": "docs/mokxya-ai/MAI_E2E_LAUNCH_SLICE_REGISTRY.json"
+  },
   "calc_authority": {
     "authority": "ADR_0078",
     "decision": "DEXIE_DOMAIN_ENGINE_CALC_ON_CONFIRM",

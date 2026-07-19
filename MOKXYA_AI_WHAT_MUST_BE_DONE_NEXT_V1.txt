@@ -461,7 +461,16 @@ Objective:
 Gate:
   Automated E2E + manual script; no dual silent writers; audit lineage present.
 
-Status: OPEN
+Status: DONE (2026-07-19)
+Evidence:
+  docs/mokxya-ai/baselines/NEXT_12_E2E_LAUNCH_SLICE.md
+  docs/mokxya-ai/decisions/ADR_0079_E2E_LAUNCH_SLICE.md
+  docs/mokxya-ai/MAI_E2E_LAUNCH_SLICE_REGISTRY.json
+  erp_bot/src/oip/modules/conversation/application/e2e_launch_slice_policy.py
+  src/platform/launch/e2eLaunchSlicePolicy.ts
+  erp_bot/tests/oip/language_runtime/test_mai_next12_e2e_launch_slice.py
+  src/__tests__/orbix/maiNext12LaunchSlice.test.ts
+  e2e/orbix-next12-launch-slice.spec.ts
 Depends on: NEXT-04, NEXT-11, NEXT-07
 
 
@@ -646,7 +655,7 @@ NEXT-08  | OPEN   |                   | MAI-11 live
 NEXT-09  | OPEN   |                   | linguist sample
 NEXT-10  | DONE   | ADR_0077 + NEXT_10_LAUNCH_EVENT_SPEC_FREEZE.md | sales/purchase/report freeze
 NEXT-11  | DONE   | ADR_0078 + NEXT_11_CALC_AUTHORITY_HONESTY.md | GAP-P2-002 REDUCED
-NEXT-12  | OPEN   |                   | E2E launch
+NEXT-12  | DONE   | ADR_0079 + NEXT_12_E2E_LAUNCH_SLICE.md | launch verticals evidenced
 NEXT-13  | OPEN   |                   | GAP-P2-008
 NEXT-14  | OPEN   |                   | GAP-P2-001
 NEXT-15  | OPEN   |                   | optional tax pilot
@@ -659,8 +668,8 @@ NEXT-H1  | OPEN   |                   | pytest hygiene
 NEXT-H2  | OPEN   |                   | TS hygiene
 
 Active pointer (update on each go):
-  recommended_next_step = NEXT-12
-  last_shipped_step = NEXT-11
+  recommended_next_step = NEXT-13
+  last_shipped_step = NEXT-12
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -670,6 +679,7 @@ Active pointer (update on each go):
   nlu_language_consume = ADR_0076 concept+number-role; no silent bind/draft
   launch_event_freeze = ADR_0077 sales/purchase drafts + Ask reports; settlement deferred
   calc_authority = ADR_0078 Dexie on confirm; GAP-P2-002 REDUCED (not CLOSED)
+  e2e_launch_slice = ADR_0079 sales/purchase/Ask verticals; not production_approved
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================
