@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-17",
-  "active_phase_note": "MAI-17 slice 2 IN_PROGRESS (ADR_0034); OOD abstain gate in mode_aware; MAI-16 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-18",
+  "active_phase_note": "MAI-18 slice 1 IN_PROGRESS (ADR_0035); event spec registry annotation; MAI-17 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2195,7 +2195,7 @@
     {
       "id": "MAI-17",
       "title": "HIERARCHICAL ROUTER AND OOD",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2206,6 +2206,7 @@
         "docs/mokxya-ai/decisions/ADR_0034_HIERARCHICAL_ROUTER_AND_OOD_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_17_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_17_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_17_ENGINEERING_CLOSURE.md",
         "evals/mai17/manifests/MAI_17_SLICE1.manifest.json",
         "evals/mai17/manifests/MAI_17_SLICE2.manifest.json"
       ],
@@ -2227,22 +2228,40 @@
         "MAI-16"
       ],
       "recommended_order": 17,
-      "closure_note": "Slice 2: OOD abstain clarify gate in mode_aware; no silent draft writes."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-18. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-18",
       "title": "EVENT SPECIFICATION REGISTRY",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "execution_intent_registry partial"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-18.0.1-slice1",
+      "slice": "SLICE1_EVENT_SPEC_REGISTRY_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_18_EVENT_SPECIFICATION_REGISTRY.md",
+        "docs/mokxya-ai/decisions/ADR_0035_EVENT_SPECIFICATION_REGISTRY_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_18_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai18/manifests/MAI_18_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/contracts/event_spec_registry.py",
+        "event_spec_registry_service.py",
+        "CanonicalAIRequestV1.event_spec_registry_bundle",
+        "oip_chat_ingress EVENT_SPEC_REGISTRY after MAI-17",
+        "canonical_oip metadata.event_spec_registry"
+      ],
+      "blockers": [
+        "Slice 2 / MAI-19 EventFrame consume not started",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-17"
       ],
-      "recommended_order": 18
+      "recommended_order": 18,
+      "closure_note": "Slice 1: deterministic event spec registry annotation from router keys; no EventFrame fill."
     },
     {
       "id": "MAI-19",

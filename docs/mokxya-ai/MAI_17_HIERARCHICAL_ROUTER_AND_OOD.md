@@ -1,7 +1,7 @@
 # MAI-17 — Hierarchical Router and OOD
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0034](decisions/ADR_0034_HIERARCHICAL_ROUTER_AND_OOD_AUTHORITY.md)  
 **Runtime:** `mai-17.0.2-slice2` (engineering; not production-approved)
 

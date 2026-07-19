@@ -1075,6 +1075,81 @@ async def build_canonical_ai_request(
         except Exception:  # noqa: BLE001
             pass
 
+    # MAI-18: event specification registry (annotation only; never fills EventFrame).
+    es_ev = recorder.start_stage(
+        mai03_obs.TraceStage.EVENT_SPEC_REGISTRY_STARTED,
+        component="conversation.event_spec_registry",
+    )
+    try:
+        from ..oip.modules.conversation.application.event_spec_registry_service import (
+            attach_event_spec_registry_to_request,
+        )
+
+        updated = attach_event_spec_registry_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.event_spec_registry_bundle
+        if bundle is not None and (
+            bundle.silent_applications != 0
+            or bundle.draft_mutations != 0
+            or bundle.is_execution_authority
+        ):
+            raise RuntimeError("EVENT_SPEC_REGISTRY_MUTATION")
+        canonical = updated
+        recorder.complete_stage(
+            es_ev,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            component_versions={
+                "event_spec_registry": (
+                    bundle.runtime_version if bundle else "mai-18.0.1-slice1"
+                ),
+            },
+            safe_attributes={
+                "event_spec_status": (
+                    bundle.analysis_status.value if bundle else "FAILED"
+                ),
+                "event_spec_selected": (
+                    bundle.selected_spec_id if bundle else None
+                ),
+                "event_spec_candidate_count": (
+                    len(bundle.candidates) if bundle else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.EVENT_SPEC_REGISTRY_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            safe_attributes={
+                "event_spec_selected": (
+                    bundle.selected_spec_id if bundle else None
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(es_ev, safe_error_code="EVENT_SPEC_REGISTRY_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.EVENT_SPEC_REGISTRY_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="EVENT_SPEC_REGISTRY_FAILED",
+        )
+        try:
+            from ..oip.contracts.event_spec_registry import (
+                EventSpecAnalysisStatus,
+                EventSpecRegistryBundleV1,
+            )
+
+            fail_bundle = EventSpecRegistryBundleV1(
+                analysis_status=EventSpecAnalysisStatus.FAILED,
+                warnings=("EVENT_SPEC_REGISTRY_FAILED",),
+                error_codes=("EVENT_SPEC_REGISTRY_FAILED",),
+            )
+            canonical = canonical.model_copy(
+                update={"event_spec_registry_bundle": fail_bundle}
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
     return canonical
 
 

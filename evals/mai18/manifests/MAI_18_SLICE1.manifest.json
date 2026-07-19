@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai18-slice1-v1",
+  "dataset_hash": "d67e4ab813fb56e780bdb22e4a294e620af747001982216bce6127c364dc7b6a",
+  "phase": "MAI-18",
+  "slice": "SLICE1_EVENT_SPEC_REGISTRY_ANNOTATION",
+  "runtime_version": "mai-18.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai18/frozen/event_spec_registry_critical_v1.jsonl",
+      "sha256": "d67e4ab813fb56e780bdb22e4a294e620af747001982216bce6127c364dc7b6a",
+      "case_count": 6,
+      "suite_id": "event_spec_registry_critical_v1"
+    }
+  ]
+}

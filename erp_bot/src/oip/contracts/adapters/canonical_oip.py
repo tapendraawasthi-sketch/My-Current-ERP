@@ -218,6 +218,24 @@ class CanonicalOipRequestAdapter:
                     "intent_family": rd.intent_family.value,
                     "is_execution_authority": False,
                 }
+        # MAI-18: event specification registry (annotation only).
+        if canonical.event_spec_registry_bundle is not None:
+            try:
+                from ...modules.conversation.application.event_spec_registry_service import (
+                    event_spec_registry_to_metadata,
+                )
+
+                metadata["event_spec_registry"] = event_spec_registry_to_metadata(
+                    canonical.event_spec_registry_bundle
+                )
+            except Exception:  # noqa: BLE001
+                es = canonical.event_spec_registry_bundle
+                metadata["event_spec_registry"] = {
+                    "analysis_status": es.analysis_status.value,
+                    "runtime_version": es.runtime_version,
+                    "selected_spec_id": es.selected_spec_id,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

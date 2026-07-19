@@ -38,6 +38,7 @@ from .reference_coreference import (
 )
 from .context_assembly import ContextAssemblyBundleV1, MemoryPolicyV1
 from .router_decision import OodSignalV1, RouterDecisionBundleV1
+from .event_spec_registry import EventSpecCandidateV1, EventSpecRegistryBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -60,6 +61,8 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("MemoryPolicyV1", MemoryPolicyV1),
     ("RouterDecisionBundleV1", RouterDecisionBundleV1),
     ("OodSignalV1", OodSignalV1),
+    ("EventSpecRegistryBundleV1", EventSpecRegistryBundleV1),
+    ("EventSpecCandidateV1", EventSpecCandidateV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

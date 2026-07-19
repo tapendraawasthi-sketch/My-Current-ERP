@@ -680,6 +680,197 @@
       "title": "EligibilityDecision",
       "type": "string"
     },
+    "EventSpecAnalysisStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED",
+        "UNKNOWN"
+      ],
+      "title": "EventSpecAnalysisStatus",
+      "type": "string"
+    },
+    "EventSpecCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "intent_family": {
+          "default": "UNKNOWN",
+          "title": "Intent Family",
+          "type": "string"
+        },
+        "intent_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intent Hint"
+        },
+        "match_rank": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Match Rank",
+          "type": "integer"
+        },
+        "match_reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Match Reason Codes",
+          "type": "array"
+        },
+        "operation_class": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Class"
+        },
+        "optional_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Optional Fields",
+          "type": "array"
+        },
+        "prohibited_assumptions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Prohibited Assumptions",
+          "type": "array"
+        },
+        "required_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Fields",
+          "type": "array"
+        },
+        "selected": {
+          "default": false,
+          "title": "Selected",
+          "type": "boolean"
+        },
+        "spec_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Spec Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "spec_id"
+      ],
+      "title": "EventSpecCandidateV1",
+      "type": "object"
+    },
+    "EventSpecRegistryBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/EventSpecAnalysisStatus",
+          "default": "NOT_RUN"
+        },
+        "candidates": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EventSpecCandidateV1"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "lookup_keys": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Lookup Keys",
+          "type": "object"
+        },
+        "runtime_version": {
+          "default": "mai-18.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "selected_spec_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Spec Id"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "EventSpecRegistryBundleV1",
+      "type": "object"
+    },
     "EvidenceReferenceV1": {
       "additionalProperties": false,
       "properties": {
@@ -3327,6 +3518,17 @@
       "format": "date-time",
       "title": "Created At",
       "type": "string"
+    },
+    "event_spec_registry_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EventSpecRegistryBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "input_channel": {
       "$ref": "#/$defs/InputChannelV1",

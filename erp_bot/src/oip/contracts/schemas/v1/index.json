@@ -18,6 +18,8 @@
     "MemoryPolicyV1",
     "RouterDecisionBundleV1",
     "OodSignalV1",
+    "EventSpecRegistryBundleV1",
+    "EventSpecCandidateV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",
