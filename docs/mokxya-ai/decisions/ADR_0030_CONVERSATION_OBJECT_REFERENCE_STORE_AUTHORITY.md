@@ -1,7 +1,7 @@
 # ADR_0030 — Conversation and Object-Reference Store Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-13-CONVERSATION-AND-OBJECT-REFERENCE-STORE (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-13-CONVERSATION-AND-OBJECT-REFERENCE-STORE (slice 2)
 - **Extends:** ADR_0003 (canonical contracts), ADR_0029
 
 ## Context
@@ -18,8 +18,11 @@ which conversation objects are in play before any draft merge.
    merges, never posts.
 2. Slice 1 captures request-local references: `CONVERSATION`, `ACTIVE_DRAFT`,
    optional UI context object ids — with `silent_applications=0`.
-3. Does **not** classify turn-relation (MAI-14) or change `start_or_merge_*`.
-4. Engineering-gated: `production_approved=false`.
+3. Slice 2 adds **read-only store resolutions** (`ObjectReferenceResolutionV1`)
+   by peeking khata draft JSON files and `oip_conversations` — existence and
+   pending/terminal status only; never merge authority.
+4. Does **not** classify turn-relation (MAI-14) or change `start_or_merge_*`.
+5. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
@@ -28,8 +31,11 @@ which conversation objects are in play before any draft merge.
 | Merge drafts from references alone | Silent stale capture (GAP-P1-004) |
 | Replace file draft stores in slice 1 | Too large; wrong authority |
 | Close GAP-P1-008 in this phase | Requires MAI-14 turn-relation |
+| Import khata writers for resolution | Mutation risk; RO file/SQLite peek suffices |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_13_CONVERSATION_AND_OBJECT_REFERENCE_STORE.md`
+- `docs/mokxya-ai/MAI_13_OBJECT_REFERENCE_STORE_RESOLUTION.md`
 - `erp_bot/src/oip/modules/conversation/application/object_reference_service.py`
+- `erp_bot/src/oip/modules/conversation/application/object_reference_resolution_service.py`

@@ -51,6 +51,108 @@
       "title": "ObjectReferenceKind",
       "type": "string"
     },
+    "ObjectReferenceResolutionStatus": {
+      "enum": [
+        "FOUND",
+        "MISSING",
+        "NOT_PENDING",
+        "CONVERSATION_FOUND",
+        "CONVERSATION_MISSING",
+        "SKIPPED",
+        "UNKNOWN"
+      ],
+      "title": "ObjectReferenceResolutionStatus",
+      "type": "string"
+    },
+    "ObjectReferenceResolutionV1": {
+      "additionalProperties": false,
+      "description": "Read-only store projection for one candidate. Never merge authority.",
+      "properties": {
+        "applied": {
+          "default": false,
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "conversation_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conversation Status"
+        },
+        "draft_kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Kind"
+        },
+        "draft_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Status"
+        },
+        "kind": {
+          "$ref": "#/$defs/ObjectReferenceKind"
+        },
+        "object_id": {
+          "title": "Object Id",
+          "type": "string"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "resolution_status": {
+          "$ref": "#/$defs/ObjectReferenceResolutionStatus"
+        },
+        "store_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Store Name"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "kind",
+        "object_id",
+        "resolution_status"
+      ],
+      "title": "ObjectReferenceResolutionV1",
+      "type": "object"
+    },
     "ObjectReferenceStatus": {
       "enum": [
         "NOT_RUN",
@@ -97,8 +199,40 @@
       "title": "Error Codes",
       "type": "array"
     },
+    "found_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Found Count",
+      "type": "integer"
+    },
+    "missing_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Missing Count",
+      "type": "integer"
+    },
+    "not_pending_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Not Pending Count",
+      "type": "integer"
+    },
+    "resolution_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Resolution Count",
+      "type": "integer"
+    },
+    "resolutions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ObjectReferenceResolutionV1"
+      },
+      "title": "Resolutions",
+      "type": "array"
+    },
     "runtime_version": {
-      "default": "mai-13.0.1-slice1",
+      "default": "mai-13.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

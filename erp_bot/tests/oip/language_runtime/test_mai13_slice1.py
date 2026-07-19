@@ -51,7 +51,7 @@ def _canonical(
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-13.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-13.")
 
 
 def test_conversation_candidate_always() -> None:

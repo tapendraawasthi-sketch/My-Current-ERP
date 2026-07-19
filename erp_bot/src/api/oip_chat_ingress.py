@@ -742,6 +742,14 @@ async def build_canonical_ai_request(
             safe_attributes={
                 "object_reference_status": bundle.analysis_status.value if bundle else "FAILED",
                 "object_reference_candidate_count": bundle.candidate_count if bundle else 0,
+                "object_reference_resolution_count": (
+                    bundle.resolution_count if bundle else 0
+                ),
+                "object_reference_found_count": bundle.found_count if bundle else 0,
+                "object_reference_missing_count": bundle.missing_count if bundle else 0,
+                "object_reference_not_pending_count": (
+                    bundle.not_pending_count if bundle else 0
+                ),
             },
         )
         recorder.record_event(
@@ -750,6 +758,10 @@ async def build_canonical_ai_request(
             outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
             safe_attributes={
                 "object_reference_candidate_count": bundle.candidate_count if bundle else 0,
+                "object_reference_resolution_count": (
+                    bundle.resolution_count if bundle else 0
+                ),
+                "object_reference_found_count": bundle.found_count if bundle else 0,
             },
         )
     except Exception:  # noqa: BLE001

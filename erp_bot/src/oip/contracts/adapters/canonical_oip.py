@@ -103,13 +103,18 @@ class CanonicalOipRequestAdapter:
                     "runtime_version": bundle.runtime_version,
                     "applied_response_rewrite": False,
                 }
-        # MAI-13: object-reference candidates (annotation only — never draft merge).
+        # MAI-13: object-reference candidates + store resolutions
+        # (annotation only — never draft merge).
         oref = canonical.object_reference_bundle
         if oref is not None:
             metadata["object_reference"] = {
                 "analysis_status": oref.analysis_status.value,
                 "runtime_version": oref.runtime_version,
                 "candidate_count": oref.candidate_count,
+                "resolution_count": oref.resolution_count,
+                "found_count": oref.found_count,
+                "missing_count": oref.missing_count,
+                "not_pending_count": oref.not_pending_count,
                 "silent_applications": oref.silent_applications,
                 "draft_mutations": oref.draft_mutations,
                 "candidates": [
@@ -121,6 +126,20 @@ class CanonicalOipRequestAdapter:
                         "applied": c.applied,
                     }
                     for c in oref.candidates
+                ],
+                "resolutions": [
+                    {
+                        "candidate_id": r.candidate_id,
+                        "kind": r.kind.value,
+                        "object_id": r.object_id,
+                        "resolution_status": r.resolution_status.value,
+                        "store_name": r.store_name,
+                        "draft_kind": r.draft_kind,
+                        "draft_status": r.draft_status,
+                        "conversation_status": r.conversation_status,
+                        "applied": r.applied,
+                    }
+                    for r in oref.resolutions
                 ],
             }
         if annotations:
