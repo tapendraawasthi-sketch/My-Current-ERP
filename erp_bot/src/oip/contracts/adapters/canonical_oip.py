@@ -1086,6 +1086,34 @@ class CanonicalOipRequestAdapter:
                     "governed_improvement_fine_tuning_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-49: production capability release (never production approved).
+        if canonical.production_capability_release_bundle is not None:
+            try:
+                from ...modules.conversation.application.production_capability_release_service import (
+                    production_capability_release_to_metadata,
+                )
+
+                metadata["production_capability_release"] = (
+                    production_capability_release_to_metadata(
+                        canonical.production_capability_release_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                pcr = canonical.production_capability_release_bundle
+                metadata["production_capability_release"] = {
+                    "analysis_status": pcr.analysis_status.value,
+                    "runtime_version": pcr.runtime_version,
+                    "production_capability_release_readiness": (
+                        pcr.production_capability_release_readiness.value
+                    ),
+                    "release_status": "NOT_RELEASED",
+                    "production_approved": False,
+                    "production_capability_released": False,
+                    "cutover_authorized": False,
+                    "production_traffic_enabled": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

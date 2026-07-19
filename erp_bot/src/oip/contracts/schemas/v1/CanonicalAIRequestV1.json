@@ -7746,6 +7746,213 @@
       "title": "ProductMutationPath",
       "type": "string"
     },
+    "ProductionCapabilityReleaseBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/ProductionCapabilityReleaseStatus",
+          "default": "NOT_RUN"
+        },
+        "claims_verified": {
+          "default": false,
+          "title": "Claims Verified",
+          "type": "boolean"
+        },
+        "current_law_definitive": {
+          "default": false,
+          "title": "Current Law Definitive",
+          "type": "boolean"
+        },
+        "cutover_authorized": {
+          "default": false,
+          "title": "Cutover Authorized",
+          "type": "boolean"
+        },
+        "documents_retrieved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Documents Retrieved",
+          "type": "integer"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "gap_p2_008_status": {
+          "default": "OPEN",
+          "title": "Gap P2 008 Status",
+          "type": "string"
+        },
+        "gold_questions_status": {
+          "default": "NOT_RELEASED",
+          "title": "Gold Questions Status",
+          "type": "string"
+        },
+        "in_scope_topics": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "In Scope Topics",
+          "type": "array"
+        },
+        "kb_retrieval_invoked": {
+          "default": false,
+          "title": "Kb Retrieval Invoked",
+          "type": "boolean"
+        },
+        "legal_effective_dates_proven": {
+          "default": false,
+          "title": "Legal Effective Dates Proven",
+          "type": "boolean"
+        },
+        "legal_proof_claimed": {
+          "default": false,
+          "title": "Legal Proof Claimed",
+          "type": "boolean"
+        },
+        "mutation_tools_allowed": {
+          "default": false,
+          "title": "Mutation Tools Allowed",
+          "type": "boolean"
+        },
+        "owner_signoff_proven": {
+          "default": false,
+          "title": "Owner Signoff Proven",
+          "type": "boolean"
+        },
+        "pilot_scope": {
+          "default": "PRODUCTION_CAPABILITY_RELEASE_CANDIDATE_ONLY",
+          "title": "Pilot Scope",
+          "type": "string"
+        },
+        "posting_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Posting Mutations",
+          "type": "integer"
+        },
+        "production_approved": {
+          "default": false,
+          "title": "Production Approved",
+          "type": "boolean"
+        },
+        "production_capability_release_readiness": {
+          "$ref": "#/$defs/ProductionCapabilityReleaseReadiness",
+          "default": "NOT_APPLICABLE"
+        },
+        "production_capability_released": {
+          "default": false,
+          "title": "Production Capability Released",
+          "type": "boolean"
+        },
+        "production_traffic_enabled": {
+          "default": false,
+          "title": "Production Traffic Enabled",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "release_authority_claimed": {
+          "default": false,
+          "title": "Release Authority Claimed",
+          "type": "boolean"
+        },
+        "release_checklist_complete": {
+          "default": false,
+          "title": "Release Checklist Complete",
+          "type": "boolean"
+        },
+        "release_status": {
+          "default": "NOT_RELEASED",
+          "title": "Release Status",
+          "type": "string"
+        },
+        "residual_risk_accepted": {
+          "default": false,
+          "title": "Residual Risk Accepted",
+          "type": "boolean"
+        },
+        "rollback_proven": {
+          "default": false,
+          "title": "Rollback Proven",
+          "type": "boolean"
+        },
+        "runtime_version": {
+          "default": "mai-49.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "specialist_signoff_status": {
+          "default": "NOT_SIGNED",
+          "title": "Specialist Signoff Status",
+          "type": "string"
+        },
+        "unsupported_topics": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Unsupported Topics",
+          "type": "array"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "ProductionCapabilityReleaseBundleV1",
+      "type": "object"
+    },
+    "ProductionCapabilityReleaseReadiness": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "POLICY_DECLARED",
+        "BLOCKED",
+        "SCOPE_PARTIAL"
+      ],
+      "title": "ProductionCapabilityReleaseReadiness",
+      "type": "string"
+    },
+    "ProductionCapabilityReleaseStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "ProductionCapabilityReleaseStatus",
+      "type": "string"
+    },
     "PromptRegistryAnalysisStatus": {
       "enum": [
         "NOT_RUN",
@@ -11060,6 +11267,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/OfflineSyncConflictReversalBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "production_capability_release_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProductionCapabilityReleaseBundleV1"
         },
         {
           "type": "null"

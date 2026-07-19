@@ -100,6 +100,9 @@ from .human_review_pilot_operations import (
 from .governed_improvement_fine_tuning import (
     GovernedImprovementFineTuningBundleV1,
 )
+from .production_capability_release import (
+    ProductionCapabilityReleaseBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -203,6 +206,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "GovernedImprovementFineTuningBundleV1",
         GovernedImprovementFineTuningBundleV1,
+    ),
+    (
+        "ProductionCapabilityReleaseBundleV1",
+        ProductionCapabilityReleaseBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),

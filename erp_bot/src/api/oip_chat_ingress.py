@@ -3600,6 +3600,85 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent apply/fine-tune.
 
+    # MAI-49: production capability release (never claims production approved).
+    pcr_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.PRODUCTION_CAPABILITY_RELEASE_STARTED,
+        component="conversation.production_capability_release",
+    )
+    try:
+        from ..oip.modules.conversation.application.production_capability_release_service import (
+            assert_production_capability_release_authority,
+            attach_production_capability_release_to_request,
+        )
+
+        updated = attach_production_capability_release_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.production_capability_release_bundle
+        assert_production_capability_release_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            pcr_ev,
+            version_map={
+                "production_capability_release": "mai-49.0.1-slice1",
+            },
+            safe_attributes={
+                "production_capability_release_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "production_capability_release_readiness": (
+                    bundle.production_capability_release_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": (
+                    "PRODUCTION_CAPABILITY_RELEASE_CANDIDATE_ONLY"
+                ),
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "release_authority_claimed": False,
+                "production_approved": False,
+                "production_capability_released": False,
+                "release_checklist_complete": False,
+                "residual_risk_accepted": False,
+                "owner_signoff_proven": False,
+                "cutover_authorized": False,
+                "rollback_proven": False,
+                "production_traffic_enabled": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.PRODUCTION_CAPABILITY_RELEASE_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            pcr_ev,
+            safe_error_code="PRODUCTION_CAPABILITY_RELEASE_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.PRODUCTION_CAPABILITY_RELEASE_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="PRODUCTION_CAPABILITY_RELEASE_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent production approved.
+
     return canonical
 
 

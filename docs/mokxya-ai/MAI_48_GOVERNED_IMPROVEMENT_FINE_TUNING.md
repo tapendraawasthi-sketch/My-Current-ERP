@@ -1,7 +1,7 @@
 # MAI-48 — Governed Improvement and Optional Fine-Tuning
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0065](decisions/ADR_0065_GOVERNED_IMPROVEMENT_FINE_TUNING_AUTHORITY.md)  
 **Runtime:** `mai-48.0.2-slice2` (engineering; not production-approved)
 
