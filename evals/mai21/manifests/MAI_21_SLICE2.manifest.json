@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai21-slice2-v1",
+  "dataset_hash": "54a234a4872cf93d2dbe06320d12de37205b73d6172eecb2f15413f56321f0c2",
+  "phase": "MAI-21",
+  "slice": "SLICE2_AUTHORIZED_TOOL_PROPOSALS",
+  "runtime_version": "mai-21.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai21/frozen/typed_plan_tools_v1.jsonl",
+      "sha256": "54a234a4872cf93d2dbe06320d12de37205b73d6172eecb2f15413f56321f0c2",
+      "case_count": 6,
+      "suite_id": "typed_plan_tools_v1"
+    }
+  ]
+}

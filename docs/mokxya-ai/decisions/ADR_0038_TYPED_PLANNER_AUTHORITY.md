@@ -1,7 +1,7 @@
 # ADR_0038 — Typed Planner Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-21-TYPED-PLANNER-AND-TOOL-LOOP (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-21-TYPED-PLANNER-AND-TOOL-LOOP (slice 2)
 - **Extends:** ADR_0001, ADR_0037
 
 ## Context
@@ -20,7 +20,9 @@ module; GAP-P0-004 (HTTP import) is already CLOSED and is not a MAI-21 blocker.
    `tool_executions=0`; `is_execution_authority=false`.
 3. Always prohibit `erp.confirm_draft` in annotated plans.
 4. Does not call `PlannerService.create_plan`, execute tools, or post.
-5. Slice 2 (later): authorized tool proposals / loop under constitution gates.
+5. Slice 2: propose READ `ToolCallV1` under constitution-style gates
+   (AUTHORIZED/DENIED); READY when authorized; still `tool_executions=0`;
+   never propose/execute `erp.confirm_draft`.
 6. Gaps GAP-P1-004 / GAP-P1-008 stay REDUCED.
 7. Engineering-gated: `production_approved=false`.
 

@@ -1,7 +1,8 @@
-"""MAI-21 slice 1 — typed PlanV1 annotation from EventFrame + ClarificationPlan.
+"""MAI-21 — typed PlanV1 + constitution-gated tool proposals.
 
-Annotation only: never executes tools, posts, or mutates drafts.
-Tool loop / PlannerService execution remains later slices.
+Slice 1: DRAFT PlanV1 annotation when EventFrame is COMPLETE.
+Slice 2: propose READ ToolCallV1 entries under constitution gates;
+         never execute tools, post, or mutate drafts.
 """
 
 from __future__ import annotations
@@ -16,11 +17,14 @@ from ....contracts.plan_tools import (
     PlanV1,
     ReadOrMutation,
     StepStatus,
+    ToolCallStatus,
+    ToolCallV1,
+    ToolOrigin,
 )
-from ....contracts.request import CanonicalAIRequestV1
+from ....contracts.request import CanonicalAIRequestV1, InteractionModeV1
 from ....contracts.typed_plan import TypedPlanAnalysisStatus, TypedPlanBundleV1
 
-RUNTIME_VERSION = "mai-21.0.1-slice1"
+RUNTIME_VERSION = "mai-21.0.2-slice2"
 AUTHORITY = "ADR_0038"
 
 _TXN_TYPES = frozenset(
@@ -32,6 +36,24 @@ _TXN_TYPES = frozenset(
         "sales_return",
         "payment",
         "receipt",
+    }
+)
+
+_HARD_DENY_TOOLS = frozenset({"erp.confirm_draft"})
+
+# Registered MAI-21 tools → constitution operation (proposal classification).
+_TOOL_OPERATION = {
+    "erp.read_balance": "READ_ERP_DATA",
+    "erp.preview_draft": "GENERATE_PREVIEW",
+    "erp.confirm_draft": "EXECUTE_CONFIRMED_COMMAND",
+}
+
+_ASK_AUTHORIZABLE_OPS = frozenset(
+    {
+        "READ_ERP_DATA",
+        "GENERATE_PREVIEW",
+        "RUN_READONLY_CALCULATION",
+        "READ_KNOWLEDGE",
     }
 )
 
@@ -85,6 +107,96 @@ def _draft_plan_for_event(
             status=PlanStatus.DRAFT,
         )
     return None
+
+
+def _operation_for_tool(tool_name: str) -> str:
+    if tool_name in _TOOL_OPERATION:
+        return _TOOL_OPERATION[tool_name]
+    try:
+        from ....domain.constitution import operation_from_tool_name
+
+        return operation_from_tool_name(tool_name).value
+    except Exception:  # noqa: BLE001
+        return "EXECUTE_CONFIRMED_COMMAND"
+
+
+def authorize_tool_proposal(
+    *,
+    tool_name: str,
+    read_or_mutation: ReadOrMutation,
+    plan: PlanV1,
+    mode: InteractionModeV1 | str | None,
+) -> ToolCallStatus:
+    """Constitution-style gate for a proposed tool call (never executes)."""
+    name = (tool_name or "").strip()
+    if not name:
+        return ToolCallStatus.DENIED
+    if name in _HARD_DENY_TOOLS or name in (plan.prohibited_tools or ()):
+        return ToolCallStatus.DENIED
+    if read_or_mutation != ReadOrMutation.READ:
+        return ToolCallStatus.DENIED
+    if name not in (plan.allowed_tools or ()):
+        return ToolCallStatus.DENIED
+
+    op = _operation_for_tool(name)
+    if op in {
+        "EXECUTE_CONFIRMED_COMMAND",
+        "MARK_POSTED",
+        "SYNC_ACCOUNTING_EVENT",
+        "MANAGE_SECURITY",
+        "UNKNOWN_OPERATION",
+    }:
+        return ToolCallStatus.DENIED
+
+    mode_val = (
+        mode.value if isinstance(mode, InteractionModeV1) else str(mode or "ask")
+    ).lower()
+    if mode_val == "ask" and op in _ASK_AUTHORIZABLE_OPS:
+        return ToolCallStatus.AUTHORIZED
+    if mode_val == "accountant" and op in _ASK_AUTHORIZABLE_OPS | {
+        "CREATE_PERSISTED_DRAFT",
+        "GENERATE_PREVIEW",
+    }:
+        # Still proposal-only; confirm/post remains denied above.
+        return ToolCallStatus.AUTHORIZED
+    return ToolCallStatus.DENIED
+
+
+def _propose_tool_calls(
+    plan: PlanV1,
+    *,
+    request: CanonicalAIRequestV1,
+) -> tuple[ToolCallV1, ...]:
+    calls: list[ToolCallV1] = []
+    for i, step in enumerate(plan.ordered_steps):
+        tool = step.tool_name
+        if not tool:
+            continue
+        status = authorize_tool_proposal(
+            tool_name=tool,
+            read_or_mutation=step.read_or_mutation,
+            plan=plan,
+            mode=request.mode,
+        )
+        args: dict[str, Any] = {}
+        if tool == "erp.preview_draft" and request.active_draft_reference:
+            args["draft_id"] = request.active_draft_reference
+        if tool == "erp.read_balance":
+            args["account_id"] = "pending"
+        calls.append(
+            ToolCallV1(
+                tool_call_id=f"tc-{request.request_id}-{i+1}",
+                tool_name=tool,
+                tool_schema_version="1.0.0",
+                typed_arguments=args,
+                tenant_scope_reference=request.trusted_scope.tenant_id,
+                policy_decision_reference=AUTHORITY,
+                read_or_mutation=ReadOrMutation.READ,
+                origin=ToolOrigin.PLANNER,
+                status=status,
+            )
+        )
+    return tuple(calls)
 
 
 def build_typed_plan_bundle(request: CanonicalAIRequestV1) -> TypedPlanBundleV1:
@@ -142,13 +254,23 @@ def build_typed_plan_bundle(request: CanonicalAIRequestV1) -> TypedPlanBundleV1:
             warnings=("NO_PLAN_TEMPLATE",),
         )
 
+    proposals = _propose_tool_calls(plan, request=request)
+    authorized = any(c.status == ToolCallStatus.AUTHORIZED for c in proposals)
+    plan_status = PlanStatus.READY if authorized else PlanStatus.DRAFT
+    plan = plan.model_copy(update={"status": plan_status})
+
+    warnings: list[str] = []
+    if any(c.status == ToolCallStatus.DENIED for c in proposals):
+        warnings.append("SOME_TOOL_PROPOSALS_DENIED")
+
     return TypedPlanBundleV1(
         analysis_status=TypedPlanAnalysisStatus.COMPLETE,
         runtime_version=RUNTIME_VERSION,
         event_type=frame.event_type,
         clarification_status=clarify_status,
         plan=plan,
-        proposed_tool_calls=(),
+        proposed_tool_calls=proposals,
+        warnings=tuple(warnings),
         silent_applications=0,
         draft_mutations=0,
         tool_executions=0,
@@ -166,6 +288,14 @@ def typed_plan_to_metadata(bundle: TypedPlanBundleV1 | None) -> dict[str, Any]:
     if bundle is None:
         return {}
     plan = bundle.plan
+    authorized = sum(
+        1
+        for c in bundle.proposed_tool_calls
+        if c.status == ToolCallStatus.AUTHORIZED
+    )
+    denied = sum(
+        1 for c in bundle.proposed_tool_calls if c.status == ToolCallStatus.DENIED
+    )
     return {
         "analysis_status": bundle.analysis_status.value,
         "runtime_version": bundle.runtime_version,
@@ -178,6 +308,17 @@ def typed_plan_to_metadata(bundle: TypedPlanBundleV1 | None) -> dict[str, Any]:
         "allowed_tools": list(plan.allowed_tools) if plan else [],
         "prohibited_tools": list(plan.prohibited_tools) if plan else [],
         "proposed_tool_call_count": len(bundle.proposed_tool_calls),
+        "authorized_tool_call_count": authorized,
+        "denied_tool_call_count": denied,
+        "proposed_tools": [
+            {
+                "tool_call_id": c.tool_call_id,
+                "tool_name": c.tool_name,
+                "status": c.status.value,
+                "read_or_mutation": c.read_or_mutation.value,
+            }
+            for c in bundle.proposed_tool_calls
+        ],
         "silent_applications": bundle.silent_applications,
         "draft_mutations": bundle.draft_mutations,
         "tool_executions": bundle.tool_executions,
@@ -185,10 +326,35 @@ def typed_plan_to_metadata(bundle: TypedPlanBundleV1 | None) -> dict[str, Any]:
     }
 
 
+def assert_typed_plan_authority(bundle: TypedPlanBundleV1 | None) -> None:
+    """Ingress fail-closed checks for slice 2 proposals."""
+    if bundle is None:
+        return
+    if (
+        bundle.is_execution_authority
+        or bundle.silent_applications != 0
+        or bundle.draft_mutations != 0
+        or bundle.tool_executions != 0
+    ):
+        raise RuntimeError("TYPED_PLAN_AUTHORITY")
+    for call in bundle.proposed_tool_calls:
+        if call.read_or_mutation != ReadOrMutation.READ:
+            raise RuntimeError("TYPED_PLAN_MUTATION_PROPOSAL")
+        if call.tool_name in _HARD_DENY_TOOLS:
+            raise RuntimeError("TYPED_PLAN_CONFIRM_PROPOSAL")
+        if call.status in {
+            ToolCallStatus.EXECUTING,
+            ToolCallStatus.COMPLETED,
+        }:
+            raise RuntimeError("TYPED_PLAN_EXECUTION")
+
+
 __all__ = [
     "AUTHORITY",
     "RUNTIME_VERSION",
+    "assert_typed_plan_authority",
     "attach_typed_plan_to_request",
+    "authorize_tool_proposal",
     "build_typed_plan_bundle",
     "typed_plan_to_metadata",
 ]

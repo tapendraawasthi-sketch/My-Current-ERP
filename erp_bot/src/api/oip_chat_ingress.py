@@ -1287,6 +1287,7 @@ async def build_canonical_ai_request(
     )
     try:
         from ..oip.modules.conversation.application.typed_plan_service import (
+            assert_typed_plan_authority,
             attach_typed_plan_to_request,
         )
 
@@ -1294,20 +1295,22 @@ async def build_canonical_ai_request(
         if updated.raw_text != canonical.raw_text:
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.typed_plan_bundle
-        if bundle is not None and (
-            bundle.is_execution_authority
-            or bundle.silent_applications != 0
-            or bundle.draft_mutations != 0
-            or bundle.tool_executions != 0
-            or bundle.proposed_tool_calls
-        ):
-            raise RuntimeError("TYPED_PLAN_AUTHORITY")
+        assert_typed_plan_authority(bundle)
         canonical = updated
         plan = bundle.plan if bundle else None
+        authorized_count = 0
+        if bundle is not None:
+            from ..oip.contracts.plan_tools import ToolCallStatus
+
+            authorized_count = sum(
+                1
+                for c in bundle.proposed_tool_calls
+                if c.status == ToolCallStatus.AUTHORIZED
+            )
         recorder.complete_stage(
             tp_ev,
             version_map={
-                "typed_plan": "mai-21.0.1-slice1",
+                "typed_plan": "mai-21.0.2-slice2",
             },
             safe_attributes={
                 "typed_plan_status": (
@@ -1318,6 +1321,10 @@ async def build_canonical_ai_request(
                 ),
                 "typed_plan_step_count": (
                     len(plan.ordered_steps) if plan else 0
+                ),
+                "typed_plan_authorized_tools": authorized_count,
+                "typed_plan_proposed_tools": (
+                    len(bundle.proposed_tool_calls) if bundle else 0
                 ),
             },
         )

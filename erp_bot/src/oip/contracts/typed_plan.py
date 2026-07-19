@@ -21,7 +21,7 @@ class TypedPlanAnalysisStatus(str, Enum):
 class TypedPlanBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: TypedPlanAnalysisStatus = TypedPlanAnalysisStatus.NOT_RUN
-    runtime_version: str = "mai-21.0.1-slice1"
+    runtime_version: str = "mai-21.0.2-slice2"
     source_authority: str = "REQUEST"
     event_type: str | None = None
     clarification_status: str | None = None

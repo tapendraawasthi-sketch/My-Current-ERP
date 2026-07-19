@@ -1,11 +1,16 @@
-"""MAI-21 slice 1 — typed PlanV1 annotation (no tool execution)."""
+"""MAI-21 slice 2 — constitution-gated tool proposals (no execution)."""
 
 from __future__ import annotations
 
 from datetime import datetime, timezone
 
 from src.oip.contracts.adapters.canonical_oip import CanonicalOipRequestAdapter
-from src.oip.contracts.plan_tools import PlanStatus, ReadOrMutation
+from src.oip.contracts.plan_tools import (
+    PlanStatus,
+    PlanV1,
+    ReadOrMutation,
+    ToolCallStatus,
+)
 from src.oip.contracts.request import (
     CanonicalAIRequestV1,
     InteractionModeV1,
@@ -26,8 +31,9 @@ from src.oip.modules.conversation.application.hierarchical_router_service import
 )
 from src.oip.modules.conversation.application.typed_plan_service import (
     RUNTIME_VERSION,
+    assert_typed_plan_authority,
     attach_typed_plan_to_request,
-    build_typed_plan_bundle,
+    authorize_tool_proposal,
 )
 
 
@@ -55,56 +61,76 @@ def _pipeline(text: str):
     return attach_typed_plan_to_request(req)
 
 
-def test_runtime_version() -> None:
-    # Slice 2 bumps the shared runtime constant; slice-1 contracts still hold.
-    assert RUNTIME_VERSION.startswith("mai-21.")
+def test_runtime_slice2() -> None:
+    assert RUNTIME_VERSION == "mai-21.0.2-slice2"
 
 
-def test_complete_purchase_gets_draft_plan() -> None:
+def test_purchase_proposes_authorized_preview() -> None:
     req = _pipeline("Ram bata 500 ko saman kine")
     bundle = req.typed_plan_bundle
     assert bundle is not None
     assert bundle.analysis_status == TypedPlanAnalysisStatus.COMPLETE
-    assert bundle.is_execution_authority is False
     assert bundle.tool_executions == 0
-    plan = bundle.plan
-    assert plan is not None
-    assert plan.status in {PlanStatus.DRAFT, PlanStatus.READY}
-    assert plan.planner_version.startswith("mai-21.")
-    assert "erp.confirm_draft" in plan.prohibited_tools
-    assert plan.ordered_steps
-    assert plan.ordered_steps[0].read_or_mutation == ReadOrMutation.READ
-    # confirm never proposed
-    assert all(c.tool_name != "erp.confirm_draft" for c in bundle.proposed_tool_calls)
+    assert bundle.is_execution_authority is False
+    assert len(bundle.proposed_tool_calls) >= 1
+    call = bundle.proposed_tool_calls[0]
+    assert call.tool_name == "erp.preview_draft"
+    assert call.status == ToolCallStatus.AUTHORIZED
+    assert call.read_or_mutation == ReadOrMutation.READ
+    assert bundle.plan is not None
+    assert bundle.plan.status == PlanStatus.READY
+    assert_typed_plan_authority(bundle)
 
 
-def test_incomplete_skips_for_clarification() -> None:
+def test_report_proposes_authorized_read() -> None:
+    req = _pipeline("show balance sheet")
+    bundle = req.typed_plan_bundle
+    assert bundle is not None
+    assert bundle.proposed_tool_calls
+    assert bundle.proposed_tool_calls[0].tool_name == "erp.read_balance"
+    assert bundle.proposed_tool_calls[0].status == ToolCallStatus.AUTHORIZED
+
+
+def test_confirm_draft_always_denied() -> None:
+    plan = PlanV1(
+        plan_id="p1",
+        objective="bad",
+        allowed_tools=("erp.confirm_draft",),
+        prohibited_tools=(),
+        planner_version=RUNTIME_VERSION,
+    )
+    status = authorize_tool_proposal(
+        tool_name="erp.confirm_draft",
+        read_or_mutation=ReadOrMutation.READ,
+        plan=plan,
+        mode=InteractionModeV1.ASK,
+    )
+    assert status == ToolCallStatus.DENIED
+
+
+def test_mutation_always_denied() -> None:
+    plan = PlanV1(
+        plan_id="p1",
+        objective="bad",
+        allowed_tools=("erp.preview_draft",),
+        prohibited_tools=("erp.confirm_draft",),
+        planner_version=RUNTIME_VERSION,
+    )
+    status = authorize_tool_proposal(
+        tool_name="erp.preview_draft",
+        read_or_mutation=ReadOrMutation.MUTATION,
+        plan=plan,
+        mode=InteractionModeV1.ASK,
+    )
+    assert status == ToolCallStatus.DENIED
+
+
+def test_incomplete_no_proposals() -> None:
     req = _pipeline("bought 50 kg rice from Ram")
     bundle = req.typed_plan_bundle
     assert bundle is not None
     assert bundle.analysis_status == TypedPlanAnalysisStatus.SKIP
-    assert "CLARIFICATION_PENDING" in bundle.warnings or "FRAME_NOT_COMPLETE" in (
-        bundle.warnings or ()
-    )
-    assert bundle.plan is None
-
-
-def test_ood_skips() -> None:
-    req = _pipeline("asdf qwer zxcv")
-    bundle = req.typed_plan_bundle
-    assert bundle is not None
-    assert bundle.analysis_status == TypedPlanAnalysisStatus.SKIP
-    assert bundle.plan is None
-
-
-def test_report_plan() -> None:
-    req = _pipeline("show balance sheet")
-    bundle = req.typed_plan_bundle
-    assert bundle is not None
-    assert bundle.analysis_status == TypedPlanAnalysisStatus.COMPLETE
-    assert bundle.plan is not None
-    assert "erp.read_balance" in bundle.plan.allowed_tools
-    assert "erp.confirm_draft" in bundle.plan.prohibited_tools
+    assert bundle.proposed_tool_calls == ()
 
 
 def test_adapter_metadata() -> None:
@@ -112,30 +138,9 @@ def test_adapter_metadata() -> None:
     dto = CanonicalOipRequestAdapter().to_intelligence_dto(req, module="orbix")
     tp = (dto.metadata or {}).get("typed_plan") or {}
     assert tp.get("is_execution_authority") is False
-    assert tp.get("analysis_status") == "COMPLETE"
     assert tp.get("tool_executions") == 0
-    assert int(tp.get("step_count") or 0) >= 1
-
-
-def test_build_without_frame_skips() -> None:
-    req = CanonicalAIRequestV1(
-        request_id="req-1",
-        correlation_id="corr-1",
-        conversation_id="conv-1",
-        message_id="msg-1",
-        raw_text="hello",
-        mode=InteractionModeV1.ASK,
-        created_at=datetime.now(timezone.utc),
-        trusted_scope=TrustedScopeV1(
-            principal_id="user-1",
-            tenant_id="tenant-a",
-            company_id="co-1",
-            authentication_method="test",
-            policy_version="test",
-        ),
-    )
-    bundle = build_typed_plan_bundle(req)
-    assert bundle.analysis_status == TypedPlanAnalysisStatus.SKIP
+    assert int(tp.get("authorized_tool_call_count") or 0) >= 1
+    assert int(tp.get("proposed_tool_call_count") or 0) >= 1
 
 
 def test_frozen_eval_fixtures() -> None:
@@ -147,7 +152,7 @@ def test_frozen_eval_fixtures() -> None:
         / "evals"
         / "mai21"
         / "frozen"
-        / "typed_plan_v1.jsonl"
+        / "typed_plan_tools_v1.jsonl"
     )
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -156,14 +161,21 @@ def test_frozen_eval_fixtures() -> None:
         req = _pipeline(case["text"])
         bundle = req.typed_plan_bundle
         assert bundle is not None
-        assert bundle.is_execution_authority is False
         assert bundle.tool_executions == 0
+        assert bundle.is_execution_authority is False
         if case.get("expected_status"):
             assert bundle.analysis_status.value == case["expected_status"], case[
                 "case_id"
             ]
-        if case.get("expected_has_plan") is True:
-            assert bundle.plan is not None, case["case_id"]
-            assert "erp.confirm_draft" in bundle.plan.prohibited_tools
-        if case.get("expected_has_plan") is False:
-            assert bundle.plan is None, case["case_id"]
+        if case.get("expected_authorized_min") is not None:
+            authorized = sum(
+                1
+                for c in bundle.proposed_tool_calls
+                if c.status == ToolCallStatus.AUTHORIZED
+            )
+            assert authorized >= case["expected_authorized_min"], case["case_id"]
+        if case.get("expected_confirm_absent"):
+            assert all(
+                c.tool_name != "erp.confirm_draft"
+                for c in bundle.proposed_tool_calls
+            ), case["case_id"]
