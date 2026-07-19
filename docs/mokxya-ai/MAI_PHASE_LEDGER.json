@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-27",
-  "active_phase_note": "MAI-27 slice 1 IN_PROGRESS (ADR_0044); lexical index readiness annotation; MAI-26 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-27 slice 2 IN_PROGRESS (ADR_0044); LEXICAL_ONLY consume into NP KB grounding; MAI-26 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2562,19 +2562,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-27.0.1-slice1",
-      "slice": "SLICE1_LEXICAL_INDEX_ANNOTATION",
+      "runtime_version": "mai-27.0.2-slice2",
+      "slice": "SLICE2_LEXICAL_ONLY_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_27_LEXICAL_INDEX.md",
         "docs/mokxya-ai/decisions/ADR_0044_LEXICAL_INDEX_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_27_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai27/manifests/MAI_27_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_27_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai27/manifests/MAI_27_SLICE1.manifest.json",
+        "evals/mai27/manifests/MAI_27_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
-        "lexical_index_service.py (presence + prod_fts schema probe)",
+        "lexical_index_service.py (probe + prefer/block helpers)",
         "LexicalIndexBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress LEXICAL_INDEX after TEMPORAL_CROSS_REF",
-        "ollama_required=false; vector_backend_required=false; query_executions=0"
+        "np_kb_adapter / prompt_grounding LEXICAL_ONLY when fts_ready",
+        "semantic_enabled forced false; ollama_required=false"
       ],
       "blockers": [
         "GAP-P2-001 remains OPEN",
@@ -2586,7 +2589,7 @@
         "MAI-26"
       ],
       "recommended_order": 27,
-      "closure_note": "Slice 1: SQLITE FTS readiness annotation only; no MATCH query; citations not verified."
+      "closure_note": "Slice 2: COMPLETE+fts_ready→LEXICAL_ONLY NP KB; not ready→fail-closed; citations not verified."
     },
     {
       "id": "MAI-28",

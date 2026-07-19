@@ -1704,7 +1704,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             lex_ev,
             version_map={
-                "lexical_index": "mai-27.0.1-slice1",
+                "lexical_index": "mai-27.0.2-slice2",
             },
             safe_attributes={
                 "lexical_index_status": (

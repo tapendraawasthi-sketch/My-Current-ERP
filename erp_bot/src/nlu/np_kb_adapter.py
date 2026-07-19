@@ -557,12 +557,16 @@ def interpret_user_text(
     *,
     cfg: NpKbConfig | None = None,
     knowledge_source_governance: Mapping[str, Any] | None = None,
+    lexical_index: Mapping[str, Any] | None = None,
 ) -> NpKbInterpretResult:
     """Main adapter entry: detect → protect → normalize → retrieve → cite.
 
     Never posts transactions. execution_allowed is always False from KB path.
     MAI-24: optional knowledge_source_governance filters collections / skips OOD.
+    MAI-27: optional lexical_index prefers SQLITE FTS and forces semantic off.
     """
+    from dataclasses import replace
+
     cfg = cfg or NpKbConfig.from_env()
     obs: dict[str, Any] = {
         "citations_enabled": cfg.citations_enabled,
@@ -580,6 +584,7 @@ def interpret_user_text(
         if isinstance(knowledge_source_governance, Mapping)
         else None
     )
+    lex = lexical_index if isinstance(lexical_index, Mapping) else None
     try:
         from src.oip.modules.conversation.application.knowledge_source_governance_service import (
             filter_citations_by_governance,
@@ -593,6 +598,17 @@ def interpret_user_text(
         resolve_blocked_collections = None  # type: ignore[assignment]
         should_skip_retrieval_for_governance = None  # type: ignore[assignment]
 
+    try:
+        from src.oip.modules.conversation.application.lexical_index_service import (
+            resolve_lexical_retrieval_mode,
+            should_block_retrieval_for_lexical_index,
+            should_prefer_lexical_retrieval,
+        )
+    except Exception:  # noqa: BLE001
+        resolve_lexical_retrieval_mode = None  # type: ignore[assignment]
+        should_block_retrieval_for_lexical_index = None  # type: ignore[assignment]
+        should_prefer_lexical_retrieval = None  # type: ignore[assignment]
+
     if (
         should_skip_retrieval_for_governance is not None
         and should_skip_retrieval_for_governance(gov)
@@ -603,6 +619,34 @@ def interpret_user_text(
             skipped_reason="GOVERNANCE_SKIP",
             observability=obs,
         )
+
+    if (
+        should_block_retrieval_for_lexical_index is not None
+        and should_block_retrieval_for_lexical_index(lex)
+    ):
+        obs["lexical_index_blocked"] = True
+        obs["retrieval_mode"] = (
+            resolve_lexical_retrieval_mode(lex)
+            if resolve_lexical_retrieval_mode is not None
+            else "BLOCKED"
+        )
+        return NpKbInterpretResult(
+            enabled=False,
+            skipped_reason="LEXICAL_INDEX_NOT_READY",
+            observability=obs,
+        )
+
+    if (
+        should_prefer_lexical_retrieval is not None
+        and should_prefer_lexical_retrieval(lex)
+    ):
+        cfg = replace(cfg, lexical_enabled=True, semantic_enabled=False)
+        obs["lexical_preferred"] = True
+        obs["semantic_forced_off"] = True
+        obs["retrieval_mode"] = "LEXICAL_ONLY"
+        obs["ollama_required"] = False
+        obs["vector_backend_required"] = False
+        obs["citations_verified"] = False
 
     allowed_collections = (
         resolve_allowed_collections(gov)
@@ -683,6 +727,10 @@ def interpret_user_text(
             "allowed_collection_count": (
                 len(allowed_collections) if allowed_collections is not None else None
             ),
+            "lexical_preferred": bool(obs.get("lexical_preferred")),
+            "retrieval_mode": obs.get("retrieval_mode") or "UNCHANGED",
+            "ollama_required": False,
+            "citations_verified": False,
             "blocked_mutation_rate_note": "KB path cannot mutate; gated by authoritative ERP services",
         }
     )
@@ -709,6 +757,7 @@ def enrich_nlu_context(
     *,
     top_k: int | None = None,
     knowledge_source_governance: Mapping[str, Any] | None = None,
+    lexical_index: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Optional NLU enrichment payload for hybrid search / conversation layers.
 
@@ -722,6 +771,7 @@ def enrich_nlu_context(
         text,
         cfg=cfg,
         knowledge_source_governance=knowledge_source_governance,
+        lexical_index=lexical_index,
     )
     payload = result.to_optional_metadata().get("np_kb", {})
     if not payload.get("enabled"):

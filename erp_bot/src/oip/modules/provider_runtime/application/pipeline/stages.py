@@ -80,11 +80,15 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
         gov = policy_decisions.get("knowledge_source_governance")
         if not isinstance(gov, dict):
             gov = None
+        lex = policy_decisions.get("lexical_index")
+        if not isinstance(lex, dict):
+            lex = None
         grounding = build_prompt_grounding(
             user_message,
             knowledge_snippets=snippets,
             top_k=5,
             knowledge_source_governance=gov,
+            lexical_index=lex,
         )
         return grounding.to_metadata()
     except Exception:

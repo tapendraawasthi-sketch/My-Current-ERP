@@ -638,6 +638,29 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             pass
 
+        # MAI-27: forward lexical index readiness (prefer SQLITE FTS; never Ollama).
+        lexical_index: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_lex = context.metadata.get("lexical_index")
+                if isinstance(raw_lex, dict):
+                    lexical_index = dict(raw_lex)
+            if lexical_index:
+                lexical_index["ollama_required"] = False
+                lexical_index["vector_backend_required"] = False
+                lexical_index["citations_verified"] = False
+                lexical_index["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "lexical_index": lexical_index,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            lexical_index = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding
@@ -652,6 +675,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 knowledge_snippets=knowledge_snippets,
                 top_k=5,
                 knowledge_source_governance=knowledge_source_governance or None,
+                lexical_index=lexical_index or None,
             )
             grounded_meta = grounding.to_metadata()
             route = route.model_copy(

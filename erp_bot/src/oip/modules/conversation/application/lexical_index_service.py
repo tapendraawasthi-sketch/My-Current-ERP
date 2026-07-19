@@ -1,21 +1,23 @@
-"""MAI-27 — lexical index readiness annotation.
+"""MAI-27 — lexical index readiness annotation + consume.
 
 Slice 1: probe SQLITE FTS lexical DB presence/schema when knowledge-source
-governance is COMPLETE. Never runs MATCH queries, never requires Ollama/vector,
-never claims citations verified, never mutates indexes.
+governance is COMPLETE. Annotation never runs MATCH queries.
+Slice 2: when COMPLETE + fts_ready, prefer lexical-only NP KB retrieval and
+force semantic/Ollama off; when COMPLETE but not ready, fail-closed skip.
+Never claims citations verified, never mutates indexes, never grants execution.
 """
 
 from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.knowledge_source_governance import KnowledgeSourceGovernanceStatus
 from ....contracts.lexical_index import LexicalIndexBundleV1, LexicalIndexStatus
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-27.0.1-slice1"
+RUNTIME_VERSION = "mai-27.0.2-slice2"
 AUTHORITY = "ADR_0044"
 
 
@@ -166,4 +168,67 @@ def lexical_index_to_metadata(
         "index_mutations": bundle.index_mutations,
         "query_executions": bundle.query_executions,
         "is_execution_authority": False,
+        "retrieval_mode": "ANNOTATION_ONLY",
     }
+
+
+def _as_lexical_meta(
+    lexical_index: Mapping[str, Any] | LexicalIndexBundleV1 | None,
+) -> dict[str, Any] | None:
+    if lexical_index is None:
+        return None
+    if isinstance(lexical_index, LexicalIndexBundleV1):
+        return lexical_index_to_metadata(lexical_index)
+    if isinstance(lexical_index, Mapping):
+        return dict(lexical_index)
+    return None
+
+
+def _authority_violated(data: Mapping[str, Any]) -> bool:
+    return (
+        data.get("is_execution_authority") is True
+        or data.get("ollama_required") is True
+        or data.get("vector_backend_required") is True
+        or data.get("citations_verified") is True
+    )
+
+
+def should_prefer_lexical_retrieval(
+    lexical_index: Mapping[str, Any] | LexicalIndexBundleV1 | None,
+) -> bool:
+    """True when COMPLETE + fts_ready and no false authority claims."""
+    data = _as_lexical_meta(lexical_index)
+    if data is None:
+        return False
+    if _authority_violated(data):
+        return False
+    if str(data.get("analysis_status") or "") != LexicalIndexStatus.COMPLETE.value:
+        return False
+    return bool(data.get("fts_ready")) and bool(data.get("index_present"))
+
+
+def should_block_retrieval_for_lexical_index(
+    lexical_index: Mapping[str, Any] | LexicalIndexBundleV1 | None,
+) -> bool:
+    """Fail-closed when COMPLETE but index not ready, or authority flags lie."""
+    data = _as_lexical_meta(lexical_index)
+    if data is None:
+        return False
+    if _authority_violated(data):
+        return True
+    status = str(data.get("analysis_status") or "")
+    if status == LexicalIndexStatus.FAILED.value:
+        return True
+    if status != LexicalIndexStatus.COMPLETE.value:
+        return False
+    return not (bool(data.get("index_present")) and bool(data.get("fts_ready")))
+
+
+def resolve_lexical_retrieval_mode(
+    lexical_index: Mapping[str, Any] | LexicalIndexBundleV1 | None,
+) -> str:
+    if should_block_retrieval_for_lexical_index(lexical_index):
+        return "BLOCKED"
+    if should_prefer_lexical_retrieval(lexical_index):
+        return "LEXICAL_ONLY"
+    return "UNCHANGED"

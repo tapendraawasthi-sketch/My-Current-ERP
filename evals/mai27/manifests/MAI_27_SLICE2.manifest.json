@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai27-slice2-v1",
+  "dataset_hash": "8c2c79d6743e6f8d76a16892429114f6d96600e0366c16ad646629cca9258b63",
+  "phase": "MAI-27",
+  "slice": "SLICE2_LEXICAL_ONLY_CONSUME",
+  "runtime_version": "mai-27.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai27/frozen/lexical_index_consume_v1.jsonl",
+      "sha256": "8c2c79d6743e6f8d76a16892429114f6d96600e0366c16ad646629cca9258b63",
+      "case_count": 6,
+      "suite_id": "lexical_index_consume_v1"
+    }
+  ]
+}

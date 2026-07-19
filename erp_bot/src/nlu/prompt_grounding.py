@@ -137,11 +137,13 @@ def build_prompt_grounding(
     knowledge_snippets: list[dict[str, Any]] | None = None,
     top_k: int = 5,
     knowledge_source_governance: dict[str, Any] | None = None,
+    lexical_index: dict[str, Any] | None = None,
 ) -> PromptGrounding:
     """Retrieve NP KB (+ optional OIP snippets) and format a provider grounding block.
 
     MAI-24: when knowledge_source_governance is COMPLETE, filter collections;
     when SKIP, skip NP KB retrieval (fail-closed).
+    MAI-27: when lexical_index is COMPLETE + fts_ready, prefer SQLITE FTS only.
     """
     message = (user_message or "").strip()
     if not message:
@@ -152,6 +154,7 @@ def build_prompt_grounding(
         if isinstance(knowledge_source_governance, dict)
         else None
     )
+    lex = lexical_index if isinstance(lexical_index, dict) else None
     np_payload: dict[str, Any] = {"enabled": False, "reason": "not_retrieved"}
     try:
         from .np_kb_adapter import enrich_nlu_context
@@ -160,6 +163,7 @@ def build_prompt_grounding(
             message,
             top_k=top_k,
             knowledge_source_governance=gov,
+            lexical_index=lex,
         )
         if not isinstance(np_payload, dict):
             np_payload = {"enabled": False, "reason": "invalid_payload"}
@@ -173,6 +177,7 @@ def build_prompt_grounding(
                     seed,
                     top_k=top_k,
                     knowledge_source_governance=gov,
+                    lexical_index=lex,
                 )
                 if isinstance(retry, dict) and (
                     retry.get("hint_snippets") or retry.get("citations")

@@ -20,7 +20,7 @@ class LexicalIndexStatus(str, Enum):
 class LexicalIndexBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: LexicalIndexStatus = LexicalIndexStatus.NOT_RUN
-    runtime_version: str = "mai-27.0.1-slice1"
+    runtime_version: str = "mai-27.0.2-slice2"
     source_authority: str = "REQUEST"
     index_present: bool = False
     fts_ready: bool = False
