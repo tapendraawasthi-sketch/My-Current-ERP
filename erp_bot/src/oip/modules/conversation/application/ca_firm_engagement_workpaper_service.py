@@ -1,6 +1,7 @@
 """MAI-52 — CA-firm engagement / workpaper policy (never opens engagements).
 
 Slice 1: declare candidate CA-firm / workpaper policy from cue detection.
+Slice 2 consume is in ca_firm_engagement_workpaper_consume_service.
 Never claims workspace enabled, engagement opened/signed, or workpaper posted.
 """
 
@@ -17,7 +18,7 @@ from ....contracts.ca_firm_engagement_workpaper import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-52.0.1-slice1"
+RUNTIME_VERSION = "mai-52.0.2-slice2"
 AUTHORITY = "ADR_0069"
 
 _ENGAGEMENT = re.compile(

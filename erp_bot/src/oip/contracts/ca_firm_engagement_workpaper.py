@@ -40,7 +40,7 @@ class CaFirmEngagementWorkpaperBundleV1(ContractBase):
     analysis_status: CaFirmEngagementWorkpaperStatus = (
         CaFirmEngagementWorkpaperStatus.NOT_RUN
     )
-    runtime_version: str = "mai-52.0.1-slice1"
+    runtime_version: str = "mai-52.0.2-slice2"
     source_authority: str = "REQUEST"
     ca_firm_engagement_workpaper_readiness: (
         CaFirmEngagementWorkpaperReadiness

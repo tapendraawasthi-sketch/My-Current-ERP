@@ -3918,12 +3918,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent document ingest.
 
-    # MAI-52: CA-firm engagement / workpaper (never opens engagements).
+    # MAI-52: CA-firm engagement / workpaper + candidate consume.
     ca_ev = recorder.begin_stage(
         mai03_obs.TraceStage.CA_FIRM_ENGAGEMENT_WORKPAPER_STARTED,
         component="conversation.ca_firm_engagement_workpaper",
     )
     try:
+        from ..oip.modules.conversation.application.ca_firm_engagement_workpaper_consume_service import (
+            assert_ca_firm_engagement_workpaper_consume_authority,
+            ca_firm_engagement_workpaper_consume_observability,
+        )
         from ..oip.modules.conversation.application.ca_firm_engagement_workpaper_service import (
             assert_ca_firm_engagement_workpaper_authority,
             attach_ca_firm_engagement_workpaper_to_request,
@@ -3934,11 +3938,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.ca_firm_engagement_workpaper_bundle
         assert_ca_firm_engagement_workpaper_authority(bundle)
+        consume_obs = ca_firm_engagement_workpaper_consume_observability(
+            updated,
+            allow_open_engagement=False,
+            allow_post_workpaper=False,
+        )
+        assert_ca_firm_engagement_workpaper_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             ca_ev,
             version_map={
-                "ca_firm_engagement_workpaper": "mai-52.0.1-slice1",
+                "ca_firm_engagement_workpaper": "mai-52.0.2-slice2",
             },
             safe_attributes={
                 "ca_firm_engagement_workpaper_status": (
@@ -3954,6 +3964,16 @@ async def build_canonical_ai_request(
                 ),
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "ca_firm_engagement_workpaper_consume_mode": (
+                    consume_obs.get(
+                        "ca_firm_engagement_workpaper_consume_mode"
+                    )
+                ),
+                "ca_firm_engagement_workpaper_consume_ready": bool(
+                    consume_obs.get(
+                        "ca_firm_engagement_workpaper_consume_ready"
+                    )
+                ),
                 "engagement_authority_claimed": False,
                 "ca_firm_workspace_enabled": False,
                 "engagement_opened": False,
@@ -3984,6 +4004,11 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "ca_firm_engagement_workpaper_consume_mode": (
+                    consume_obs.get(
+                        "ca_firm_engagement_workpaper_consume_mode"
+                    )
+                ),
             },
         )
     except Exception:  # noqa: BLE001

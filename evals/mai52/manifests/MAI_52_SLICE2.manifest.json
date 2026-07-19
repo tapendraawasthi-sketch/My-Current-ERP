@@ -1,0 +1,29 @@
+{
+  "phase": "MAI-52",
+  "slice": "2",
+  "runtime_version": "mai-52.0.2-slice2",
+  "authority": "ADR_0069",
+  "frozen_sets": [
+    {
+      "id": "ca_firm_engagement_workpaper_consume_v1",
+      "path": "evals/mai52/frozen/ca_firm_engagement_workpaper_consume_v1.jsonl",
+      "sha256": "545d5d7bd8f0affe7e5f5ccb29cab1e28c27dff168465a901d95d5e04aba8d2b",
+      "row_count": 6
+    }
+  ],
+  "honesty": {
+    "default_consume_mode": "CANDIDATE_ONLY",
+    "allow_open_engagement": false,
+    "allow_post_workpaper": false,
+    "ca_firm_workspace_enabled": false,
+    "engagement_opened": false,
+    "engagement_signed": false,
+    "workpaper_created": false,
+    "workpaper_posted": false,
+    "client_binder_released": false,
+    "staff_assignment_applied": false,
+    "review_notes_finalized": false,
+    "production_approved": false,
+    "gap_p2_008": "OPEN"
+  }
+}

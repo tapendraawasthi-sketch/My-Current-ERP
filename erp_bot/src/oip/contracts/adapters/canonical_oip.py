@@ -1196,17 +1196,21 @@ class CanonicalOipRequestAdapter:
                     "private_user_document_intelligence_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-52: CA-firm engagement / workpaper (never opens engagements).
+        # MAI-52: CA-firm engagement / workpaper + candidate consume.
         if canonical.ca_firm_engagement_workpaper_bundle is not None:
             try:
+                from ...modules.conversation.application.ca_firm_engagement_workpaper_consume_service import (
+                    enrich_ca_metadata_with_consume,
+                )
                 from ...modules.conversation.application.ca_firm_engagement_workpaper_service import (
                     ca_firm_engagement_workpaper_to_metadata,
                 )
 
+                base_meta = ca_firm_engagement_workpaper_to_metadata(
+                    canonical.ca_firm_engagement_workpaper_bundle
+                )
                 metadata["ca_firm_engagement_workpaper"] = (
-                    ca_firm_engagement_workpaper_to_metadata(
-                        canonical.ca_firm_engagement_workpaper_bundle
-                    )
+                    enrich_ca_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 ca = canonical.ca_firm_engagement_workpaper_bundle
@@ -1222,6 +1226,8 @@ class CanonicalOipRequestAdapter:
                     "workpaper_posted": False,
                     "production_approved": False,
                     "gap_p2_008_status": "OPEN",
+                    "ca_firm_engagement_workpaper_consume_mode": "UNCHANGED",
+                    "ca_firm_engagement_workpaper_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:
