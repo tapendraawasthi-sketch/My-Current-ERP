@@ -7,6 +7,7 @@ import Dexie from "dexie";
 import { useEKhataStore } from "../store/eKhataStore";
 import { useStore } from "../store/useStore";
 import { executeOrbixConfirm, buildIdempotencyKey } from "../lib/ekhata/orbixPostingService";
+import { ensureCardConfirmToken } from "../lib/ekhata/confirmPathAuthority";
 import {
   resetOrbixE2ECompany,
   seedOrbixE2ECompany,
@@ -1497,18 +1498,21 @@ export async function bootstrapUiQaHarness(): Promise<void> {
       const settings = useStore.getState().companySettings as
         | { companyId?: string; id?: string }
         | null;
+      const companyId = String(settings?.companyId || settings?.id || E2E_COMPANY_ID);
+      const tokenCard = ensureCardConfirmToken(card, companyId);
       const result = await executeOrbixConfirm({
         requestId: `e2e-inject-${Date.now()}`,
         conversationId: useEKhataStore.getState().activeSessionId,
-        draftId: card.draft_id ?? useEKhataStore.getState().activeDraftId,
-        draftVersion: (card as { draft_version?: number }).draft_version ?? null,
-        previewVersion: card.preview_version ?? 1,
-        previewHash: card.preview_hash ?? null,
-        companyId: String(settings?.companyId || settings?.id || E2E_COMPANY_ID),
+        draftId: tokenCard.draft_id ?? useEKhataStore.getState().activeDraftId,
+        draftVersion: (tokenCard as { draft_version?: number }).draft_version ?? null,
+        previewVersion: tokenCard.preview_version ?? 1,
+        previewHash: tokenCard.preview_hash ?? null,
+        companyId,
         orbixMode: "accountant",
-        idempotencyKey: card.idempotency_key || `e2e-inject-${card.draft_id}`,
+        idempotencyKey: tokenCard.idempotency_key || `e2e-inject-${tokenCard.draft_id}`,
         confirmation: true,
-        card,
+        confirmToken: tokenCard.confirm_token,
+        card: tokenCard,
         userRole: useStore.getState().currentUser?.role,
         injectFailure,
       });
@@ -1535,6 +1539,12 @@ export async function bootstrapUiQaHarness(): Promise<void> {
         idempotency_key?: string;
       };
       const sessionId = useEKhataStore.getState().activeSessionId;
+      const companyId = String(settings?.companyId || settings?.id || E2E_COMPANY_ID);
+      // Fresh token: reuse of a consumed confirm token must fail (NEXT-05).
+      const tokenCard = ensureCardConfirmToken(
+        { ...(card as never), confirm_token: null },
+        companyId,
+      );
       const result = await executeOrbixConfirm({
         requestId: `e2e-replay-${Date.now()}`,
         conversationId: sessionId,
@@ -1542,7 +1552,7 @@ export async function bootstrapUiQaHarness(): Promise<void> {
         draftVersion: c.draft_version ?? null,
         previewVersion: c.preview_version ?? 1,
         previewHash: c.preview_hash ?? null,
-        companyId: String(settings?.companyId || settings?.id || E2E_COMPANY_ID),
+        companyId,
         orbixMode: "accountant",
         idempotencyKey:
           c.idempotency_key ||
@@ -1552,7 +1562,8 @@ export async function bootstrapUiQaHarness(): Promise<void> {
             sessionId,
           }),
         confirmation: true,
-        card: card as never,
+        confirmToken: tokenCard.confirm_token,
+        card: tokenCard as never,
         userRole: useStore.getState().currentUser?.role || "accountant",
       });
       useEKhataStore.setState({ lastPostingResult: result });
@@ -1568,6 +1579,8 @@ export async function bootstrapUiQaHarness(): Promise<void> {
         preview_version?: number;
         preview_hash?: string;
       };
+      const companyId = String(settings?.companyId || settings?.id || E2E_COMPANY_ID);
+      const tokenCard = ensureCardConfirmToken(card as never, companyId);
       const result = await executeOrbixConfirm({
         requestId: `e2e-stale-${Date.now()}`,
         conversationId: useEKhataStore.getState().activeSessionId,
@@ -1575,11 +1588,12 @@ export async function bootstrapUiQaHarness(): Promise<void> {
         draftVersion: c.draft_version ?? null,
         previewVersion: c.preview_version ?? 1,
         previewHash: "stale-hash-does-not-match",
-        companyId: String(settings?.companyId || settings?.id || E2E_COMPANY_ID),
+        companyId,
         orbixMode: "accountant",
         idempotencyKey: `stale-${Date.now()}`,
         confirmation: true,
-        card: card as never,
+        confirmToken: tokenCard.confirm_token,
+        card: tokenCard as never,
         userRole: useStore.getState().currentUser?.role || "accountant",
       });
       return result as unknown as Record<string, unknown>;

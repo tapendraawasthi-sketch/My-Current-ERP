@@ -4,6 +4,7 @@ import {
   executeOrbixConfirm,
   type OrbixPostingResult,
 } from "../lib/ekhata/orbixPostingService";
+import { ensureCardConfirmToken } from "../lib/ekhata/confirmPathAuthority";
 import {
   checkEKhataLlmStatus,
   getEKhataSessionId,
@@ -74,6 +75,22 @@ import { useStore } from "./useStore";
 
 function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function resolveCompanyIdForConfirm(): string | null {
+  const settings = useStore.getState().companySettings as
+    | { companyId?: string; id?: string }
+    | null
+    | undefined;
+  const id = settings?.companyId || settings?.id;
+  return id != null ? String(id) : null;
+}
+
+function withPendingConfirmToken(card: KhataConfirmationCard | null): KhataConfirmationCard | null {
+  if (!card) return null;
+  const companyId = resolveCompanyIdForConfirm();
+  if (!companyId) return card;
+  return ensureCardConfirmToken(card, companyId);
 }
 
 const boot = loadOrbixSessions();
@@ -336,7 +353,11 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   openPanel: () => set({ isOpen: true, windowMode: "normal" }),
 
   openWithPendingCard: (card: KhataConfirmationCard) =>
-    set({ isOpen: true, windowMode: "normal", pendingCard: card }),
+    set({
+      isOpen: true,
+      windowMode: "normal",
+      pendingCard: withPendingConfirmToken(card),
+    }),
 
   closePanel: () => {
     const { sessions, activeSessionId, messages, windowMode } = get();
@@ -664,7 +685,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
                     })
                   : m,
               ),
-              pendingCard: isConfirm ? resolvedCard : null,
+              pendingCard: isConfirm ? withPendingConfirmToken(resolvedCard) : null,
               activeDraftId:
                 typed?.response_type === "clarification_required" || isConfirm
                   ? draftId
@@ -714,7 +735,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
                     })
                   : m,
               ),
-              pendingCard: fallback.card,
+              pendingCard: withPendingConfirmToken(fallback.card),
               activeDraftId: draftId || get().activeDraftId,
               streamingText: "",
               activeTools: [],
@@ -818,7 +839,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           messages: get().messages.map((m) =>
             m.id === assistantId ? { ...m, text: result.reply } : m,
           ),
-          pendingCard: result.kind === "entry" && result.card ? result.card : null,
+          pendingCard:
+            result.kind === "entry" && result.card
+              ? withPendingConfirmToken(result.card)
+              : null,
           pendingCompoundBatch: result.kind === "compound" ? result.batch : null,
           engineLabel: "builtin (forced)",
           llmOnline: false,
@@ -939,22 +963,24 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       if (batch) {
         const voucherNos: string[] = [];
         for (const part of batch.parts) {
+          const partCard = ensureCardConfirmToken(part.card, companyId);
           const result = await executeOrbixConfirm({
             requestId: `${requestId}-${part.card.intent}`,
             conversationId: get().activeSessionId,
-            draftId: part.card.draft_id ?? get().activeDraftId,
+            draftId: partCard.draft_id ?? get().activeDraftId,
             draftVersion: null,
-            previewVersion: part.card.preview_version ?? 1,
-            previewHash: part.card.preview_hash ?? null,
+            previewVersion: partCard.preview_version ?? 1,
+            previewHash: partCard.preview_hash ?? null,
             companyId: companyId ? String(companyId) : null,
             orbixMode: get().orbixMode,
             idempotencyKey: buildIdempotencyKey({
-              draftId: part.card.draft_id,
-              previewHash: part.card.preview_hash,
+              draftId: partCard.draft_id,
+              previewHash: partCard.preview_hash,
               sessionId: get().activeSessionId,
             }),
             confirmation: true,
-            card: part.card,
+            confirmToken: partCard.confirm_token,
+            card: partCard,
             userRole: role,
           });
           set({ postingStages: result.stages, lastPostingResult: result });
@@ -1012,24 +1038,30 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
       if (!card) return;
 
+      const tokenCard = ensureCardConfirmToken(card, companyId);
+      if (tokenCard.confirm_token !== card.confirm_token) {
+        set({ pendingCard: tokenCard });
+      }
+
       const result = await executeOrbixConfirm({
         requestId,
         conversationId: get().activeSessionId,
-        draftId: card.draft_id ?? get().activeDraftId,
+        draftId: tokenCard.draft_id ?? get().activeDraftId,
         draftVersion: null,
-        previewVersion: card.preview_version ?? 1,
-        previewHash: card.preview_hash ?? null,
+        previewVersion: tokenCard.preview_version ?? 1,
+        previewHash: tokenCard.preview_hash ?? null,
         companyId: companyId ? String(companyId) : null,
         orbixMode: get().orbixMode,
         idempotencyKey:
-          card.idempotency_key ||
+          tokenCard.idempotency_key ||
           buildIdempotencyKey({
-            draftId: card.draft_id ?? get().activeDraftId,
-            previewHash: card.preview_hash,
+            draftId: tokenCard.draft_id ?? get().activeDraftId,
+            previewHash: tokenCard.preview_hash,
             sessionId: get().activeSessionId,
           }),
         confirmation: true,
-        card,
+        confirmToken: tokenCard.confirm_token,
+        card: tokenCard,
         userRole: role,
       });
 

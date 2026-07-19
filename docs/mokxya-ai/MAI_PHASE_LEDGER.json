@@ -5,9 +5,18 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "NEXT-05",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-06"],
-  "active_phase_note": "Post-MAI-53 queue. NEXT-00..04 + NEXT-06 DONE. NEXT-06: mai04_ctx 35/35 + mai04_num 40/40 GREEN; mai04_multi 40/40 HR waived for automation. NEXT recommended=NEXT-05 (confirm path honesty). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "recommended_next_step": "NEXT-07",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06"],
+  "active_phase_note": "Post-MAI-53 queue. NEXT-00..06 DONE. NEXT-05 ADR_0075 Model B short-lived confirm tokens; NL assent never posts. NEXT recommended=NEXT-07 (NLU consume). Track I freeze ACTIVE; production_approved=false; GAP-P2-008 OPEN",
+  "confirm_path_authority": {
+    "authority": "ADR_0075",
+    "decision": "MODEL_B_SHORT_LIVED_CONFIRM_TOKEN",
+    "product_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+    "nl_assent_posts": false,
+    "ai_confirm_oec_is_authority": false,
+    "receipt_required_for_success": true,
+    "registry": "docs/mokxya-ai/MAI_CONFIRM_PATH_REGISTRY.json"
+  },
   "capability_truth_matrix": "docs/mokxya-ai/MAI_CAPABILITY_TRUTH_MATRIX.json",
   "sync_authority": {
     "authority": "ADR_0074",

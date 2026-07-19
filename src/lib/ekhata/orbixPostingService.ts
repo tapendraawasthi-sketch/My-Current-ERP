@@ -75,6 +75,11 @@ import {
   E2E_RV_001_ID,
 } from "@/domains/treasury/e2eSeed";
 import type { BankAdjustmentType, ChequeState } from "@/domains/treasury/types";
+import {
+  consumeConfirmToken,
+  postingSuccessHasReceipt,
+  validateConfirmToken,
+} from "./confirmPathAuthority";
 
 export type OrbixPostingStage =
   | "confirmation_received"
@@ -100,6 +105,8 @@ export interface OrbixConfirmCommand {
   idempotencyKey: string;
   confirmation: true;
   card: KhataConfirmationCard;
+  /** NEXT-05 short-lived Model B confirm token (also accepted on card.confirm_token) */
+  confirmToken?: string | null;
   userRole?: string | null;
   /** Development-only failure injection */
   injectFailure?: "after_validation" | "before_stock" | "before_audit" | null;
@@ -198,30 +205,31 @@ function mapDomainResult(
         ? (result.payload.draft_id as string | null | undefined)
         : undefined;
     const p = result.payload as unknown as Record<string, unknown>;
-    return {
+    const successPayload = {
+      draft_id: payloadDraftId ?? draftId,
+      posting_id: String(p.posting_id),
+      voucher_id: String(p.voucher_id ?? ""),
+      voucher_number: String(p.voucher_number ?? ""),
+      invoice_id: p.invoice_id != null ? String(p.invoice_id) : undefined,
+      invoice_number: p.invoice_number != null ? String(p.invoice_number) : undefined,
+      journal_id: String(p.voucher_id ?? ""),
+      stock_movement_ids: Array.isArray(p.stock_movement_ids)
+        ? (p.stock_movement_ids as string[])
+        : undefined,
+      amount: p.amount != null ? String(p.amount) : null,
+      currency: String(p.currency || "NPR"),
+      posted_at: p.posted_at != null ? String(p.posted_at) : null,
+      idempotent_replay: Boolean(p.idempotent_replay),
+      sync_status: p.sync_status != null ? String(p.sync_status) : undefined,
+      sync_event_id:
+        "sync_event_id" in p ? ((p.sync_event_id as string | null | undefined) ?? null) : null,
+    };
+    return enforceSuccessReceipt({
       response_type: "posting_completed",
       status: "success",
       stages: nextStages,
-      payload: {
-        draft_id: payloadDraftId ?? draftId,
-        posting_id: String(p.posting_id),
-        voucher_id: String(p.voucher_id ?? ""),
-        voucher_number: String(p.voucher_number ?? ""),
-        invoice_id: p.invoice_id != null ? String(p.invoice_id) : undefined,
-        invoice_number: p.invoice_number != null ? String(p.invoice_number) : undefined,
-        journal_id: String(p.voucher_id ?? ""),
-        stock_movement_ids: Array.isArray(p.stock_movement_ids)
-          ? (p.stock_movement_ids as string[])
-          : undefined,
-        amount: p.amount != null ? String(p.amount) : null,
-        currency: String(p.currency || "NPR"),
-        posted_at: p.posted_at != null ? String(p.posted_at) : null,
-        idempotent_replay: Boolean(p.idempotent_replay),
-        sync_status: p.sync_status != null ? String(p.sync_status) : undefined,
-        sync_event_id:
-          "sync_event_id" in p ? ((p.sync_event_id as string | null | undefined) ?? null) : null,
-      },
-    };
+      payload: successPayload,
+    });
   }
 
   const response_type =
@@ -665,6 +673,62 @@ export function detectBankReconKindForTests(card: KhataConfirmationCard): string
   return detectBankReconKind(card);
 }
 
+function resolveConfirmToken(cmd: OrbixConfirmCommand): string | null {
+  const fromCmd = String(cmd.confirmToken || "").trim();
+  if (fromCmd) return fromCmd;
+  const fromCard = String(cmd.card.confirm_token || "").trim();
+  return fromCard || null;
+}
+
+function denyConfirmToken(
+  stages: OrbixPostingStage[],
+  cmd: OrbixConfirmCommand,
+  error_code: string,
+): OrbixPostingResult {
+  const messages: Record<string, string> = {
+    confirm_token_required: "A short-lived confirm token is required before posting.",
+    confirm_token_unknown: "Confirm token is not recognized. Generate a new preview.",
+    confirm_token_expired: "Confirm token expired. Generate a new preview before confirming.",
+    confirm_token_reuse: "Confirm token was already used. Generate a new preview before confirming.",
+    confirm_token_tenant_mismatch: "Confirm token does not match this company.",
+  };
+  return {
+    response_type: "validation_error",
+    status: "failed",
+    stages: [...stages, "validation_started", "posting_failed"],
+    payload: {
+      draft_id: cmd.draftId,
+      posting_id: cmd.requestId,
+      currency: "NPR",
+      idempotent_replay: false,
+      error_code,
+      safe_message: messages[error_code] || "Confirm token validation failed.",
+      rolled_back: true,
+      retryable: error_code !== "confirm_token_tenant_mismatch",
+      draft_retained: true,
+    },
+  };
+}
+
+function enforceSuccessReceipt(result: OrbixPostingResult): OrbixPostingResult {
+  if (result.status !== "success") return result;
+  if (postingSuccessHasReceipt(result.payload)) return result;
+  return {
+    response_type: "posting_failed",
+    status: "failed",
+    stages: [...result.stages, "posting_failed"],
+    payload: {
+      ...result.payload,
+      idempotent_replay: false,
+      error_code: "receipt_required",
+      safe_message: "Success cannot be claimed without a posting receipt.",
+      rolled_back: true,
+      retryable: false,
+      draft_retained: true,
+    },
+  };
+}
+
 export async function executeOrbixConfirm(
   cmd: OrbixConfirmCommand,
 ): Promise<OrbixPostingResult> {
@@ -687,6 +751,17 @@ export async function executeOrbixConfirm(
         draft_retained: true,
       },
     };
+  }
+
+  const confirmToken = resolveConfirmToken(cmd);
+  const tokenBind = {
+    companyId: cmd.companyId,
+    draftId: cmd.draftId,
+    previewHash: cmd.previewHash,
+  };
+  const tokenCheck = validateConfirmToken(confirmToken, tokenBind);
+  if (!tokenCheck.ok) {
+    return denyConfirmToken(stages, cmd, tokenCheck.error_code);
   }
 
   if (cmd.orbixMode !== "accountant") {
@@ -815,6 +890,11 @@ export async function executeOrbixConfirm(
         draft_retained: true,
       },
     };
+  }
+
+  const consumed = consumeConfirmToken(confirmToken, tokenBind);
+  if (!consumed.ok) {
+    return denyConfirmToken(stages, cmd, consumed.error_code);
   }
 
   const store = useStore.getState();

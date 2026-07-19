@@ -4,7 +4,23 @@ import {
   clearOrbixPostingIdempotencyForTests,
   executeOrbixConfirm,
 } from "../../lib/ekhata/orbixPostingService";
+import {
+  clearConfirmTokensForTests,
+  mintConfirmToken,
+} from "../../lib/ekhata/confirmPathAuthority";
 import type { KhataConfirmationCard } from "../../lib/ekhata/types";
+
+function withToken(card: KhataConfirmationCard, companyId = "co-1") {
+  const token = mintConfirmToken({
+    companyId,
+    draftId: card.draft_id,
+    previewHash: card.preview_hash,
+  });
+  return {
+    card: { ...card, confirm_token: token },
+    confirmToken: token,
+  };
+}
 
 vi.mock("@/domains/purchase/postPurchaseTransaction", async () => {
   const actual = await vi.importActual<typeof import("@/domains/purchase/postPurchaseTransaction")>(
@@ -49,9 +65,11 @@ const sampleCard = (): KhataConfirmationCard => ({
 describe("executeOrbixConfirm gates", () => {
   beforeEach(() => {
     clearOrbixPostingIdempotencyForTests();
+    clearConfirmTokensForTests();
   });
 
   it("rejects Ask mode without posting", async () => {
+    const { card, confirmToken } = withToken(sampleCard());
     const result = await executeOrbixConfirm({
       requestId: "r1",
       conversationId: "c1",
@@ -63,7 +81,8 @@ describe("executeOrbixConfirm gates", () => {
       orbixMode: "ask",
       idempotencyKey: "k1",
       confirmation: true,
-      card: sampleCard(),
+      confirmToken,
+      card,
       userRole: "admin",
     });
     expect(result.response_type).toBe("permission_denied");
@@ -71,6 +90,7 @@ describe("executeOrbixConfirm gates", () => {
   });
 
   it("rejects unauthorized role", async () => {
+    const { card, confirmToken } = withToken(sampleCard());
     const result = await executeOrbixConfirm({
       requestId: "r2",
       conversationId: "c1",
@@ -82,7 +102,8 @@ describe("executeOrbixConfirm gates", () => {
       orbixMode: "accountant",
       idempotencyKey: "k2",
       confirmation: true,
-      card: sampleCard(),
+      confirmToken,
+      card,
       userRole: "viewer",
     });
     expect(result.response_type).toBe("permission_denied");
@@ -90,7 +111,7 @@ describe("executeOrbixConfirm gates", () => {
   });
 
   it("rejects stale preview hash mismatch", async () => {
-    const card = sampleCard();
+    const { card, confirmToken } = withToken(sampleCard());
     const result = await executeOrbixConfirm({
       requestId: "r3",
       conversationId: "c1",
@@ -102,6 +123,7 @@ describe("executeOrbixConfirm gates", () => {
       orbixMode: "accountant",
       idempotencyKey: "k3",
       confirmation: true,
+      confirmToken,
       card,
       userRole: "admin",
     });
@@ -110,6 +132,7 @@ describe("executeOrbixConfirm gates", () => {
   });
 
   it("supports injected failure after validation", async () => {
+    const { card, confirmToken } = withToken(sampleCard());
     const result = await executeOrbixConfirm({
       requestId: "r4",
       conversationId: "c1",
@@ -121,7 +144,8 @@ describe("executeOrbixConfirm gates", () => {
       orbixMode: "accountant",
       idempotencyKey: "k4",
       confirmation: true,
-      card: sampleCard(),
+      confirmToken,
+      card,
       userRole: "admin",
       injectFailure: "after_validation",
     });
@@ -143,6 +167,7 @@ describe("executeOrbixConfirm gates", () => {
       amount: 50000,
       raw_text: "I bought a bike. 1, 50000 cash",
     };
+    const { card, confirmToken } = withToken(purchaseCard);
     const result = await executeOrbixConfirm({
       requestId: "r5",
       conversationId: "c1",
@@ -154,7 +179,8 @@ describe("executeOrbixConfirm gates", () => {
       orbixMode: "accountant",
       idempotencyKey: "k5",
       confirmation: true,
-      card: purchaseCard,
+      confirmToken,
+      card,
       userRole: "admin",
     });
     expect(result.response_type).toBe("validation_error");

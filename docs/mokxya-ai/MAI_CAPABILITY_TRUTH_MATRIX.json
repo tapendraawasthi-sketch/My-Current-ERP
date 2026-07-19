@@ -21,9 +21,9 @@
     "legal_effective_dates_proven": false
   },
   "blocking_gaps": [
-    {"id": "GAP-P0-001", "severity": "P0", "status": "REDUCED", "blocks": ["sole_oec_strangler", "MAI-34_depth", "NEXT-05"], "note": "ADR_0072 Option A; dual writers remain; runtime gap OPEN"},
+    {"id": "GAP-P0-001", "severity": "P0", "status": "REDUCED", "blocks": ["sole_oec_strangler"], "note": "ADR_0072 Option A + ADR_0075 Model B confirm tokens; dual writers remain; runtime gap OPEN"},
     {"id": "GAP-P1-001", "severity": "P1", "status": "REDUCED", "blocks": ["retire_secondary_code", "NEXT-H3"], "note": "ADR_0073 prod mount gate; secondary code remains for non-prod/DX"},
-    {"id": "GAP-P1-002", "severity": "P1", "status": "REDUCED", "blocks": ["single_worker_e2e", "NEXT-05"], "note": "ADR_0074 accounting event-sync authority; residual dual runtime OPEN"},
+    {"id": "GAP-P1-002", "severity": "P1", "status": "REDUCED", "blocks": ["single_worker_e2e"], "note": "ADR_0074 accounting event-sync authority; residual dual runtime OPEN"},
     {"id": "GAP-P1-004", "severity": "P1", "status": "REDUCED", "blocks": ["stale_draft_merge", "production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
     {"id": "GAP-P1-007", "severity": "P1", "status": "REDUCED", "blocks": ["production_number_roles"], "note": "NEXT-06 number_roles_v1 40/40 component green"},
     {"id": "GAP-P1-008", "severity": "P1", "status": "REDUCED", "blocks": ["production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
@@ -68,7 +68,7 @@
     {"id": "MAI-31", "title": "EVENTFRAME TO DOMAIN PORTS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "Draft payload candidates; no silent domain post."},
     {"id": "MAI-32", "title": "DURABLE VERSIONED DRAFTS", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "Draft aggregate candidates; Dexie remains product draft store."},
     {"id": "MAI-33", "title": "DETERMINISTIC PREVIEW EDIT LOOP", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-002"], "note": "Preview candidates; UI totals authority still OPEN."},
-    {"id": "MAI-34", "title": "EXPLICIT CONFIRMATION AND OEC DISPATCH", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "confirm_oec_candidate only; product mutation still Dexie path; nl_assent_posts=false."},
+    {"id": "MAI-34", "title": "EXPLICIT CONFIRMATION AND OEC DISPATCH", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P0-001"], "note": "AI confirm_oec_candidate non-authority; NEXT-05 product tokens on Dexie path; nl_assent_posts=false."},
     {"id": "MAI-35", "title": "OFFLINE SYNC CONFLICT REVERSAL", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P1-002"], "note": "offline_sync_candidate only; dual sync still OPEN."},
     {"id": "MAI-36", "title": "LEGAL QUESTION RESEARCH MODE", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-008"], "note": "Research candidates; no legal proof authority."},
     {"id": "MAI-37", "title": "CORE NEPAL TAX KNOWLEDGE PILOT", "depth": "CANDIDATE_CONSUMED", "production_approved": false, "live_effect": "SCAFFOLD", "linked_gaps": ["GAP-P2-008"], "note": "Tax pilot policy/candidates; never calculate."},
@@ -126,7 +126,7 @@
     "production_approved_true": 0,
     "launch_rows_production": 0
   },
-  "recommended_next_step": "NEXT-05",
+  "recommended_next_step": "NEXT-07",
   "next_file": "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-06"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06"]
 }

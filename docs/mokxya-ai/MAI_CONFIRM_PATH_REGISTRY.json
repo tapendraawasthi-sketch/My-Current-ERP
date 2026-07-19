@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_CONFIRM_PATH_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0075",
+  "step": "NEXT-05",
+  "decision": "MODEL_B_SHORT_LIVED_CONFIRM_TOKEN",
+  "product_mutation_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+  "entry": "src/lib/ekhata/orbixPostingService.ts::executeOrbixConfirm",
+  "token_policy": {
+    "required": true,
+    "ttl_ms": 900000,
+    "single_use": true,
+    "tenant_bound": true,
+    "tenant_field": "companyId"
+  },
+  "nl_assent_posts": false,
+  "ai_confirm_oec_is_authority": false,
+  "ai_may_mint_product_confirm_token": false,
+  "receipt_required_for_success": true,
+  "receipt_surfaces": [
+    "voucher_id",
+    "voucher_number",
+    "invoice_id",
+    "invoice_number",
+    "journal_id"
+  ],
+  "honesty": {
+    "production_approved": false,
+    "oec_is_sole_mutation_authority": false,
+    "gap_p0_001_register_status": "REDUCED",
+    "gap_p0_001_runtime_status": "OPEN"
+  },
+  "forbidden_claims": [
+    "nl_assent_posts=true",
+    "ai_confirm_oec_is_authority=true",
+    "confirm_token_reuse_allowed=true",
+    "success_without_receipt=true",
+    "oec_is_sole_mutation_authority=true"
+  ]
+}

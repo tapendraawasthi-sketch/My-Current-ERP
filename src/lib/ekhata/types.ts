@@ -112,6 +112,8 @@ export interface KhataConfirmationCard {
   preview_hash?: string | null;
   preview_version?: string | number | null;
   idempotency_key?: string | null;
+  /** NEXT-05 / ADR_0075 — short-lived Model B confirm token (UI mint; AI never authority) */
+  confirm_token?: string | null;
   /** Phase 9 settlement — passed through confirm to domain commands */
   party_id?: string | null;
   cash_or_bank_account_id?: string | null;

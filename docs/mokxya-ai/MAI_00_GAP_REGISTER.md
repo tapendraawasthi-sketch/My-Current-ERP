@@ -23,7 +23,7 @@ Severity legend:
 - **Dependencies:** ADR-0001 acceptance; sync map
 - **Acceptance condition:** Single documented write authority enforced by tests; alternate paths classified and gated
 - **Status:** REDUCED
-- **Progress (2026-07-19):** NEXT-02 / ADR_0072 accepts **Option A**: product mutation authority = Model B `DEXIE_EXECUTE_ORBIX_CONFIRM`; OEC is target/not product path; alternate writers (`NODE_KHATA_CONFIRM`, `VOUCHER_SLICE_UI`, `OEC_ACTION_RUNTIME`) classified in `MAI_MUTATION_AUTHORITY_REGISTRY.json`; AI claims of sole-OEC / NL assent / live dispatch fail-closed via `mutation_authority_policy.py`. Runtime bundles keep `gap_p0_001_status=OPEN` while dual writers remain. Does **not** CLOSE the gap (Dexie + Node writers still active; sole-OEC strangler deferred).
+- **Progress (2026-07-19):** NEXT-02 / ADR_0072 accepts **Option A**: product mutation authority = Model B `DEXIE_EXECUTE_ORBIX_CONFIRM`; OEC is target/not product path; alternate writers (`NODE_KHATA_CONFIRM`, `VOUCHER_SLICE_UI`, `OEC_ACTION_RUNTIME`) classified in `MAI_MUTATION_AUTHORITY_REGISTRY.json`; AI claims of sole-OEC / NL assent / live dispatch fail-closed via `mutation_authority_policy.py`. **NEXT-05 / ADR_0075:** short-lived single-use company-bound confirm tokens on `executeOrbixConfirm`; NL assent never posts; success requires receipt surface; AI `confirm_oec_candidate` remains non-authority. Runtime bundles keep `gap_p0_001_status=OPEN` while dual writers remain. Does **not** CLOSE the gap (Dexie + Node writers still active; sole-OEC strangler deferred).
 
 ### GAP-P1-010 — Transliteration V1 target labels contradict English/name identity safety
 

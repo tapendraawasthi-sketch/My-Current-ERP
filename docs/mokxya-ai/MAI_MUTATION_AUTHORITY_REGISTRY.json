@@ -19,7 +19,9 @@
     "model": "Model B local-first Dexie",
     "oec_required": false,
     "ai_may_invoke": false,
-    "nl_assent_posts": false
+    "nl_assent_posts": false,
+    "confirm_path_authority": "ADR_0075",
+    "confirm_token_required": true
   },
   "paths": [
     {
