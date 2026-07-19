@@ -500,6 +500,72 @@ async def build_canonical_ai_request(
             except Exception:  # noqa: BLE001
                 pass
 
+    # MAI-09: number / duration / ID role candidates (annotation only).
+    frame = canonical.language_frame
+    if frame is not None:
+        nr_ev = recorder.start_stage(
+            mai03_obs.TraceStage.NUMBER_ROLES_STARTED,
+            component="language_runtime.number_roles",
+        )
+        try:
+            from ..oip.modules.language_runtime.number_roles.application.number_role_service import (
+                attach_number_roles_to_frame,
+            )
+
+            updated = attach_number_roles_to_frame(frame)
+            if updated.raw_text != canonical.raw_text:
+                raise RuntimeError("RAW_TEXT_MUTATION")
+            bundle = updated.number_role_bundle
+            if bundle is not None and bundle.silent_applications != 0:
+                raise RuntimeError("SILENT_APPLICATIONS_NONZERO")
+            canonical = canonical.model_copy(update={"language_frame": updated})
+            recorder.complete_stage(
+                nr_ev,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                component_versions={
+                    "number_roles": (bundle.runtime_version if bundle else "mai-09.0.1-slice1"),
+                },
+                safe_attributes={
+                    "number_roles_status": bundle.analysis_status.value if bundle else "FAILED",
+                    "number_roles_candidate_count": bundle.candidate_count if bundle else 0,
+                },
+            )
+            recorder.record_event(
+                mai03_obs.TraceStage.NUMBER_ROLES_COMPLETED,
+                mai03_obs.TraceStatus.COMPLETED,
+                outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+                safe_attributes={
+                    "number_roles_candidate_count": bundle.candidate_count if bundle else 0,
+                },
+            )
+        except Exception:  # noqa: BLE001
+            recorder.fail_stage(nr_ev, safe_error_code="NUMBER_ROLES_FAILED")
+            recorder.record_event(
+                mai03_obs.TraceStage.NUMBER_ROLES_FAILED,
+                mai03_obs.TraceStatus.FAILED,
+                safe_error_code="NUMBER_ROLES_FAILED",
+            )
+            try:
+                from ..oip.contracts.number_roles import (
+                    NumberRoleBundleV1,
+                    NumberRoleStatus,
+                )
+
+                fail_bundle = NumberRoleBundleV1(
+                    analysis_status=NumberRoleStatus.FAILED,
+                    warnings=("NUMBER_ROLES_FAILED",),
+                    error_codes=("NUMBER_ROLES_FAILED",),
+                )
+                canonical = canonical.model_copy(
+                    update={
+                        "language_frame": frame.model_copy(
+                            update={"number_role_bundle": fail_bundle}
+                        )
+                    }
+                )
+            except Exception:  # noqa: BLE001
+                pass
+
     return canonical
 
 

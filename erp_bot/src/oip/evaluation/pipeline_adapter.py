@@ -9,31 +9,29 @@ from typing import Any
 from .contracts import EvalCaseV1, EvalMode, InteractionMode
 from .safety_guard import EvaluationSafetyGuard, get_active_guard
 
-_NUM = re.compile(r"(?<!\w)(\d+(?:[.,]\d+)?)(?!\w)")
-_DURATION = re.compile(r"\b(\d+)\s*(maina|mahina|month|months|महिना)\b", re.I)
-_PCT = re.compile(r"(\d+(?:[.,]\d+)?)\s*%")
-
-
 def _extract_number_roles(text: str) -> list[dict[str, Any]]:
-    roles: list[dict[str, Any]] = []
-    for m in _DURATION.finditer(text):
-        roles.append({"surface": m.group(1), "role": "duration", "normalized_value": m.group(1), "unit": "month"})
-    for m in _PCT.finditer(text):
-        roles.append({"surface": m.group(1), "role": "percentage", "normalized_value": m.group(1)})
-    for m in _NUM.finditer(text):
-        surface = m.group(1)
-        if any(r["surface"] == surface for r in roles):
-            continue
-        # Heuristic observation only — intentionally weak (baseline honesty)
-        role = "amount"
-        if re.search(r"\b(qty|quantity|pcs|piece|thaan|वटा)\b", text, re.I):
-            role = "quantity"
-        if re.search(r"\b(invoice|bill|inv)[^\d]{0,8}" + re.escape(surface), text, re.I):
-            role = "invoice_number"
-        if re.search(r"\b(pan|vat)\b", text, re.I) and len(surface) >= 5:
-            role = "identifier"
-        roles.append({"surface": surface.replace(",", ""), "role": role})
-    return roles
+    """MAI-09: use language-runtime number-role parser (duration/ID before money)."""
+    try:
+        from oip.modules.language_runtime.application.language_analyzer import analyze_language
+        from oip.modules.language_runtime.number_roles.application.number_role_service import (
+            parse_number_roles,
+        )
+
+        frame = analyze_language(text)
+        return parse_number_roles(text, language_frame=frame)
+    except Exception:  # noqa: BLE001 — evaluation must not crash
+        # Minimal fail-soft: duration only
+        roles: list[dict[str, Any]] = []
+        for m in re.finditer(r"(?i)\b(\d+)\s*(maina|mahina|month|months|महिना)\b", text):
+            roles.append(
+                {
+                    "surface": m.group(1),
+                    "role": "duration",
+                    "normalized_value": m.group(1),
+                    "unit": "month",
+                }
+            )
+        return roles
 
 
 def _observe_intent(text: str) -> str | None:

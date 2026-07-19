@@ -1,17 +1,13 @@
 {
   "$defs": {
-    "TypoCodeMixCandidateKind": {
-      "enum": [
-        "TYPO_VARIANT",
-        "ABBREVIATION_EXPAND",
-        "CODE_MIX_FEATURE"
-      ],
-      "title": "TypoCodeMixCandidateKind",
-      "type": "string"
-    },
-    "TypoCodeMixCandidateV1": {
+    "NumberRoleCandidateV1": {
       "additionalProperties": false,
       "properties": {
+        "ambiguous": {
+          "default": false,
+          "title": "Ambiguous",
+          "type": "boolean"
+        },
         "applied": {
           "default": false,
           "title": "Applied",
@@ -21,16 +17,17 @@
           "title": "Candidate Id",
           "type": "string"
         },
-        "candidate_surface": {
-          "title": "Candidate Surface",
-          "type": "string"
-        },
-        "kind": {
-          "$ref": "#/$defs/TypoCodeMixCandidateKind"
-        },
-        "original_surface": {
-          "title": "Original Surface",
-          "type": "string"
+        "normalized_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalized Value"
         },
         "raw_end": {
           "minimum": 0,
@@ -49,36 +46,67 @@
           },
           "title": "Reason Codes",
           "type": "array"
+        },
+        "role": {
+          "$ref": "#/$defs/NumberRoleKind"
+        },
+        "surface": {
+          "title": "Surface",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
         }
       },
       "required": [
         "candidate_id",
-        "kind",
-        "original_surface",
-        "candidate_surface",
+        "surface",
+        "role",
         "raw_start",
         "raw_end"
       ],
-      "title": "TypoCodeMixCandidateV1",
+      "title": "NumberRoleCandidateV1",
       "type": "object"
     },
-    "TypoCodeMixStatus": {
+    "NumberRoleKind": {
+      "enum": [
+        "amount",
+        "quantity",
+        "duration",
+        "percentage",
+        "invoice_number",
+        "identifier",
+        "date",
+        "unknown"
+      ],
+      "title": "NumberRoleKind",
+      "type": "string"
+    },
+    "NumberRoleStatus": {
       "enum": [
         "NOT_RUN",
         "COMPLETE",
         "PARTIAL",
-        "SKIPPED",
         "FAILED"
       ],
-      "title": "TypoCodeMixStatus",
+      "title": "NumberRoleStatus",
       "type": "string"
     }
   },
-  "$id": "https://mokxya.local/contracts/v1/TypoCodeMixBundleV1.json",
+  "$id": "https://mokxya.local/contracts/v1/NumberRoleBundleV1.json",
   "additionalProperties": false,
   "properties": {
     "analysis_status": {
-      "$ref": "#/$defs/TypoCodeMixStatus",
+      "$ref": "#/$defs/NumberRoleStatus",
       "default": "NOT_RUN"
     },
     "candidate_count": {
@@ -90,15 +118,10 @@
     "candidates": {
       "default": [],
       "items": {
-        "$ref": "#/$defs/TypoCodeMixCandidateV1"
+        "$ref": "#/$defs/NumberRoleCandidateV1"
       },
       "title": "Candidates",
       "type": "array"
-    },
-    "code_mix_features": {
-      "additionalProperties": true,
-      "title": "Code Mix Features",
-      "type": "object"
     },
     "error_codes": {
       "default": [],
@@ -113,13 +136,8 @@
       "title": "Offset Unit",
       "type": "string"
     },
-    "resource_version": {
-      "default": "mai-08.0.1-slice1",
-      "title": "Resource Version",
-      "type": "string"
-    },
     "runtime_version": {
-      "default": "mai-08.0.2-slice2",
+      "default": "mai-09.0.1-slice1",
       "title": "Runtime Version",
       "type": "string"
     },
@@ -147,7 +165,7 @@
       "type": "array"
     }
   },
-  "title": "TypoCodeMixBundleV1",
+  "title": "NumberRoleBundleV1",
   "type": "object",
   "x-mai-schema-version": "1.0.0"
 }

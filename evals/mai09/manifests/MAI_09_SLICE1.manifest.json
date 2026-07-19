@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai09-slice1-v1",
+  "dataset_hash": "22c0e387167b891c24bbf348b7b62d2ea29491425709131b175513c935927575",
+  "phase": "MAI-09",
+  "slice": "SLICE1_DURATION_AND_ID_PROTECTION",
+  "runtime_version": "mai-09.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai09/frozen/number_roles_critical_v1.jsonl",
+      "sha256": "22c0e387167b891c24bbf348b7b62d2ea29491425709131b175513c935927575",
+      "case_count": 8,
+      "suite_id": "number_roles_critical_v1"
+    }
+  ]
+}

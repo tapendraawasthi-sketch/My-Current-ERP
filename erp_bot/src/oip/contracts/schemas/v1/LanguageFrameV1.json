@@ -443,6 +443,173 @@
       "title": "NormalizationViewV1",
       "type": "object"
     },
+    "NumberRoleBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/NumberRoleStatus",
+          "default": "NOT_RUN"
+        },
+        "candidate_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "candidates": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/NumberRoleCandidateV1"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "runtime_version": {
+          "default": "mai-09.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "silent_applications": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Silent Applications",
+          "type": "integer"
+        },
+        "source_authority": {
+          "default": "RAW",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "NumberRoleBundleV1",
+      "type": "object"
+    },
+    "NumberRoleCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguous": {
+          "default": false,
+          "title": "Ambiguous",
+          "type": "boolean"
+        },
+        "applied": {
+          "default": false,
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "normalized_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalized Value"
+        },
+        "raw_end": {
+          "minimum": 0,
+          "title": "Raw End",
+          "type": "integer"
+        },
+        "raw_start": {
+          "minimum": 0,
+          "title": "Raw Start",
+          "type": "integer"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "role": {
+          "$ref": "#/$defs/NumberRoleKind"
+        },
+        "surface": {
+          "title": "Surface",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "surface",
+        "role",
+        "raw_start",
+        "raw_end"
+      ],
+      "title": "NumberRoleCandidateV1",
+      "type": "object"
+    },
+    "NumberRoleKind": {
+      "enum": [
+        "amount",
+        "quantity",
+        "duration",
+        "percentage",
+        "invoice_number",
+        "identifier",
+        "date",
+        "unknown"
+      ],
+      "title": "NumberRoleKind",
+      "type": "string"
+    },
+    "NumberRoleStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "NumberRoleStatus",
+      "type": "string"
+    },
     "OffsetMapSegmentV1": {
       "additionalProperties": false,
       "properties": {
@@ -1170,7 +1337,7 @@
           "type": "string"
         },
         "runtime_version": {
-          "default": "mai-08.0.1-slice1",
+          "default": "mai-08.0.2-slice2",
           "title": "Runtime Version",
           "type": "string"
         },
@@ -1416,6 +1583,17 @@
       },
       "title": "Number Candidates",
       "type": "array"
+    },
+    "number_role_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NumberRoleBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "offset_unit": {
       "default": "UNICODE_CODE_POINT",

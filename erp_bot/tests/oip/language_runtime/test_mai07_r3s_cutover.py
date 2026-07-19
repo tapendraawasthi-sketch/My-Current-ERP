@@ -27,7 +27,8 @@ def test_active_identity_after_cutover():
     assert ENABLE_PROMOTION_OVERLAY is False
     card = cutover_identity_card()
     assert card["candidate_promoted"] is True
-    assert card["mai_08"] == "IN_PROGRESS"
+    assert card["mai_08"] == "PASSED_ENGINEERING"
+    assert card["mai_09"] == "IN_PROGRESS"
 
 
 def test_active_pack_hash_and_pipeline():

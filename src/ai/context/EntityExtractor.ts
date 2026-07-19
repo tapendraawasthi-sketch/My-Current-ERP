@@ -59,17 +59,26 @@ export class EntityExtractor {
       if (pattern.fields.verb) entities.verb = VERB_MAP[pattern.fields.verb.toLowerCase()] ?? pattern.fields.verb;
     }
 
-    // Amount: "500 ko" pattern
-    if (!entities.amount) {
-      const amountKo = lower.match(/(\d+)\s*ko\b/);
-      if (amountKo) entities.amount = parseInt(amountKo[1], 10);
-    }
+    // MAI-09: duration before money — "5 maina ko" is not amount
+    const durationMatch = lower.match(
+      /\b(\d+)\s*(maina|mahina|month|months)\b/,
+    );
+    const durationDeva = text.match(/([०-९]+)\s*महिना/);
+    if (durationMatch || durationDeva) {
+      // Leave amount unset; duration handled as non-money cue
+    } else {
+      // Amount: "500 ko" pattern (only when not a duration unit)
+      if (!entities.amount) {
+        const amountKo = lower.match(/(\d+)\s*ko\b/);
+        if (amountKo) entities.amount = parseInt(amountKo[1], 10);
+      }
 
-    // Nepali digits
-    const devaAmount = text.match(/([०-९]+)\s*को/);
-    if (devaAmount && !entities.amount) {
-      const latin = [...devaAmount[1]].map((c) => NEPALI_DIGIT_MAP[c] ?? c).join("");
-      entities.amount = parseInt(latin, 10);
+      // Nepali digits
+      const devaAmount = text.match(/([०-९]+)\s*को/);
+      if (devaAmount && !entities.amount) {
+        const latin = [...devaAmount[1]].map((c) => NEPALI_DIGIT_MAP[c] ?? c).join("");
+        entities.amount = parseInt(latin, 10);
+      }
     }
 
     // Quantity + unit
