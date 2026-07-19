@@ -359,6 +359,24 @@ class KnowledgeStageAdapter(WorkflowStagePort):
         validation = await self.validate(context)
         if validation.status != StageRunStatus.COMPLETED:
             return context, validation
+        # MAI-26: optional as_of filter hint from temporal cues (never legal proof).
+        as_of: str | None = None
+        temporal_meta: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_tcr = context.metadata.get("temporal_cross_ref")
+                if isinstance(raw_tcr, dict):
+                    temporal_meta = dict(raw_tcr)
+            from src.oip.modules.conversation.application.temporal_cross_ref_service import (
+                amendment_cues_present,
+                resolve_retrieval_as_of,
+            )
+
+            as_of = resolve_retrieval_as_of(temporal_meta or None)
+            amend_cues = amendment_cues_present(temporal_meta or None)
+        except Exception:  # noqa: BLE001
+            as_of = None
+            amend_cues = False
         try:
             snapshot_obj, bundle = await self._ports.knowledge.retrieve(  # type: ignore[union-attr]
                 tenant_id=context.tenant_id,
@@ -366,6 +384,7 @@ class KnowledgeStageAdapter(WorkflowStagePort):
                 correlation_id=context.correlation_id,
                 query=context.message,
                 company_id=context.company_id,
+                as_of=as_of,
             )
         except Exception as exc:  # noqa: BLE001 — knowledge must not block workflow
             return context, _ok(self.name, {"warning": str(exc)})
@@ -384,6 +403,12 @@ class KnowledgeStageAdapter(WorkflowStagePort):
             "snapshot_id": snapshot_obj.snapshot_id,
             "bundle_id": bundle.bundle_id,
             "snippets": snippets,
+            "as_of": as_of or getattr(snapshot_obj, "as_of", None),
+            "as_of_from_temporal_cues": bool(as_of),
+            "legal_effective_dates_proven": False,
+            "amendment_applied": False,
+            "amendment_cues_present": bool(amend_cues),
+            "amendment_filter_mode": "CUES_ONLY",
         }
         return context.model_copy(update={"knowledge_ref": snapshot}), _ok(self.name, snapshot)
 
@@ -584,6 +609,29 @@ class ExecutionStageAdapter(WorkflowStagePort):
                         "policy_decisions": {
                             **dict(route.policy_decisions or {}),
                             "extraction_ocr_plan": extraction_ocr_plan,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            pass
+
+        # MAI-26: forward temporal / cross-ref cues (as_of hint; never legal proof).
+        try:
+            temporal_cross_ref: dict[str, Any] = {}
+            if isinstance(context.metadata, dict):
+                raw_tcr = context.metadata.get("temporal_cross_ref")
+                if isinstance(raw_tcr, dict):
+                    temporal_cross_ref = dict(raw_tcr)
+            if temporal_cross_ref:
+                temporal_cross_ref["legal_effective_dates_proven"] = False
+                temporal_cross_ref["amendment_applied"] = False
+                temporal_cross_ref["amendment_filter_mode"] = "CUES_ONLY"
+                temporal_cross_ref["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "temporal_cross_ref": temporal_cross_ref,
                         }
                     }
                 )

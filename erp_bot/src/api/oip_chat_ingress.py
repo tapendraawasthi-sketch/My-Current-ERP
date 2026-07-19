@@ -1647,7 +1647,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             tcr_ev,
             version_map={
-                "temporal_cross_ref": "mai-26.0.1-slice1",
+                "temporal_cross_ref": "mai-26.0.2-slice2",
             },
             safe_attributes={
                 "temporal_cross_ref_status": (

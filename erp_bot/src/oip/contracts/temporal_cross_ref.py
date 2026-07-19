@@ -54,7 +54,7 @@ class CrossRefCueV1(ContractBase):
 class TemporalCrossRefBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: TemporalCrossRefStatus = TemporalCrossRefStatus.NOT_RUN
-    runtime_version: str = "mai-26.0.1-slice1"
+    runtime_version: str = "mai-26.0.2-slice2"
     source_authority: str = "REQUEST"
     temporal_cues: tuple[TemporalCueV1, ...] = ()
     cross_ref_cues: tuple[CrossRefCueV1, ...] = ()

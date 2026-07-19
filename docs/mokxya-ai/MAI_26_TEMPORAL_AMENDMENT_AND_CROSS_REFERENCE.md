@@ -1,34 +1,38 @@
 # MAI-26 — Temporal, Amendment, and Cross-Reference Model
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0043](decisions/ADR_0043_TEMPORAL_CROSS_REF_AUTHORITY.md)  
-**Runtime:** `mai-26.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-26.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
-Annotate temporal, amendment, and cross-reference cues on the canonical request
-when knowledge-source governance is COMPLETE — without proving legal effective
-dates or applying amendments.
+Annotate temporal / cross-reference cues, then consume `as_of_candidate` into
+knowledge retrieval filtering — without proving legal effective dates or
+applying amendments.
 
 ## Slice 1
 
 1. Ingress `TEMPORAL_CROSS_REF_*` after EXTRACTION_OCR_PLAN
-2. `TemporalCrossRefBundleV1` on `CanonicalAIRequestV1`
-3. Detect date / FY / amendment / section / act-rule cues in raw_text
-4. Optional `as_of_candidate` from parseable date surfaces (candidate only)
-5. `legal_effective_dates_proven=false`; `amendment_applied=false`
-6. Governance SKIP / empty text → SKIP
+2. `TemporalCrossRefBundleV1` cue detection when governance COMPLETE
+3. Optional `as_of_candidate`; `legal_effective_dates_proven=false`
+
+## Slice 2
+
+1. `resolve_retrieval_as_of` → normalized timestamp when COMPLETE + candidate
+2. `KnowledgeStageAdapter` passes `as_of` into `knowledge.retrieve`
+3. Amendment language → `amendment_cues_present` / `CUES_ONLY` (never applied)
+4. False `legal_effective_dates_proven` / `amendment_applied` blocks consume
+5. Forward cues into `policy_decisions` with authority flags stripped
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| Plain purchase | COMPLETE; may have zero cues |
-| Date / FY / amendment language | matching temporal cues; not proven |
-| Section / Act ref | cross-ref cues |
-| OOD | SKIP |
-| Any bundle | `legal_effective_dates_proven=false` |
+| Date cue | as_of applied to retrieval; not proven |
+| Amendment cue | cues present; `amendment_applied=false` |
+| OOD / no date | no as_of override |
+| Proven claim in metadata | consume blocked |
 
 ## Non-goals
 

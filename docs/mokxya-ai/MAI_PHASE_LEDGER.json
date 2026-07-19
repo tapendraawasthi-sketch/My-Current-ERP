@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-26",
-  "active_phase_note": "MAI-26 slice 1 IN_PROGRESS (ADR_0043); temporal/cross-ref cue annotation; MAI-25 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-26 slice 2 IN_PROGRESS (ADR_0043); as_of retrieval consume; amendment CUES_ONLY; MAI-25 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2525,19 +2525,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-26.0.1-slice1",
-      "slice": "SLICE1_TEMPORAL_CROSS_REF_ANNOTATION",
+      "runtime_version": "mai-26.0.2-slice2",
+      "slice": "SLICE2_TEMPORAL_AS_OF_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_26_TEMPORAL_AMENDMENT_AND_CROSS_REFERENCE.md",
         "docs/mokxya-ai/decisions/ADR_0043_TEMPORAL_CROSS_REF_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_26_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai26/manifests/MAI_26_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_26_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai26/manifests/MAI_26_SLICE1.manifest.json",
+        "evals/mai26/manifests/MAI_26_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
-        "temporal_cross_ref_service.py",
+        "temporal_cross_ref_service.py (cues + resolve_retrieval_as_of)",
         "TemporalCrossRefBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress TEMPORAL_CROSS_REF after MAI-25",
-        "legal_effective_dates_proven=false; amendment_applied=false"
+        "KnowledgeStageAdapter passes as_of from cues",
+        "amendment_filter_mode=CUES_ONLY; legal_effective_dates_proven=false"
       ],
       "blockers": [
         "Nepal law effective dates not proven",
@@ -2549,7 +2552,7 @@
         "MAI-25"
       ],
       "recommended_order": 26,
-      "closure_note": "Slice 1: COMPLETE governance→temporal/xref cues; as_of_candidate only; legal dates not proven; no amendment apply."
+      "closure_note": "Slice 2: as_of_candidate→knowledge.retrieve filter hint; amendment CUES_ONLY; legal dates not proven."
     },
     {
       "id": "MAI-27",

@@ -52,7 +52,7 @@ def _pipeline(text: str):
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-26.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-26.")
 
 
 def test_complete_without_claiming_proof() -> None:

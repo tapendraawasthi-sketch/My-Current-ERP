@@ -140,6 +140,9 @@ class ExecutionContextStage:
         extraction_ocr_plan = policy_decisions.get("extraction_ocr_plan")
         if not isinstance(extraction_ocr_plan, dict):
             extraction_ocr_plan = {}
+        temporal_cross_ref = policy_decisions.get("temporal_cross_ref")
+        if not isinstance(temporal_cross_ref, dict):
+            temporal_cross_ref = {}
         context_assembly = policy_decisions.get("context_assembly")
         if not isinstance(context_assembly, dict):
             context_assembly = {}
@@ -158,6 +161,13 @@ class ExecutionContextStage:
             extraction_ocr_plan["ocr_execution_authorized"] = False
             extraction_ocr_plan["is_execution_authority"] = False
             exec_meta["extraction_ocr_plan"] = extraction_ocr_plan
+        if temporal_cross_ref:
+            temporal_cross_ref = dict(temporal_cross_ref)
+            temporal_cross_ref["legal_effective_dates_proven"] = False
+            temporal_cross_ref["amendment_applied"] = False
+            temporal_cross_ref["amendment_filter_mode"] = "CUES_ONLY"
+            temporal_cross_ref["is_execution_authority"] = False
+            exec_meta["temporal_cross_ref"] = temporal_cross_ref
         if context_assembly:
             exec_meta["context_assembly"] = context_assembly
         if context_assembly_recall:

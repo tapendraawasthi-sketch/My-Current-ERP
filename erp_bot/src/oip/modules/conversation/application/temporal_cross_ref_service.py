@@ -1,13 +1,14 @@
-"""MAI-26 slice 1 — temporal / amendment / cross-reference annotation.
+"""MAI-26 — temporal / amendment / cross-reference annotation + consume.
 
-Detects cue candidates in raw_text when knowledge-source governance is COMPLETE.
+Slice 1: cue candidates in raw_text when knowledge-source governance is COMPLETE.
+Slice 2: resolve retrieval as_of from as_of_candidate; amendment stays cues-only.
 Never proves Nepal-law effective dates, applies amendments, or mutates documents.
 """
 
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.knowledge_source_governance import KnowledgeSourceGovernanceStatus
 from ....contracts.request import CanonicalAIRequestV1
@@ -20,7 +21,7 @@ from ....contracts.temporal_cross_ref import (
     TemporalCueV1,
 )
 
-RUNTIME_VERSION = "mai-26.0.1-slice1"
+RUNTIME_VERSION = "mai-26.0.2-slice2"
 AUTHORITY = "ADR_0043"
 
 _ISO_DATE = re.compile(r"\b(20\d{2}|19\d{2})-(\d{2})-(\d{2})\b")
@@ -278,6 +279,7 @@ def temporal_cross_ref_to_metadata(
         "as_of_candidate": bundle.as_of_candidate,
         "legal_effective_dates_proven": False,
         "amendment_applied": False,
+        "amendment_filter_mode": "CUES_ONLY",
         "reason_codes": list(bundle.reason_codes),
         "silent_applications": bundle.silent_applications,
         "draft_mutations": bundle.draft_mutations,
@@ -286,11 +288,77 @@ def temporal_cross_ref_to_metadata(
     }
 
 
+def should_apply_retrieval_as_of(
+    temporal_cross_ref: Mapping[str, Any] | TemporalCrossRefBundleV1 | None,
+) -> bool:
+    """True when COMPLETE with as_of_candidate and no false legal-proof claim."""
+    if temporal_cross_ref is None:
+        return False
+    if isinstance(temporal_cross_ref, TemporalCrossRefBundleV1):
+        data = temporal_cross_ref_to_metadata(temporal_cross_ref)
+    else:
+        data = dict(temporal_cross_ref)
+    if data.get("is_execution_authority") is True:
+        return False
+    if data.get("legal_effective_dates_proven") is True:
+        return False
+    if data.get("amendment_applied") is True:
+        return False
+    if str(data.get("analysis_status") or "") != TemporalCrossRefStatus.COMPLETE.value:
+        return False
+    return bool(str(data.get("as_of_candidate") or "").strip())
+
+
+def resolve_retrieval_as_of(
+    temporal_cross_ref: Mapping[str, Any] | TemporalCrossRefBundleV1 | None,
+) -> str | None:
+    """Return normalized as_of timestamp for knowledge retrieval, or None.
+
+    Candidate dates are filter hints only — never imply legal_effective_dates_proven.
+    """
+    if not should_apply_retrieval_as_of(temporal_cross_ref):
+        return None
+    if isinstance(temporal_cross_ref, TemporalCrossRefBundleV1):
+        candidate = temporal_cross_ref.as_of_candidate
+    else:
+        candidate = (temporal_cross_ref or {}).get("as_of_candidate")
+    raw = str(candidate or "").strip()
+    if not raw:
+        return None
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", raw):
+        return f"{raw}T23:59:59+00:00"
+    return raw
+
+
+def amendment_cues_present(
+    temporal_cross_ref: Mapping[str, Any] | TemporalCrossRefBundleV1 | None,
+) -> bool:
+    """Whether amendment/supersession language was observed (cues only; never applied)."""
+    if temporal_cross_ref is None:
+        return False
+    if isinstance(temporal_cross_ref, TemporalCrossRefBundleV1):
+        kinds_t = {c.kind for c in temporal_cross_ref.temporal_cues}
+        kinds_x = {c.kind for c in temporal_cross_ref.cross_ref_cues}
+        return (
+            TemporalCueKind.AMENDMENT_LANGUAGE in kinds_t
+            or CrossRefCueKind.SUPERSEDES_CUE in kinds_x
+        )
+    kinds_t = set(temporal_cross_ref.get("temporal_kinds") or [])
+    kinds_x = set(temporal_cross_ref.get("cross_ref_kinds") or [])
+    return (
+        TemporalCueKind.AMENDMENT_LANGUAGE.value in kinds_t
+        or CrossRefCueKind.SUPERSEDES_CUE.value in kinds_x
+    )
+
+
 __all__ = [
     "AUTHORITY",
     "RUNTIME_VERSION",
+    "amendment_cues_present",
     "assert_temporal_cross_ref_authority",
     "attach_temporal_cross_ref_to_request",
     "build_temporal_cross_ref_bundle",
+    "resolve_retrieval_as_of",
+    "should_apply_retrieval_as_of",
     "temporal_cross_ref_to_metadata",
 ]
