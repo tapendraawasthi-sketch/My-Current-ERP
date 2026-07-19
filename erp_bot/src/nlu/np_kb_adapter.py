@@ -13,7 +13,7 @@ import sqlite3
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 logger = logging.getLogger(__name__)
 
@@ -117,6 +117,7 @@ class KbCitation:
     safety_labels: list[str]
     content: str
     score: float
+    retrieval_collection: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -126,6 +127,7 @@ class KbCitation:
             "source_line_range": [self.source_line_start, self.source_line_end],
             "domain": self.domain,
             "record_type": self.record_type,
+            "retrieval_collection": self.retrieval_collection,
             "quality_score": self.quality_score,
             "review_status": self.review_status,
             "safety_labels": self.safety_labels,
@@ -349,9 +351,15 @@ class NpKbLexicalRetriever:
         min_quality: float = 0.0,
         review_policy: str = "development_all",
         include_eval: bool = False,
+        allowed_collections: frozenset[str] | None = None,
+        blocked_collections: frozenset[str] | None = None,
     ) -> list[KbCitation]:
         if not self.lexical_db.exists():
             return []
+        # MAI-24: evaluation corpus never joins production grounding path.
+        include_eval = False
+        blocked = set(blocked_collections or ())
+        blocked.add("evaluation_only")
         q = _sanitize_fts_query(query)
         if not q:
             return []
@@ -368,7 +376,7 @@ class NpKbLexicalRetriever:
                 ORDER BY rank
                 LIMIT ?
             """
-            rows = list(conn.execute(sql, (q, top_k * 3)))
+            rows = list(conn.execute(sql, (q, top_k * 5)))
             if include_eval:
                 rows += list(
                     conn.execute(
@@ -384,6 +392,11 @@ class NpKbLexicalRetriever:
 
         citations: list[KbCitation] = []
         for row in rows:
+            coll = str(row["retrieval_collection"] or "")
+            if coll in blocked:
+                continue
+            if allowed_collections is not None and coll not in allowed_collections:
+                continue
             qs = row["quality_score"]
             if qs is not None and qs < min_quality:
                 continue
@@ -416,6 +429,7 @@ class NpKbLexicalRetriever:
                     safety_labels=labels,
                     content=row["content_text"] or "",
                     score=float(row["rank"] or 0.0),
+                    retrieval_collection=coll or None,
                 )
             )
             if len(citations) >= top_k:
@@ -508,6 +522,10 @@ class NpKbSemanticRetriever:
                     safety_labels=["semantic_hit"],
                     content=docs[i] if i < len(docs) else "",
                     score=-dist,
+                    retrieval_collection=str(
+                        (meta or {}).get("retrieval_collection") or ""
+                    )
+                    or None,
                 )
             )
         return citations
@@ -534,10 +552,16 @@ def _merge_citations(
     return ordered[:top_k]
 
 
-def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInterpretResult:
+def interpret_user_text(
+    text: str,
+    *,
+    cfg: NpKbConfig | None = None,
+    knowledge_source_governance: Mapping[str, Any] | None = None,
+) -> NpKbInterpretResult:
     """Main adapter entry: detect → protect → normalize → retrieve → cite.
 
     Never posts transactions. execution_allowed is always False from KB path.
+    MAI-24: optional knowledge_source_governance filters collections / skips OOD.
     """
     cfg = cfg or NpKbConfig.from_env()
     obs: dict[str, Any] = {
@@ -550,6 +574,46 @@ def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInte
             skipped_reason="ORBIX_NP_KB_ENABLED is false",
             observability=obs,
         )
+
+    gov = (
+        knowledge_source_governance
+        if isinstance(knowledge_source_governance, Mapping)
+        else None
+    )
+    try:
+        from src.oip.modules.conversation.application.knowledge_source_governance_service import (
+            filter_citations_by_governance,
+            resolve_allowed_collections,
+            resolve_blocked_collections,
+            should_skip_retrieval_for_governance,
+        )
+    except Exception:  # noqa: BLE001
+        filter_citations_by_governance = None  # type: ignore[assignment]
+        resolve_allowed_collections = None  # type: ignore[assignment]
+        resolve_blocked_collections = None  # type: ignore[assignment]
+        should_skip_retrieval_for_governance = None  # type: ignore[assignment]
+
+    if (
+        should_skip_retrieval_for_governance is not None
+        and should_skip_retrieval_for_governance(gov)
+    ):
+        obs["governance_skip"] = True
+        return NpKbInterpretResult(
+            enabled=False,
+            skipped_reason="GOVERNANCE_SKIP",
+            observability=obs,
+        )
+
+    allowed_collections = (
+        resolve_allowed_collections(gov)
+        if resolve_allowed_collections is not None
+        else None
+    )
+    blocked_collections = (
+        resolve_blocked_collections(gov)
+        if resolve_blocked_collections is not None
+        else frozenset({"evaluation_only"})
+    )
 
     t0 = time.perf_counter()
     script = detect_script_and_tokens(text or "")
@@ -574,6 +638,8 @@ def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInte
             min_quality=cfg.min_quality_score,
             review_policy=cfg.review_policy,
             include_eval=False,
+            allowed_collections=allowed_collections,
+            blocked_collections=blocked_collections,
         )
         retrieval_ms = (time.perf_counter() - tr0) * 1000
 
@@ -597,6 +663,9 @@ def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInte
             top_k=max(cfg.lexical_top_k, cfg.semantic_top_k),
         )
 
+    if filter_citations_by_governance is not None:
+        citations = filter_citations_by_governance(citations, gov)
+
     obs.update(
         {
             "script_detect_ms": round((t1 - t0) * 1000, 3),
@@ -610,6 +679,10 @@ def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInte
             "retrieval_miss": len(citations) == 0,
             "low_quality_filtered": False,
             "semantic_enabled": cfg.semantic_enabled,
+            "governance_applied": allowed_collections is not None,
+            "allowed_collection_count": (
+                len(allowed_collections) if allowed_collections is not None else None
+            ),
             "blocked_mutation_rate_note": "KB path cannot mutate; gated by authoritative ERP services",
         }
     )
@@ -631,7 +704,12 @@ def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInte
     )
 
 
-def enrich_nlu_context(text: str, *, top_k: int | None = None) -> dict[str, Any]:
+def enrich_nlu_context(
+    text: str,
+    *,
+    top_k: int | None = None,
+    knowledge_source_governance: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Optional NLU enrichment payload for hybrid search / conversation layers.
 
     Returns an empty/disabled structure when the feature flag is off so callers
@@ -640,7 +718,11 @@ def enrich_nlu_context(text: str, *, top_k: int | None = None) -> dict[str, Any]
     cfg = NpKbConfig.from_env()
     if top_k is not None:
         cfg.lexical_top_k = top_k
-    result = interpret_user_text(text, cfg=cfg)
+    result = interpret_user_text(
+        text,
+        cfg=cfg,
+        knowledge_source_governance=knowledge_source_governance,
+    )
     payload = result.to_optional_metadata().get("np_kb", {})
     if not payload.get("enabled"):
         return payload
@@ -651,6 +733,7 @@ def enrich_nlu_context(text: str, *, top_k: int | None = None) -> dict[str, Any]
         {
             "record_id": c.record_id,
             "domain": c.domain,
+            "retrieval_collection": c.retrieval_collection,
             "snippet": (c.content or "")[:240],
             "source_file_id": c.source_file_id,
         }

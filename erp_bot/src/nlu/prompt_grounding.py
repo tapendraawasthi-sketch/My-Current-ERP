@@ -136,17 +136,31 @@ def build_prompt_grounding(
     *,
     knowledge_snippets: list[dict[str, Any]] | None = None,
     top_k: int = 5,
+    knowledge_source_governance: dict[str, Any] | None = None,
 ) -> PromptGrounding:
-    """Retrieve NP KB (+ optional OIP snippets) and format a provider grounding block."""
+    """Retrieve NP KB (+ optional OIP snippets) and format a provider grounding block.
+
+    MAI-24: when knowledge_source_governance is COMPLETE, filter collections;
+    when SKIP, skip NP KB retrieval (fail-closed).
+    """
     message = (user_message or "").strip()
     if not message:
         return PromptGrounding()
 
+    gov = (
+        knowledge_source_governance
+        if isinstance(knowledge_source_governance, dict)
+        else None
+    )
     np_payload: dict[str, Any] = {"enabled": False, "reason": "not_retrieved"}
     try:
         from .np_kb_adapter import enrich_nlu_context
 
-        np_payload = enrich_nlu_context(message, top_k=top_k)
+        np_payload = enrich_nlu_context(
+            message,
+            top_k=top_k,
+            knowledge_source_governance=gov,
+        )
         if not isinstance(np_payload, dict):
             np_payload = {"enabled": False, "reason": "invalid_payload"}
         np_payload["execution_allowed"] = False
@@ -155,7 +169,11 @@ def build_prompt_grounding(
         hints = np_payload.get("hint_snippets") or np_payload.get("citations") or []
         if np_payload.get("enabled") and not hints and _looks_like_language_question(message):
             for seed in _language_fallback_queries(message):
-                retry = enrich_nlu_context(seed, top_k=top_k)
+                retry = enrich_nlu_context(
+                    seed,
+                    top_k=top_k,
+                    knowledge_source_governance=gov,
+                )
                 if isinstance(retry, dict) and (
                     retry.get("hint_snippets") or retry.get("citations")
                 ):

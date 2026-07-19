@@ -1483,7 +1483,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             ksg_ev,
             version_map={
-                "knowledge_source_governance": "mai-24.0.1-slice1",
+                "knowledge_source_governance": "mai-24.0.2-slice2",
             },
             safe_attributes={
                 "knowledge_source_governance_status": (

@@ -1,12 +1,13 @@
-"""MAI-24 slice 1 — knowledge source / document governance annotation.
+"""MAI-24 — knowledge source / document governance annotation + consume.
 
-Annotation only: select allowed/blocked retrieval collections from router
-domain. Never retrieves documents, mutates indexes, or grants posting.
+Slice 1: select allowed/blocked retrieval collections from router domain.
+Slice 2: filter NP KB / grounding retrieval by that policy (fail-closed).
+Never mutates indexes, drafts, or grants posting. Bundle counters stay zero.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping, Sequence
 
 from ....contracts.knowledge_source_governance import (
     KnowledgeSourceGovernanceBundleV1,
@@ -15,7 +16,7 @@ from ....contracts.knowledge_source_governance import (
 from ....contracts.request import CanonicalAIRequestV1
 from ....contracts.router_decision import RouterAnalysisStatus, RouterDomain
 
-RUNTIME_VERSION = "mai-24.0.1-slice1"
+RUNTIME_VERSION = "mai-24.0.2-slice2"
 AUTHORITY = "ADR_0041"
 
 _EVALUATION_ONLY = "evaluation_only"
@@ -169,11 +170,97 @@ def knowledge_source_governance_to_metadata(
     }
 
 
+def should_skip_retrieval_for_governance(
+    governance: Mapping[str, Any] | KnowledgeSourceGovernanceBundleV1 | None,
+) -> bool:
+    """Fail-closed: SKIP / authority-violating policy blocks NP KB retrieval."""
+    if governance is None:
+        return False
+    if isinstance(governance, KnowledgeSourceGovernanceBundleV1):
+        data = knowledge_source_governance_to_metadata(governance)
+    else:
+        data = dict(governance)
+    if data.get("is_execution_authority") is True:
+        return True
+    if data.get("allow_evaluation_corpus") is True:
+        return True
+    status = str(data.get("analysis_status") or "")
+    return status in {
+        KnowledgeSourceGovernanceStatus.SKIP.value,
+        KnowledgeSourceGovernanceStatus.FAILED.value,
+    }
+
+
+def resolve_allowed_collections(
+    governance: Mapping[str, Any] | KnowledgeSourceGovernanceBundleV1 | None,
+) -> frozenset[str] | None:
+    """Return allowed collections for COMPLETE policy; None = no collection filter."""
+    if governance is None:
+        return None
+    if isinstance(governance, KnowledgeSourceGovernanceBundleV1):
+        data = knowledge_source_governance_to_metadata(governance)
+    else:
+        data = dict(governance)
+    if str(data.get("analysis_status") or "") != (
+        KnowledgeSourceGovernanceStatus.COMPLETE.value
+    ):
+        return None
+    allowed = [
+        str(c)
+        for c in (data.get("allowed_retrieval_collections") or [])
+        if c and str(c) != _EVALUATION_ONLY
+    ]
+    return frozenset(allowed)
+
+
+def resolve_blocked_collections(
+    governance: Mapping[str, Any] | KnowledgeSourceGovernanceBundleV1 | None,
+) -> frozenset[str]:
+    blocked: set[str] = {_EVALUATION_ONLY}
+    if governance is None:
+        return frozenset(blocked)
+    if isinstance(governance, KnowledgeSourceGovernanceBundleV1):
+        data = knowledge_source_governance_to_metadata(governance)
+    else:
+        data = dict(governance)
+    for c in data.get("blocked_retrieval_collections") or []:
+        if c:
+            blocked.add(str(c))
+    return frozenset(blocked)
+
+
+def filter_citations_by_governance(
+    citations: Sequence[Any],
+    governance: Mapping[str, Any] | KnowledgeSourceGovernanceBundleV1 | None,
+) -> list[Any]:
+    """Drop evaluation / blocked / out-of-policy collection citations."""
+    if should_skip_retrieval_for_governance(governance):
+        return []
+    allowed = resolve_allowed_collections(governance)
+    blocked = resolve_blocked_collections(governance)
+    out: list[Any] = []
+    for c in citations:
+        if isinstance(c, Mapping):
+            coll = str(c.get("retrieval_collection") or "")
+        else:
+            coll = str(getattr(c, "retrieval_collection", None) or "")
+        if coll in blocked or coll == _EVALUATION_ONLY:
+            continue
+        if allowed is not None and coll not in allowed:
+            continue
+        out.append(c)
+    return out
+
+
 __all__ = [
     "AUTHORITY",
     "RUNTIME_VERSION",
     "assert_knowledge_source_governance_authority",
     "attach_knowledge_source_governance_to_request",
     "build_knowledge_source_governance_bundle",
+    "filter_citations_by_governance",
     "knowledge_source_governance_to_metadata",
+    "resolve_allowed_collections",
+    "resolve_blocked_collections",
+    "should_skip_retrieval_for_governance",
 ]

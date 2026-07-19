@@ -77,7 +77,15 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
         snippets = policy_decisions.get("knowledge_snippets")
         if not isinstance(snippets, list):
             snippets = None
-        grounding = build_prompt_grounding(user_message, knowledge_snippets=snippets, top_k=5)
+        gov = policy_decisions.get("knowledge_source_governance")
+        if not isinstance(gov, dict):
+            gov = None
+        grounding = build_prompt_grounding(
+            user_message,
+            knowledge_snippets=snippets,
+            top_k=5,
+            knowledge_source_governance=gov,
+        )
         return grounding.to_metadata()
     except Exception:
         return {}

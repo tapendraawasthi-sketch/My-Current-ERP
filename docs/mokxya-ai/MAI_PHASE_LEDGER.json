@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-24",
-  "active_phase_note": "MAI-24 slice 1 IN_PROGRESS (ADR_0041); knowledge source governance annotation; MAI-23 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-24 slice 2 IN_PROGRESS (ADR_0041); knowledge source governance consume into NP KB grounding; MAI-23 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2451,19 +2451,23 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-24.0.1-slice1",
-      "slice": "SLICE1_KNOWLEDGE_SOURCE_GOVERNANCE_ANNOTATION",
+      "runtime_version": "mai-24.0.2-slice2",
+      "slice": "SLICE2_KNOWLEDGE_SOURCE_GOVERNANCE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_24_KNOWLEDGE_SOURCE_AND_DOCUMENT_GOVERNANCE.md",
         "docs/mokxya-ai/decisions/ADR_0041_KNOWLEDGE_SOURCE_GOVERNANCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_24_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai24/manifests/MAI_24_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_24_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai24/manifests/MAI_24_SLICE1.manifest.json",
+        "evals/mai24/manifests/MAI_24_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
-        "knowledge_source_governance_service.py",
+        "knowledge_source_governance_service.py (annotate + filter helpers)",
         "KnowledgeSourceGovernanceBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress KNOWLEDGE_SOURCE_GOVERNANCE after MAI-23",
-        "evaluation_only always blocked; no retrieval in slice 1"
+        "module_stages forward governance before grounding",
+        "np_kb_adapter / prompt_grounding collection filter + GOVERNANCE_SKIP",
+        "evaluation_only never joined into production FTS path"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -2474,7 +2478,7 @@
         "MAI-23"
       ],
       "recommended_order": 24,
-      "closure_note": "Slice 1: COMPLETE non-OOD router→allowed/blocked collections; documents_retrieved=0; is_execution_authority=false."
+      "closure_note": "Slice 2: COMPLETE→collection filter in NP KB grounding; SKIP→GOVERNANCE_SKIP; annotation counters remain 0."
     },
     {
       "id": "MAI-25",

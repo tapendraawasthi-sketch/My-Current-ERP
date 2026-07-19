@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai24-slice2-v1",
+  "dataset_hash": "9a6a7e83e57fadefbe4d1702d4be1491eeb7aadd9da0ca23a0d33da80e9b2d40",
+  "phase": "MAI-24",
+  "slice": "SLICE2_KNOWLEDGE_SOURCE_GOVERNANCE_CONSUME",
+  "runtime_version": "mai-24.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai24/frozen/knowledge_source_governance_consume_v1.jsonl",
+      "sha256": "9a6a7e83e57fadefbe4d1702d4be1491eeb7aadd9da0ca23a0d33da80e9b2d40",
+      "case_count": 6,
+      "suite_id": "knowledge_source_governance_consume_v1"
+    }
+  ]
+}

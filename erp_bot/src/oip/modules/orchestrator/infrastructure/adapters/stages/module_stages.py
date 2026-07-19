@@ -549,6 +549,25 @@ class ExecutionStageAdapter(WorkflowStagePort):
         if route is None:
             return context, _fail(self.name, "route_not_found")
 
+        # MAI-24: forward knowledge-source governance before grounding consume.
+        knowledge_source_governance: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_ksg = context.metadata.get("knowledge_source_governance")
+                if isinstance(raw_ksg, dict):
+                    knowledge_source_governance = dict(raw_ksg)
+            if knowledge_source_governance:
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "knowledge_source_governance": knowledge_source_governance,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            knowledge_source_governance = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding
@@ -562,6 +581,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 context.message,
                 knowledge_snippets=knowledge_snippets,
                 top_k=5,
+                knowledge_source_governance=knowledge_source_governance or None,
             )
             grounded_meta = grounding.to_metadata()
             route = route.model_copy(

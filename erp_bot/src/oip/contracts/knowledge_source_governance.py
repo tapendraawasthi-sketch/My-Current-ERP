@@ -22,7 +22,7 @@ class KnowledgeSourceGovernanceBundleV1(ContractBase):
     analysis_status: KnowledgeSourceGovernanceStatus = (
         KnowledgeSourceGovernanceStatus.NOT_RUN
     )
-    runtime_version: str = "mai-24.0.1-slice1"
+    runtime_version: str = "mai-24.0.2-slice2"
     source_authority: str = "REQUEST"
     domain_key: str | None = None
     intent_family: str | None = None
