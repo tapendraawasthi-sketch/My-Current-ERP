@@ -1,0 +1,21 @@
+{
+  "dataset_version": "mai10-slice2-v1",
+  "dataset_hash": "2256db08af15c0b74d6eee132ad5e9c49fe843eef33f6d6a2cebf3fed38f3cb7",
+  "phase": "MAI-10",
+  "slice": "SLICE2_CONCEPT_INTENT_BRIDGE",
+  "runtime_version": "mai-10.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai10/frozen/domain_concepts_critical_v1.jsonl",
+      "sha256": "b4704291fdf9eb516e66c73adac1766931273bc09f5229b7f892c677c53d8306",
+      "case_count": 8,
+      "suite_id": "domain_concepts_critical_v1"
+    },
+    {
+      "path": "evals/mai10/frozen/concept_intent_bridge_v1.jsonl",
+      "sha256": "c5164a07f60f04554a4c7f382eb2586d0e2580864f8c68a1c8b0de2600c3152c",
+      "case_count": 8,
+      "suite_id": "concept_intent_bridge_v1"
+    }
+  ]
+}

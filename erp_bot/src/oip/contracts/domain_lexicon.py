@@ -39,7 +39,7 @@ class DomainConceptCandidateV1(ContractBase):
 class DomainLexiconBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: DomainLexiconStatus = DomainLexiconStatus.NOT_RUN
-    runtime_version: str = "mai-10.0.1-slice1"
+    runtime_version: str = "mai-10.0.2-slice2"
     ontology_version: str = "mai-10.seed.v1"
     offset_unit: str = "UNICODE_CODE_POINT"
     source_authority: str = "RAW"

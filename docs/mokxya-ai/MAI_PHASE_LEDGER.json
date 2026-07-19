@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-10",
-  "active_phase_note": "MAI-10 slice 1 IN_PROGRESS (ADR_0027); domain lexicon seed; MAI-09 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-10 slice 2 IN_PROGRESS (ADR_0027); concept→intent bridge; MAI-09 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -1939,16 +1939,20 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-10.0.1-slice1",
-      "slice": "SLICE1_SEED_CONCEPT_LEXICON",
+      "runtime_version": "mai-10.0.2-slice2",
+      "slice": "SLICE2_CONCEPT_INTENT_BRIDGE",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_10_DOMAIN_LEXICON_AND_CONCEPT_ONTOLOGY.md",
         "docs/mokxya-ai/decisions/ADR_0027_DOMAIN_LEXICON_AND_CONCEPT_ONTOLOGY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_10_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai10/manifests/MAI_10_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_10_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai10/manifests/MAI_10_SLICE1.manifest.json",
+        "evals/mai10/manifests/MAI_10_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "erp_bot/src/oip/modules/language_runtime/domain_lexicon/",
+        "concept_intent_bridge.py",
+        "intent_classification_stage mai10_concept_bridge priority 5",
         "erp_bot/src/oip/contracts/domain_lexicon.py",
         "oip_chat_ingress DOMAIN_LEXICON after MAI-09",
         "seed_concepts_v1.json"
@@ -1960,7 +1964,7 @@
         "MAI-09"
       ],
       "recommended_order": 10,
-      "closure_note": "Slice 1 IN_PROGRESS: seed concept lexicon candidates. Planner keywords not replaced."
+      "closure_note": "Slice 2: concept→intent bridge evidence-gated; keyword fallback retained; no draft writes."
     },
     {
       "id": "MAI-11",

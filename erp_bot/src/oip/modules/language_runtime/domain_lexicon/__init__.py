@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-RUNTIME_VERSION = "mai-10.0.1-slice1"
+RUNTIME_VERSION = "mai-10.0.2-slice2"
 ONTOLOGY_VERSION = "mai-10.seed.v1"
 OFFSET_UNIT = "UNICODE_CODE_POINT"
 
