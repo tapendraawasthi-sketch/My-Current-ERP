@@ -347,6 +347,27 @@ class CanonicalOipRequestAdapter:
                     "allow_evaluation_corpus": False,
                     "is_execution_authority": False,
                 }
+        # MAI-25: structural segmentation (no OCR).
+        if canonical.structural_segmentation_bundle is not None:
+            try:
+                from ...modules.conversation.application.structural_segmentation_service import (
+                    structural_segmentation_to_metadata,
+                )
+
+                metadata["structural_segmentation"] = (
+                    structural_segmentation_to_metadata(
+                        canonical.structural_segmentation_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                ss = canonical.structural_segmentation_bundle
+                metadata["structural_segmentation"] = {
+                    "analysis_status": ss.analysis_status.value,
+                    "runtime_version": ss.runtime_version,
+                    "segment_count": ss.segment_count,
+                    "ocr_invocations": 0,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

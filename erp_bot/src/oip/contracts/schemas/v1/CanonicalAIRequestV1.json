@@ -4530,6 +4530,172 @@
       "title": "StepStatus",
       "type": "string"
     },
+    "StructuralSegmentKind": {
+      "enum": [
+        "HEADING",
+        "RECORD_BLOCK",
+        "TABLE_CUE",
+        "LIST_ITEM",
+        "FREE_TEXT",
+        "UNKNOWN"
+      ],
+      "title": "StructuralSegmentKind",
+      "type": "string"
+    },
+    "StructuralSegmentV1": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "end_offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "kind": {
+          "$ref": "#/$defs/StructuralSegmentKind",
+          "default": "UNKNOWN"
+        },
+        "preview": {
+          "default": "",
+          "title": "Preview",
+          "type": "string"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "segment_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "start_offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "segment_id"
+      ],
+      "title": "StructuralSegmentV1",
+      "type": "object"
+    },
+    "StructuralSegmentationBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/StructuralSegmentationStatus",
+          "default": "NOT_RUN"
+        },
+        "draft_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Draft Mutations",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "extraction_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Extraction Mutations",
+          "type": "integer"
+        },
+        "index_mutations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Index Mutations",
+          "type": "integer"
+        },
+        "ocr_invocations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ocr Invocations",
+          "type": "integer"
+        },
+        "ocr_recommended": {
+          "default": false,
+          "title": "Ocr Recommended",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-25.0.1-slice1",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "segment_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Segment Count",
+          "type": "integer"
+        },
+        "segments": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/StructuralSegmentV1"
+          },
+          "title": "Segments",
+          "type": "array"
+        },
+        "source_authority": {
+          "default": "REQUEST",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "StructuralSegmentationBundleV1",
+      "type": "object"
+    },
+    "StructuralSegmentationStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "StructuralSegmentationStatus",
+      "type": "string"
+    },
     "TextFieldValueV1": {
       "additionalProperties": false,
       "properties": {
@@ -5843,6 +6009,17 @@
     "schema_version": {
       "title": "Schema Version",
       "type": "string"
+    },
+    "structural_segmentation_bundle": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/StructuralSegmentationBundleV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "timezone": {
       "default": "Asia/Kathmandu",

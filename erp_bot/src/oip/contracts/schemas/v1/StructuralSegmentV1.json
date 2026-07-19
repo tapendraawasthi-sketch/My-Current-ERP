@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "StructuralSegmentKind": {
+      "enum": [
+        "HEADING",
+        "RECORD_BLOCK",
+        "TABLE_CUE",
+        "LIST_ITEM",
+        "FREE_TEXT",
+        "UNKNOWN"
+      ],
+      "title": "StructuralSegmentKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/StructuralSegmentV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "end_offset": {
+      "default": 0,
+      "minimum": 0,
+      "title": "End Offset",
+      "type": "integer"
+    },
+    "kind": {
+      "$ref": "#/$defs/StructuralSegmentKind",
+      "default": "UNKNOWN"
+    },
+    "preview": {
+      "default": "",
+      "title": "Preview",
+      "type": "string"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "segment_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Segment Id",
+      "type": "string"
+    },
+    "start_offset": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Start Offset",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "segment_id"
+  ],
+  "title": "StructuralSegmentV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

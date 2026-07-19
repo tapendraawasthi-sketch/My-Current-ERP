@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai25-slice1-v1",
+  "dataset_hash": "d9cf46e1af00869c6e481be03ca0af929807fc9ebdb095072fd4e43b5e600e14",
+  "phase": "MAI-25",
+  "slice": "SLICE1_STRUCTURAL_SEGMENTATION_ANNOTATION",
+  "runtime_version": "mai-25.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai25/frozen/structural_segmentation_v1.jsonl",
+      "sha256": "d9cf46e1af00869c6e481be03ca0af929807fc9ebdb095072fd4e43b5e600e14",
+      "case_count": 6,
+      "suite_id": "structural_segmentation_v1"
+    }
+  ]
+}

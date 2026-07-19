@@ -1522,6 +1522,58 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent governance.
 
+    # MAI-25: structural segmentation annotation (no OCR).
+    ss_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.STRUCTURAL_SEGMENTATION_STARTED,
+        component="conversation.structural_segmentation",
+    )
+    try:
+        from ..oip.modules.conversation.application.structural_segmentation_service import (
+            assert_structural_segmentation_authority,
+            attach_structural_segmentation_to_request,
+        )
+
+        updated = attach_structural_segmentation_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.structural_segmentation_bundle
+        assert_structural_segmentation_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            ss_ev,
+            version_map={
+                "structural_segmentation": "mai-25.0.1-slice1",
+            },
+            safe_attributes={
+                "structural_segmentation_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "segment_count": bundle.segment_count if bundle else 0,
+                "ocr_recommended": bundle.ocr_recommended if bundle else False,
+                "ocr_invocations": bundle.ocr_invocations if bundle else 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.STRUCTURAL_SEGMENTATION_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "segment_count": bundle.segment_count if bundle else 0,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            ss_ev, safe_error_code="STRUCTURAL_SEGMENTATION_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.STRUCTURAL_SEGMENTATION_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="STRUCTURAL_SEGMENTATION_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent segments.
+
     return canonical
 
 

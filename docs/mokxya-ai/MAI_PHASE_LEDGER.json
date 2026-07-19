@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-24",
-  "active_phase_note": "MAI-24 slice 2 IN_PROGRESS (ADR_0041); knowledge source governance consume into NP KB grounding; MAI-23 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-25",
+  "active_phase_note": "MAI-25 slice 1 IN_PROGRESS (ADR_0042); structural segmentation annotation; MAI-24 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2447,7 +2447,7 @@
     {
       "id": "MAI-24",
       "title": "KNOWLEDGE SOURCE AND DOCUMENT GOVERNANCE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2458,6 +2458,7 @@
         "docs/mokxya-ai/decisions/ADR_0041_KNOWLEDGE_SOURCE_GOVERNANCE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_24_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_24_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_24_ENGINEERING_CLOSURE.md",
         "evals/mai24/manifests/MAI_24_SLICE1.manifest.json",
         "evals/mai24/manifests/MAI_24_SLICE2.manifest.json"
       ],
@@ -2478,22 +2479,39 @@
         "MAI-23"
       ],
       "recommended_order": 24,
-      "closure_note": "Slice 2: COMPLETE→collection filter in NP KB grounding; SKIP→GOVERNANCE_SKIP; annotation counters remain 0."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-25. production_approved=false. GAP-P2-008 OPEN."
     },
     {
       "id": "MAI-25",
       "title": "EXTRACTION, OCR, AND STRUCTURAL SEGMENTATION",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "knowledgebase parser pipeline"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-25.0.1-slice1",
+      "slice": "SLICE1_STRUCTURAL_SEGMENTATION_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_25_EXTRACTION_OCR_AND_STRUCTURAL_SEGMENTATION.md",
+        "docs/mokxya-ai/decisions/ADR_0042_STRUCTURAL_SEGMENTATION_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_25_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai25/manifests/MAI_25_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "structural_segmentation_service.py",
+        "StructuralSegmentationBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress STRUCTURAL_SEGMENTATION after MAI-24",
+        "ocr_invocations=0; no OCR provider calls in slice 1"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-24"
       ],
-      "recommended_order": 25
+      "recommended_order": 25,
+      "closure_note": "Slice 1: COMPLETE governance→deterministic line/block segments; ocr_invocations=0; is_execution_authority=false."
     },
     {
       "id": "MAI-26",

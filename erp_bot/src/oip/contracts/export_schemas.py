@@ -47,6 +47,10 @@ from .typed_plan import TypedPlanBundleV1
 from .provider_cascade import ProviderCascadeBundleV1
 from .prompt_registry import PromptRegistryBundleV1
 from .knowledge_source_governance import KnowledgeSourceGovernanceBundleV1
+from .structural_segmentation import (
+    StructuralSegmentV1,
+    StructuralSegmentationBundleV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -77,6 +81,8 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("ProviderCascadeBundleV1", ProviderCascadeBundleV1),
     ("PromptRegistryBundleV1", PromptRegistryBundleV1),
     ("KnowledgeSourceGovernanceBundleV1", KnowledgeSourceGovernanceBundleV1),
+    ("StructuralSegmentationBundleV1", StructuralSegmentationBundleV1),
+    ("StructuralSegmentV1", StructuralSegmentV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

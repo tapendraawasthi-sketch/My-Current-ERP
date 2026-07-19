@@ -26,6 +26,8 @@
     "ProviderCascadeBundleV1",
     "PromptRegistryBundleV1",
     "KnowledgeSourceGovernanceBundleV1",
+    "StructuralSegmentationBundleV1",
+    "StructuralSegmentV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

@@ -22,6 +22,7 @@ from .typed_plan import TypedPlanBundleV1
 from .provider_cascade import ProviderCascadeBundleV1
 from .prompt_registry import PromptRegistryBundleV1
 from .knowledge_source_governance import KnowledgeSourceGovernanceBundleV1
+from .structural_segmentation import StructuralSegmentationBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -159,6 +160,8 @@ class CanonicalAIRequestV1(ContractBase):
     prompt_registry_bundle: PromptRegistryBundleV1 | None = None
     # MAI-24: knowledge source / document governance (annotation only).
     knowledge_source_governance_bundle: KnowledgeSourceGovernanceBundleV1 | None = None
+    # MAI-25: structural segmentation candidates (no OCR / extraction mutate).
+    structural_segmentation_bundle: StructuralSegmentationBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

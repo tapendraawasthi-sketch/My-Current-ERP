@@ -1,7 +1,7 @@
 # MAI-24 — Knowledge Source and Document Governance
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0041](decisions/ADR_0041_KNOWLEDGE_SOURCE_GOVERNANCE_AUTHORITY.md)  
 **Runtime:** `mai-24.0.2-slice2` (engineering; not production-approved)
 
