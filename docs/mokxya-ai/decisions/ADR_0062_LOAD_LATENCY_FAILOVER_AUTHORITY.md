@@ -1,7 +1,7 @@
 # ADR_0062 — Load, Latency, Resource, and Failover Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-45-LOAD-LATENCY-RESOURCE-AND-FAILOVER (slice 1)
+- **Phase:** MAI-45-LOAD-LATENCY-RESOURCE-AND-FAILOVER (slice 2)
 - **Extends:** ADR_0001, ADR_0003
 
 ## Context
@@ -31,21 +31,31 @@ performance approval. Safety must not be bypassed under timeout.
    `failover_proven=false`,
    `production_perf_approved=false`,
    `gap_p2_008_status=OPEN`.
-4. Never invent SLO pass, capacity proof, or allow safety bypass under
+4. Slice 2: consume builds `load_latency_failover_candidate` /
+   `load_latency_failover_consume_ready` under default `CANDIDATE_ONLY`.
+   Stage profiles, cascade tuning, index benchmarks, load/soak plan,
+   capacity plan, and definitive answer stay null. Live ingress forces
+   `allow_load_test=false` and `allow_slo_claim=false`. Label-only invoke
+   modes exist for unit tests only.
+5. Never invent SLO pass, capacity proof, or allow safety bypass under
    timeout from cue detection alone.
-5. Engineering-gated: `production_approved=false`.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Gate on MAI-44 pen_review_passed | Pen review must stay false |
-| Claim pilot SLOs met in slice 1 | Measured baselines / soak required |
+| Claim pilot SLOs met in slice 1–2 | Measured baselines / soak required |
+| Live load-test / SLO claim in slice 2 | Authority / honesty risk |
 | Safety bypass under timeout | Roadmap gate forbids it |
+| Close GAP-P2-008 | Honesty review still required |
 | Production perf approval | Capacity / cost / residual risk required |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_45_LOAD_LATENCY_FAILOVER.md`
 - `docs/mokxya-ai/baselines/MAI_45_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_45_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/load_latency_failover_service.py`
+- `erp_bot/src/oip/modules/conversation/application/load_latency_failover_consume_service.py`

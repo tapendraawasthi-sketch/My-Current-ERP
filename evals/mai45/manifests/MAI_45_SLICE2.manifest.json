@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai45-slice2-v1",
+  "dataset_hash": "9a38b05c00b27f20f7921c78791e8e277640fa0b35ceccccb7145394811c2887",
+  "phase": "MAI-45",
+  "slice": "SLICE2_LOAD_LATENCY_FAILOVER_CANDIDATE_CONSUME",
+  "runtime_version": "mai-45.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai45/frozen/load_latency_failover_consume_v1.jsonl",
+      "sha256": "9a38b05c00b27f20f7921c78791e8e277640fa0b35ceccccb7145394811c2887",
+      "case_count": 6,
+      "suite_id": "load_latency_failover_consume_v1"
+    }
+  ]
+}

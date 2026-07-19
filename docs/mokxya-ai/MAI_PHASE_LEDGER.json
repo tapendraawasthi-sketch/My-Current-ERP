@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-45",
-  "active_phase_note": "MAI-45 slice 1 IN_PROGRESS (ADR_0062); load/latency/failover policy (never SLOs met / never safety bypass); GAP-P2-008 remains OPEN",
+  "active_phase_note": "MAI-45 slice 2 IN_PROGRESS (ADR_0062); load/latency/failover CANDIDATE_ONLY (never SLOs met / never safety bypass); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -3268,19 +3268,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-45.0.1-slice1",
-      "slice": "SLICE1_LOAD_LATENCY_FAILOVER_POLICY",
+      "runtime_version": "mai-45.0.2-slice2",
+      "slice": "SLICE2_LOAD_LATENCY_FAILOVER_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_45_LOAD_LATENCY_FAILOVER.md",
         "docs/mokxya-ai/decisions/ADR_0062_LOAD_LATENCY_FAILOVER_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_45_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai45/manifests/MAI_45_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_45_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai45/manifests/MAI_45_SLICE1.manifest.json",
+        "evals/mai45/manifests/MAI_45_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "load_latency_failover_service.py (policy annotation)",
+        "load_latency_failover_consume_service.py (CANDIDATE_ONLY load_latency_failover_candidate)",
         "LoadLatencyFailoverBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress LOAD_LATENCY_FAILOVER after SECURITY_TENANT_RED_TEAM",
-        "release_status=NOT_RELEASED; pilot_slos_met=false; safety_bypass_under_timeout=false; capacity_proven=false; production_perf_approved=false; gap_p2_008_status=OPEN"
+        "allow_load_test=false; allow_slo_claim=false; release_status=NOT_RELEASED; pilot_slos_met=false; safety_bypass_under_timeout=false; capacity_proven=false; load_test_passed=false; production_perf_approved=false; gap_p2_008_status=OPEN"
       ],
       "blockers": [
         "GAP-P2-008 remains OPEN",
@@ -3295,7 +3298,7 @@
         "MAI-44"
       ],
       "recommended_order": 45,
-      "closure_note": "Slice 1: load/latency/failover POLICY_DECLARED; never SLOs met / never safety bypass; GAP-P2-008 open."
+      "closure_note": "Slice 2: load/latency/failover POLICY + CANDIDATE_ONLY candidates; never SLOs met / never safety bypass; GAP-P2-008 open."
     },
     {
       "id": "MAI-46",

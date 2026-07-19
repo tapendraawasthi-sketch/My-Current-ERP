@@ -944,17 +944,21 @@ class CanonicalOipRequestAdapter:
                     "security_red_team_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-45: load/latency/resource/failover policy (never claims SLOs met).
+        # MAI-45: load/latency/resource/failover + candidate consume.
         if canonical.load_latency_failover_bundle is not None:
             try:
+                from ...modules.conversation.application.load_latency_failover_consume_service import (
+                    enrich_llf_metadata_with_consume,
+                )
                 from ...modules.conversation.application.load_latency_failover_service import (
                     load_latency_failover_to_metadata,
                 )
 
+                base_meta = load_latency_failover_to_metadata(
+                    canonical.load_latency_failover_bundle
+                )
                 metadata["load_latency_failover"] = (
-                    load_latency_failover_to_metadata(
-                        canonical.load_latency_failover_bundle
-                    )
+                    enrich_llf_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 llf = canonical.load_latency_failover_bundle
@@ -970,6 +974,8 @@ class CanonicalOipRequestAdapter:
                     "capacity_proven": False,
                     "production_perf_approved": False,
                     "gap_p2_008_status": "OPEN",
+                    "load_latency_failover_consume_mode": "UNCHANGED",
+                    "load_latency_failover_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

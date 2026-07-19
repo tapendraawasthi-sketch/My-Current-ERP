@@ -3183,12 +3183,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent security pass.
 
-    # MAI-45: load/latency/resource/failover policy (never claims SLOs met).
+    # MAI-45: load/latency/resource/failover + candidate consume.
     llf_ev = recorder.begin_stage(
         mai03_obs.TraceStage.LOAD_LATENCY_FAILOVER_STARTED,
         component="conversation.load_latency_failover",
     )
     try:
+        from ..oip.modules.conversation.application.load_latency_failover_consume_service import (
+            assert_load_latency_failover_consume_authority,
+            load_latency_failover_consume_observability,
+        )
         from ..oip.modules.conversation.application.load_latency_failover_service import (
             assert_load_latency_failover_authority,
             attach_load_latency_failover_to_request,
@@ -3199,11 +3203,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.load_latency_failover_bundle
         assert_load_latency_failover_authority(bundle)
+        consume_obs = load_latency_failover_consume_observability(
+            updated,
+            allow_load_test=False,
+            allow_slo_claim=False,
+        )
+        assert_load_latency_failover_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             llf_ev,
             version_map={
-                "load_latency_failover": "mai-45.0.1-slice1",
+                "load_latency_failover": "mai-45.0.2-slice2",
             },
             safe_attributes={
                 "load_latency_failover_status": (
@@ -3217,6 +3227,12 @@ async def build_canonical_ai_request(
                 "pilot_scope": "LOAD_LATENCY_FAILOVER_CANDIDATE_ONLY",
                 "release_status": "NOT_RELEASED",
                 "gold_questions_status": "NOT_RELEASED",
+                "load_latency_failover_consume_mode": consume_obs.get(
+                    "load_latency_failover_consume_mode"
+                ),
+                "load_latency_failover_consume_ready": bool(
+                    consume_obs.get("load_latency_failover_consume_ready")
+                ),
                 "perf_authority_claimed": False,
                 "pilot_slos_met": False,
                 "bounded_degradation_proven": False,
@@ -3231,6 +3247,8 @@ async def build_canonical_ai_request(
                 "documents_retrieved": 0,
                 "draft_mutations": 0,
                 "posting_mutations": 0,
+                "allow_load_test": False,
+                "allow_slo_claim": False,
             },
         )
         recorder.record_event(
@@ -3246,6 +3264,9 @@ async def build_canonical_ai_request(
                 "unsupported_topics": list(bundle.unsupported_topics)
                 if bundle
                 else [],
+                "load_latency_failover_consume_mode": consume_obs.get(
+                    "load_latency_failover_consume_mode"
+                ),
             },
         )
     except Exception:  # noqa: BLE001

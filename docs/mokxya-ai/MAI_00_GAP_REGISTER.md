@@ -438,7 +438,7 @@ Severity legend:
 - **Required remediation:** RAG/evidence gates MAI-24–30
 - **Recommended MAI phase:** MAI-24+
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–44 `PASSED_ENGINEERING`. MAI-45 slice 1 declares load/latency/failover policy only (`release_status=NOT_RELEASED`, `pilot_slos_met=false`, `safety_bypass_under_timeout=false`, `capacity_proven=false`, `production_perf_approved=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
+- **Progress (2026-07-19):** MAI-24–30 engineering path landed (governance → hybrid → claim-citation abstain). MAI-36–44 `PASSED_ENGINEERING`. MAI-45 slice 2 builds `CANDIDATE_ONLY` load/latency/failover candidates (`release_status=NOT_RELEASED`, `pilot_slos_met=false`, `safety_bypass_under_timeout=false`, `capacity_proven=false`, `load_test_passed=false`, `production_perf_approved=false`, live `allow_load_test=false` / `allow_slo_claim=false`, `gap_p2_008_status=OPEN`). Does **not** close the gap (professional honesty review + suite sign-off still required).
 
 ### GAP-P2-001 — Chroma/Ollama RAG vs Groq production chat mismatch
 

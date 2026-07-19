@@ -40,7 +40,7 @@ class LoadLatencyFailoverBundleV1(ContractBase):
     analysis_status: LoadLatencyFailoverStatus = (
         LoadLatencyFailoverStatus.NOT_RUN
     )
-    runtime_version: str = "mai-45.0.1-slice1"
+    runtime_version: str = "mai-45.0.2-slice2"
     source_authority: str = "REQUEST"
     load_latency_failover_readiness: LoadLatencyFailoverReadiness = (
         LoadLatencyFailoverReadiness.NOT_APPLICABLE

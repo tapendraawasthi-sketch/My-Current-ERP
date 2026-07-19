@@ -18,7 +18,7 @@ from ....contracts.load_latency_failover import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-45.0.1-slice1"
+RUNTIME_VERSION = "mai-45.0.2-slice2"
 AUTHORITY = "ADR_0062"
 
 _LOAD = re.compile(r"\b(?:load\s+test|load\s+soak|soak\s+test)\b", re.I)
