@@ -1574,6 +1574,59 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent segments.
 
+    # MAI-25 slice 2: extraction / OCR plan from segments (never invokes OCR).
+    eop_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.EXTRACTION_OCR_PLAN_STARTED,
+        component="conversation.extraction_ocr_plan",
+    )
+    try:
+        from ..oip.modules.conversation.application.extraction_ocr_plan_service import (
+            assert_extraction_ocr_plan_authority,
+            attach_extraction_ocr_plan_to_request,
+        )
+
+        updated = attach_extraction_ocr_plan_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.extraction_ocr_plan_bundle
+        assert_extraction_ocr_plan_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            eop_ev,
+            version_map={
+                "extraction_ocr_plan": "mai-25.0.2-slice2",
+            },
+            safe_attributes={
+                "extraction_ocr_plan_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "step_count": bundle.step_count if bundle else 0,
+                "ocr_candidate": bundle.ocr_candidate if bundle else False,
+                "ocr_execution_authorized": False,
+                "ocr_invocations": bundle.ocr_invocations if bundle else 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.EXTRACTION_OCR_PLAN_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "step_count": bundle.step_count if bundle else 0,
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            eop_ev, safe_error_code="EXTRACTION_OCR_PLAN_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.EXTRACTION_OCR_PLAN_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="EXTRACTION_OCR_PLAN_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent OCR plans.
+
     return canonical
 
 

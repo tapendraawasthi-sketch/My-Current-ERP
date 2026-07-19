@@ -23,6 +23,7 @@ from .provider_cascade import ProviderCascadeBundleV1
 from .prompt_registry import PromptRegistryBundleV1
 from .knowledge_source_governance import KnowledgeSourceGovernanceBundleV1
 from .structural_segmentation import StructuralSegmentationBundleV1
+from .extraction_ocr_plan import ExtractionOcrPlanBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -162,6 +163,8 @@ class CanonicalAIRequestV1(ContractBase):
     knowledge_source_governance_bundle: KnowledgeSourceGovernanceBundleV1 | None = None
     # MAI-25: structural segmentation candidates (no OCR / extraction mutate).
     structural_segmentation_bundle: StructuralSegmentationBundleV1 | None = None
+    # MAI-25 slice 2: extraction / OCR plan (never executes OCR).
+    extraction_ocr_plan_bundle: ExtractionOcrPlanBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

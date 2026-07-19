@@ -568,6 +568,28 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             knowledge_source_governance = {}
 
+        # MAI-25: forward extraction / OCR plan (never authorizes OCR execution).
+        try:
+            extraction_ocr_plan: dict[str, Any] = {}
+            if isinstance(context.metadata, dict):
+                raw_eop = context.metadata.get("extraction_ocr_plan")
+                if isinstance(raw_eop, dict):
+                    extraction_ocr_plan = dict(raw_eop)
+            if extraction_ocr_plan:
+                # Fail-closed: strip any accidental execution authorization.
+                extraction_ocr_plan["ocr_execution_authorized"] = False
+                extraction_ocr_plan["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "extraction_ocr_plan": extraction_ocr_plan,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            pass
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding

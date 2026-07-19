@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "ExtractionOcrPlanStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "SKIP",
+        "FAILED"
+      ],
+      "title": "ExtractionOcrPlanStatus",
+      "type": "string"
+    },
+    "ExtractionPlanStepKind": {
+      "enum": [
+        "PARSE_TEXT_SEGMENT",
+        "PARSE_RECORD_BLOCK",
+        "PARSE_TABLE_CUE",
+        "PARSE_LIST_ITEM",
+        "SKIP_OCR",
+        "OCR_CANDIDATE"
+      ],
+      "title": "ExtractionPlanStepKind",
+      "type": "string"
+    },
+    "ExtractionPlanStepV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ExtractionPlanStepKind"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "segment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Segment Id"
+        },
+        "step_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Step Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "kind"
+      ],
+      "title": "ExtractionPlanStepV1",
+      "type": "object"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ExtractionOcrPlanBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_status": {
+      "$ref": "#/$defs/ExtractionOcrPlanStatus",
+      "default": "NOT_RUN"
+    },
+    "draft_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Draft Mutations",
+      "type": "integer"
+    },
+    "error_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Codes",
+      "type": "array"
+    },
+    "extraction_mutations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Extraction Mutations",
+      "type": "integer"
+    },
+    "ocr_candidate": {
+      "default": false,
+      "title": "Ocr Candidate",
+      "type": "boolean"
+    },
+    "ocr_execution_authorized": {
+      "default": false,
+      "title": "Ocr Execution Authorized",
+      "type": "boolean"
+    },
+    "ocr_invocations": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Ocr Invocations",
+      "type": "integer"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "runtime_version": {
+      "default": "mai-25.0.2-slice2",
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_authority": {
+      "default": "REQUEST",
+      "title": "Source Authority",
+      "type": "string"
+    },
+    "step_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Step Count",
+      "type": "integer"
+    },
+    "steps": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ExtractionPlanStepV1"
+      },
+      "title": "Steps",
+      "type": "array"
+    },
+    "tool_executions": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Tool Executions",
+      "type": "integer"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "ExtractionOcrPlanBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

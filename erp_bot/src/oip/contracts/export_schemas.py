@@ -51,6 +51,10 @@ from .structural_segmentation import (
     StructuralSegmentV1,
     StructuralSegmentationBundleV1,
 )
+from .extraction_ocr_plan import (
+    ExtractionOcrPlanBundleV1,
+    ExtractionPlanStepV1,
+)
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -83,6 +87,8 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("KnowledgeSourceGovernanceBundleV1", KnowledgeSourceGovernanceBundleV1),
     ("StructuralSegmentationBundleV1", StructuralSegmentationBundleV1),
     ("StructuralSegmentV1", StructuralSegmentV1),
+    ("ExtractionOcrPlanBundleV1", ExtractionOcrPlanBundleV1),
+    ("ExtractionPlanStepV1", ExtractionPlanStepV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

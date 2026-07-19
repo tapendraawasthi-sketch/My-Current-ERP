@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai25-slice2-v1",
+  "dataset_hash": "7aea4d28e5de0c2502005141bf47fa8522968d34e0f6af95f2d0c3cd1a2dc555",
+  "phase": "MAI-25",
+  "slice": "SLICE2_EXTRACTION_OCR_PLAN",
+  "runtime_version": "mai-25.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai25/frozen/extraction_ocr_plan_v1.jsonl",
+      "sha256": "7aea4d28e5de0c2502005141bf47fa8522968d34e0f6af95f2d0c3cd1a2dc555",
+      "case_count": 6,
+      "suite_id": "extraction_ocr_plan_v1"
+    }
+  ]
+}

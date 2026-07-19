@@ -137,6 +137,9 @@ class ExecutionContextStage:
         prompt_registry = policy_decisions.get("prompt_registry")
         if not isinstance(prompt_registry, dict):
             prompt_registry = {}
+        extraction_ocr_plan = policy_decisions.get("extraction_ocr_plan")
+        if not isinstance(extraction_ocr_plan, dict):
+            extraction_ocr_plan = {}
         context_assembly = policy_decisions.get("context_assembly")
         if not isinstance(context_assembly, dict):
             context_assembly = {}
@@ -150,6 +153,11 @@ class ExecutionContextStage:
         }
         if prompt_registry:
             exec_meta["prompt_registry"] = prompt_registry
+        if extraction_ocr_plan:
+            extraction_ocr_plan = dict(extraction_ocr_plan)
+            extraction_ocr_plan["ocr_execution_authorized"] = False
+            extraction_ocr_plan["is_execution_authority"] = False
+            exec_meta["extraction_ocr_plan"] = extraction_ocr_plan
         if context_assembly:
             exec_meta["context_assembly"] = context_assembly
         if context_assembly_recall:

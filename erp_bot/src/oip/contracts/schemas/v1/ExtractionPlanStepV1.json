@@ -1,0 +1,56 @@
+{
+  "$defs": {
+    "ExtractionPlanStepKind": {
+      "enum": [
+        "PARSE_TEXT_SEGMENT",
+        "PARSE_RECORD_BLOCK",
+        "PARSE_TABLE_CUE",
+        "PARSE_LIST_ITEM",
+        "SKIP_OCR",
+        "OCR_CANDIDATE"
+      ],
+      "title": "ExtractionPlanStepKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ExtractionPlanStepV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "$ref": "#/$defs/ExtractionPlanStepKind"
+    },
+    "reason_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "segment_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Segment Id"
+    },
+    "step_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Step Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "step_id",
+    "kind"
+  ],
+  "title": "ExtractionPlanStepV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

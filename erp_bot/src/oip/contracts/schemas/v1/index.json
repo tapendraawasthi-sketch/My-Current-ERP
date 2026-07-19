@@ -28,6 +28,8 @@
     "KnowledgeSourceGovernanceBundleV1",
     "StructuralSegmentationBundleV1",
     "StructuralSegmentV1",
+    "ExtractionOcrPlanBundleV1",
+    "ExtractionPlanStepV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

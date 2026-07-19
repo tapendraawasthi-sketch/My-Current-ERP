@@ -368,6 +368,25 @@ class CanonicalOipRequestAdapter:
                     "ocr_invocations": 0,
                     "is_execution_authority": False,
                 }
+        # MAI-25 slice 2: extraction / OCR plan (never executes).
+        if canonical.extraction_ocr_plan_bundle is not None:
+            try:
+                from ...modules.conversation.application.extraction_ocr_plan_service import (
+                    extraction_ocr_plan_to_metadata,
+                )
+
+                metadata["extraction_ocr_plan"] = extraction_ocr_plan_to_metadata(
+                    canonical.extraction_ocr_plan_bundle
+                )
+            except Exception:  # noqa: BLE001
+                eop = canonical.extraction_ocr_plan_bundle
+                metadata["extraction_ocr_plan"] = {
+                    "analysis_status": eop.analysis_status.value,
+                    "runtime_version": eop.runtime_version,
+                    "step_count": eop.step_count,
+                    "ocr_execution_authorized": False,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 
