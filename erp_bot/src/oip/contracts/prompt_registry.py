@@ -22,7 +22,7 @@ class PromptRegistryBundleV1(ContractBase):
     analysis_status: PromptRegistryAnalysisStatus = (
         PromptRegistryAnalysisStatus.NOT_RUN
     )
-    runtime_version: str = "mai-23.0.1-slice1"
+    runtime_version: str = "mai-23.0.2-slice2"
     source_authority: str = "REQUEST"
     event_type: str | None = None
     selected_prompt_template_id: str | None = None

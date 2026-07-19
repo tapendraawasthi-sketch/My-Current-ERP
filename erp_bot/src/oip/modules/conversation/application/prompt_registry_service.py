@@ -1,12 +1,13 @@
-"""MAI-23 slice 1 — prompt template + structured-output schema annotation.
+"""MAI-23 — prompt template + structured-output schema annotation/consume.
 
-Annotation only: select template id and schema ref from typed-plan event type.
-Never invokes models, assembles prompts for providers, or mutates drafts.
+Slice 1: select template id and schema ref from typed-plan event type.
+Slice 2: format a system-prompt directive for provider assembly (guide only).
+Never invokes models, mutates drafts, or grants posting authority.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
 from ....contracts.clarification_plan import ClarificationPlanStatus
 from ....contracts.prompt_registry import (
@@ -16,7 +17,7 @@ from ....contracts.prompt_registry import (
 from ....contracts.request import CanonicalAIRequestV1
 from ....contracts.typed_plan import TypedPlanAnalysisStatus
 
-RUNTIME_VERSION = "mai-23.0.1-slice1"
+RUNTIME_VERSION = "mai-23.0.2-slice2"
 AUTHORITY = "ADR_0040"
 
 # Deterministic engineering seed map (annotation refs only).
@@ -141,11 +142,76 @@ def prompt_registry_to_metadata(
     }
 
 
+def should_apply_prompt_registry(
+    prompt_registry: Mapping[str, Any] | None,
+) -> bool:
+    if not isinstance(prompt_registry, Mapping):
+        return False
+    if prompt_registry.get("is_execution_authority") is True:
+        return False
+    if int(prompt_registry.get("model_invocations") or 0) != 0:
+        return False
+    if int(prompt_registry.get("draft_mutations") or 0) != 0:
+        return False
+    if str(prompt_registry.get("analysis_status") or "") != (
+        PromptRegistryAnalysisStatus.COMPLETE.value
+    ):
+        return False
+    return bool(
+        str(prompt_registry.get("selected_prompt_template_id") or "").strip()
+    )
+
+
+def format_prompt_registry_directive(
+    prompt_registry: Mapping[str, Any] | PromptRegistryBundleV1 | None,
+) -> str:
+    """Return a system-prompt guide block, or empty when not applicable."""
+    if prompt_registry is None:
+        return ""
+    if isinstance(prompt_registry, PromptRegistryBundleV1):
+        data = prompt_registry_to_metadata(prompt_registry)
+    else:
+        data = dict(prompt_registry)
+    if not should_apply_prompt_registry(data):
+        return ""
+
+    template_id = str(data.get("selected_prompt_template_id") or "").strip()
+    schema_ref = str(data.get("structured_output_schema_ref") or "").strip()
+    event_type = str(data.get("event_type") or "").strip() or "-"
+    lines = [
+        "=== PROMPT REGISTRY / STRUCTURED OUTPUT (MAI-23) ===",
+        f"Selected template: {template_id}",
+        f"Structured output schema ref: {schema_ref or '-'}",
+        f"Event type: {event_type}",
+        "Instructions:",
+        "- Prefer this template's intent for reply shape and field focus.",
+        "- When emitting structured fields, align with the schema ref.",
+        "- Do not invent accounting facts or grant posting authority.",
+        "- Do not execute confirm/post tools from this directive alone.",
+        "=== END PROMPT REGISTRY / STRUCTURED OUTPUT ===",
+    ]
+    return "\n".join(lines)
+
+
+def append_prompt_registry_to_system_prompt(
+    base_prompt: str,
+    prompt_registry: Mapping[str, Any] | PromptRegistryBundleV1 | None,
+) -> str:
+    base = (base_prompt or "").rstrip()
+    block = format_prompt_registry_directive(prompt_registry).strip()
+    if not block:
+        return base
+    return f"{base}\n\n{block}"
+
+
 __all__ = [
     "AUTHORITY",
     "RUNTIME_VERSION",
+    "append_prompt_registry_to_system_prompt",
     "assert_prompt_registry_authority",
     "attach_prompt_registry_to_request",
     "build_prompt_registry_bundle",
+    "format_prompt_registry_directive",
     "prompt_registry_to_metadata",
+    "should_apply_prompt_registry",
 ]

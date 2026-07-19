@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-23",
-  "active_phase_note": "MAI-23 slice 1 IN_PROGRESS (ADR_0040); prompt registry annotation; MAI-22 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-23 slice 2 IN_PROGRESS (ADR_0040); prompt registry consume into system prompt; MAI-22 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2415,19 +2415,23 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-23.0.1-slice1",
-      "slice": "SLICE1_PROMPT_REGISTRY_ANNOTATION",
+      "runtime_version": "mai-23.0.2-slice2",
+      "slice": "SLICE2_PROMPT_REGISTRY_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_23_PROMPT_REGISTRY_AND_STRUCTURED_OUTPUT.md",
         "docs/mokxya-ai/decisions/ADR_0040_PROMPT_REGISTRY_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_23_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai23/manifests/MAI_23_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_23_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai23/manifests/MAI_23_SLICE1.manifest.json",
+        "evals/mai23/manifests/MAI_23_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
-        "prompt_registry_service.py",
+        "prompt_registry_service.py (annotate + directive)",
         "PromptRegistryBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress PROMPT_REGISTRY after MAI-22",
-        "prompt_grounding remains separate (consume later)"
+        "module_stages forward prompt_registry to policy_decisions",
+        "HttpProviderAdapter append_prompt_registry_to_system_prompt",
+        "prompt_grounding remains separate"
       ],
       "blockers": [
         "GAP-P1-004 / GAP-P1-008 remain REDUCED",
@@ -2437,7 +2441,7 @@
         "MAI-22"
       ],
       "recommended_order": 23,
-      "closure_note": "Slice 1: COMPLETE typed plan→template id + schema ref annotation; model_invocations=0; is_execution_authority=false."
+      "closure_note": "Slice 2: COMPLETE registry→system-prompt directive consume; model_invocations=0; is_execution_authority=false."
     },
     {
       "id": "MAI-24",

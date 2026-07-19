@@ -1425,7 +1425,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             pr_ev,
             version_map={
-                "prompt_registry": "mai-23.0.1-slice1",
+                "prompt_registry": "mai-23.0.2-slice2",
             },
             safe_attributes={
                 "prompt_registry_status": (

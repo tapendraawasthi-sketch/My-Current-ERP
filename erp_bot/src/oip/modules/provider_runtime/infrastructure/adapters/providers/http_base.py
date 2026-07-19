@@ -198,6 +198,17 @@ class HttpProviderAdapter(ProviderAdapterPort):
             )
         except Exception:
             pass
+        # MAI-23: append prompt-registry / structured-output guide (annotation consume).
+        try:
+            from src.oip.modules.conversation.application.prompt_registry_service import (
+                append_prompt_registry_to_system_prompt,
+            )
+
+            base = append_prompt_registry_to_system_prompt(
+                base, meta.get("prompt_registry")
+            )
+        except Exception:
+            pass
         # MAI-16: append DATA-ONLY context assembly (+ optional RO recall).
         try:
             from src.oip.modules.conversation.application.context_assembly_service import (

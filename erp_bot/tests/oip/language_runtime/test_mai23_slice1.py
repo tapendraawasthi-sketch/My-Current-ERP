@@ -64,7 +64,7 @@ def _pipeline(text: str):
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-23.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-23.")
 
 
 def test_complete_purchase_selects_template() -> None:

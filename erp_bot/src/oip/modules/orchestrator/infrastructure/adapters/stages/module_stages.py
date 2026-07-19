@@ -614,6 +614,25 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             pass
 
+        # MAI-23: forward prompt-registry refs into provider metadata.
+        try:
+            prompt_registry: dict[str, Any] = {}
+            if isinstance(context.metadata, dict):
+                raw_pr = context.metadata.get("prompt_registry")
+                if isinstance(raw_pr, dict):
+                    prompt_registry = dict(raw_pr)
+            if prompt_registry:
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "prompt_registry": prompt_registry,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            pass
+
         # MAI-16: forward context assembly into provider metadata; optional RO recall.
         try:
             from src.oip.modules.conversation.application.context_assembly_service import (

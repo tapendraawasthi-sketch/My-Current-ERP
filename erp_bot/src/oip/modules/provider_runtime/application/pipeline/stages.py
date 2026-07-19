@@ -126,6 +126,9 @@ class ExecutionContextStage:
         response_register = policy_decisions.get("response_register")
         if not isinstance(response_register, dict):
             response_register = {}
+        prompt_registry = policy_decisions.get("prompt_registry")
+        if not isinstance(prompt_registry, dict):
+            prompt_registry = {}
         context_assembly = policy_decisions.get("context_assembly")
         if not isinstance(context_assembly, dict):
             context_assembly = {}
@@ -137,6 +140,8 @@ class ExecutionContextStage:
             **grounding_meta,
             "response_register": response_register,
         }
+        if prompt_registry:
+            exec_meta["prompt_registry"] = prompt_registry
         if context_assembly:
             exec_meta["context_assembly"] = context_assembly
         if context_assembly_recall:
