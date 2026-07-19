@@ -579,17 +579,21 @@ class CanonicalOipRequestAdapter:
                     "preview_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-34: explicit confirm / OEC dispatch policy (never posts).
+        # MAI-34: explicit confirm / OEC dispatch + candidate consume (never posts).
         if canonical.explicit_confirmation_oec_dispatch_bundle is not None:
             try:
+                from ...modules.conversation.application.explicit_confirmation_oec_dispatch_consume_service import (
+                    enrich_eco_metadata_with_consume,
+                )
                 from ...modules.conversation.application.explicit_confirmation_oec_dispatch_service import (
                     explicit_confirmation_oec_dispatch_to_metadata,
                 )
 
+                base_meta = explicit_confirmation_oec_dispatch_to_metadata(
+                    canonical.explicit_confirmation_oec_dispatch_bundle
+                )
                 metadata["explicit_confirmation_oec_dispatch"] = (
-                    explicit_confirmation_oec_dispatch_to_metadata(
-                        canonical.explicit_confirmation_oec_dispatch_bundle
-                    )
+                    enrich_eco_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 eco = canonical.explicit_confirmation_oec_dispatch_bundle
@@ -601,6 +605,8 @@ class CanonicalOipRequestAdapter:
                     "confirm_token_minted": False,
                     "oec_dispatch_invoked": False,
                     "gap_p0_001_status": "OPEN",
+                    "confirm_oec_consume_mode": "UNCHANGED",
+                    "confirm_oec_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

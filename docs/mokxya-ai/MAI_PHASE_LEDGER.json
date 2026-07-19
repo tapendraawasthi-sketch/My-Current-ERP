@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-34",
-  "active_phase_note": "MAI-34 slice 1 IN_PROGRESS (ADR_0051); explicit confirm / OEC policy annotation; GAP-P0-001 remains OPEN",
+  "active_phase_note": "MAI-34 slice 2 IN_PROGRESS (ADR_0051); confirm/OEC-candidate consume (CANDIDATE_ONLY); GAP-P0-001 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2829,19 +2829,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-34.0.1-slice1",
-      "slice": "SLICE1_CONFIRM_OEC_POLICY_ANNOTATION",
+      "runtime_version": "mai-34.0.2-slice2",
+      "slice": "SLICE2_CONFIRM_OEC_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_34_EXPLICIT_CONFIRMATION_AND_OEC_DISPATCH.md",
         "docs/mokxya-ai/decisions/ADR_0051_EXPLICIT_CONFIRMATION_OEC_DISPATCH_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_34_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai34/manifests/MAI_34_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_34_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai34/manifests/MAI_34_SLICE1.manifest.json",
+        "evals/mai34/manifests/MAI_34_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "explicit_confirmation_oec_dispatch_service.py (policy annotation)",
+        "explicit_confirmation_oec_dispatch_consume_service.py (CANDIDATE_ONLY confirm_oec_candidate)",
         "ExplicitConfirmationOecDispatchBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress EXPLICIT_CONFIRMATION_OEC_DISPATCH after DETERMINISTIC_PREVIEW_EDIT_LOOP",
-        "nl_assent_posts=false; confirm_token_minted=false; oec_dispatch_invoked=false; gap_p0_001_status=OPEN"
+        "nl_assent_posts=false; allow_confirm_dispatch=false; allow_oec_dispatch=false; gap_p0_001_status=OPEN"
       ],
       "blockers": [
         "GAP-P0-001 remains OPEN",
@@ -2855,7 +2858,7 @@
         "MAI-33"
       ],
       "recommended_order": 34,
-      "closure_note": "Slice 1: confirm/OEC policy annotation; never posts; GAP-P0-001 open."
+      "closure_note": "Slice 2: CANDIDATE_ONLY confirm/OEC candidates; never live post; GAP-P0-001 open."
     },
     {
       "id": "MAI-35",

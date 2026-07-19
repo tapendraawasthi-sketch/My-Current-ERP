@@ -23,7 +23,7 @@ from ....contracts.explicit_confirmation_oec_dispatch import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-34.0.1-slice1"
+RUNTIME_VERSION = "mai-34.0.2-slice2"
 AUTHORITY = "ADR_0051"
 
 

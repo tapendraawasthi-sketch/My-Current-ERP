@@ -1,14 +1,15 @@
 # MAI-34 — Explicit Confirmation and OEC Dispatch
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0051](decisions/ADR_0051_EXPLICIT_CONFIRMATION_OEC_DISPATCH_AUTHORITY.md)  
-**Runtime:** `mai-34.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-34.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
-Annotate explicit-UI-confirm policy, stale-preview reject, and OEC readiness
-without minting tokens, dispatching Action/OEC, or posting ERP commands.
+Annotate explicit-UI-confirm policy, stale-preview reject, and OEC readiness —
+then consume into confirm/OEC candidates — without minting tokens, dispatching
+Action/OEC, or posting ERP commands.
 
 ## Slice 1
 
@@ -21,18 +22,22 @@ without minting tokens, dispatching Action/OEC, or posting ERP commands.
 7. Product path `DEXIE_EXECUTE_ORBIX_CONFIRM`; GAP-P0-001 remains OPEN
 8. Never token mint / Action / OEC / Dexie / khata / Node post
 
-## Slice 2 (later)
+## Slice 2
 
-Confirm/OEC candidates under allow flags — still no live post.
+1. `resolve_confirm_oec_consume_mode` / `build_confirm_oec_candidate`
+2. Default `CANDIDATE_ONLY` — merges MAI-31 `field_overrides`; `confirm_token=null`
+3. Blocked readiness / fake mint/post → `BLOCKED`; read-only → `SKIP`
+4. Live path forces `allow_confirm_dispatch=false` / `allow_oec_dispatch=false`
+5. Metadata: `confirm_oec_consume_ready` + `confirm_oec_candidate`
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| purchase preview ready | COMPLETE → POLICY_DECLARED confirm/OEC |
-| Preview BLOCKED | CONFIRM/OEC BLOCKED |
+| purchase preview ready | COMPLETE → `CANDIDATE_ONLY` confirm/OEC candidate |
+| Blocked readiness / fake mint | `BLOCKED` |
 | report / OOD / no PEL | SKIP |
-| Any path | nl_assent_posts=false; gap_p0_001=OPEN; no post |
+| Any live path | never token/post; GAP-P0-001 OPEN |
 
 ## Non-goals
 

@@ -2158,12 +2158,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent preview success.
 
-    # MAI-34: explicit confirm / OEC dispatch policy (never posts).
+    # MAI-34: explicit confirm / OEC dispatch + candidate consume (never posts).
     eco_ev = recorder.begin_stage(
         mai03_obs.TraceStage.EXPLICIT_CONFIRMATION_OEC_DISPATCH_STARTED,
         component="conversation.explicit_confirmation_oec_dispatch",
     )
     try:
+        from ..oip.modules.conversation.application.explicit_confirmation_oec_dispatch_consume_service import (
+            assert_confirm_oec_consume_authority,
+            confirm_oec_consume_observability,
+        )
         from ..oip.modules.conversation.application.explicit_confirmation_oec_dispatch_service import (
             assert_explicit_confirmation_oec_dispatch_authority,
             attach_explicit_confirmation_oec_dispatch_to_request,
@@ -2174,11 +2178,17 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.explicit_confirmation_oec_dispatch_bundle
         assert_explicit_confirmation_oec_dispatch_authority(bundle)
+        consume_obs = confirm_oec_consume_observability(
+            updated,
+            allow_confirm_dispatch=False,
+            allow_oec_dispatch=False,
+        )
+        assert_confirm_oec_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             eco_ev,
             version_map={
-                "explicit_confirmation_oec_dispatch": "mai-34.0.1-slice1",
+                "explicit_confirmation_oec_dispatch": "mai-34.0.2-slice2",
             },
             safe_attributes={
                 "confirm_oec_status": (
@@ -2193,6 +2203,12 @@ async def build_canonical_ai_request(
                 "confirm_policy": (
                     bundle.confirm_policy.value if bundle else None
                 ),
+                "confirm_oec_consume_mode": consume_obs.get(
+                    "confirm_oec_consume_mode"
+                ),
+                "confirm_oec_consume_ready": bool(
+                    consume_obs.get("confirm_oec_consume_ready")
+                ),
                 "nl_assent_posts": False,
                 "confirm_token_minted": False,
                 "oec_dispatch_invoked": False,
@@ -2200,6 +2216,8 @@ async def build_canonical_ai_request(
                 "dexie_post_invoked": False,
                 "gap_p0_001_status": "OPEN",
                 "posting_mutations": 0,
+                "allow_confirm_dispatch": False,
+                "allow_oec_dispatch": False,
             },
         )
         recorder.record_event(
@@ -2214,6 +2232,9 @@ async def build_canonical_ai_request(
                 ),
                 "action_to_oec_status": (
                     bundle.action_to_oec_status.value if bundle else None
+                ),
+                "confirm_oec_consume_mode": consume_obs.get(
+                    "confirm_oec_consume_mode"
                 ),
             },
         )

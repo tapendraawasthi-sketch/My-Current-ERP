@@ -233,7 +233,7 @@
       "type": "string"
     },
     "runtime_version": {
-      "default": "mai-34.0.1-slice1",
+      "default": "mai-34.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

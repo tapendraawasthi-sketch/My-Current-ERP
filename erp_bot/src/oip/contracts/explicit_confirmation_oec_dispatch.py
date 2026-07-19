@@ -51,7 +51,7 @@ class ExplicitConfirmationOecDispatchBundleV1(ContractBase):
     analysis_status: ExplicitConfirmationOecDispatchStatus = (
         ExplicitConfirmationOecDispatchStatus.NOT_RUN
     )
-    runtime_version: str = "mai-34.0.1-slice1"
+    runtime_version: str = "mai-34.0.2-slice2"
     source_authority: str = "REQUEST"
     selected_port_id: str | None = None
     draft_module_id: str | None = None

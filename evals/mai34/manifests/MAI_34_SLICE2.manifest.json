@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai34-slice2-v1",
+  "dataset_hash": "37d9cb49160a1d2a107ad0ed9b12025d8a7c1ca96bb4f2328371a1b9b173326b",
+  "phase": "MAI-34",
+  "slice": "SLICE2_CONFIRM_OEC_CANDIDATE_CONSUME",
+  "runtime_version": "mai-34.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai34/frozen/confirm_oec_consume_v1.jsonl",
+      "sha256": "37d9cb49160a1d2a107ad0ed9b12025d8a7c1ca96bb4f2328371a1b9b173326b",
+      "case_count": 6,
+      "suite_id": "confirm_oec_consume_v1"
+    }
+  ]
+}

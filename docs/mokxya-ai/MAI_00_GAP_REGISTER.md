@@ -23,7 +23,7 @@ Severity legend:
 - **Dependencies:** ADR-0001 acceptance; sync map
 - **Acceptance condition:** Single documented write authority enforced by tests; alternate paths classified and gated
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-34 slice 1 annotates `confirm_policy=EXPLICIT_UI_CONFIRM_REQUIRED`, `nl_assent_posts=false`, `product_mutation_path=DEXIE_EXECUTE_ORBIX_CONFIRM`, `action_to_oec_status=NOT_PRODUCT_PATH`, `gap_p0_001_status=OPEN`. Does **not** close the gap (dual writers still active; no token mint / OEC / Dexie post in this slice).
+- **Progress (2026-07-19):** MAI-34 slices 1–2 annotate confirm/OEC policy and emit `CANDIDATE_ONLY` `confirm_oec_candidate` (`nl_assent_posts=false`, `product_mutation_path=DEXIE_EXECUTE_ORBIX_CONFIRM`, `action_to_oec_status=NOT_PRODUCT_PATH`, `gap_p0_001_status=OPEN`). Live `allow_confirm_dispatch` / `allow_oec_dispatch` forced false. Does **not** close the gap (dual writers still active; no token mint / OEC / Dexie post).
 
 ### GAP-P1-010 — Transliteration V1 target labels contradict English/name identity safety
 

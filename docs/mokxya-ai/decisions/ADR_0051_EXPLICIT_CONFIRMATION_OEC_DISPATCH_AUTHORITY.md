@@ -1,7 +1,7 @@
 # ADR_0051 — Explicit Confirmation / OEC Dispatch Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-34-EXPLICIT-CONFIRMATION-AND-OEC-DISPATCH (slice 1)
+- **Phase:** MAI-34-EXPLICIT-CONFIRMATION-AND-OEC-DISPATCH (slice 2)
 - **Extends:** ADR_0001, ADR_0050
 
 ## Context
@@ -31,7 +31,13 @@ posting / Node confirm off the heavy Cursor lane for now.
    `is_execution_authority=false`.
 4. Preview BLOCKED → confirm/OEC BLOCKED; missing/incomplete preview → SKIP.
    Do not invent confirm/OEC success.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `confirm_oec_candidate` / `confirm_oec_consume_mode`
+   (`CANDIDATE_ONLY` default; `BLOCKED` for blocked readiness / fake
+   authority; `SKIP` for read-only). Live path forces
+   `allow_confirm_dispatch=false` and `allow_oec_dispatch=false` — does **not**
+   mint tokens, Action/OEC dispatch, or Dexie/khata/Node post. GAP-P0-001
+   stays OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
@@ -39,12 +45,14 @@ posting / Node confirm off the heavy Cursor lane for now.
 |-------------|-----|
 | NL yes as confirm | Assent must not post |
 | Mint tokens in annotation | Side effects / wrong slice |
+| Live Dexie confirm in slice 2 | CR-34; GAP-P0-001 risk |
 | Call Action→OEC as product path | Not product path; GAP-P0-001 |
-| Close GAP-P0-001 in slice 1 | Needs convergence + review |
+| Close GAP-P0-001 in slice 1–2 | Needs convergence + review |
 | Live Dexie/khata/Node post | Authority violation |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_34_EXPLICIT_CONFIRMATION_AND_OEC_DISPATCH.md`
-- `docs/mokxya-ai/baselines/MAI_34_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_34_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/explicit_confirmation_oec_dispatch_service.py`
+- `erp_bot/src/oip/modules/conversation/application/explicit_confirmation_oec_dispatch_consume_service.py`
