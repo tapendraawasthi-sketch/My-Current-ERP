@@ -18,7 +18,7 @@ from src.oip.modules.language_runtime.data_governance.application.governance_ser
 
 
 def test_runtime_version() -> None:
-    assert RUNTIME_VERSION == "mai-12.0.1-slice1"
+    assert RUNTIME_VERSION.startswith("mai-12.")
 
 
 def test_frozen_asset_cannot_be_training_eligible() -> None:

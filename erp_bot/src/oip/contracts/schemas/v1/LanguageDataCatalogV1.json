@@ -10,6 +10,140 @@
       "title": "AssetPresence",
       "type": "string"
     },
+    "KbRebuildStatus": {
+      "description": "Source→index rebuildability for GAP-P2-005.",
+      "enum": [
+        "FULL_REBUILD_READY",
+        "INCREMENTAL_FROM_PROCESSED",
+        "INDEX_PRESENT_SOURCES_MISSING",
+        "BLOCKED",
+        "UNKNOWN"
+      ],
+      "title": "KbRebuildStatus",
+      "type": "string"
+    },
+    "KbRebuildStepV1": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "optional": {
+          "default": false,
+          "title": "Optional",
+          "type": "boolean"
+        },
+        "produces": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Produces",
+          "type": "array"
+        },
+        "required_inputs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Inputs",
+          "type": "array"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "command"
+      ],
+      "title": "KbRebuildStepV1",
+      "type": "object"
+    },
+    "KbRebuildabilityReportV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_status": {
+          "$ref": "#/$defs/LanguageDataGovernanceStatus",
+          "default": "NOT_RUN"
+        },
+        "config_present": {
+          "default": false,
+          "title": "Config Present",
+          "type": "boolean"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "lexical_index_present": {
+          "default": false,
+          "title": "Lexical Index Present",
+          "type": "boolean"
+        },
+        "pipeline_scripts_present": {
+          "default": false,
+          "title": "Pipeline Scripts Present",
+          "type": "boolean"
+        },
+        "processed_jsonl_present": {
+          "default": false,
+          "title": "Processed Jsonl Present",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "rebuild_status": {
+          "$ref": "#/$defs/KbRebuildStatus",
+          "default": "UNKNOWN"
+        },
+        "recipe_steps": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/KbRebuildStepV1"
+          },
+          "title": "Recipe Steps",
+          "type": "array"
+        },
+        "runtime_version": {
+          "default": "mai-12.0.2-slice2",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_archives_present": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Source Archives Present",
+          "type": "integer"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "KbRebuildabilityReportV1",
+      "type": "object"
+    },
     "LanguageDataAssetV1": {
       "additionalProperties": false,
       "properties": {
@@ -141,6 +275,17 @@
       "title": "Hash Mismatches",
       "type": "integer"
     },
+    "kb_rebuildability": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/KbRebuildabilityReportV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "missing_required": {
       "default": 0,
       "minimum": 0,
@@ -148,7 +293,7 @@
       "type": "integer"
     },
     "runtime_version": {
-      "default": "mai-12.0.1-slice1",
+      "default": "mai-12.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

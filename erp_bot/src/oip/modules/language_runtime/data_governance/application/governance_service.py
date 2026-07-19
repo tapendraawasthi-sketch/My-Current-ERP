@@ -128,6 +128,9 @@ def build_language_data_catalog(
                             error_codes.append(f"MANIFEST_CHILD_HASH:{child_rel}")
                 except Exception as exc:  # noqa: BLE001
                     error_codes.append(f"MANIFEST_PARSE:{spec['asset_id']}:{type(exc).__name__}")
+        elif path.is_dir():
+            # Directory assets (e.g. processed/jsonl) — presence only, no sha256.
+            presence = AssetPresence.PRESENT
         elif required:
             missing_required += 1
             error_codes.append(f"MISSING_REQUIRED:{spec['asset_id']}")
@@ -152,6 +155,13 @@ def build_language_data_catalog(
     )
     error_codes.extend(freeze_errors)
 
+    # MAI-12 slice 2: attach KB rebuildability (GAP-P2-005).
+    from .rebuildability_service import assess_kb_rebuildability
+
+    rebuild = assess_kb_rebuildability(repo_root=root)
+    warnings.extend(list(rebuild.warnings))
+    error_codes.extend(list(rebuild.error_codes))
+
     status = LanguageDataGovernanceStatus.COMPLETE
     if error_codes or hash_mismatches or missing_required or frozen_violations:
         status = (
@@ -159,17 +169,20 @@ def build_language_data_catalog(
             if (missing_required or frozen_violations or hash_mismatches)
             else LanguageDataGovernanceStatus.PARTIAL
         )
+    if rebuild.analysis_status is LanguageDataGovernanceStatus.FAILED:
+        status = LanguageDataGovernanceStatus.FAILED
 
     return LanguageDataCatalogV1(
         analysis_status=status,
         runtime_version=RUNTIME_VERSION,
         catalog_version=str(reg.get("catalog_version") or CATALOG_VERSION),
         assets=tuple(assets),
-        warnings=tuple(warnings),
+        warnings=tuple(dict.fromkeys(warnings)),
         error_codes=tuple(dict.fromkeys(error_codes)),
         frozen_training_violations=frozen_violations,
         hash_mismatches=hash_mismatches,
         missing_required=missing_required,
+        kb_rebuildability=rebuild,
     )
 
 

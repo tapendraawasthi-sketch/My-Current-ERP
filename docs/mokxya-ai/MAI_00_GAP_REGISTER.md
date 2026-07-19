@@ -501,7 +501,7 @@ Severity legend:
 - **Dependencies:** storage policy
 - **Acceptance condition:** Manifested source + rebuildable indexes
 - **Status:** REDUCED (not closed)
-- **Progress (2026-07-19):** MAI-12 slice 1 `IN_PROGRESS` — `LanguageDataCatalogV1` manifests Knowledge-source slots as PRESENT/MISSING and gates frozen evals as non-training. Does **not** rebuild indexes or commit zips.
+- **Progress (2026-07-19):** MAI-12 slice 2 — `KbRebuildabilityReportV1` + documented source→index recipe (`MAI_12_KB_SOURCE_TO_INDEX_REBUILD_PATH.md`). Zips optional; rebuild when sources/processed present. Does **not** claim every fresh clone can rebuild without artifacts.
 
 ### GAP-P2-006 — AI pipeline relied on untyped dicts / duplicated FE-BE shapes
 

@@ -1,0 +1,21 @@
+{
+  "dataset_version": "mai12-slice2-v1",
+  "dataset_hash": "31c88a57342f1d9f39e002c9b9d218a3fb4c9b1d1450a907315a0a606e371c28",
+  "phase": "MAI-12",
+  "slice": "SLICE2_KB_REBUILDABILITY",
+  "runtime_version": "mai-12.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai12/frozen/language_data_catalog_v1.jsonl",
+      "sha256": "6e711f8d9c64b5173cfd05fae0f3f5e5aabeb399b986419952dd16a87d38a295",
+      "case_count": 5,
+      "suite_id": "language_data_catalog_v1"
+    },
+    {
+      "path": "evals/mai12/frozen/kb_rebuildability_v1.jsonl",
+      "sha256": "a934742c56433e8b55dd3baa221be46750cd5372043e78ba9fadfa3db5b445dd",
+      "case_count": 5,
+      "suite_id": "kb_rebuildability_v1"
+    }
+  ]
+}

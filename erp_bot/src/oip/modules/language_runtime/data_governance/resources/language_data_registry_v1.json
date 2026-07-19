@@ -67,12 +67,42 @@
       "notes": "Engineering seed; not linguist-approved training gold"
     },
     {
+      "asset_id": "kb_config",
+      "path": "knowledgebase/config.json",
+      "role": "RUNTIME_PACK",
+      "training_eligible": false,
+      "required": true,
+      "notes": "ONLI package config — source_dir and index paths"
+    },
+    {
+      "asset_id": "kb_pipeline_orchestrator",
+      "path": "knowledgebase/scripts/run_kb_pipeline.py",
+      "role": "RUNTIME_PACK",
+      "training_eligible": false,
+      "required": true
+    },
+    {
+      "asset_id": "kb_build_retrieval_indexes",
+      "path": "knowledgebase/scripts/build_retrieval_indexes.py",
+      "role": "RUNTIME_PACK",
+      "training_eligible": false,
+      "required": true
+    },
+    {
       "asset_id": "kb_lexical_index",
       "path": "knowledgebase/indexes/lexical/kb_lexical.sqlite",
       "role": "KB_INDEX",
       "training_eligible": false,
       "required": false,
-      "notes": "Runtime index; rebuildability tracked by GAP-P2-005"
+      "notes": "Runtime index; rebuild via build_retrieval_indexes.py (GAP-P2-005)"
+    },
+    {
+      "asset_id": "kb_processed_jsonl_dir",
+      "path": "knowledgebase/processed/jsonl",
+      "role": "DEVELOPMENT",
+      "training_eligible": false,
+      "required": false,
+      "notes": "Intermediate rebuild input; directory presence checked by rebuildability service"
     },
     {
       "asset_id": "knowledge_source_slot_0001_0016",
@@ -94,6 +124,7 @@
     "evals/mai08/frozen/*.jsonl",
     "evals/mai09/frozen/*.jsonl",
     "evals/mai10/frozen/*.jsonl",
-    "evals/mai11/frozen/*.jsonl"
+    "evals/mai11/frozen/*.jsonl",
+    "evals/mai12/frozen/*.jsonl"
   ]
 }
