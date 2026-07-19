@@ -1,7 +1,7 @@
 # MAI-13 — Conversation and Object-Reference Store
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (slices 1–2; `production_approved=false`)  
 **Authority:** [ADR_0030](decisions/ADR_0030_CONVERSATION_OBJECT_REFERENCE_STORE_AUTHORITY.md)  
 **Runtime:** `mai-13.0.2-slice2` (engineering; not production-approved)
 

@@ -142,6 +142,24 @@ class CanonicalOipRequestAdapter:
                     for r in oref.resolutions
                 ],
             }
+        # MAI-14: turn-relation decision (annotation only — never merge authority).
+        if canonical.turn_relation is not None:
+            try:
+                from ...modules.conversation.application.turn_relation_service import (
+                    turn_relation_to_metadata,
+                )
+
+                metadata["turn_relation"] = turn_relation_to_metadata(
+                    canonical.turn_relation
+                )
+            except Exception:  # noqa: BLE001
+                tr = canonical.turn_relation
+                metadata["turn_relation"] = {
+                    "relation": tr.relation.value,
+                    "status": tr.status.value,
+                    "classifier_version": tr.classifier_version,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

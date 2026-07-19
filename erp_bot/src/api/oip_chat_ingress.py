@@ -788,6 +788,70 @@ async def build_canonical_ai_request(
         except Exception:  # noqa: BLE001
             pass
 
+    # MAI-14: turn-relation decision (annotation only; never draft merge).
+    tr_ev = recorder.start_stage(
+        mai03_obs.TraceStage.TURN_RELATION_STARTED,
+        component="conversation.turn_relation",
+    )
+    try:
+        from ..oip.modules.conversation.application.turn_relation_service import (
+            attach_turn_relation_to_request,
+        )
+
+        updated = attach_turn_relation_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        decision = updated.turn_relation
+        if decision is not None and decision.is_execution_authority:
+            raise RuntimeError("TURN_RELATION_EXECUTION_AUTHORITY")
+        canonical = updated
+        recorder.complete_stage(
+            tr_ev,
+            outcome_code=(decision.relation.value if decision else "FAILED"),
+            component_versions={
+                "turn_relation": (
+                    decision.classifier_version if decision else "mai-14.0.1-slice1"
+                ),
+            },
+            safe_attributes={
+                "turn_relation": decision.relation.value if decision else "FAILED",
+                "turn_relation_status": decision.status.value if decision else "FAILED",
+                "turn_relation_ref_count": (
+                    len(decision.referenced_object_ids) if decision else 0
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.TURN_RELATION_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(decision.relation.value if decision else "FAILED"),
+            safe_attributes={
+                "turn_relation": decision.relation.value if decision else "FAILED",
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(tr_ev, safe_error_code="TURN_RELATION_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.TURN_RELATION_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="TURN_RELATION_FAILED",
+        )
+        try:
+            from ..oip.contracts.dialogue import (
+                ContractStatus,
+                TurnRelationKind,
+                TurnRelationV1,
+            )
+
+            fail = TurnRelationV1(
+                relation=TurnRelationKind.UNKNOWN,
+                classifier_version="mai-14.0.1-slice1",
+                status=ContractStatus.FAILED,
+            )
+            canonical = canonical.model_copy(update={"turn_relation": fail})
+        except Exception:  # noqa: BLE001
+            pass
+
     return canonical
 
 

@@ -158,6 +158,16 @@
       "title": "ConfidenceV1",
       "type": "object"
     },
+    "ContractStatus": {
+      "enum": [
+        "READY",
+        "PARTIAL",
+        "FAILED",
+        "NOT_RUN"
+      ],
+      "title": "ContractStatus",
+      "type": "string"
+    },
     "DomainConceptCandidateV1": {
       "additionalProperties": false,
       "properties": {
@@ -2174,6 +2184,81 @@
       "title": "TrustedScopeV1",
       "type": "object"
     },
+    "TurnRelationKind": {
+      "enum": [
+        "NEW_TOPIC",
+        "CONTINUE_EXPLICIT_DRAFT",
+        "CONTINUE_ACTIVE_DRAFT",
+        "ANSWER_CLARIFICATION",
+        "CORRECT_ACTIVE_DRAFT",
+        "CANCEL_ACTIVE_DRAFT",
+        "CONFIRMATION_INTENT",
+        "REFER_TO_PRIOR_ANSWER",
+        "COMPARE_PRIOR_RESULTS",
+        "UNKNOWN"
+      ],
+      "title": "TurnRelationKind",
+      "type": "string"
+    },
+    "TurnRelationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TurnRelationKind"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "classifier_version": {
+          "default": "none",
+          "title": "Classifier Version",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_spans": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceSpanV1"
+          },
+          "title": "Evidence Spans",
+          "type": "array"
+        },
+        "referenced_object_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Referenced Object Ids",
+          "type": "array"
+        },
+        "relation": {
+          "$ref": "#/$defs/TurnRelationKind",
+          "default": "UNKNOWN"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ContractStatus",
+          "default": "NOT_RUN"
+        }
+      },
+      "title": "TurnRelationV1",
+      "type": "object"
+    },
     "TypoCodeMixBundleV1": {
       "additionalProperties": false,
       "properties": {
@@ -2458,6 +2543,17 @@
     },
     "trusted_scope": {
       "$ref": "#/$defs/TrustedScopeV1"
+    },
+    "turn_relation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TurnRelationV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     }
   },
   "required": [

@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai14-slice1-v1",
+  "dataset_hash": "49630c9836919ad96bcdff64f62dfc55191e08bca39ed8ba978d793685d9d562",
+  "phase": "MAI-14",
+  "slice": "SLICE1_TURN_RELATION_ANNOTATION",
+  "runtime_version": "mai-14.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai14/frozen/turn_relation_critical_v1.jsonl",
+      "sha256": "49630c9836919ad96bcdff64f62dfc55191e08bca39ed8ba978d793685d9d562",
+      "case_count": 8,
+      "suite_id": "turn_relation_critical_v1"
+    }
+  ]
+}

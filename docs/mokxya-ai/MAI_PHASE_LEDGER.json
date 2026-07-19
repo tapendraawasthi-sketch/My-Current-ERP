@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-13",
-  "active_phase_note": "MAI-13 slice 2 IN_PROGRESS (ADR_0030); read-only store resolution; MAI-12 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-14",
+  "active_phase_note": "MAI-14 slice 1 IN_PROGRESS (ADR_0031); turn-relation annotation; MAI-13 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2043,7 +2043,7 @@
     {
       "id": "MAI-13",
       "title": "CONVERSATION AND OBJECT-REFERENCE STORE",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2055,6 +2055,7 @@
         "docs/mokxya-ai/decisions/ADR_0030_CONVERSATION_OBJECT_REFERENCE_STORE_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_13_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_13_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_13_ENGINEERING_CLOSURE.md",
         "evals/mai13/manifests/MAI_13_SLICE1.manifest.json",
         "evals/mai13/manifests/MAI_13_SLICE2.manifest.json"
       ],
@@ -2075,22 +2076,38 @@
         "MAI-12"
       ],
       "recommended_order": 13,
-      "closure_note": "Slice 2: read-only store resolution; never merges drafts."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-14. production_approved=false."
     },
     {
       "id": "MAI-14",
       "title": "TURN RELATION BEFORE DRAFT MERGE",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "mode_aware pending draft selection — turn-relation incomplete"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-14.0.1-slice1",
+      "slice": "SLICE1_TURN_RELATION_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_14_TURN_RELATION_BEFORE_DRAFT_MERGE.md",
+        "docs/mokxya-ai/decisions/ADR_0031_TURN_RELATION_BEFORE_DRAFT_MERGE_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_14_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai14/manifests/MAI_14_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/modules/conversation/application/turn_relation_service.py",
+        "CanonicalAIRequestV1.turn_relation",
+        "oip_chat_ingress TURN_RELATION after MAI-13",
+        "canonical_oip metadata.turn_relation"
+      ],
+      "blockers": [
+        "GAP-P1-004 / GAP-P1-008 not closed until merge gate (slice 2)",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-13"
       ],
-      "recommended_order": 14
+      "recommended_order": 14,
+      "closure_note": "Slice 1: turn-relation annotation only; mode_aware merge unchanged."
     },
     {
       "id": "MAI-15",
