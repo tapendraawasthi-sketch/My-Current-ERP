@@ -45,7 +45,7 @@ class OfflineSyncConflictReversalBundleV1(ContractBase):
     analysis_status: OfflineSyncConflictReversalStatus = (
         OfflineSyncConflictReversalStatus.NOT_RUN
     )
-    runtime_version: str = "mai-35.0.1-slice1"
+    runtime_version: str = "mai-35.0.2-slice2"
     source_authority: str = "REQUEST"
     selected_port_id: str | None = None
     draft_module_id: str | None = None

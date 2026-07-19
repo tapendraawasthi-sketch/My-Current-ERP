@@ -330,7 +330,7 @@ Severity legend:
 - **Dependencies:** posting authority decision
 - **Acceptance condition:** One authoritative sync path for accounting events; tests for two-device conflict
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-35 slice 1 annotates lifecycle states, `conflict_policy=REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT`, `reversal_policy=GOVERNED_CORRECTION_ONLY`, `queued_must_not_label_synced=true`, `dual_sync_status=OPEN`, `gap_p1_002_status=OPEN`. Does **not** close the gap (dual sync workers still active; no enqueue / resolve / reversal in this slice).
+- **Progress (2026-07-19):** MAI-35 slices 1–2 annotate offline/sync policy and emit `CANDIDATE_ONLY` `offline_sync_candidate` (`conflict_policy=REQUIRE_RECONFIRM_ON_MATERIAL_CONFLICT`, `reversal_policy=GOVERNED_CORRECTION_ONLY`, `queued_must_not_label_synced=true`, `dual_sync_status=OPEN`, `gap_p1_002_status=OPEN`). Live `allow_sync_push` / `allow_conflict_resolve` / `allow_reversal_dispatch` forced false. Does **not** close the gap (dual sync workers still active; no enqueue / resolve / reversal).
 
 - **Severity:** P1
 - **Affected capability:** security

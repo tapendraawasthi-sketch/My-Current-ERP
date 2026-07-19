@@ -609,17 +609,21 @@ class CanonicalOipRequestAdapter:
                     "confirm_oec_consume_ready": False,
                     "is_execution_authority": False,
                 }
-        # MAI-35: offline / sync / conflict / reversal policy (never syncs).
+        # MAI-35: offline / sync / conflict / reversal + candidate consume.
         if canonical.offline_sync_conflict_reversal_bundle is not None:
             try:
+                from ...modules.conversation.application.offline_sync_conflict_reversal_consume_service import (
+                    enrich_osc_metadata_with_consume,
+                )
                 from ...modules.conversation.application.offline_sync_conflict_reversal_service import (
                     offline_sync_conflict_reversal_to_metadata,
                 )
 
+                base_meta = offline_sync_conflict_reversal_to_metadata(
+                    canonical.offline_sync_conflict_reversal_bundle
+                )
                 metadata["offline_sync_conflict_reversal"] = (
-                    offline_sync_conflict_reversal_to_metadata(
-                        canonical.offline_sync_conflict_reversal_bundle
-                    )
+                    enrich_osc_metadata_with_consume(base_meta, canonical)
                 )
             except Exception:  # noqa: BLE001
                 osc = canonical.offline_sync_conflict_reversal_bundle
@@ -633,6 +637,8 @@ class CanonicalOipRequestAdapter:
                     "reversal_dispatched": False,
                     "gap_p1_002_status": "OPEN",
                     "gap_p0_001_status": "OPEN",
+                    "offline_sync_consume_mode": "UNCHANGED",
+                    "offline_sync_consume_ready": False,
                     "is_execution_authority": False,
                 }
         if annotations:

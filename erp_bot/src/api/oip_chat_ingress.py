@@ -2249,12 +2249,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent confirm/OEC success.
 
-    # MAI-35: offline / sync / conflict / reversal policy (never syncs).
+    # MAI-35: offline / sync / conflict / reversal + candidate consume (never syncs).
     osc_ev = recorder.begin_stage(
         mai03_obs.TraceStage.OFFLINE_SYNC_CONFLICT_REVERSAL_STARTED,
         component="conversation.offline_sync_conflict_reversal",
     )
     try:
+        from ..oip.modules.conversation.application.offline_sync_conflict_reversal_consume_service import (
+            assert_offline_sync_consume_authority,
+            offline_sync_consume_observability,
+        )
         from ..oip.modules.conversation.application.offline_sync_conflict_reversal_service import (
             assert_offline_sync_conflict_reversal_authority,
             attach_offline_sync_conflict_reversal_to_request,
@@ -2265,11 +2269,18 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.offline_sync_conflict_reversal_bundle
         assert_offline_sync_conflict_reversal_authority(bundle)
+        consume_obs = offline_sync_consume_observability(
+            updated,
+            allow_sync_push=False,
+            allow_conflict_resolve=False,
+            allow_reversal_dispatch=False,
+        )
+        assert_offline_sync_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             osc_ev,
             version_map={
-                "offline_sync_conflict_reversal": "mai-35.0.1-slice1",
+                "offline_sync_conflict_reversal": "mai-35.0.2-slice2",
             },
             safe_attributes={
                 "sync_policy_status": (
@@ -2284,6 +2295,12 @@ async def build_canonical_ai_request(
                 "reversal_policy": (
                     bundle.reversal_policy.value if bundle else None
                 ),
+                "offline_sync_consume_mode": consume_obs.get(
+                    "offline_sync_consume_mode"
+                ),
+                "offline_sync_consume_ready": bool(
+                    consume_obs.get("offline_sync_consume_ready")
+                ),
                 "queued_must_not_label_synced": True,
                 "sync_workers_started": False,
                 "queue_enqueued": False,
@@ -2293,6 +2310,9 @@ async def build_canonical_ai_request(
                 "gap_p0_001_status": "OPEN",
                 "queue_mutations": 0,
                 "sync_mutations": 0,
+                "allow_sync_push": False,
+                "allow_conflict_resolve": False,
+                "allow_reversal_dispatch": False,
             },
         )
         recorder.record_event(
@@ -2307,6 +2327,9 @@ async def build_canonical_ai_request(
                 ),
                 "draft_module_id": (
                     bundle.draft_module_id if bundle else None
+                ),
+                "offline_sync_consume_mode": consume_obs.get(
+                    "offline_sync_consume_mode"
                 ),
             },
         )

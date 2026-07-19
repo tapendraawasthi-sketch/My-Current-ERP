@@ -1,7 +1,7 @@
 # ADR_0052 — Offline / Sync / Conflict / Reversal Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-35-OFFLINE-SYNC-CONFLICT-AND-REVERSAL-UX (slice 1)
+- **Phase:** MAI-35-OFFLINE-SYNC-CONFLICT-AND-REVERSAL-UX (slice 2)
 - **Extends:** ADR_0001, ADR_0051
 
 ## Context
@@ -32,20 +32,28 @@ syncCoordinator / Orbix badge UI / reversal writers off the heavy Cursor lane.
    flags false / zero; `is_execution_authority=false`.
 4. Confirm BLOCKED → sync policy BLOCKED; missing/incomplete confirm → SKIP.
    Do not invent synced success.
-5. Engineering-gated: `production_approved=false`.
+5. Slice 2: consume builds `offline_sync_candidate` /
+   `offline_sync_consume_mode` (`CANDIDATE_ONLY` default; `BLOCKED` for blocked
+   readiness / fake authority; `SKIP` for read-only). Live path forces
+   `allow_sync_push=false`, `allow_conflict_resolve=false`,
+   `allow_reversal_dispatch=false` — does **not** start workers, enqueue,
+   resolve, or reverse. GAP-P1-002 / GAP-P0-001 stay OPEN.
+6. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 
 | Alternative | Why |
 |-------------|-----|
 | Start sync workers in annotation | Side effects / wrong slice |
+| Live sync push in slice 2 | CR-35; GAP-P1-002 risk |
 | Auto-resolve / LWW overwrite | Material conflict must reconfirm |
 | Label queued as synced | Acceptance gate violation |
 | Silent posted-history edit | Reversal must be governed |
-| Close GAP-P1-002 in slice 1 | Needs single-path convergence + E2E |
+| Close GAP-P1-002 in slice 1–2 | Needs single-path convergence + E2E |
 
 ## Related
 
 - `docs/mokxya-ai/MAI_35_OFFLINE_SYNC_CONFLICT_AND_REVERSAL_UX.md`
-- `docs/mokxya-ai/baselines/MAI_35_SLICE1_BASELINE_SUMMARY.md`
+- `docs/mokxya-ai/baselines/MAI_35_SLICE2_BASELINE_SUMMARY.md`
 - `erp_bot/src/oip/modules/conversation/application/offline_sync_conflict_reversal_service.py`
+- `erp_bot/src/oip/modules/conversation/application/offline_sync_conflict_reversal_consume_service.py`

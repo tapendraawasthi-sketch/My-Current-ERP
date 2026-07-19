@@ -1,14 +1,15 @@
 # MAI-35 — Offline, Sync, Conflict, and Reversal UX
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0052](decisions/ADR_0052_OFFLINE_SYNC_CONFLICT_REVERSAL_AUTHORITY.md)  
-**Runtime:** `mai-35.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-35.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
 Annotate offline/sync lifecycle, queueable vs online-only, conflict→reconfirm,
-and governed-reversal policy without starting sync workers or mutating queues.
+and governed-reversal policy — then consume into sync/conflict/reversal
+candidates — without starting sync workers or mutating queues.
 
 ## Slice 1
 
@@ -21,18 +22,23 @@ and governed-reversal policy without starting sync workers or mutating queues.
 7. `queued_must_not_label_synced=true`; dual sync + GAP-P1-002 remain OPEN
 8. Never sync worker / enqueue / conflict resolve / reversal / badge mutate
 
-## Slice 2 (later)
+## Slice 2
 
-Sync/conflict/reversal candidates under allow flags — still no live sync.
+1. `resolve_offline_sync_consume_mode` / `build_offline_sync_candidate`
+2. Default `CANDIDATE_ONLY` — merges MAI-31 `field_overrides`; envelopes null
+3. Blocked readiness / fake sync → `BLOCKED`; read-only → `SKIP`
+4. Live path forces `allow_sync_push` / `allow_conflict_resolve` /
+   `allow_reversal_dispatch` false
+5. Metadata: `offline_sync_consume_ready` + `offline_sync_candidate`
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| purchase confirm ready | COMPLETE → POLICY_DECLARED sync policy |
-| Confirm BLOCKED | SYNC POLICY BLOCKED |
+| purchase confirm ready | COMPLETE → `CANDIDATE_ONLY` offline/sync candidate |
+| Blocked readiness / fake worker | `BLOCKED` |
 | report / OOD / no ECO | SKIP |
-| Any path | no sync/queue mutate; GAP-P1-002 OPEN |
+| Any live path | never sync/queue; GAP-P1-002 OPEN |
 
 ## Non-goals
 

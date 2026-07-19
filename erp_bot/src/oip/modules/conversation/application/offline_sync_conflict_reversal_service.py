@@ -23,7 +23,7 @@ from ....contracts.offline_sync_conflict_reversal import (
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-35.0.1-slice1"
+RUNTIME_VERSION = "mai-35.0.2-slice2"
 AUTHORITY = "ADR_0052"
 
 _LIFECYCLE = (

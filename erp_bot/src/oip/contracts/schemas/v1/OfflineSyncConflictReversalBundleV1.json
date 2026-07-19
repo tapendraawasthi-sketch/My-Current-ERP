@@ -182,7 +182,7 @@
       "default": "NOT_APPLICABLE"
     },
     "runtime_version": {
-      "default": "mai-35.0.1-slice1",
+      "default": "mai-35.0.2-slice2",
       "title": "Runtime Version",
       "type": "string"
     },

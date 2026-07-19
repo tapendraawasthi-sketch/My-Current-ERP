@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai35-slice2-v1",
+  "dataset_hash": "63bbfafacec78eaf55a402bcf056869d3f1b1ed76548c6d6b9a91f7f5c0b12d4",
+  "phase": "MAI-35",
+  "slice": "SLICE2_OFFLINE_SYNC_CANDIDATE_CONSUME",
+  "runtime_version": "mai-35.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai35/frozen/offline_sync_consume_v1.jsonl",
+      "sha256": "63bbfafacec78eaf55a402bcf056869d3f1b1ed76548c6d6b9a91f7f5c0b12d4",
+      "case_count": 6,
+      "suite_id": "offline_sync_consume_v1"
+    }
+  ]
+}
