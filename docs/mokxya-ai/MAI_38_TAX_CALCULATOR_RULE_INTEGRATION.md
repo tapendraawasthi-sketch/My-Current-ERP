@@ -1,9 +1,10 @@
 # MAI-38 — Tax Calculator / Rule Integration
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0055](decisions/ADR_0055_TAX_CALCULATOR_RULE_INTEGRATION_AUTHORITY.md)  
-**Runtime:** `mai-38.0.2-slice2` (engineering; not production-approved)
+**Runtime:** `mai-38.0.2-slice2` (engineering; not production-approved)  
+**Closure:** [MAI_38_ENGINEERING_CLOSURE.md](baselines/MAI_38_ENGINEERING_CLOSURE.md)
 
 ## Objective
 

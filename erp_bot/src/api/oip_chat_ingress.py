@@ -2614,6 +2614,77 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent calculator success.
 
+    # MAI-39: NFRS/NAS policy/mapping/disclosure pilot (never files).
+    nfrs_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.NFRS_NAS_POLICY_DISCLOSURE_PILOT_STARTED,
+        component="conversation.nfrs_nas_policy_disclosure_pilot",
+    )
+    try:
+        from ..oip.modules.conversation.application.nfrs_nas_policy_disclosure_pilot_service import (
+            assert_nfrs_nas_policy_disclosure_pilot_authority,
+            attach_nfrs_nas_policy_disclosure_pilot_to_request,
+        )
+
+        updated = attach_nfrs_nas_policy_disclosure_pilot_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.nfrs_nas_policy_disclosure_pilot_bundle
+        assert_nfrs_nas_policy_disclosure_pilot_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            nfrs_ev,
+            version_map={
+                "nfrs_nas_policy_disclosure_pilot": "mai-39.0.1-slice1",
+            },
+            safe_attributes={
+                "nfrs_nas_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "nfrs_nas_readiness": (
+                    bundle.nfrs_nas_readiness.value if bundle else None
+                ),
+                "pilot_scope": "NFRS_NAS_DISCLOSURE_ONLY",
+                "mapping_status": "CANDIDATE_MAPPINGS_ONLY",
+                "disclosure_status": "NOT_FILED",
+                "standards_authority_claimed": False,
+                "mapping_executed": False,
+                "disclosure_filed": False,
+                "filing_ready": False,
+                "current_law_definitive": False,
+                "legal_effective_dates_proven": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.NFRS_NAS_POLICY_DISCLOSURE_PILOT_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            nfrs_ev, safe_error_code="NFRS_NAS_POLICY_DISCLOSURE_PILOT_FAILED"
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.NFRS_NAS_POLICY_DISCLOSURE_PILOT_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="NFRS_NAS_POLICY_DISCLOSURE_PILOT_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent NFRS/NAS success.
+
     return canonical
 
 

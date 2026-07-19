@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-38",
-  "active_phase_note": "MAI-38 slice 2 IN_PROGRESS (ADR_0055); calculator/rule-candidate consume (CANDIDATE_ONLY); GAP-P2-008 remains OPEN",
+  "recommended_next_phase": "MAI-39",
+  "active_phase_note": "MAI-39 slice 1 IN_PROGRESS (ADR_0056); NFRS/NAS policy/mapping/disclosure pilot (never files); GAP-P2-008 remains OPEN",
   "phases": [
     {
       "id": "MAI-00",
@@ -2984,7 +2984,7 @@
     {
       "id": "MAI-38",
       "title": "TAX CALCULATOR/RULE INTEGRATION",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2995,6 +2995,7 @@
         "docs/mokxya-ai/decisions/ADR_0055_TAX_CALCULATOR_RULE_INTEGRATION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_38_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_38_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_38_ENGINEERING_CLOSURE.md",
         "evals/mai38/manifests/MAI_38_SLICE1.manifest.json",
         "evals/mai38/manifests/MAI_38_SLICE2.manifest.json"
       ],
@@ -3018,20 +3019,43 @@
         "MAI-37"
       ],
       "recommended_order": 38,
-      "closure_note": "Slice 2: CANDIDATE_ONLY calculator/rule candidates; never calculate; GAP-P2-008 open."
+      "closure_note": "PASSED_ENGINEERING: calculator/rule POLICY_ONLY + CANDIDATE_ONLY candidates; never calculate; GAP-P2-008 open; not production-approved."
     },
     {
       "id": "MAI-39",
       "title": "NFRS/NAS POLICY, MAPPING, AND DISCLOSURE PILOT",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [],
-      "blockers": [],
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-39.0.1-slice1",
+      "slice": "SLICE1_NFRS_NAS_POLICY_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_39_NFRS_NAS_POLICY_MAPPING_DISCLOSURE_PILOT.md",
+        "docs/mokxya-ai/decisions/ADR_0056_NFRS_NAS_POLICY_DISCLOSURE_PILOT_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_39_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai39/manifests/MAI_39_SLICE1.manifest.json"
+      ],
+      "implementation_evidence": [
+        "nfrs_nas_policy_disclosure_pilot_service.py (policy annotation)",
+        "NfrsNasPolicyDisclosurePilotBundleV1 on CanonicalAIRequestV1",
+        "oip_chat_ingress NFRS_NAS_POLICY_DISCLOSURE_PILOT after TAX_CALCULATOR_RULE_INTEGRATION",
+        "mapping_status=CANDIDATE_MAPPINGS_ONLY; disclosure_status=NOT_FILED; standards_authority_claimed=false; filing_ready=false; gap_p2_008_status=OPEN"
+      ],
+      "blockers": [
+        "GAP-P2-008 remains OPEN",
+        "GAP-P2-001 remains OPEN",
+        "GAP-P1-002 remains OPEN",
+        "GAP-P0-001 remains OPEN",
+        "GAP-P2-002 remains OPEN",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-38"
       ],
-      "recommended_order": 39
+      "recommended_order": 39,
+      "closure_note": "Slice 1: NFRS/NAS/disclosure POLICY_DECLARED; never map/file; GAP-P2-008 open."
     },
     {
       "id": "MAI-40",

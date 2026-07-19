@@ -1,7 +1,7 @@
 # ADR_0055 — Tax Calculator / Rule Integration Authority
 
 - **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-38-TAX-CALCULATOR-RULE-INTEGRATION (slice 2)
+- **Phase:** MAI-38-TAX-CALCULATOR-RULE-INTEGRATION (PASSED_ENGINEERING; not production-approved)
 - **Extends:** ADR_0001, ADR_0054, ADR_0047
 
 ## Context

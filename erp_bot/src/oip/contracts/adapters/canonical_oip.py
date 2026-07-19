@@ -735,6 +735,33 @@ class CanonicalOipRequestAdapter:
                     "calculator_consume_ready": False,
                     "is_execution_authority": False,
                 }
+        # MAI-39: NFRS/NAS policy/mapping/disclosure pilot (never files).
+        if canonical.nfrs_nas_policy_disclosure_pilot_bundle is not None:
+            try:
+                from ...modules.conversation.application.nfrs_nas_policy_disclosure_pilot_service import (
+                    nfrs_nas_policy_disclosure_pilot_to_metadata,
+                )
+
+                metadata["nfrs_nas_policy_disclosure_pilot"] = (
+                    nfrs_nas_policy_disclosure_pilot_to_metadata(
+                        canonical.nfrs_nas_policy_disclosure_pilot_bundle
+                    )
+                )
+            except Exception:  # noqa: BLE001
+                nfrs = canonical.nfrs_nas_policy_disclosure_pilot_bundle
+                metadata["nfrs_nas_policy_disclosure_pilot"] = {
+                    "analysis_status": nfrs.analysis_status.value,
+                    "runtime_version": nfrs.runtime_version,
+                    "nfrs_nas_readiness": nfrs.nfrs_nas_readiness.value,
+                    "mapping_status": "CANDIDATE_MAPPINGS_ONLY",
+                    "disclosure_status": "NOT_FILED",
+                    "standards_authority_claimed": False,
+                    "mapping_executed": False,
+                    "disclosure_filed": False,
+                    "filing_ready": False,
+                    "gap_p2_008_status": "OPEN",
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

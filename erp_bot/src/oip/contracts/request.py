@@ -37,6 +37,7 @@ from .offline_sync_conflict_reversal import OfflineSyncConflictReversalBundleV1
 from .legal_question_research import LegalQuestionResearchBundleV1
 from .core_nepal_tax_knowledge_pilot import CoreNepalTaxKnowledgePilotBundleV1
 from .tax_calculator_rule_integration import TaxCalculatorRuleIntegrationBundleV1
+from .nfrs_nas_policy_disclosure_pilot import NfrsNasPolicyDisclosurePilotBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -213,6 +214,10 @@ class CanonicalAIRequestV1(ContractBase):
     # MAI-38: tax calculator / rule integration policy (never executes).
     tax_calculator_rule_integration_bundle: (
         TaxCalculatorRuleIntegrationBundleV1 | None
+    ) = None
+    # MAI-39: NFRS/NAS policy/mapping/disclosure pilot (never files).
+    nfrs_nas_policy_disclosure_pilot_bundle: (
+        NfrsNasPolicyDisclosurePilotBundleV1 | None
     ) = None
 
     @field_validator("schema_version")

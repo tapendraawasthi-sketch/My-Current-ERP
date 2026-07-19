@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai39-slice1-v1",
+  "dataset_hash": "9029cf04c612cd1bd21dfa1aaa9d184b4afbcd4c4f36337ab33007eb5eefb65c",
+  "phase": "MAI-39",
+  "slice": "SLICE1_NFRS_NAS_POLICY_ANNOTATION",
+  "runtime_version": "mai-39.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai39/frozen/nfrs_nas_policy_disclosure_pilot_v1.jsonl",
+      "sha256": "9029cf04c612cd1bd21dfa1aaa9d184b4afbcd4c4f36337ab33007eb5eefb65c",
+      "case_count": 6,
+      "suite_id": "nfrs_nas_policy_disclosure_pilot_v1"
+    }
+  ]
+}
