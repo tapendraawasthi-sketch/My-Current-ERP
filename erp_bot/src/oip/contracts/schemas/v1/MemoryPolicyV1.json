@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "MemoryExpiryClass": {
+      "enum": [
+        "SESSION",
+        "CONVERSATION",
+        "TEMPORARY",
+        "NONE"
+      ],
+      "title": "MemoryExpiryClass",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/MemoryPolicyV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "cross_company_allowed": {
+      "default": false,
+      "title": "Cross Company Allowed",
+      "type": "boolean"
+    },
+    "erp_facts_source": {
+      "default": "ERP_PREFERRED",
+      "title": "Erp Facts Source",
+      "type": "string"
+    },
+    "expiry_class": {
+      "$ref": "#/$defs/MemoryExpiryClass",
+      "default": "CONVERSATION"
+    },
+    "max_slices": {
+      "default": 8,
+      "minimum": 0,
+      "title": "Max Slices",
+      "type": "integer"
+    },
+    "max_tokens": {
+      "default": 1200,
+      "minimum": 0,
+      "title": "Max Tokens",
+      "type": "integer"
+    },
+    "read_allowed": {
+      "default": true,
+      "title": "Read Allowed",
+      "type": "boolean"
+    },
+    "write_allowed": {
+      "default": false,
+      "title": "Write Allowed",
+      "type": "boolean"
+    }
+  },
+  "title": "MemoryPolicyV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

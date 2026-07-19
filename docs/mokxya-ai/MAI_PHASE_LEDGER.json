@@ -4,8 +4,8 @@
   "audited_at": "2026-07-18",
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
-  "recommended_next_phase": "MAI-15",
-  "active_phase_note": "MAI-15 slice 2 IN_PROGRESS (ADR_0032); amount correction overlay; MAI-14 PASSED_ENGINEERING",
+  "recommended_next_phase": "MAI-16",
+  "active_phase_note": "MAI-16 slice 1 IN_PROGRESS (ADR_0033); context assembly + memory policy annotation; MAI-15 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2118,7 +2118,7 @@
     {
       "id": "MAI-15",
       "title": "REFERENCE, COREFERENCE, AND CORRECTION",
-      "status": "IN_PROGRESS",
+      "status": "PASSED_ENGINEERING",
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
@@ -2129,6 +2129,7 @@
         "docs/mokxya-ai/decisions/ADR_0032_REFERENCE_COREFERENCE_CORRECTION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_15_SLICE1_BASELINE_SUMMARY.md",
         "docs/mokxya-ai/baselines/MAI_15_SLICE2_BASELINE_SUMMARY.md",
+        "docs/mokxya-ai/baselines/MAI_15_ENGINEERING_CLOSURE.md",
         "evals/mai15/manifests/MAI_15_SLICE1.manifest.json",
         "evals/mai15/manifests/MAI_15_SLICE2.manifest.json"
       ],
@@ -2151,24 +2152,40 @@
         "MAI-14"
       ],
       "recommended_order": 15,
-      "closure_note": "Slice 2: amount correction overlay under CORRECT gate; candidates stay unapplied."
+      "closure_note": "PASSED_ENGINEERING. Slices 1–2 complete. Next=MAI-16. production_approved=false. Gaps REDUCED."
     },
     {
       "id": "MAI-16",
       "title": "CONTEXT ASSEMBLER AND MEMORY POLICY",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "production_approved": false,
-      "gate_evidence": [],
-      "implementation_evidence": [
-        "oip memory module",
-        "layered_memory legacy",
-        "NIOS memory sqlite"
+      "linguist_approved": false,
+      "quality_gates_passed": false,
+      "runtime_version": "mai-16.0.1-slice1",
+      "slice": "SLICE1_CONTEXT_ASSEMBLY_ANNOTATION",
+      "gate_evidence": [
+        "docs/mokxya-ai/MAI_16_CONTEXT_ASSEMBLER_AND_MEMORY_POLICY.md",
+        "docs/mokxya-ai/decisions/ADR_0033_CONTEXT_ASSEMBLY_AND_MEMORY_POLICY_AUTHORITY.md",
+        "docs/mokxya-ai/baselines/MAI_16_SLICE1_BASELINE_SUMMARY.md",
+        "evals/mai16/manifests/MAI_16_SLICE1.manifest.json"
       ],
-      "blockers": [],
+      "implementation_evidence": [
+        "erp_bot/src/oip/contracts/context_assembly.py",
+        "context_assembly_service.py",
+        "CanonicalAIRequestV1.context_assembly_bundle",
+        "oip_chat_ingress CONTEXT_ASSEMBLY after MAI-15",
+        "canonical_oip metadata.context_assembly"
+      ],
+      "blockers": [
+        "Slice 2 consume into provider assembly not started",
+        "GAP-P1-004 / GAP-P1-008 remain REDUCED",
+        "production_approved=false"
+      ],
       "dependencies": [
         "MAI-15"
       ],
-      "recommended_order": 16
+      "recommended_order": 16,
+      "closure_note": "Slice 1: request-local context assembly + memory policy annotation; write_allowed=false."
     },
     {
       "id": "MAI-17",

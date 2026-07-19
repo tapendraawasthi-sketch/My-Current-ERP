@@ -36,6 +36,7 @@ from .reference_coreference import (
     AppliedCorrectionReceiptV1,
     ReferenceCoreferenceBundleV1,
 )
+from .context_assembly import ContextAssemblyBundleV1, MemoryPolicyV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -54,6 +55,8 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     ("ObjectReferenceBundleV1", ObjectReferenceBundleV1),
     ("ReferenceCoreferenceBundleV1", ReferenceCoreferenceBundleV1),
     ("AppliedCorrectionReceiptV1", AppliedCorrectionReceiptV1),
+    ("ContextAssemblyBundleV1", ContextAssemblyBundleV1),
+    ("MemoryPolicyV1", MemoryPolicyV1),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
     ("EventFrameV1", EventFrameV1),

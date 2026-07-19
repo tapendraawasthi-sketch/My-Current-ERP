@@ -180,6 +180,25 @@ class CanonicalOipRequestAdapter:
                     "silent_applications": 0,
                     "draft_mutations": 0,
                 }
+        # MAI-16: context assembly + memory policy (annotation only).
+        if canonical.context_assembly_bundle is not None:
+            try:
+                from ...modules.conversation.application.context_assembly_service import (
+                    context_assembly_to_metadata,
+                )
+
+                metadata["context_assembly"] = context_assembly_to_metadata(
+                    canonical.context_assembly_bundle
+                )
+            except Exception:  # noqa: BLE001
+                ca = canonical.context_assembly_bundle
+                metadata["context_assembly"] = {
+                    "analysis_status": ca.analysis_status.value,
+                    "runtime_version": ca.runtime_version,
+                    "included_count": ca.included_count,
+                    "memory_writes": 0,
+                    "is_execution_authority": False,
+                }
         if annotations:
             metadata["annotations"] = annotations
 

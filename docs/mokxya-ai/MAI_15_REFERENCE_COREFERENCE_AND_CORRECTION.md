@@ -1,7 +1,7 @@
 # MAI-15 — Reference, Coreference, and Correction
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING` (not production-approved)  
 **Authority:** [ADR_0032](decisions/ADR_0032_REFERENCE_COREFERENCE_CORRECTION_AUTHORITY.md)  
 **Runtime:** `mai-15.0.2-slice2` (engineering; not production-approved)
 

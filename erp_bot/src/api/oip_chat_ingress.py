@@ -928,6 +928,82 @@ async def build_canonical_ai_request(
         except Exception:  # noqa: BLE001
             pass
 
+    # MAI-16: context assembly + memory policy (annotation only; no memory writes).
+    ca_ev = recorder.start_stage(
+        mai03_obs.TraceStage.CONTEXT_ASSEMBLY_STARTED,
+        component="conversation.context_assembly",
+    )
+    try:
+        from ..oip.modules.conversation.application.context_assembly_service import (
+            attach_context_assembly_to_request,
+        )
+
+        updated = attach_context_assembly_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.context_assembly_bundle
+        if bundle is not None and (
+            bundle.silent_applications != 0
+            or bundle.draft_mutations != 0
+            or bundle.memory_writes != 0
+            or bundle.is_execution_authority
+        ):
+            raise RuntimeError("CONTEXT_ASSEMBLY_MUTATION")
+        canonical = updated
+        recorder.complete_stage(
+            ca_ev,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            component_versions={
+                "context_assembly": (
+                    bundle.runtime_version if bundle else "mai-16.0.1-slice1"
+                ),
+            },
+            safe_attributes={
+                "context_assembly_status": (
+                    bundle.analysis_status.value if bundle else "FAILED"
+                ),
+                "context_assembly_included_count": (
+                    bundle.included_count if bundle else 0
+                ),
+                "context_assembly_active_task": (
+                    bool(bundle.active_task_present) if bundle else False
+                ),
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.CONTEXT_ASSEMBLY_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(bundle.analysis_status.value if bundle else "FAILED"),
+            safe_attributes={
+                "context_assembly_included_count": (
+                    bundle.included_count if bundle else 0
+                ),
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(ca_ev, safe_error_code="CONTEXT_ASSEMBLY_FAILED")
+        recorder.record_event(
+            mai03_obs.TraceStage.CONTEXT_ASSEMBLY_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="CONTEXT_ASSEMBLY_FAILED",
+        )
+        try:
+            from ..oip.contracts.context_assembly import (
+                ContextAssemblyBundleV1,
+                ContextAssemblyStatus,
+            )
+
+            fail_bundle = ContextAssemblyBundleV1(
+                analysis_status=ContextAssemblyStatus.FAILED,
+                warnings=("CONTEXT_ASSEMBLY_FAILED",),
+                error_codes=("CONTEXT_ASSEMBLY_FAILED",),
+            )
+            canonical = canonical.model_copy(
+                update={"context_assembly_bundle": fail_bundle}
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
     return canonical
 
 

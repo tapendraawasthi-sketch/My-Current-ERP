@@ -14,6 +14,8 @@
     "ObjectReferenceBundleV1",
     "ReferenceCoreferenceBundleV1",
     "AppliedCorrectionReceiptV1",
+    "ContextAssemblyBundleV1",
+    "MemoryPolicyV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

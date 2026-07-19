@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai16-slice1-v1",
+  "dataset_hash": "bdd10095bbe1995b7326af1d157df0125c201f0c3a00148ff357c9db013018f7",
+  "phase": "MAI-16",
+  "slice": "SLICE1_CONTEXT_ASSEMBLY_ANNOTATION",
+  "runtime_version": "mai-16.0.1-slice1",
+  "files": [
+    {
+      "path": "evals/mai16/frozen/context_assembly_critical_v1.jsonl",
+      "sha256": "bdd10095bbe1995b7326af1d157df0125c201f0c3a00148ff357c9db013018f7",
+      "case_count": 6,
+      "suite_id": "context_assembly_critical_v1"
+    }
+  ]
+}

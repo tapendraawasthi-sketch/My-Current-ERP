@@ -10,6 +10,7 @@ from pydantic import Field, field_validator, model_validator
 
 from .common import ContractBase, TimestampV1, default_schema_version
 from .errors import ContractErrorCode, ContractValidationError
+from .context_assembly import ContextAssemblyBundleV1
 from .dialogue import TurnRelationV1
 from .language import LanguageFrameV1
 from .object_reference import ObjectReferenceBundleV1
@@ -132,6 +133,8 @@ class CanonicalAIRequestV1(ContractBase):
     turn_relation: TurnRelationV1 | None = None
     # MAI-15: reference/coreference/correction candidates (never applied).
     reference_coreference_bundle: ReferenceCoreferenceBundleV1 | None = None
+    # MAI-16: context assembly candidates + memory policy (annotation only).
+    context_assembly_bundle: ContextAssemblyBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod
