@@ -1921,12 +1921,16 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent verification.
 
-    # MAI-31: EventFrame → domain port mapping (never executes ports / drafts).
+    # MAI-31: EventFrame → domain port mapping + payload-candidate consume.
     dpm_ev = recorder.begin_stage(
         mai03_obs.TraceStage.DOMAIN_PORT_MAPPING_STARTED,
         component="conversation.domain_port_mapping",
     )
     try:
+        from ..oip.modules.conversation.application.domain_port_consume_service import (
+            assert_domain_port_consume_authority,
+            domain_port_consume_observability,
+        )
         from ..oip.modules.conversation.application.domain_port_mapping_service import (
             assert_domain_port_mapping_authority,
             attach_domain_port_mapping_to_request,
@@ -1937,11 +1941,15 @@ async def build_canonical_ai_request(
             raise RuntimeError("RAW_TEXT_MUTATION")
         bundle = updated.domain_port_mapping_bundle
         assert_domain_port_mapping_authority(bundle)
+        consume_obs = domain_port_consume_observability(
+            bundle, updated.event_frame, allow_port_invoke=False
+        )
+        assert_domain_port_consume_authority(consume_obs)
         canonical = updated
         recorder.complete_stage(
             dpm_ev,
             version_map={
-                "domain_port_mapping": "mai-31.0.1-slice1",
+                "domain_port_mapping": "mai-31.0.2-slice2",
             },
             safe_attributes={
                 "domain_port_mapping_status": (
@@ -1953,12 +1961,17 @@ async def build_canonical_ai_request(
                 "selected_port_id": (
                     bundle.selected_port_id if bundle else None
                 ),
+                "port_consume_mode": consume_obs.get("port_consume_mode"),
+                "port_consume_ready": bool(
+                    consume_obs.get("port_consume_ready")
+                ),
                 "port_executed": False,
                 "draft_mutations": 0,
                 "dexie_invoked": False,
                 "journal_calculated": False,
                 "mode_aware_invoked": False,
                 "lookup_executed": False,
+                "allow_port_invoke": False,
             },
         )
         recorder.record_event(
@@ -1972,6 +1985,7 @@ async def build_canonical_ai_request(
                 "candidate_count": (
                     len(bundle.candidates) if bundle else 0
                 ),
+                "port_consume_mode": consume_obs.get("port_consume_mode"),
             },
         )
     except Exception:  # noqa: BLE001

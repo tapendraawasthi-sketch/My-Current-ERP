@@ -2,7 +2,8 @@
 
 Slice 1: declare port / draft-entrypoint / field-binding candidates from
 EventFrame. Never calls mode_aware, khata start_or_merge_*, Dexie, or journal
-math. Slice 2 may consume into adapters.
+math. Slice 2: consume helpers build draft payload candidates (PAYLOAD_ONLY);
+still never executes ports on the annotation path.
 """
 
 from __future__ import annotations
@@ -19,7 +20,7 @@ from ....contracts.domain_port_mapping import (
 from ....contracts.event_frame import FrameStatus
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-31.0.1-slice1"
+RUNTIME_VERSION = "mai-31.0.2-slice2"
 AUTHORITY = "ADR_0048"
 
 # Annotation table only — names of existing draft entrypoints; not invoked here.

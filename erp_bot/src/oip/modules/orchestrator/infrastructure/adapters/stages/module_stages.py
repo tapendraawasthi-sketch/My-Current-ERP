@@ -736,6 +736,32 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             claim_citation = {}
 
+        # MAI-31: forward domain-port mapping / payload candidate (never executes).
+        domain_port_mapping: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_dpm = context.metadata.get("domain_port_mapping")
+                if isinstance(raw_dpm, dict):
+                    domain_port_mapping = dict(raw_dpm)
+            if domain_port_mapping:
+                domain_port_mapping["port_executed"] = False
+                domain_port_mapping["draft_mutations"] = 0
+                domain_port_mapping["dexie_invoked"] = False
+                domain_port_mapping["journal_calculated"] = False
+                domain_port_mapping["mode_aware_invoked"] = False
+                domain_port_mapping["allow_port_invoke"] = False
+                domain_port_mapping["is_execution_authority"] = False
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "domain_port_mapping": domain_port_mapping,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            domain_port_mapping = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding

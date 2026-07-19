@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai31-slice2-v1",
+  "dataset_hash": "fecfe438743ee8094e3af8d27c7fc29772e3946a10d3fab520cdfba23a4e6a49",
+  "phase": "MAI-31",
+  "slice": "SLICE2_DRAFT_PAYLOAD_CANDIDATE_CONSUME",
+  "runtime_version": "mai-31.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai31/frozen/domain_port_consume_v1.jsonl",
+      "sha256": "fecfe438743ee8094e3af8d27c7fc29772e3946a10d3fab520cdfba23a4e6a49",
+      "case_count": 6,
+      "suite_id": "domain_port_consume_v1"
+    }
+  ]
+}

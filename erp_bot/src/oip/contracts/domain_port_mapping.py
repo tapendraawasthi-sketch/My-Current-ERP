@@ -44,7 +44,7 @@ class DomainPortMappingCandidateV1(ContractBase):
 class DomainPortMappingBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: DomainPortMappingStatus = DomainPortMappingStatus.NOT_RUN
-    runtime_version: str = "mai-31.0.1-slice1"
+    runtime_version: str = "mai-31.0.2-slice2"
     source_authority: str = "REQUEST"
     support_status: DomainPortSupportStatus = DomainPortSupportStatus.NOT_APPLICABLE
     selected_port_id: str | None = None
