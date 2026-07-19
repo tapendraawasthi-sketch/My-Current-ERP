@@ -3183,6 +3183,83 @@ async def build_canonical_ai_request(
         )
         # Fail closed: leave prior annotations; do not invent security pass.
 
+    # MAI-45: load/latency/resource/failover policy (never claims SLOs met).
+    llf_ev = recorder.begin_stage(
+        mai03_obs.TraceStage.LOAD_LATENCY_FAILOVER_STARTED,
+        component="conversation.load_latency_failover",
+    )
+    try:
+        from ..oip.modules.conversation.application.load_latency_failover_service import (
+            assert_load_latency_failover_authority,
+            attach_load_latency_failover_to_request,
+        )
+
+        updated = attach_load_latency_failover_to_request(canonical)
+        if updated.raw_text != canonical.raw_text:
+            raise RuntimeError("RAW_TEXT_MUTATION")
+        bundle = updated.load_latency_failover_bundle
+        assert_load_latency_failover_authority(bundle)
+        canonical = updated
+        recorder.complete_stage(
+            llf_ev,
+            version_map={
+                "load_latency_failover": "mai-45.0.1-slice1",
+            },
+            safe_attributes={
+                "load_latency_failover_status": (
+                    bundle.analysis_status.value if bundle else None
+                ),
+                "load_latency_failover_readiness": (
+                    bundle.load_latency_failover_readiness.value
+                    if bundle
+                    else None
+                ),
+                "pilot_scope": "LOAD_LATENCY_FAILOVER_CANDIDATE_ONLY",
+                "release_status": "NOT_RELEASED",
+                "gold_questions_status": "NOT_RELEASED",
+                "perf_authority_claimed": False,
+                "pilot_slos_met": False,
+                "bounded_degradation_proven": False,
+                "safety_bypass_under_timeout": False,
+                "cost_resource_measured": False,
+                "capacity_proven": False,
+                "load_test_passed": False,
+                "failover_proven": False,
+                "production_perf_approved": False,
+                "specialist_signoff_status": "NOT_SIGNED",
+                "gap_p2_008_status": "OPEN",
+                "documents_retrieved": 0,
+                "draft_mutations": 0,
+                "posting_mutations": 0,
+            },
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.LOAD_LATENCY_FAILOVER_COMPLETED,
+            mai03_obs.TraceStatus.COMPLETED,
+            outcome_code=(
+                bundle.analysis_status.value if bundle else "FAILED"
+            ),
+            safe_attributes={
+                "in_scope_topics": list(bundle.in_scope_topics)
+                if bundle
+                else [],
+                "unsupported_topics": list(bundle.unsupported_topics)
+                if bundle
+                else [],
+            },
+        )
+    except Exception:  # noqa: BLE001
+        recorder.fail_stage(
+            llf_ev,
+            safe_error_code="LOAD_LATENCY_FAILOVER_FAILED",
+        )
+        recorder.record_event(
+            mai03_obs.TraceStage.LOAD_LATENCY_FAILOVER_FAILED,
+            mai03_obs.TraceStatus.FAILED,
+            safe_error_code="LOAD_LATENCY_FAILOVER_FAILED",
+        )
+        # Fail closed: leave prior annotations; do not invent SLO pass.
+
     return canonical
 
 

@@ -1,7 +1,7 @@
 # MAI-44 — Security and Tenant Red Team
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 2)  
+**Status:** `PASSED_ENGINEERING`  
 **Authority:** [ADR_0061](decisions/ADR_0061_SECURITY_TENANT_RED_TEAM_AUTHORITY.md)  
 **Runtime:** `mai-44.0.2-slice2` (engineering; not production-approved)
 

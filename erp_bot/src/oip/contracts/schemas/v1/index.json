@@ -54,6 +54,7 @@
     "JudicialDecisionIntelligenceBundleV1",
     "ContinuousChangeIntelligenceBundleV1",
     "SecurityTenantRedTeamBundleV1",
+    "LoadLatencyFailoverBundleV1",
     "TurnRelationV1",
     "IntentCandidateV1",
     "EventFrameV1",

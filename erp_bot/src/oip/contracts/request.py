@@ -51,6 +51,7 @@ from .continuous_change_intelligence import (
     ContinuousChangeIntelligenceBundleV1,
 )
 from .security_tenant_red_team import SecurityTenantRedTeamBundleV1
+from .load_latency_failover import LoadLatencyFailoverBundleV1
 from .event_spec_registry import EventSpecRegistryBundleV1
 from .router_decision import RouterDecisionBundleV1
 
@@ -250,6 +251,8 @@ class CanonicalAIRequestV1(ContractBase):
     ) = None
     # MAI-44: security/tenant red team (never pen-test pass claim).
     security_tenant_red_team_bundle: SecurityTenantRedTeamBundleV1 | None = None
+    # MAI-45: load/latency/resource/failover (never claims SLOs met).
+    load_latency_failover_bundle: LoadLatencyFailoverBundleV1 | None = None
 
     @field_validator("schema_version")
     @classmethod

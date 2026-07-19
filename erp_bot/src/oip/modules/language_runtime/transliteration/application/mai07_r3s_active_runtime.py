@@ -131,7 +131,8 @@ def cutover_identity_card() -> dict[str, Any]:
         "mai_41": "PASSED_ENGINEERING",
         "mai_42": "PASSED_ENGINEERING",
         "mai_43": "PASSED_ENGINEERING",
-        "mai_44": "IN_PROGRESS",
+        "mai_44": "PASSED_ENGINEERING",
+        "mai_45": "IN_PROGRESS",
     }
 
 

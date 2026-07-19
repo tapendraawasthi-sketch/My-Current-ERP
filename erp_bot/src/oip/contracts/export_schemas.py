@@ -90,6 +90,7 @@ from .continuous_change_intelligence import (
     ContinuousChangeIntelligenceBundleV1,
 )
 from .security_tenant_red_team import SecurityTenantRedTeamBundleV1
+from .load_latency_failover import LoadLatencyFailoverBundleV1
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "schemas" / "v1"
 
@@ -177,6 +178,10 @@ MODELS: list[tuple[str, Type[BaseModel]]] = [
     (
         "SecurityTenantRedTeamBundleV1",
         SecurityTenantRedTeamBundleV1,
+    ),
+    (
+        "LoadLatencyFailoverBundleV1",
+        LoadLatencyFailoverBundleV1,
     ),
     ("TurnRelationV1", TurnRelationV1),
     ("IntentCandidateV1", IntentCandidateV1),
