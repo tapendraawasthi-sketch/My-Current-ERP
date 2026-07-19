@@ -1193,7 +1193,7 @@ async def build_canonical_ai_request(
             ef_ev,
             outcome_code=(frame.status.value if frame else "FAILED"),
             component_versions={
-                "event_frame_extraction": "mai-19.0.1-slice1",
+                "event_frame_extraction": "mai-19.0.2-slice2",
             },
             safe_attributes={
                 "event_frame_status": (frame.status.value if frame else None),

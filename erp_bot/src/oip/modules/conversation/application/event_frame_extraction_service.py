@@ -1,26 +1,30 @@
-"""MAI-19 slice 1 — structured EventFrame value extraction (deterministic).
+"""MAI-19 — structured EventFrame value extraction (deterministic).
 
-Fills MAI-18 EventFrame skeleton from selected spec using purchase/sales
-extractors + Nepali-aware party/amount cues. Never posts, never merges drafts,
-never grants execution authority.
+Slice 1: party / amount / report_type into MAI-18 skeleton.
+Slice 2: optional payment_mode / item / date; ambiguous bare numbers
+never silently become money. Never posts, never merges drafts.
 """
 
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
-from ....contracts.common import ConfidenceV1, MoneyV1, ProvenanceKind
+from ....contracts.common import ConfidenceV1, DateCalendar, DateValueV1, MoneyV1, ProvenanceKind
 from ....contracts.event_frame import (
+    DateFieldValueV1,
     EventFrameV1,
+    FieldValidationStatus,
     FrameStatus,
     MoneyFieldValueV1,
     TextFieldValueV1,
+    UnknownNumberFieldValueV1,
 )
 from ....contracts.request import CanonicalAIRequestV1
 
-RUNTIME_VERSION = "mai-19.0.1-slice1"
+RUNTIME_VERSION = "mai-19.0.2-slice2"
 
 # Nepali order: "Ram bata 500" (party before bata).
 _PARTY_BATA = re.compile(
@@ -37,10 +41,21 @@ _AMOUNT_KO = re.compile(
     r"(?:rs\.?|npr|रु\.?|₹)?\s*([\d,]+(?:\.\d+)?)\s*ko\b",
     re.I,
 )
-_AMOUNT_BARE = re.compile(
-    r"(?:rs\.?|npr|रु\.?|₹)\s*([\d,]+(?:\.\d+)?)|"
-    r"\b([\d,]+(?:\.\d+)?)\b",
+_AMOUNT_CURRENCY = re.compile(
+    r"(?:rs\.?|npr|रु\.?|₹)\s*([\d,]+(?:\.\d+)?)",
     re.I,
+)
+_AMOUNT_BARE = re.compile(r"\b([\d,]+(?:\.\d+)?)\b")
+_QTY_UNIT = re.compile(
+    r"\b([\d,]+(?:\.\d+)?)\s*(kg|kgs|kilo|kilos|pcs|g|ltr|liter|litre)\b",
+    re.I,
+)
+_CASH = re.compile(r"\b(cash|nagar|नगद)\b", re.I)
+_CREDIT = re.compile(r"\b(credit|udhaar|udhar|उधारो?|on\s+account)\b", re.I)
+_BANK = re.compile(r"\b(bank|esewa|khalti|fonepay)\b", re.I)
+_DATE_ISO = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
+_DATE_DMY = re.compile(
+    r"\b(\d{1,2})[/-](\d{1,2})[/-](20\d{2})\b"
 )
 _REPORT_TYPES: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"\bbalance\s+sheet\b|\bbs\b|vasalat", re.I), "balance_sheet"),
@@ -56,6 +71,16 @@ _REPORT_TYPES: tuple[tuple[re.Pattern[str], str], ...] = (
 )
 
 
+@dataclass
+class _ExtractResult:
+    values: list[Any] = field(default_factory=list)
+    parties: list[dict[str, Any]] = field(default_factory=list)
+    items: list[dict[str, Any]] = field(default_factory=list)
+    dates: list[Any] = field(default_factory=list)
+    filled: list[str] = field(default_factory=list)
+    ambiguous: list[str] = field(default_factory=list)
+
+
 def _money_str(value: Any) -> str | None:
     if value is None:
         return None
@@ -63,13 +88,11 @@ def _money_str(value: Any) -> str | None:
         if isinstance(value, Decimal):
             d = value
         elif isinstance(value, float):
-            # Avoid binary float: stringify via Decimal from repr only if needed.
             d = Decimal(str(value))
         else:
             d = Decimal(str(value).replace(",", ""))
         if d.is_nan() or d.is_infinite() or d <= 0:
             return None
-        # Normalize trailing zeros for MoneyV1.
         text = format(d, "f")
         if "." in text:
             text = text.rstrip("0").rstrip(".")
@@ -102,6 +125,22 @@ def _money_field(name: str, amount: str, surface: str) -> MoneyFieldValueV1:
     )
 
 
+def _date_field(name: str, original: str, normalized: str | None) -> DateFieldValueV1:
+    return DateFieldValueV1(
+        field_name=name,
+        original_surface=original,
+        provenance=ProvenanceKind.EXPLICIT,
+        confidence=_conf(0.8, "date_cue"),
+        normalized_value=DateValueV1(
+            original_text=original,
+            calendar=DateCalendar.AD if normalized else DateCalendar.UNKNOWN,
+            normalized_date=normalized,
+            precision="day" if normalized else "unknown",
+            conversion_status="ok" if normalized else "not_converted",
+        ),
+    )
+
+
 def _extract_party_nepali(text: str, *, role: str) -> str | None:
     if role == "customer":
         m = _PARTY_LAI.search(text or "")
@@ -113,29 +152,119 @@ def _extract_party_nepali(text: str, *, role: str) -> str | None:
     return None
 
 
+def _has_qty_context(text: str) -> bool:
+    return bool(_QTY_UNIT.search(text or ""))
+
+
 def _extract_amount_surface(text: str) -> tuple[str, str] | None:
-    """Return (amount_str, surface) or None."""
+    """Return (amount_str, surface) preferring money cues over bare digits."""
     raw = text or ""
     m = _AMOUNT_KO.search(raw)
     if m:
         amt = _money_str(m.group(1))
         if amt:
             return amt, m.group(0).strip()
+    m_cur = _AMOUNT_CURRENCY.search(raw)
+    if m_cur:
+        amt = _money_str(m_cur.group(1))
+        if amt:
+            return amt, m_cur.group(0).strip()
     try:
         from src.nlu.text_normalize import extract_amount
 
         extracted = extract_amount(raw)
+        # extract_amount may return bare digits; allow only without qty conflict
+        # or when currency/ko already handled above.
         amt = _money_str(extracted)
-        if amt:
+        if amt and not _has_qty_context(raw):
+            return amt, amt
+        if amt and (_AMOUNT_KO.search(raw) or _AMOUNT_CURRENCY.search(raw)):
             return amt, amt
     except Exception:  # noqa: BLE001
         pass
+    # Bare digit: only if no qty-unit context (else ambiguous).
+    if _has_qty_context(raw):
+        return None
     m2 = _AMOUNT_BARE.search(raw)
     if m2:
-        g = m2.group(1) or m2.group(2)
-        amt = _money_str(g)
+        amt = _money_str(m2.group(1))
         if amt:
-            return amt, (m2.group(0) or amt).strip()
+            return amt, m2.group(0).strip()
+    return None
+
+
+def _collect_ambiguous_numbers(text: str) -> list[Any]:
+    """Mark qty-unit numbers as unknown_number — never silently money."""
+    out: list[Any] = []
+    raw = text or ""
+    for m in _QTY_UNIT.finditer(raw):
+        surface = m.group(1)
+        unit = m.group(2).lower()
+        out.append(
+            UnknownNumberFieldValueV1(
+                field_name="quantity_candidate",
+                original_surface=m.group(0),
+                provenance=ProvenanceKind.EXPLICIT,
+                confidence=_conf(0.7, "qty_unit_cue"),
+                validation_status=FieldValidationStatus.AMBIGUOUS,
+                surface_number=surface.replace(",", ""),
+                unit_hint=unit,
+            )
+        )
+    return out
+
+
+def _extract_payment_mode(text: str, fields: dict[str, Any]) -> str | None:
+    pm = fields.get("payment_method")
+    if isinstance(pm, str) and pm.strip():
+        return pm.strip().lower()
+    if _CREDIT.search(text or ""):
+        return "credit"
+    if _BANK.search(text or ""):
+        return "bank"
+    if _CASH.search(text or ""):
+        return "cash"
+    return None
+
+
+def _extract_item(fields: dict[str, Any]) -> dict[str, Any] | None:
+    item = fields.get("item")
+    if isinstance(item, dict) and item.get("name"):
+        return {
+            "name": str(item["name"]),
+            "raw_name": str(item.get("raw_name") or item["name"]),
+        }
+    return None
+
+
+def _extract_date(text: str) -> tuple[str, str | None] | None:
+    """Return (original_surface, normalized_iso_or_none)."""
+    raw = text or ""
+    m = _DATE_ISO.search(raw)
+    if m:
+        return m.group(1), m.group(1)
+    m2 = _DATE_DMY.search(raw)
+    if m2:
+        d, mo, y = m2.group(1), m2.group(2), m2.group(3)
+        try:
+            iso = f"{int(y):04d}-{int(mo):02d}-{int(d):02d}"
+            return m2.group(0), iso
+        except ValueError:
+            return m2.group(0), None
+    try:
+        from src.oip.modules.language_runtime.number_roles.application.bs_ad_service import (
+            parse_date_role_candidates,
+        )
+
+        rows = parse_date_role_candidates(raw) or []
+        if rows:
+            r0 = rows[0]
+            surface = str(r0.get("surface") or r0.get("original_text") or "")
+            norm = r0.get("normalized_value") or r0.get("normalized_date")
+            if surface:
+                return surface, str(norm) if norm else None
+    except Exception:  # noqa: BLE001
+        pass
     return None
 
 
@@ -146,10 +275,36 @@ def _extract_report_type(text: str) -> str | None:
     return None
 
 
-def _fill_purchase(text: str) -> tuple[list[Any], list[dict[str, Any]], list[str]]:
-    values: list[Any] = []
-    parties: list[dict[str, Any]] = []
-    filled: list[str] = []
+def _append_optional(
+    result: _ExtractResult,
+    text: str,
+    fields: dict[str, Any],
+) -> None:
+    pm = _extract_payment_mode(text, fields)
+    if pm:
+        result.values.append(_text_field("payment_mode", pm))
+        result.filled.append("payment_mode")
+
+    item = _extract_item(fields)
+    if item:
+        result.items.append(item)
+        result.values.append(_text_field("item", item["name"]))
+        result.filled.append("item")
+
+    date_hit = _extract_date(text)
+    if date_hit:
+        original, normalized = date_hit
+        result.dates.append(_date_field("date", original, normalized))
+        result.filled.append("date")
+
+    # Ambiguous qty numbers (never money).
+    for unk in _collect_ambiguous_numbers(text):
+        result.values.append(unk)
+        result.ambiguous.append("quantity_candidate")
+
+
+def _fill_purchase(text: str) -> _ExtractResult:
+    result = _ExtractResult()
     fields: dict[str, Any] = {}
     try:
         from src.khata.purchase_draft import extract_purchase_fields
@@ -164,9 +319,9 @@ def _fill_purchase(text: str) -> tuple[list[Any], list[dict[str, Any]], list[str
     if not party:
         party = _extract_party_nepali(text, role="supplier")
     if party:
-        parties.append({"role": "supplier", "name": party})
-        values.append(_text_field("party", str(party)))
-        filled.append("party")
+        result.parties.append({"role": "supplier", "name": party})
+        result.values.append(_text_field("party", str(party)))
+        result.filled.append("party")
 
     amount = _money_str(fields.get("total_amount"))
     surface = amount or ""
@@ -175,15 +330,15 @@ def _fill_purchase(text: str) -> tuple[list[Any], list[dict[str, Any]], list[str
         if hit:
             amount, surface = hit
     if amount:
-        values.append(_money_field("amount", amount, surface or amount))
-        filled.append("amount")
-    return values, parties, filled
+        result.values.append(_money_field("amount", amount, surface or amount))
+        result.filled.append("amount")
+
+    _append_optional(result, text, fields)
+    return result
 
 
-def _fill_sales(text: str) -> tuple[list[Any], list[dict[str, Any]], list[str]]:
-    values: list[Any] = []
-    parties: list[dict[str, Any]] = []
-    filled: list[str] = []
+def _fill_sales(text: str) -> _ExtractResult:
+    result = _ExtractResult()
     fields: dict[str, Any] = {}
     try:
         from src.khata.sales_draft import extract_sale_fields
@@ -200,9 +355,9 @@ def _fill_sales(text: str) -> tuple[list[Any], list[dict[str, Any]], list[str]]:
     if not party:
         party = _extract_party_nepali(text, role="supplier")
     if party:
-        parties.append({"role": "customer", "name": party})
-        values.append(_text_field("party", str(party)))
-        filled.append("party")
+        result.parties.append({"role": "customer", "name": party})
+        result.values.append(_text_field("party", str(party)))
+        result.filled.append("party")
 
     amount = _money_str(fields.get("total_amount"))
     surface = amount or ""
@@ -211,16 +366,25 @@ def _fill_sales(text: str) -> tuple[list[Any], list[dict[str, Any]], list[str]]:
         if hit:
             amount, surface = hit
     if amount:
-        values.append(_money_field("amount", amount, surface or amount))
-        filled.append("amount")
-    return values, parties, filled
+        result.values.append(_money_field("amount", amount, surface or amount))
+        result.filled.append("amount")
+
+    _append_optional(result, text, fields)
+    return result
 
 
-def _fill_report(text: str) -> tuple[list[Any], list[str]]:
+def _fill_report(text: str) -> _ExtractResult:
+    result = _ExtractResult()
     report_type = _extract_report_type(text)
-    if not report_type:
-        return [], []
-    return [_text_field("report_type", report_type)], ["report_type"]
+    if report_type:
+        result.values.append(_text_field("report_type", report_type))
+        result.filled.append("report_type")
+    date_hit = _extract_date(text)
+    if date_hit:
+        original, normalized = date_hit
+        result.dates.append(_date_field("date", original, normalized))
+        result.filled.append("date")
+    return result
 
 
 def extract_into_event_frame(request: CanonicalAIRequestV1) -> EventFrameV1 | None:
@@ -228,7 +392,6 @@ def extract_into_event_frame(request: CanonicalAIRequestV1) -> EventFrameV1 | No
     if frame is None:
         return None
 
-    # Do not invent into unknown / dialogue / qa skeletons.
     event_type = (frame.event_type or "unknown").lower()
     if event_type in {"unknown", "dialogue", "accounting_qa"}:
         return frame.model_copy(
@@ -242,37 +405,32 @@ def extract_into_event_frame(request: CanonicalAIRequestV1) -> EventFrameV1 | No
         )
 
     text = request.raw_text or ""
-    values: list[Any] = []
-    parties: list[dict[str, Any]] = []
-    filled: list[str] = []
-
     if event_type == "purchase":
-        values, parties, filled = _fill_purchase(text)
+        result = _fill_purchase(text)
     elif event_type in {"sales", "sale"}:
-        values, parties, filled = _fill_sales(text)
+        result = _fill_sales(text)
     elif event_type == "report":
-        values, filled = _fill_report(text)
-        parties = []
+        result = _fill_report(text)
     else:
-        # Soft: try amount-only for other txn types; leave party missing.
+        result = _ExtractResult()
         hit = _extract_amount_surface(text)
         if hit and "amount" in (frame.missing_required_fields or ()):
             amount, surface = hit
-            values = [_money_field("amount", amount, surface)]
-            filled = ["amount"]
+            result.values = [_money_field("amount", amount, surface)]
+            result.filled = ["amount"]
+        _append_optional(result, text, {})
 
-    missing = tuple(
-        f for f in (frame.missing_required_fields or ()) if f not in filled
-    )
-    if not (frame.missing_required_fields or ()) and not filled:
+    required = frame.missing_required_fields or ()
+    missing = tuple(f for f in required if f not in result.filled)
+
+    if not required and not result.filled:
         status = FrameStatus.EMPTY
     elif missing:
         status = FrameStatus.PARTIAL
     else:
-        status = FrameStatus.COMPLETE if filled or not frame.missing_required_fields else FrameStatus.EMPTY
+        status = FrameStatus.COMPLETE if result.filled or not required else FrameStatus.EMPTY
 
-    # If skeleton had required fields and we filled none, stay PARTIAL/EMPTY.
-    if (frame.missing_required_fields or ()) and not filled:
+    if required and not any(f in result.filled for f in required):
         status = (
             FrameStatus.EMPTY
             if event_type in {"unknown", "dialogue"}
@@ -283,19 +441,28 @@ def extract_into_event_frame(request: CanonicalAIRequestV1) -> EventFrameV1 | No
     ctx.update(
         {
             "extraction_runtime": RUNTIME_VERSION,
-            "extraction_status": "COMPLETE" if not missing and filled else "PARTIAL",
-            "filled_fields": list(filled),
+            "extraction_status": "COMPLETE" if not missing and result.filled else "PARTIAL",
+            "filled_fields": list(result.filled),
+            "optional_filled": [
+                f for f in result.filled if f not in {"party", "amount", "report_type"}
+            ],
+            "ambiguous_fields": list(result.ambiguous),
         }
     )
 
     return frame.model_copy(
         update={
-            "values": tuple(values),
-            "parties": tuple(parties) if parties else frame.parties,
+            "values": tuple(result.values),
+            "parties": tuple(result.parties) if result.parties else frame.parties,
+            "items": tuple(result.items) if result.items else frame.items,
+            "dates_and_periods": tuple(result.dates)
+            if result.dates
+            else frame.dates_and_periods,
             "missing_required_fields": missing,
-            "explicit_values": tuple(filled),
+            "ambiguous_fields": tuple(dict.fromkeys(result.ambiguous)),
+            "explicit_values": tuple(result.filled),
             "status": status,
-            "confidence_by_field": {f: 0.85 for f in filled},
+            "confidence_by_field": {f: 0.85 for f in result.filled},
             "inherited_context": ctx,
             "ontology_version": frame.ontology_version,
         }

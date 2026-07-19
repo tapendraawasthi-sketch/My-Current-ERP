@@ -1,7 +1,7 @@
 # ADR_0036 — Structured Event Extraction Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-19-STRUCTURED-EVENT-EXTRACTION (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum same day
+- **Phase:** MAI-19-STRUCTURED-EVENT-EXTRACTION (slice 2)
 - **Extends:** ADR_0001, ADR_0035
 
 ## Context
@@ -14,13 +14,15 @@ from the user message without silent draft writes or posting authority.
 
 1. MAI-19 owns deterministic extraction into `CanonicalAIRequestV1.event_frame`
    after EVENT_SPEC_REGISTRY.
-2. Slice 1: purchase/sales/report only — party, amount, report_type via
+2. Slice 1: purchase/sales/report — party, amount, report_type via
    draft extractors + Nepali-aware cues; unknown/dialogue/qa skip fill.
-3. Update `missing_required_fields` / `status`; `authorizes_posting` stays false.
-4. Never call `start_or_merge_*` / `save_draft` from this path.
-5. Slice 2 (later): richer fields; clarification consume remains MAI-20.
-6. Gaps GAP-P1-004 / GAP-P1-008 stay REDUCED.
-7. Engineering-gated: `production_approved=false`.
+3. Slice 2: optional `payment_mode` / `item` / `date`; qty-unit numbers
+   become `UnknownNumberFieldValueV1` (never silent money).
+4. Update `missing_required_fields` / `status`; `authorizes_posting` stays false.
+5. Never call `start_or_merge_*` / `save_draft` from this path.
+6. Clarification consume remains MAI-20.
+7. Gaps GAP-P1-004 / GAP-P1-008 stay REDUCED.
+8. Engineering-gated: `production_approved=false`.
 
 ## Rejected
 

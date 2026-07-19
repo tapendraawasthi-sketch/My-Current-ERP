@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai19-slice2-v1",
+  "dataset_hash": "809d7996358c52fd9d7b6aff5c88a783c2d26d8577326262a4c4e2fb23bc33e8",
+  "phase": "MAI-19",
+  "slice": "SLICE2_OPTIONAL_FIELDS_AND_AMBIGUITY",
+  "runtime_version": "mai-19.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai19/frozen/event_frame_optional_v1.jsonl",
+      "sha256": "809d7996358c52fd9d7b6aff5c88a783c2d26d8577326262a4c4e2fb23bc33e8",
+      "case_count": 6,
+      "suite_id": "event_frame_optional_v1"
+    }
+  ]
+}

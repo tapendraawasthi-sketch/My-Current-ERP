@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-19",
-  "active_phase_note": "MAI-19 slice 1 IN_PROGRESS (ADR_0036); structured EventFrame extraction; MAI-18 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-19 slice 2 IN_PROGRESS (ADR_0036); optional fields + qty ambiguity; MAI-18 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2275,22 +2275,25 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-19.0.1-slice1",
-      "slice": "SLICE1_DETERMINISTIC_FRAME_FILL",
+      "runtime_version": "mai-19.0.2-slice2",
+      "slice": "SLICE2_OPTIONAL_FIELDS_AND_AMBIGUITY",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_19_STRUCTURED_EVENT_EXTRACTION.md",
         "docs/mokxya-ai/decisions/ADR_0036_STRUCTURED_EVENT_EXTRACTION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_19_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai19/manifests/MAI_19_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_19_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai19/manifests/MAI_19_SLICE1.manifest.json",
+        "evals/mai19/manifests/MAI_19_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
         "event_frame_extraction_service.py",
         "oip_chat_ingress EVENT_FRAME_EXTRACTION after MAI-18",
         "purchase/sales extractors + Nepali party/amount cues",
+        "optional payment_mode/item/date",
+        "UnknownNumberFieldValueV1 for qty-unit",
         "canonical_oip metadata.event_frame value_count"
       ],
       "blockers": [
-        "Slice 2 richer fields not started",
         "GAP-P1-004 / GAP-P1-008 remain REDUCED",
         "production_approved=false"
       ],
@@ -2298,7 +2301,7 @@
         "MAI-18"
       ],
       "recommended_order": 19,
-      "closure_note": "Slice 1: deterministic party/amount/report_type fill; authorizes_posting=false."
+      "closure_note": "Slice 2: optional fields + qty ambiguity; authorizes_posting=false."
     },
     {
       "id": "MAI-20",
