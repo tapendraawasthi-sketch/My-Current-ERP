@@ -559,6 +559,7 @@ def interpret_user_text(
     knowledge_source_governance: Mapping[str, Any] | None = None,
     lexical_index: Mapping[str, Any] | None = None,
     vector_index: Mapping[str, Any] | None = None,
+    hybrid_fusion: Mapping[str, Any] | None = None,
     allow_non_prod_semantic: bool | None = None,
 ) -> NpKbInterpretResult:
     """Main adapter entry: detect → protect → normalize → retrieve → cite.
@@ -567,6 +568,7 @@ def interpret_user_text(
     MAI-24: optional knowledge_source_governance filters collections / skips OOD.
     MAI-27: optional lexical_index prefers SQLITE FTS and forces semantic off.
     MAI-28: optional non-prod semantic filler only when explicitly allow-listed.
+    MAI-29: optional RRF / evidence candidates from hybrid_fusion policy.
     """
     from dataclasses import replace
 
@@ -589,6 +591,7 @@ def interpret_user_text(
     )
     lex = lexical_index if isinstance(lexical_index, Mapping) else None
     vec = vector_index if isinstance(vector_index, Mapping) else None
+    hyb = hybrid_fusion if isinstance(hybrid_fusion, Mapping) else None
     semantic_requested = bool(cfg.semantic_enabled)
     try:
         from src.oip.modules.conversation.application.knowledge_source_governance_service import (
@@ -724,7 +727,8 @@ def interpret_user_text(
     normalized = lightweight_normalize(text or "")
     t2 = time.perf_counter()
 
-    citations: list[KbCitation] = []
+    lexical_hits: list[KbCitation] = []
+    semantic_hits: list[KbCitation] = []
     retrieval_ms = 0.0
     semantic_ms = 0.0
     if cfg.lexical_enabled:
@@ -735,7 +739,7 @@ def interpret_user_text(
             lexical_db = Path(cfg.root) / "indexes" / "lexical" / "kb_lexical.sqlite"
         retriever = NpKbLexicalRetriever(lexical_db)
         tr0 = time.perf_counter()
-        citations = retriever.search(
+        lexical_hits = retriever.search(
             normalized or text,
             top_k=cfg.lexical_top_k,
             min_quality=cfg.min_quality_score,
@@ -754,20 +758,66 @@ def interpret_user_text(
             metadata_db=meta_db if meta_db.exists() else None,
         )
         ts0 = time.perf_counter()
-        sem_hits = sem.search(
+        semantic_hits = sem.search(
             normalized or text,
             top_k=cfg.semantic_top_k,
             review_policy=cfg.review_policy,
         )
         semantic_ms = (time.perf_counter() - ts0) * 1000
-        citations = _merge_citations(
-            citations,
-            sem_hits,
-            top_k=max(cfg.lexical_top_k, cfg.semantic_top_k),
-        )
 
     if filter_citations_by_governance is not None:
-        citations = filter_citations_by_governance(citations, gov)
+        lexical_hits = filter_citations_by_governance(lexical_hits, gov)
+        semantic_hits = filter_citations_by_governance(semantic_hits, gov)
+
+    # MAI-29: fuse into ordered citations + unverified evidence candidates.
+    allow_flag = (
+        bool(allow_non_prod_semantic)
+        if allow_non_prod_semantic is not None
+        else False
+    )
+    if allow_non_prod_semantic is None:
+        try:
+            from src.oip.modules.conversation.application.vector_index_service import (
+                env_allows_non_prod_semantic,
+            )
+
+            allow_flag = env_allows_non_prod_semantic()
+        except Exception:  # noqa: BLE001
+            allow_flag = False
+
+    try:
+        from src.oip.modules.conversation.application.hybrid_fusion_service import (
+            fuse_citations_for_consume,
+        )
+
+        if hyb is not None:
+            citations, evidence_candidates, fusion_obs = fuse_citations_for_consume(
+                lexical_hits,
+                semantic_hits,
+                hybrid_fusion=hyb,
+                allow_non_prod_semantic=allow_flag,
+                top_k=max(cfg.lexical_top_k, cfg.semantic_top_k),
+            )
+            obs.update(fusion_obs)
+            obs["evidence_candidates"] = evidence_candidates
+        else:
+            citations = _merge_citations(
+                lexical_hits,
+                semantic_hits,
+                top_k=max(cfg.lexical_top_k, cfg.semantic_top_k),
+            )
+            obs["fusion_consume_mode"] = "UNCHANGED"
+            obs["evidence_candidates"] = []
+            obs["evidence_candidate_count"] = 0
+    except Exception:  # noqa: BLE001
+        citations = _merge_citations(
+            lexical_hits,
+            semantic_hits,
+            top_k=max(cfg.lexical_top_k, cfg.semantic_top_k),
+        )
+        obs["fusion_consume_mode"] = "UNCHANGED"
+        obs["evidence_candidates"] = []
+        obs["evidence_candidate_count"] = 0
 
     obs.update(
         {
@@ -788,14 +838,17 @@ def interpret_user_text(
             ),
             "lexical_preferred": bool(obs.get("lexical_preferred")),
             "lexical_authoritative": bool(
-                obs.get("lexical_authoritative", obs.get("lexical_preferred"))
+                obs.get("lexical_authoritative", obs.get("lexical_preferred", True))
             ),
             "retrieval_mode": obs.get("retrieval_mode") or "UNCHANGED",
             "vector_retrieval_mode": obs.get("vector_retrieval_mode"),
             "semantic_non_prod_filler": bool(obs.get("semantic_non_prod_filler")),
             "production_eligible": False,
+            "hybrid_production_eligible": False,
             "ollama_required": bool(obs.get("ollama_required", False)),
             "citations_verified": False,
+            "claims_verified": False,
+            "rerank_authorized": False,
             "blocked_mutation_rate_note": "KB path cannot mutate; gated by authoritative ERP services",
         }
     )
@@ -824,6 +877,7 @@ def enrich_nlu_context(
     knowledge_source_governance: Mapping[str, Any] | None = None,
     lexical_index: Mapping[str, Any] | None = None,
     vector_index: Mapping[str, Any] | None = None,
+    hybrid_fusion: Mapping[str, Any] | None = None,
     allow_non_prod_semantic: bool | None = None,
 ) -> dict[str, Any]:
     """Optional NLU enrichment payload for hybrid search / conversation layers.
@@ -840,6 +894,7 @@ def enrich_nlu_context(
         knowledge_source_governance=knowledge_source_governance,
         lexical_index=lexical_index,
         vector_index=vector_index,
+        hybrid_fusion=hybrid_fusion,
         allow_non_prod_semantic=allow_non_prod_semantic,
     )
     payload = result.to_optional_metadata().get("np_kb", {})

@@ -1,0 +1,15 @@
+{
+  "dataset_version": "mai29-slice2-v1",
+  "dataset_hash": "39d5bac20b69e64ef3565cc8e8014e0128ff14a250d479f566e2619aea883a9d",
+  "phase": "MAI-29",
+  "slice": "SLICE2_EVIDENCE_CANDIDATE_CONSUME",
+  "runtime_version": "mai-29.0.2-slice2",
+  "files": [
+    {
+      "path": "evals/mai29/frozen/hybrid_fusion_consume_v1.jsonl",
+      "sha256": "39d5bac20b69e64ef3565cc8e8014e0128ff14a250d479f566e2619aea883a9d",
+      "case_count": 6,
+      "suite_id": "hybrid_fusion_consume_v1"
+    }
+  ]
+}

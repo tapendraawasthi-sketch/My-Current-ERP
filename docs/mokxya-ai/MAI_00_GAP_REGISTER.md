@@ -451,7 +451,7 @@ Severity legend:
 - **Dependencies:** knowledge governance
 - **Acceptance condition:** Prod retrieval does not require Ollama
 - **Status:** OPEN
-- **Progress (2026-07-19):** MAI-27/28 `PASSED_ENGINEERING`. MAI-29 slice 1 annotates hybrid fusion policy (`LEXICAL_ONLY` / `RRF_CANDIDATE`) without executing RRF. Does **not** close the gap (hybrid still Ollama-tied for semantic leg; citation honesty via MAI-30).
+- **Progress (2026-07-19):** MAI-27/28 `PASSED_ENGINEERING`. MAI-29 slice 2 assembles unverified evidence candidates (`LEXICAL_ONLY` default; optional `RRF_APPLIED`). Does **not** close the gap (claim/citation verification still MAI-30; hybrid semantic leg still Ollama-tied).
 
 ### GAP-P2-002 — Frontend calculates authoritative-looking totals
 

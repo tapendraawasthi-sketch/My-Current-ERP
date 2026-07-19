@@ -5,7 +5,7 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": "MAI-29",
-  "active_phase_note": "MAI-29 slice 1 IN_PROGRESS (ADR_0046); hybrid fusion policy annotation (no RRF execute); MAI-28 PASSED_ENGINEERING",
+  "active_phase_note": "MAI-29 slice 2 IN_PROGRESS (ADR_0046); evidence candidates + optional RRF consume; MAI-28 PASSED_ENGINEERING",
   "phases": [
     {
       "id": "MAI-00",
@@ -2637,19 +2637,22 @@
       "production_approved": false,
       "linguist_approved": false,
       "quality_gates_passed": false,
-      "runtime_version": "mai-29.0.1-slice1",
-      "slice": "SLICE1_HYBRID_FUSION_ANNOTATION",
+      "runtime_version": "mai-29.0.2-slice2",
+      "slice": "SLICE2_EVIDENCE_CANDIDATE_CONSUME",
       "gate_evidence": [
         "docs/mokxya-ai/MAI_29_HYBRID_FUSION_RERANKING_AND_EVIDENCE.md",
         "docs/mokxya-ai/decisions/ADR_0046_HYBRID_FUSION_AUTHORITY.md",
         "docs/mokxya-ai/baselines/MAI_29_SLICE1_BASELINE_SUMMARY.md",
-        "evals/mai29/manifests/MAI_29_SLICE1.manifest.json"
+        "docs/mokxya-ai/baselines/MAI_29_SLICE2_BASELINE_SUMMARY.md",
+        "evals/mai29/manifests/MAI_29_SLICE1.manifest.json",
+        "evals/mai29/manifests/MAI_29_SLICE2.manifest.json"
       ],
       "implementation_evidence": [
-        "hybrid_fusion_service.py (LEXICAL_ONLY / RRF_CANDIDATE policy)",
+        "hybrid_fusion_service.py (policy + fuse_citations_for_consume)",
         "HybridFusionBundleV1 on CanonicalAIRequestV1",
         "oip_chat_ingress HYBRID_FUSION after VECTOR_INDEX",
-        "fusion_executed=false; rerank_authorized=false; hybrid_production_eligible=false"
+        "np_kb_adapter evidence_candidates; LEXICAL_ONLY or RRF_APPLIED",
+        "annotation fusion_executed=false; claims/citations unverified"
       ],
       "blockers": [
         "RRF hybrid still Ollama-dependent for semantic leg",
@@ -2662,7 +2665,7 @@
         "MAI-28"
       ],
       "recommended_order": 29,
-      "closure_note": "Slice 1: fusion policy annotation only; no RRF/rerank/evidence execute; claims unverified."
+      "closure_note": "Slice 2: evidence candidates via LEXICAL_ONLY/RRF_APPLIED; annotation unexecuted; claims unverified."
     },
     {
       "id": "MAI-30",

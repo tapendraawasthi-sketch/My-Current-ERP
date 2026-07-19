@@ -139,6 +139,7 @@ def build_prompt_grounding(
     knowledge_source_governance: dict[str, Any] | None = None,
     lexical_index: dict[str, Any] | None = None,
     vector_index: dict[str, Any] | None = None,
+    hybrid_fusion: dict[str, Any] | None = None,
     allow_non_prod_semantic: bool | None = None,
 ) -> PromptGrounding:
     """Retrieve NP KB (+ optional OIP snippets) and format a provider grounding block.
@@ -147,6 +148,7 @@ def build_prompt_grounding(
     when SKIP, skip NP KB retrieval (fail-closed).
     MAI-27: when lexical_index is COMPLETE + fts_ready, prefer SQLITE FTS only.
     MAI-28: optional non-prod semantic filler only when explicitly allow-listed.
+    MAI-29: optional RRF / evidence candidates from hybrid_fusion policy.
     """
     message = (user_message or "").strip()
     if not message:
@@ -159,6 +161,7 @@ def build_prompt_grounding(
     )
     lex = lexical_index if isinstance(lexical_index, dict) else None
     vec = vector_index if isinstance(vector_index, dict) else None
+    hyb = hybrid_fusion if isinstance(hybrid_fusion, dict) else None
     np_payload: dict[str, Any] = {"enabled": False, "reason": "not_retrieved"}
     try:
         from .np_kb_adapter import enrich_nlu_context
@@ -169,6 +172,7 @@ def build_prompt_grounding(
             knowledge_source_governance=gov,
             lexical_index=lex,
             vector_index=vec,
+            hybrid_fusion=hyb,
             allow_non_prod_semantic=allow_non_prod_semantic,
         )
         if not isinstance(np_payload, dict):
@@ -185,6 +189,7 @@ def build_prompt_grounding(
                     knowledge_source_governance=gov,
                     lexical_index=lex,
                     vector_index=vec,
+                    hybrid_fusion=hyb,
                     allow_non_prod_semantic=allow_non_prod_semantic,
                 )
                 if isinstance(retry, dict) and (

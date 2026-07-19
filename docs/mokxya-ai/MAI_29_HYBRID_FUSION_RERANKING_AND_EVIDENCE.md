@@ -1,38 +1,39 @@
 # MAI-29 — Hybrid Fusion, Reranking, and Evidence Bundles
 
 **Date:** 2026-07-19  
-**Status:** `IN_PROGRESS` (slice 1)  
+**Status:** `IN_PROGRESS` (slice 2)  
 **Authority:** [ADR_0046](decisions/ADR_0046_HYBRID_FUSION_AUTHORITY.md)  
-**Runtime:** `mai-29.0.1-slice1` (engineering; not production-approved)
+**Runtime:** `mai-29.0.2-slice2` (engineering; not production-approved)
 
 ## Objective
 
-Annotate hybrid fusion / evidence policy (LEXICAL_ONLY vs RRF_CANDIDATE) —
-without executing RRF, authorizing rerank, or claiming citation/claim
-verification.
+Annotate hybrid fusion / evidence policy, then assemble unverified evidence
+*candidates* (lexical-only or optional RRF) — without authorizing rerank or
+claiming citation/claim verification.
 
 ## Slice 1
 
 1. Ingress `HYBRID_FUSION_*` after VECTOR_INDEX
 2. `HybridFusionBundleV1` when knowledge-source governance is COMPLETE
 3. Lexical ready → `LEXICAL_ONLY`; + chroma → `RRF_CANDIDATE`
-4. `rrf_k=60`; `rerank_authorized=false`; `fusion_executed=false`
-5. `evidence_assembled=false`; `claims_verified=false`
-6. `hybrid_production_eligible=false`; `lexical_authoritative=true`
+4. Annotation: `fusion_executed=false`; `evidence_assembled=false`
 
-## Slice 2 (planned)
+## Slice 2
 
-Bounded RRF/evidence candidate assembly under fail-closed flags; still no
-claim verification (MAI-30).
+1. Consume helpers assemble evidence candidates (separate from annotation bundle)
+2. Default → `LEXICAL_ONLY` candidates from lexical citations
+3. `RRF_CANDIDATE` + non-prod allow → `RRF_APPLIED` (rrf_k=60)
+4. Prod-eligible / rerank / verified claims → BLOCKED
+5. Forward `hybrid_fusion` into grounding; `claims_verified=false`
 
 ## Gates
 
 | Case | Expect |
 |------|--------|
-| COMPLETE + lexical ready | COMPLETE; LEXICAL_ONLY or RRF_CANDIDATE |
-| Chroma present | RRF_CANDIDATE (not executed) |
-| OOD / SKIP | SKIP |
-| Any bundle | no fusion execute; no rerank; unverified |
+| Default | LEXICAL_ONLY candidates; unverified |
+| Allow + RRF_CANDIDATE | RRF_APPLIED order + candidates |
+| Authority flags | BLOCKED |
+| Annotation bundle | still fusion_executed=false |
 
 ## Non-goals
 

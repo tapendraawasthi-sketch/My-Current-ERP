@@ -684,6 +684,33 @@ class ExecutionStageAdapter(WorkflowStagePort):
         except Exception:  # noqa: BLE001
             vector_index = {}
 
+        # MAI-29: forward hybrid fusion policy (consume builds candidates; never verify).
+        hybrid_fusion: dict[str, Any] = {}
+        try:
+            if isinstance(context.metadata, dict):
+                raw_hyb = context.metadata.get("hybrid_fusion")
+                if isinstance(raw_hyb, dict):
+                    hybrid_fusion = dict(raw_hyb)
+            if hybrid_fusion:
+                hybrid_fusion["fusion_executed"] = False
+                hybrid_fusion["rerank_authorized"] = False
+                hybrid_fusion["evidence_assembled"] = False
+                hybrid_fusion["claims_verified"] = False
+                hybrid_fusion["citations_verified"] = False
+                hybrid_fusion["hybrid_production_eligible"] = False
+                hybrid_fusion["is_execution_authority"] = False
+                hybrid_fusion["lexical_authoritative"] = True
+                route = route.model_copy(
+                    update={
+                        "policy_decisions": {
+                            **dict(route.policy_decisions or {}),
+                            "hybrid_fusion": hybrid_fusion,
+                        }
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            hybrid_fusion = {}
+
         # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
         try:
             from src.nlu.prompt_grounding import build_prompt_grounding
@@ -700,6 +727,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 knowledge_source_governance=knowledge_source_governance or None,
                 lexical_index=lexical_index or None,
                 vector_index=vector_index or None,
+                hybrid_fusion=hybrid_fusion or None,
             )
             grounded_meta = grounding.to_metadata()
             route = route.model_copy(

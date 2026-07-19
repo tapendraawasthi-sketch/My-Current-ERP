@@ -86,6 +86,9 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
         vec = policy_decisions.get("vector_index")
         if not isinstance(vec, dict):
             vec = None
+        hyb = policy_decisions.get("hybrid_fusion")
+        if not isinstance(hyb, dict):
+            hyb = None
         grounding = build_prompt_grounding(
             user_message,
             knowledge_snippets=snippets,
@@ -93,6 +96,7 @@ def _build_execution_grounding(policy_decisions: dict) -> dict:
             knowledge_source_governance=gov,
             lexical_index=lex,
             vector_index=vec,
+            hybrid_fusion=hyb,
         )
         return grounding.to_metadata()
     except Exception:

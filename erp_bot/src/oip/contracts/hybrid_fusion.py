@@ -27,7 +27,7 @@ class HybridFusionMode(str, Enum):
 class HybridFusionBundleV1(ContractBase):
     schema_version: str = Field(default_factory=default_schema_version)
     analysis_status: HybridFusionStatus = HybridFusionStatus.NOT_RUN
-    runtime_version: str = "mai-29.0.1-slice1"
+    runtime_version: str = "mai-29.0.2-slice2"
     source_authority: str = "REQUEST"
     fusion_mode: HybridFusionMode = HybridFusionMode.UNKNOWN
     rrf_k: int = Field(ge=1, default=60)

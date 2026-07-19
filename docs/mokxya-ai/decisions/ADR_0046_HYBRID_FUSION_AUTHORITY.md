@@ -1,32 +1,26 @@
 # ADR_0046 — Hybrid Fusion / Evidence Authority
 
-- **Status:** Accepted (2026-07-19)
-- **Phase:** MAI-29-HYBRID-FUSION-RERANKING-EVIDENCE (slice 1)
+- **Status:** Accepted (2026-07-19); slice 2 addendum (2026-07-19)
+- **Phase:** MAI-29-HYBRID-FUSION-RERANKING-EVIDENCE (slice 2)
 - **Extends:** ADR_0001, ADR_0044, ADR_0045
 
 ## Context
 
 MAI-27/28 made lexical FTS production-safe and gated Chroma/Ollama semantic as
-non-prod. Local code already has RRF helpers (`hybrid_nlu_search`, knowledge
-`HybridRankStage`), but request-path fusion/evidence policy is not annotated.
-MAI-29 must declare fusion mode and evidence gates without claiming verification
-or executing rerank on the chat path in slice 1.
+non-prod. MAI-29 annotates fusion policy and assembles unverified evidence
+candidates without claiming verification.
 
 ## Decision
 
 1. MAI-29 owns `HybridFusionBundleV1` on `CanonicalAIRequestV1` after
    VECTOR_INDEX.
-2. Slice 1: when knowledge-source governance is COMPLETE, recommend
-   `LEXICAL_ONLY` or `RRF_CANDIDATE` from lexical/vector readiness;
-   `rrf_k=60`; `rerank_authorized=false`; `fusion_executed=false`;
-   `evidence_assembled=false`; `evidence_item_count=0`;
-   `claims_verified=false`; `citations_verified=false`;
-   `hybrid_production_eligible=false`; `lexical_authoritative=true`;
-   `is_execution_authority=false`.
-3. Slice 1 never runs RRF, rerank, or evidence assembly.
-4. Slice 2+ may execute bounded fusion into evidence candidates under the same
-   fail-closed flags; never treat citation presence as claim verification
-   (MAI-30).
+2. Slice 1: recommend `LEXICAL_ONLY` or `RRF_CANDIDATE`; annotation counters
+   stay zero; `rerank_authorized=false`; `hybrid_production_eligible=false`.
+3. **Slice 2:** consume (outside annotation bundle) builds evidence candidates:
+   default `LEXICAL_ONLY`; `RRF_CANDIDATE` + non-prod allow → `RRF_APPLIED`
+   (`rrf_k=60`). False prod/rerank/verified flags → BLOCKED. Annotation
+   `fusion_executed` / `evidence_assembled` remain false.
+4. Never treat candidates as verified claims/citations (MAI-30).
 5. GAP-P2-001 / GAP-P2-008 stay OPEN; GAP-P1-004 / GAP-P1-008 stay REDUCED.
 6. Engineering-gated: `production_approved=false`.
 
@@ -35,7 +29,8 @@ or executing rerank on the chat path in slice 1.
 | Alternative | Why |
 |-------------|-----|
 | Auto-run RRF on every chat | Ollama dependency / side effects |
-| Authorize rerank in annotation | Wrong slice / authority |
+| Mutate annotation bundle execute flags | False authority on request contract |
+| Authorize rerank | Wrong authority |
 | Claim hybrid production-eligible | GAP-P2-001 |
 | Claim citations/claims verified | GAP-P2-008 / MAI-30 |
 

@@ -1821,7 +1821,7 @@ async def build_canonical_ai_request(
         recorder.complete_stage(
             hyb_ev,
             version_map={
-                "hybrid_fusion": "mai-29.0.1-slice1",
+                "hybrid_fusion": "mai-29.0.2-slice2",
             },
             safe_attributes={
                 "hybrid_fusion_status": (
