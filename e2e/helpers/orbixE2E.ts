@@ -45,6 +45,15 @@ export type LedgerSnapshot = {
     status?: string;
     payload?: Record<string, unknown>;
   }>;
+  /** Phase 5+ accounting outbox (flattened; purchase/sales post → event sync). */
+  eventSyncQueue?: Array<{
+    id?: string;
+    eventId?: string;
+    status?: string;
+    aggregateId?: string;
+    invoiceId?: string;
+    voucherId?: string;
+  }>;
   receipts: Array<{
     id: string;
     scopedKey: string;
@@ -99,17 +108,27 @@ export async function getLedgerSnapshot(
 
         const db = await openDb();
         try {
-          const [invoices, vouchers, stockMovements, auditLogs, syncOutbox, receipts, accounts, items] =
-            await Promise.all([
-              all<LedgerSnapshot["invoices"][0]>(db, "invoices"),
-              all<LedgerSnapshot["vouchers"][0]>(db, "vouchers"),
-              all<LedgerSnapshot["stockMovements"][0]>(db, "stockMovements"),
-              all<LedgerSnapshot["auditLogs"][0]>(db, "auditLogs"),
-              all<LedgerSnapshot["syncOutbox"][0]>(db, "syncOutbox"),
-              all<LedgerSnapshot["receipts"][0]>(db, "orbixPostingReceipts"),
-              all<{ id: string; balance?: number }>(db, "accounts"),
-              all<{ id: string; name: string; unit?: string }>(db, "items"),
-            ]);
+          const [
+            invoices,
+            vouchers,
+            stockMovements,
+            auditLogs,
+            syncOutbox,
+            eventSyncQueue,
+            receipts,
+            accounts,
+            items,
+          ] = await Promise.all([
+            all<LedgerSnapshot["invoices"][0]>(db, "invoices"),
+            all<LedgerSnapshot["vouchers"][0]>(db, "vouchers"),
+            all<LedgerSnapshot["stockMovements"][0]>(db, "stockMovements"),
+            all<LedgerSnapshot["auditLogs"][0]>(db, "auditLogs"),
+            all<LedgerSnapshot["syncOutbox"][0]>(db, "syncOutbox"),
+            all<NonNullable<LedgerSnapshot["eventSyncQueue"]>[0]>(db, "eventSyncQueue"),
+            all<LedgerSnapshot["receipts"][0]>(db, "orbixPostingReceipts"),
+            all<{ id: string; balance?: number }>(db, "accounts"),
+            all<{ id: string; name: string; unit?: string }>(db, "items"),
+          ]);
           const accountBalances: Record<string, number> = {};
           for (const a of accounts) accountBalances[a.id] = Number(a.balance || 0);
           const itemBike =
@@ -120,6 +139,7 @@ export async function getLedgerSnapshot(
             stockMovements,
             auditLogs,
             syncOutbox,
+            eventSyncQueue,
             receipts,
             accountBalances,
             itemBike,

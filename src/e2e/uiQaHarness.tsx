@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
+import { MemoryRouter, useNavigate } from "react-router-dom";
+import { useStore } from "../store/useStore";
+import { pageIdToPath } from "../routing/pagePaths";
 import { ToastProvider } from "@/design-system";
 import { ThemeProvider } from "../context/ThemeContext";
 import { bootstrapUiQaHarness } from "./bootstrapUiQaHarness";
 import AppShell from "../components/shell/AppShell";
-import { useStore } from "../store/useStore";
 import FinancialDashboard from "../pages/FinancialDashboard";
 import OrbixWorkspacePage from "../pages/OrbixWorkspacePage";
 import Parties from "../pages/Parties";
@@ -102,6 +104,16 @@ function QaPageRouter() {
   }
 }
 
+/** Keep MemoryRouter path aligned with Zustand currentPage for useAppRoute consumers. */
+function UiQaRouteSync() {
+  const currentPage = useStore((s) => s.currentPage);
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate(pageIdToPath(currentPage || "dashboard"), { replace: true });
+  }, [currentPage, navigate]);
+  return null;
+}
+
 function UiQaApp() {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -131,15 +143,18 @@ function UiQaApp() {
   }
 
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <div data-testid="ui-qa-harness-ready" className="h-screen">
-          <AppShell>
-            <QaPageRouter />
-          </AppShell>
-        </div>
-      </ToastProvider>
-    </ThemeProvider>
+    <MemoryRouter initialEntries={["/app/dashboard"]}>
+      <ThemeProvider>
+        <ToastProvider>
+          <UiQaRouteSync />
+          <div data-testid="ui-qa-harness-ready" className="h-screen">
+            <AppShell>
+              <QaPageRouter />
+            </AppShell>
+          </div>
+        </ToastProvider>
+      </ThemeProvider>
+    </MemoryRouter>
   );
 }
 

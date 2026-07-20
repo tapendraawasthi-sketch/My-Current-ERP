@@ -1606,6 +1606,7 @@ export async function bootstrapUiQaHarness(): Promise<void> {
         stockMovements,
         auditLogs,
         syncOutbox,
+        eventSyncQueue,
         receipts,
         accounts,
         items,
@@ -1615,6 +1616,7 @@ export async function bootstrapUiQaHarness(): Promise<void> {
         db.stockMovements.toArray(),
         db.auditLogs.toArray(),
         db.syncOutbox.toArray(),
+        db.eventSyncQueue ? db.eventSyncQueue.toArray() : Promise.resolve([]),
         db.orbixPostingReceipts.toArray(),
         db.accounts.toArray(),
         db.items.toArray(),
@@ -1623,12 +1625,35 @@ export async function bootstrapUiQaHarness(): Promise<void> {
       for (const a of accounts) accountBalances[a.id] = Number(a.balance || 0);
       const itemBike =
         items.find((i) => i.id === E2E_ITEM_ID || i.name === "E2E Test Bike") || null;
+      // Flatten sync queue for E2E asserts (structured-clone safe; no full envelope).
+      const eventSyncQueueFlat = (eventSyncQueue as Array<Record<string, unknown>>).map((row) => {
+        const env = (row.envelope || {}) as {
+          aggregateId?: string;
+          payload?: {
+            purchase?: { invoice_id?: string; voucher_id?: string };
+            sale?: { invoice_id?: string; voucher_id?: string };
+          };
+        };
+        return {
+          id: String(row.id || row.eventId || ""),
+          eventId: String(row.eventId || row.id || ""),
+          status: String(row.status || ""),
+          aggregateId: String(env.aggregateId || ""),
+          invoiceId: String(
+            env.payload?.purchase?.invoice_id || env.payload?.sale?.invoice_id || "",
+          ),
+          voucherId: String(
+            env.payload?.purchase?.voucher_id || env.payload?.sale?.voucher_id || "",
+          ),
+        };
+      });
       return {
         invoices,
         vouchers,
         stockMovements,
         auditLogs,
         syncOutbox,
+        eventSyncQueue: eventSyncQueueFlat,
         receipts,
         accountBalances,
         companyId: E2E_COMPANY_ID,

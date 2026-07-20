@@ -7,24 +7,20 @@
   "staging_attestation_complete": false,
   "production_approved": false,
   "connected_run": {
-    "status": "FAIL",
-    "environment": "https://sutra-erp-bot.onrender.com (via SPA https://my-current-erp.onrender.com)",
-    "command": "ORBIX_E2E_CONNECTED=true ERP_BOT_BACKEND_URL=https://sutra-erp-bot.onrender.com npx playwright test e2e/orbix-next12-launch-slice.spec.ts e2e/orbix-connected.spec.ts e2e/orbix-sales-connected.spec.ts",
+    "status": "PARTIAL",
+    "environment": "https://sutra-erp-bot.onrender.com + local sync :3010",
+    "command": "ORBIX_E2E_CONNECTED=true ERP_BOT_BACKEND_URL=https://sutra-erp-bot.onrender.com npx playwright test next12+connected+sales; ORBIX_SYNC_E2E=true sync on :3010",
     "log": "artifacts/prod-ready-pr-b1/connected/CONNECTED_SUMMARY.md",
-    "local_full_log_gitignored": "artifacts/prod-ready-pr-b1/connected/playwright-pr-b1-render-r3.log",
     "summary": {
-      "passed": 10,
-      "failed": 4,
-      "did_not_run": 5,
-      "sync": "NOT_RUN"
+      "launch_connected_passed": 19,
+      "launch_connected_failed": 0,
+      "sync_passed": 3,
+      "sync_failed": 2
     },
     "notes": [
-      "SPA /health ok; erp-bot ready with Groq; cold-start 502 intermittent",
-      "NEXT-12 launch slice PASS 3/3 on Render",
-      "Purchase API + sales API paths PASS after sales botURL fix",
-      "Browser Confirm/Dexie clarification UI FAIL; postE2ESale validation_error",
-      "Sync NOT_RUN (needs ORBIX_SYNC_E2E test-mode backend)",
-      "Owner residual NOT accepted this session — ticket stays OPEN"
+      "r6 launch connected pack PASS 19/19 vs Render bot",
+      "sync two-device push/pull FAIL (pushSyncPending=0); readiness+duplicate+lost-ack PASS",
+      "FY seed + MemoryRouter harness + eventSyncQueue assert fixes landed"
     ],
     "ticket_b1_002": "OPEN"
   },
@@ -39,37 +35,33 @@
     {
       "id": "auto_next12_purchase",
       "status": "PASS",
-      "ticket": "TICKET-PR-B1-002",
-      "note": "staging next12 r3"
+      "ticket": "TICKET-PR-B1-002"
     },
     {
       "id": "auto_next12_sales",
       "status": "PASS",
-      "ticket": "TICKET-PR-B1-002",
-      "note": "staging next12 r3"
+      "ticket": "TICKET-PR-B1-002"
     },
     {
       "id": "auto_next12_ask_report",
       "status": "PASS",
-      "ticket": "TICKET-PR-B1-002",
-      "note": "staging next12 r3"
+      "ticket": "TICKET-PR-B1-002"
     },
     {
       "id": "auto_connected_purchase",
-      "status": "FAIL",
-      "ticket": "TICKET-PR-B1-002",
-      "note": "browser Confirm/Dexie path"
+      "status": "PASS",
+      "ticket": "TICKET-PR-B1-002"
     },
     {
       "id": "auto_sales_connected",
-      "status": "PARTIAL",
-      "ticket": "TICKET-PR-B1-002",
-      "note": "API PASS; harness postE2ESale FAIL"
+      "status": "PASS",
+      "ticket": "TICKET-PR-B1-002"
     },
     {
       "id": "auto_sync",
-      "status": "NOT_RUN",
-      "ticket": "TICKET-PR-B1-002"
+      "status": "FAIL",
+      "ticket": "TICKET-PR-B1-002",
+      "note": "3 pass / 2 fail device push-pull"
     },
     {
       "id": "manual_romanized_purchase",
