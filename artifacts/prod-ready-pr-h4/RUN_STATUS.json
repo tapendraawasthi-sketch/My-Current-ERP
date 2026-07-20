@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-H4",
+  "authority": "ADR_0095",
+  "as_of": "2026-07-20",
+  "engineering_pack_ready": true,
+  "vacuous_greens_allowed": false,
+  "assertion_weakening_allowed": false,
+  "legacy_scorers_all_rewritten": false,
+  "production_approved": false,
+  "dossier": "docs/mokxya-ai/baselines/PR_H4_VACUOUS_GREEN_FORBID.md"
+}

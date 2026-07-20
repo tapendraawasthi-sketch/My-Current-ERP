@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_VACUOUS_GREEN_FORBID_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0095",
+  "step": "PR-H4",
+  "decision": "VACUOUS_GREEN_FORBID",
+  "extends": "ADR_0089",
+  "governed_contract_modules": [
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3h2_scoring_contracts.py",
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n_scoring_contracts.py",
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n2_scoring_contracts.py",
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n3_scoring_contracts.py",
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_scoring_contracts.py"
+  ],
+  "required_contract_markers": [
+    "No max(1, denominator)",
+    "INVALID_REQUIRED_POPULATION"
+  ],
+  "legacy_residual_modules": [
+    {
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_engine.py",
+      "note": "Pre-R3H2 engine still uses max(1, …) in places; not claimed fixed by PR-H4"
+    }
+  ],
+  "honesty": {
+    "vacuous_greens_allowed": false,
+    "assertion_weakening_allowed": false,
+    "legacy_scorers_all_rewritten": false,
+    "production_approved": false,
+    "quality_gates_re_run_claimed": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "vacuous_greens_allowed=true",
+    "assertion_weakening_allowed=true",
+    "legacy_scorers_all_rewritten=true",
+    "production_approved=true",
+    "quality_gates_re_run_claimed=true"
+  ]
+}

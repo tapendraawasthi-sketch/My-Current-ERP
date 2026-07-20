@@ -108,7 +108,7 @@ def test_gap_pointer_pr_c1_arm() -> None:
         ROOT / "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt"
     ).read_text(encoding="utf-8")
     assert "recommended_next_step = PR-C1-ARM" in plan
-    assert "last_shipped_step = PR-H3" in plan
+    assert "last_shipped_step = PR-H4" in plan
     assert "production_approved = false" in plan
 
     nxt = (ROOT / "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt").read_text(

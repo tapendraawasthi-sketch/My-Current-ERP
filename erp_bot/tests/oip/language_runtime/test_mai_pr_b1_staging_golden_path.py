@@ -89,4 +89,4 @@ def test_pointer_pr_b2() -> None:
         encoding="utf-8"
     )
     assert "recommended_next_step = PR-C1-ARM" in nxt
-    assert "last_shipped_step = PR-H3" in nxt
+    assert "last_shipped_step = PR-H4" in nxt

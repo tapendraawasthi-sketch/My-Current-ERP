@@ -6,6 +6,7 @@
   "step": "PR-B6",
   "decision": "PROD_READY_HYGIENE_GATE",
   "covers": ["NEXT-H1", "NEXT-H2"],
+  "extended_by": ["ADR_0095_PR_H4"],
   "gap_p1_005": {
     "register_status": "REDUCED",
     "closed": false,
