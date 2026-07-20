@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_DAY0_SMOKE_PACK_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0093",
+  "step": "PR-C3-PACK",
+  "decision": "DAY0_PRODUCTION_SMOKE_PACK",
+  "smoke_status": "NOT_RUN",
+  "smoke_pass": false,
+  "pack_ready": true,
+  "requires_before_run": [
+    "PR-C1-ARM_OR_OWNER_PILOT_ACCEPTANCE",
+    "DESIGNATED_COMPANY",
+    "FLAGS_ARMED_FOR_SMOKE_ROWS"
+  ],
+  "checklist": [
+    "one_purchase",
+    "one_sale",
+    "one_ask_report",
+    "one_refuse_case",
+    "receipt_ids_in_day_book",
+    "sync_badge_honesty"
+  ],
+  "report_template": "docs/mokxya-ai/releases/DAY0_PRODUCTION_SMOKE_V1.md",
+  "honesty": {
+    "production_approved": false,
+    "smoke_pass": false,
+    "smoke_executed": false,
+    "next_20_done": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "smoke_pass=true_without_report",
+    "smoke_status=PASS_without_evidence",
+    "production_approved=true",
+    "day0_green_without_arm"
+  ]
+}

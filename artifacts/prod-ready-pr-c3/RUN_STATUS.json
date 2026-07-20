@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-C3-PACK",
+  "authority": "ADR_0093",
+  "as_of": "2026-07-20",
+  "pack_ready": true,
+  "smoke_status": "NOT_RUN",
+  "smoke_pass": false,
+  "smoke_executed": false,
+  "production_approved": false,
+  "next_20_done": false,
+  "flags_armed": false,
+  "checklist_path": "artifacts/prod-ready-pr-c3/SMOKE_CHECKLIST.md",
+  "report_template": "docs/mokxya-ai/releases/DAY0_PRODUCTION_SMOKE_V1.md",
+  "honesty": {
+    "invented_smoke_pass": false,
+    "day0_green_without_arm": false
+  }
+}

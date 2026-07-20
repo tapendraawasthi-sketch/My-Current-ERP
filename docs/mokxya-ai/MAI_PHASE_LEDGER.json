@@ -6,8 +6,17 @@
   "branch": "main",
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2"],
-  "active_phase_note": "Post-MAI-53 queue. PR-C2 Ask reports package READY (ADR_0092; flag OFF). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2"],
+  "active_phase_note": "Post-MAI-53 queue. PR-C3 Day-0 smoke pack READY (ADR_0093; NOT_RUN). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "day0_smoke_pack": {
+    "authority": "ADR_0093",
+    "decision": "DAY0_PRODUCTION_SMOKE_PACK",
+    "pack_ready": true,
+    "smoke_status": "NOT_RUN",
+    "smoke_pass": false,
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_DAY0_SMOKE_PACK_REGISTRY.json"
+  },
   "launch_ask_company_reports_release": {
     "authority": "ADR_0092",
     "decision": "LAUNCH_ASK_COMPANY_REPORTS_RELEASE_PACKAGE",
@@ -17,6 +26,10 @@
     "next_20_done": false,
     "owner_signed": false,
     "zero_mutation": true,
+    "engineering_pack_ready": true,
+    "runtime_gate": "erp_bot/src/oip/modules/conversation/application/launch_ask_company_reports_release_policy.py",
+    "ts_gate": "src/platform/release/launchAskCompanyReportsReleasePolicy.ts",
+    "artifacts": "artifacts/prod-ready-pr-c2/",
     "registry": "docs/mokxya-ai/MAI_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_REGISTRY.json"
   },
   "pr_c1_arm_attempt": {
