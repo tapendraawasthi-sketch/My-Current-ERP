@@ -112,12 +112,26 @@ async function probeErpBotBase(base) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 4000);
   try {
+    // Must be the Python bot JSON livez — SPA HTML 200s are false positives
+    // (private DNS + wrong port can hit sutra-erp itself).
     const resp = await fetch(`${base}/livez`, {
       method: "GET",
       headers: { Accept: "application/json" },
       signal: controller.signal,
     });
-    return resp.ok;
+    if (!resp.ok) return false;
+    const ct = (resp.headers.get("content-type") || "").toLowerCase();
+    const text = await resp.text();
+    if (text.includes("<!doctype") || text.includes("<html")) return false;
+    if (!ct.includes("json") && !text.trim().startsWith("{")) return false;
+    const data = JSON.parse(text);
+    return (
+      data.status === "ok" ||
+      data.status === "live" ||
+      data.status === "alive" ||
+      data.alive === true ||
+      data.live === true
+    );
   } catch {
     return false;
   } finally {
@@ -240,12 +254,25 @@ async function handleErpBotRequest(req, res, method, rawPath) {
         continue;
       }
 
+      const contentType = (upstream.headers.get("content-type") || "").toLowerCase();
+      // Reject SPA HTML false positives (wrong private port → frontend service).
+      if (!isStreamingEndpoint && uniqueBases.length > 1) {
+        const maybeHtml =
+          contentType.includes("text/html") || !contentType.includes("json");
+        if (maybeHtml) {
+          const peek = await upstream.clone().text();
+          if (peek.includes("<!doctype") || peek.includes("<html")) {
+            console.warn(`[serve.mjs] upstream HTML from ${base}, trying next`);
+            lastErr = new Error("upstream returned HTML");
+            continue;
+          }
+        }
+      }
+
       if (base !== ERP_BOT_BACKEND) {
         ERP_BOT_BACKEND = base;
         console.log(`[serve.mjs] Orbix failover selected → ${base}`);
       }
-
-      const contentType = upstream.headers.get("content-type") || "application/json";
 
       if (isStreamingEndpoint && upstream.body) {
         res.writeHead(upstream.status, {

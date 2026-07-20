@@ -12,14 +12,16 @@
 #   OIP_PROVIDER_RUNTIME_ENABLED=true
 #   OIP_ORCHESTRATOR_ENABLED=true
 #   OIP_FORCE_STUB_PROVIDERS=false
-# Optional explicit PORT=8080 if frontend uses private-network reference vars.
+# Pin PORT=8080 so sutra-erp can reach this service over private DNS at
+# http://sutra-erp-bot.railway.internal:8080 without dashboard reference vars.
+# Also set Variable PORT=8080 in the Railway dashboard (keeps public edge in sync).
 
 [build]
 builder = "NIXPACKS"
 buildCommand = "scripts/render-build.sh"
 
 [deploy]
-startCommand = "python scripts/start_render.py"
+startCommand = "sh -c 'export PORT=8080; exec python scripts/start_render.py'"
 healthcheckPath = "/livez"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
