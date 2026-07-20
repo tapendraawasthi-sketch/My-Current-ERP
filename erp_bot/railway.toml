@@ -1,9 +1,21 @@
 # Railway service for sutra-erp-bot — set Root Directory to `erp_bot` in the dashboard.
 # Without that, Nixpacks sees the monorepo root package.json and runs Bun (wrong).
+#
+# Railway wraps as `chmod +x <cmd> && sh <cmd>` — do not prefix with `bash`.
+#
+# REQUIRED Variables (see DEPLOYMENT.md):
+#   OIP_ENABLED=true
+#   OIP_PROVIDER=groq
+#   OIP_GROQ_API_KEY=<secret>
+#   OIP_AUTH_REQUIRED=true
+#   OIP_JWT_SECRET=<secret length>=16>
+#   OIP_PROVIDER_RUNTIME_ENABLED=true
+#   OIP_ORCHESTRATOR_ENABLED=true
+#   OIP_FORCE_STUB_PROVIDERS=false
+# Optional explicit PORT=8080 if frontend uses private-network reference vars.
+
 [build]
 builder = "NIXPACKS"
-# Railway wraps as `chmod +x <cmd> && sh <cmd>` — do not prefix with `bash`
-# or chmod targets the word "bash" and the build fails.
 buildCommand = "scripts/render-build.sh"
 
 [deploy]

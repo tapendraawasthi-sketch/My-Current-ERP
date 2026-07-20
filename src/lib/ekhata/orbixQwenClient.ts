@@ -376,4 +376,5 @@ We could not reach the AI service for this request. You can still browse reports
 If this continues, ask your administrator to check that the Orbix service is running.`;
 
 /** Developer-facing diagnostics (not shown as primary chat copy). */
-export const ORBIX_OFFLINE_DIAGNOSTICS = `OIP Provider Runtime offline. Ensure sutra-erp-bot is deployed and ERP_BOT_BACKEND_URL / OIP_* env vars are set.`;
+export const ORBIX_OFFLINE_DIAGNOSTICS =
+  "OIP Provider Runtime offline. On Railway: deploy sutra-erp-bot (Root Directory=erp_bot), set OIP_* on the bot, and on sutra-erp set ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}.";

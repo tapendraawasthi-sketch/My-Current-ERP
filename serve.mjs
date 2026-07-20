@@ -13,7 +13,7 @@ if (!existsSync(DIST_DIR)) {
   console.error(
     `\n❌ FATAL: dist/ folder not found at ${DIST_DIR}\n` +
       `   Run "npm run build" before starting the server.\n` +
-      `   On Render: ensure buildCommand runs before startCommand.\n`,
+      `   On Railway/Render: ensure buildCommand runs before startCommand.\n`,
   );
   process.exit(1);
 }
@@ -30,16 +30,52 @@ if (!existsSync(INDEX_PATH)) {
 
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
-// Set ERP_BOT_BACKEND_URL on Render to the sutra-erp-bot Python service URL.
-// In render.yaml this is wired automatically via fromService → RENDER_EXTERNAL_URL.
 // Frontend always calls /erp-bot (same-origin proxy) — no VITE_ERP_BOT_URL required.
-const ERP_BOT_BACKEND = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
+// Primary deploy target: Railway. Set on sutra-erp (recommended):
+//   ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
+// Private network alternative (same project; set PORT=8080 on the bot service):
+//   ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}
+function resolveErpBotBackend() {
+  const explicit = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
+  if (explicit) return explicit;
+
+  const onRailway = Boolean(
+    process.env.RAILWAY_ENVIRONMENT ||
+      process.env.RAILWAY_PROJECT_ID ||
+      process.env.RAILWAY_SERVICE_NAME,
+  );
+  if (!onRailway) return "";
+
+  // Allow partial wiring: public host, or private host + port.
+  const publicHost = (process.env.ERP_BOT_PUBLIC_DOMAIN || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  if (publicHost) return `https://${publicHost}`;
+
+  const privateHost = (
+    process.env.ERP_BOT_PRIVATE_HOST ||
+    process.env.ERP_BOT_PRIVATE_DOMAIN ||
+    ""
+  )
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+  const privatePort = (process.env.ERP_BOT_PORT || "").trim();
+  if (privateHost && privatePort) return `http://${privateHost}:${privatePort}`;
+
+  // Same-project default private DNS (requires bot service named sutra-erp-bot + PORT var).
+  if (privatePort) {
+    return `http://sutra-erp-bot.railway.internal:${privatePort}`;
+  }
+  return "";
+}
+
+const ERP_BOT_BACKEND = resolveErpBotBackend();
 
 if (ERP_BOT_BACKEND) {
   console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
 } else {
   console.warn(
-    "⚠️  ERP_BOT_BACKEND_URL not set — Orbix will show offline until sutra-erp-bot is deployed",
+    "⚠️  ERP_BOT_BACKEND_URL not set — Orbix offline. On Railway sutra-erp Variables set:\n" +
+      "    ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}",
   );
 }
 
@@ -70,7 +106,8 @@ async function handleErpBotRequest(req, res, method, rawPath) {
           streaming: false,
           message:
             "⚠️ OFFLINE MODE: Using built-in rule-based brain (limited). " +
-            "Deploy sutra-erp-bot on Render and set ERP_BOT_BACKEND_URL to enable OIP chat via Groq.",
+            "Deploy sutra-erp-bot on Railway and set ERP_BOT_BACKEND_URL " +
+            "(https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}) to enable OIP chat via Groq.",
         }),
       );
       return;
@@ -82,8 +119,8 @@ async function handleErpBotRequest(req, res, method, rawPath) {
         error: "LLM backend not configured — using offline fallback",
         mode: "builtin",
         hint:
-          "Deploy the sutra-erp-bot Render service (Python erp_bot) and set ERP_BOT_BACKEND_URL " +
-          "to its onrender.com URL to enable OIP chat via Groq.",
+          "Deploy sutra-erp-bot on Railway (Root Directory=erp_bot) and on sutra-erp set " +
+          "ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}",
       }),
     );
     return;
@@ -202,15 +239,20 @@ async function serveRequest(req, res) {
     return;
   }
 
-  // Health check endpoints (used by Render for health monitoring)
+  // Health check endpoints (Railway / Render / load balancers)
   if (rawPath === "/health" || rawPath === "/ping" || rawPath === "/_health") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
         status: "ok",
         timestamp: new Date().toISOString(),
-        commit: process.env.RENDER_GIT_COMMIT || process.env.GITHUB_SHA || "unknown",
+        commit:
+          process.env.RAILWAY_GIT_COMMIT_SHA ||
+          process.env.RENDER_GIT_COMMIT ||
+          process.env.GITHUB_SHA ||
+          "unknown",
         service: "sutra-erp",
+        erp_bot_proxy: ERP_BOT_BACKEND ? "configured" : "missing",
       }),
     );
     return;
@@ -285,13 +327,17 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`\n🚀 Sutra ERP server running on http://0.0.0.0:${PORT}`);
+const listenHost =
+  process.env.HOST ||
+  (process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PROJECT_ID ? "::" : "0.0.0.0");
+
+server.listen(PORT, listenHost, () => {
+  console.log(`\n🚀 Sutra ERP server running on http://${listenHost}:${PORT}`);
   console.log(`   Serving files from: ${DIST_DIR}`);
   console.log(`   SPA mode: enabled (all routes → index.html)\n`);
 });
 
-// Graceful shutdown for Render's SIGTERM
+// Graceful shutdown for platform SIGTERM
 process.on("SIGTERM", () => {
   console.log("\n[serve.mjs] SIGTERM received. Shutting down gracefully...");
   server.close(() => {
