@@ -1,0 +1,2 @@
+# Shell scripts must be LF — Railway executes them with `sh` on Linux.
+*.sh text eol=lf

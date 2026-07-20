@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
-# Render production build for erp_bot (OIP Provider Runtime — no Ollama/GPU).
-set -euo pipefail
+#!/bin/sh
+# Production build for erp_bot (OIP Provider Runtime — no Ollama/GPU).
+# Must be POSIX sh + LF endings: Railway runs `chmod +x <cmd> && sh <cmd>`.
+set -eu
 
 echo "[erp_bot render-build] installing Python dependencies..."
 pip install -r requirements.txt

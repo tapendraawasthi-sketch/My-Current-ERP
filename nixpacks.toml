@@ -1,0 +1,9 @@
+# Frontend (sutra-erp) Nixpacks config.
+# Repo has bun.lock + package-lock.json; force npm to match render-build.sh.
+# python3 is required by `npm run build` (Nepal AI runtime map export).
+
+[variables]
+NIXPACKS_NODE_PKG_MANAGER = "npm"
+
+[phases.setup]
+nixPkgs = ["...", "python3"]
