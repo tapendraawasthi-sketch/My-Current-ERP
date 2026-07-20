@@ -268,6 +268,23 @@ async function ensureErpBotBackend() {
     }
   }
 
+  // Dedicated bot service often still runs SPA HTML on :8080. Embed Python OIP
+  // in this frontend container (requires python + erp_bot deps from build).
+  try {
+    const { ensureEmbeddedOrbixBot } = await import("./scripts/embed-orbix-bot.mjs");
+    const embedded = await ensureEmbeddedOrbixBot();
+    if (embedded && (await probeErpBotBase(embedded))) {
+      ERP_BOT_BACKEND = embedded;
+      console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND} (embedded)`);
+      return;
+    }
+  } catch (err) {
+    console.warn(
+      "[serve.mjs] embed-orbix failed:",
+      err instanceof Error ? err.message : String(err),
+    );
+  }
+
   // Prefer private DNS even if probe raced the bot boot — request-time failover retries.
   ERP_BOT_BACKEND = "http://sutra-erp-bot.railway.internal:8080";
   console.warn(
