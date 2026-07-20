@@ -192,17 +192,23 @@ const OptionalVouchers: React.FC = () => {
     }
   };
 
-  // Cancel voucher
+  // Cancel voucher (status-only — safe to undo)
   const handleCancel = async (voucherId: string) => {
-    if (window.confirm("Are you sure you want to cancel this optional voucher?")) {
-      try {
-        const db = getDB();
-        await db.vouchers.update(voucherId, { status: "cancelled" });
-
-        toast.success("Optional voucher cancelled successfully");
-      } catch (error) {
-        toast.error("Failed to cancel voucher");
-      }
+    if (!window.confirm("Are you sure you want to cancel this optional voucher?")) return;
+    try {
+      const db = getDB();
+      const original = await db.vouchers.get(voucherId);
+      const prevStatus = original?.status || "draft";
+      await db.vouchers.update(voucherId, { status: "cancelled" });
+      toast.undo("Optional voucher cancelled", async () => {
+        try {
+          await db.vouchers.update(voucherId, { status: prevStatus });
+        } catch {
+          toast.error("Failed to restore voucher");
+        }
+      });
+    } catch {
+      toast.error("Failed to cancel voucher");
     }
   };
 
@@ -219,12 +225,12 @@ const OptionalVouchers: React.FC = () => {
   }, [form.lines]);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Optional Vouchers</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Optional Vouchers</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Manage non-accounting vouchers and forecasting scenarios
             </p>
@@ -253,14 +259,14 @@ const OptionalVouchers: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 0 && !showForm && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
             <div className="flex justify-between items-center mb-4 gap-3 flex-wrap">
-              <h2 className="text-[14px] font-semibold text-gray-800">Optional Voucher Register</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Optional Voucher Register</h2>
               {branchOptions.length > 0 && (
                 <select
                   value={branchFilter}
                   onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   aria-label="Branch"
                 >
                   <option value="all">All branches</option>
@@ -273,32 +279,32 @@ const OptionalVouchers: React.FC = () => {
               )}
             </div>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Voucher No
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Type
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Narration
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Amount
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Scenario Name
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -393,8 +399,8 @@ const OptionalVouchers: React.FC = () => {
         )}
 
         {(activeTab === 1 || showForm) && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 max-w-4xl">
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-6 pb-2 border-b border-gray-100">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 max-w-4xl">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-6 pb-2 border-b border-gray-100">
               {editingVoucher ? "View/Edit Optional Voucher" : "Create Optional Voucher"}
             </h2>
 
@@ -404,7 +410,7 @@ const OptionalVouchers: React.FC = () => {
                 id="isOptional"
                 checked={true}
                 readOnly
-                className="mr-2 h-4 w-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
+                className="mr-2 h-4 w-4 text-[var(--ds-action-primary)] rounded border-gray-200 focus:ring-[var(--ds-action-primary)]"
               />
               <label htmlFor="isOptional" className="text-[12px] text-blue-800 font-medium">
                 This is an Optional Voucher (will not affect regular accounting books)
@@ -440,7 +446,7 @@ const OptionalVouchers: React.FC = () => {
                   type="text"
                   value={form.referenceNo}
                   onChange={(e) => handleFormChange("referenceNo", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -473,10 +479,10 @@ const OptionalVouchers: React.FC = () => {
 
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <label className="text-[12px] font-semibold text-gray-800">Journal Lines</label>
+                <label className="text-[12px] font-semibold text-gray-700">Journal Lines</label>
                 <button
                   type="button"
-                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm"
+                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
                   onClick={addLine}
                 >
                   Add Line
@@ -489,20 +495,20 @@ const OptionalVouchers: React.FC = () => {
                 </div>
               )}
 
-              <div className="border border-gray-200 rounded-md overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Account <span className="text-red-500">*</span>
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                         Dr Amount
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                         Cr Amount
                       </th>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-12">
                         Actions
                       </th>
                     </tr>
@@ -552,7 +558,7 @@ const OptionalVouchers: React.FC = () => {
                         <td className="px-3 py-2 align-top text-center">
                           <button
                             type="button"
-                            className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                            className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                             onClick={() => removeLine(index)}
                             disabled={form.lines.length <= 1}
                           >
@@ -565,8 +571,8 @@ const OptionalVouchers: React.FC = () => {
                 </table>
               </div>
 
-              <div className="flex justify-end mt-3 p-3 bg-[#f5f6fa] border border-gray-200 rounded-md">
-                <div className="flex items-center gap-6 text-[12px] font-semibold text-gray-800">
+              <div className="flex justify-end mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="flex items-center gap-6 text-[12px] font-semibold text-gray-700">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">Total Debit:</span>
                     <span>{money(totals.debit)}</span>
@@ -587,7 +593,7 @@ const OptionalVouchers: React.FC = () => {
 
             <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
               <button
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => {
                   setShowForm(false);
                   setEditingVoucher(null);
@@ -599,7 +605,7 @@ const OptionalVouchers: React.FC = () => {
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm"
                 onClick={handleSave}
               >
                 Save Optional Voucher

@@ -222,7 +222,7 @@ export default function FiscalYearPage() {
             className="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col"
             style={{ maxHeight: "90vh" }}
           >
-            <div className="p-4 border-b border-[var(--ox-border)] flex items-center justify-between bg-[#f5f6fa] rounded-t-lg">
+            <div className="p-4 border-b border-[var(--ox-border)] flex items-center justify-between bg-gray-50 rounded-t-lg">
               <h2 className="text-[14px] font-semibold text-[var(--ox-text)] flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-[var(--ds-action-primary)]" /> Create Fiscal Year
               </h2>
@@ -293,7 +293,7 @@ export default function FiscalYearPage() {
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="h-8 px-4 bg-white border border-[var(--ox-border)] text-[var(--ox-text)] text-[12px] font-medium rounded-md hover:bg-[var(--ox-surface-muted)]"
+                    className="h-8 px-4 bg-white border border-[var(--ox-border)] text-[var(--ox-text)] text-[12px] font-medium rounded-lg hover:bg-[var(--ox-surface-muted)]"
                   >
                     Cancel
                   </button>
@@ -345,13 +345,13 @@ export default function FiscalYearPage() {
             <div className="flex justify-end gap-2 p-4 bg-[var(--ox-surface-muted)] border-t border-[var(--ox-border)]">
               <button
                 onClick={() => setShowCloseModal(null)}
-                className="h-8 px-4 bg-white border border-[var(--ox-border)] text-[var(--ox-text)] text-[12px] font-medium rounded-md hover:bg-[var(--ox-surface-muted)]"
+                className="h-8 px-4 bg-white border border-[var(--ox-border)] text-[var(--ox-text)] text-[12px] font-medium rounded-lg hover:bg-[var(--ox-surface-muted)]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleCloseYear(showCloseModal)}
-                className="h-8 px-4 bg-red-600 hover:bg-red-700 text-[var(--ox-text)] text-[12px] font-medium rounded-md shadow-sm"
+                className="h-8 px-4 bg-red-600 hover:bg-red-700 text-[var(--ox-text)] text-[12px] font-medium rounded-lg shadow-sm"
               >
                 Proceed & Close Year
               </button>

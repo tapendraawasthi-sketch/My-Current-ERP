@@ -235,10 +235,10 @@ const VouchersRegister: React.FC = () => {
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
       if (columnKey === "voucherType") {
-        return <span className="font-bold text-gray-800">TOTAL</span>;
+        return <span className="font-bold text-gray-700">TOTAL</span>;
       }
       if (columnKey === "debit" || columnKey === "credit") {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
+        return <span className="font-bold font-mono text-gray-700">{formatNumber(value)}</span>;
       }
       return "";
     }
@@ -271,7 +271,7 @@ const VouchersRegister: React.FC = () => {
     }
 
     if (columnKey === "partyOrLedger") {
-      return <span className="font-medium text-gray-800">{value}</span>;
+      return <span className="font-medium text-gray-700">{value}</span>;
     }
 
     return value;
@@ -302,7 +302,7 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -312,7 +312,7 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -322,7 +322,7 @@ const VouchersRegister: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -337,7 +337,7 @@ const VouchersRegister: React.FC = () => {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             {typeOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -349,7 +349,7 @@ const VouchersRegister: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             {statusOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -379,13 +379,13 @@ const VouchersRegister: React.FC = () => {
               placeholder="Search no, narration..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
+              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
             />
           </div>
         </div>
       }
     >
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm flex flex-col">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm flex flex-col">
         <div className="overflow-x-auto flex-1">
           <ReportGrid
             columns={[
@@ -428,17 +428,17 @@ const VouchersRegister: React.FC = () => {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="h-8 px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                className="h-8 px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               >
                 Previous
               </button>
-              <div className="flex items-center px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-200 rounded-md">
+              <div className="flex items-center px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-200 rounded-lg">
                 Page {page} of {totalPages}
               </div>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="h-8 px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                className="h-8 px-3 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               >
                 Next
               </button>
@@ -460,7 +460,7 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -470,7 +470,7 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -480,7 +480,7 @@ const VouchersRegister: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -498,7 +498,7 @@ const VouchersRegister: React.FC = () => {
             <select
               value={pendingTypeFilter}
               onChange={(e) => setPendingTypeFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {typeOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -513,7 +513,7 @@ const VouchersRegister: React.FC = () => {
             <select
               value={pendingStatusFilter}
               onChange={(e) => setPendingStatusFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {statusOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -529,7 +529,7 @@ const VouchersRegister: React.FC = () => {
               type="text"
               value={pendingSearchText}
               onChange={(e) => setPendingSearchText(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               placeholder="Search voucher no, narration..."
             />
           </label>

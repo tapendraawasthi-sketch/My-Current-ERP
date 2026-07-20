@@ -464,7 +464,7 @@ export default function ConfigurationHub() {
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   {["Label", "From (days)", "To (days)", ""].map((h) => (
                     <th
                       key={h}
@@ -557,7 +557,7 @@ export default function ConfigurationHub() {
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   {["Label", "From (days)", "To (days)", "Rate %", ""].map((h) => (
                     <th
                       key={h}
@@ -686,10 +686,10 @@ export default function ConfigurationHub() {
 
   if (isHolidaysPage || activeSection === "holidays") {
     return (
-      <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="p-4 bg-gray-50 min-h-screen">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">List of Holidays</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">List of Holidays</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Define company holidays for working-day calculations
             </p>
@@ -717,7 +717,7 @@ export default function ConfigurationHub() {
           >
             <table className="w-full">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   {["#", "Date", "Holiday Name", "Actions"].map((h) => (
                     <th
                       key={h}
@@ -741,7 +741,7 @@ export default function ConfigurationHub() {
                     .map((h, i) => (
                       <tr key={h.id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="px-3 py-2.5 text-[12px] text-gray-500">{i + 1}</td>
-                        <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
+                        <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">
                           {h.date}
                         </td>
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">{h.name}</td>
@@ -779,7 +779,7 @@ export default function ConfigurationHub() {
           {showHolidayForm && (
             <div className="w-80 bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-[13px] font-semibold text-gray-800">
+                <h2 className="text-[13px] font-semibold text-gray-700">
                   {selectedHoliday ? "Edit" : "Add"} Holiday
                 </h2>
                 <button onClick={resetHolidayForm}>
@@ -822,10 +822,10 @@ export default function ConfigurationHub() {
   if (activeSection !== "overview") {
     const section = CONFIG_SECTIONS.find((s) => s.id === activeSection);
     return (
-      <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="p-4 bg-gray-50 min-h-screen">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">{section?.label}</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">{section?.label}</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">{section?.desc}</p>
           </div>
           <div className="flex gap-2">

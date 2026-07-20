@@ -237,7 +237,7 @@ export default function PDCManagement() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
+          <h1 className="text-[15px] font-semibold text-gray-900">
             Post-dated cheques
           </h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
@@ -249,7 +249,7 @@ export default function PDCManagement() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -262,7 +262,7 @@ export default function PDCManagement() {
           )}
           <button
             onClick={exportToExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" /> Export
           </button>
@@ -356,7 +356,7 @@ export default function PDCManagement() {
         </div>
         <div>
           <label className={labelCls}>Status</label>
-          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+          <div className="flex rounded-lg border border-gray-300 overflow-hidden">
             {["ALL", "pending", "deposited", "dishonoured", "cancelled", "returned"].map((s) => (
               <button
                 key={s}
@@ -408,7 +408,7 @@ export default function PDCManagement() {
                     key={pdc.id}
                     className={`hover:bg-gray-50 ${isOverdue ? "bg-red-50" : isDueSoon ? "bg-amber-50" : ""}`}
                   >
-                    <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-800 border-b border-gray-100">
+                    <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-700 border-b border-gray-100">
                       {pdc.chequeNo}
                     </td>
                     <td className={tdCls}>{pdc.partyName}</td>
@@ -444,7 +444,7 @@ export default function PDCManagement() {
                         "—"
                       )}
                     </td>
-                    <td className={`${amtCls} font-semibold text-gray-800`}>{fmt(pdc.amount)}</td>
+                    <td className={`${amtCls} font-semibold text-gray-700`}>{fmt(pdc.amount)}</td>
                     <td className="px-3 py-2.5 text-[12px] font-mono text-gray-500 border-b border-gray-100">
                       {pdc.linkedInvoiceNo || pdc.narration || "—"}
                     </td>
@@ -519,7 +519,7 @@ export default function PDCManagement() {
             {filtered.length > 0 && (
               <tfoot>
                 <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold">
-                  <td colSpan={5} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                  <td colSpan={5} className="px-3 py-2.5 text-[12px] font-bold text-gray-700">
                     TOTAL ({filtered.length} cheques)
                   </td>
                   <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right text-[var(--ds-action-primary)] border-b border-gray-100">
@@ -542,7 +542,7 @@ export default function PDCManagement() {
         <div className="fixed inset-0 bg-black/50 z-[var(--ds-z-dropdown)] flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
             <div className="flex items-center justify-between px-4 py-3 bg-[var(--ds-surface-muted)] border-b border-gray-200">
-              <h3 className="text-[14px] font-semibold text-gray-800">
+              <h3 className="text-[14px] font-semibold text-gray-700">
                 {editingId
                   ? "Edit PDC"
                   : `Add PDC — ${form.type === "received" ? "Received from Customer" : "Issued to Supplier"}`}
@@ -756,7 +756,7 @@ export default function PDCManagement() {
             <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50">
               <button
                 onClick={() => setShowModal(false)}
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               >
                 Cancel
               </button>

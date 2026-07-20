@@ -37,6 +37,20 @@
   .ds-financial-total {
     font-variant-numeric: tabular-nums lining-nums;
   }
+
+  .print-signature-block,
+  .print-document-header {
+    break-inside: avoid;
+  }
+
+  /* Running page label (browser support varies; still useful where available) */
+  @page {
+    @bottom-center {
+      content: "Page " counter(page);
+      font-size: 9pt;
+      color: #6b7280;
+    }
+  }
 }
 
 .ds-print-only {

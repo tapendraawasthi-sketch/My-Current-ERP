@@ -290,10 +290,10 @@ export default function Quotation() {
 
   if (view === "form") {
     return (
-      <div className="p-6 bg-[#f5f6fa] min-h-screen">
+      <div className="p-6 bg-gray-50 min-h-screen">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">
+            <h1 className="text-[15px] font-semibold text-gray-900">
               {editingQuotation ? `Edit Quotation #${formData.quotationNo}` : "New Quotation"}
             </h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -309,7 +309,7 @@ export default function Quotation() {
             </button>
             <button
               onClick={() => setView("list")}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
@@ -317,24 +317,24 @@ export default function Quotation() {
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-          <h2 className="text-[13px] font-semibold text-gray-800 mb-3">Quotation Info</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700 mb-3">Quotation Info</h2>
           <div className="grid grid-cols-3 gap-4">
             <input
               readOnly
               value={formData.quotationNo}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 text-gray-700"
+              className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-gray-50 text-gray-700"
             />
             <input
               type="date"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
             <input
               type="date"
               value={formData.validUpto}
               onChange={(e) => setFormData({ ...formData, validUpto: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
 
             <select
@@ -349,7 +349,7 @@ export default function Quotation() {
                   partyContact: p?.phone ?? p?.mobile ?? formData.partyContact,
                 });
               }}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">Select Party</option>
               {parties.map((p: any) => (
@@ -362,25 +362,25 @@ export default function Quotation() {
               placeholder="Party Name"
               value={formData.partyName}
               onChange={(e) => setFormData({ ...formData, partyName: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
             <input
               placeholder="Subject"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
             <input
               placeholder="Party Address"
               value={formData.partyAddress}
               onChange={(e) => setFormData({ ...formData, partyAddress: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] col-span-2"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] col-span-2"
             />
             <input
               placeholder="Party Contact"
               value={formData.partyContact}
               onChange={(e) => setFormData({ ...formData, partyContact: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </div>
           {formErrors.partyName && (
@@ -389,10 +389,10 @@ export default function Quotation() {
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 overflow-x-auto">
-          <h2 className="text-[13px] font-semibold text-gray-800 mb-3">Line Items</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700 mb-3">Line Items</h2>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <tr className="bg-gray-50 border-b border-gray-200">
                 {[
                   "#",
                   "Item Name",
@@ -424,14 +424,14 @@ export default function Quotation() {
                       list="quotation-items"
                       value={l.itemName}
                       onChange={(e) => updateLine(l.id, "itemName", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-40"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-40"
                     />
                   </td>
                   <td className="px-3 py-2.5">
                     <input
                       value={l.description}
                       onChange={(e) => updateLine(l.id, "description", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-48"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-48"
                     />
                   </td>
                   <td className="px-3 py-2.5">
@@ -439,14 +439,14 @@ export default function Quotation() {
                       type="number"
                       value={l.qty}
                       onChange={(e) => updateLine(l.id, "qty", Number(e.target.value))}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-20 text-right"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-20 text-right"
                     />
                   </td>
                   <td className="px-3 py-2.5">
                     <input
                       value={l.unit}
                       onChange={(e) => updateLine(l.id, "unit", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-20"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-20"
                     />
                   </td>
                   <td className="px-3 py-2.5">
@@ -454,7 +454,7 @@ export default function Quotation() {
                       type="number"
                       value={l.rate}
                       onChange={(e) => updateLine(l.id, "rate", Number(e.target.value))}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-24 text-right"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-24 text-right"
                     />
                   </td>
                   <td className="px-3 py-2.5">
@@ -462,7 +462,7 @@ export default function Quotation() {
                       type="number"
                       value={l.discount}
                       onChange={(e) => updateLine(l.id, "discount", Number(e.target.value))}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-20 text-right"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-20 text-right"
                     />
                   </td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right">
@@ -472,7 +472,7 @@ export default function Quotation() {
                     <select
                       value={l.vatPct}
                       onChange={(e) => updateLine(l.id, "vatPct", Number(e.target.value))}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
                     >
                       <option value={0}>0</option>
                       <option value={13}>13</option>
@@ -501,7 +501,7 @@ export default function Quotation() {
           {formErrors.lines && <p className="text-[11px] text-red-600 mt-2">{formErrors.lines}</p>}
           <button
             onClick={addLine}
-            className="mt-3 h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="mt-3 h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Plus className="h-3.5 w-3.5" /> Add Line
           </button>
@@ -509,19 +509,19 @@ export default function Quotation() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h2 className="text-[13px] font-semibold text-gray-800 mb-3">Terms & Notes</h2>
+            <h2 className="text-[13px] font-semibold text-gray-700 mb-3">Terms & Notes</h2>
             <textarea
               value={formData.terms}
               onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
               rows={3}
-              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white mb-3"
+              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white mb-3"
             />
             <textarea
               value={formData.narration}
               onChange={(e) => setFormData({ ...formData, narration: e.target.value })}
               rows={2}
               placeholder="Narration"
-              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white"
+              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white"
             />
           </div>
 
@@ -540,7 +540,7 @@ export default function Quotation() {
                 <span className="font-mono">{money(Number(value))}</span>
               </div>
             ))}
-            <div className="flex justify-between pt-3 mt-2 border-t border-gray-200 text-[15px] font-semibold text-gray-800">
+            <div className="flex justify-between pt-3 mt-2 border-t border-gray-200 text-[15px] font-semibold text-gray-700">
               <span>TOTAL AMOUNT:</span>
               <span className="font-mono">{money(formData.totalAmount)}</span>
             </div>
@@ -553,11 +553,11 @@ export default function Quotation() {
   if (view === "view" && selectedQuotation) {
     const q = selectedQuotation;
     return (
-      <div className="p-6 bg-[#f5f6fa] min-h-screen">
+      <div className="p-6 bg-gray-50 min-h-screen">
         <div className="no-print flex justify-between mb-4">
           <button
             onClick={() => setView("list")}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
           >
             Back
           </button>
@@ -570,7 +570,7 @@ export default function Quotation() {
             </button>
             <button
               onClick={() => setStatus(q, "sent")}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg"
             >
               Mark as Sent
             </button>
@@ -589,7 +589,7 @@ export default function Quotation() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-8 max-w-4xl mx-auto text-gray-800">
+        <div className="bg-white rounded-lg border border-gray-200 p-8 max-w-4xl mx-auto text-gray-700">
           <div className="flex justify-between border-b pb-4 mb-4">
             <div>
               <h1 className="text-[18px] font-semibold">
@@ -624,7 +624,7 @@ export default function Quotation() {
 
           <table className="w-full border-collapse mb-4">
             <thead>
-              <tr className="bg-[#f5f6fa]">
+              <tr className="bg-gray-50">
                 {["#", "Item", "Description", "Qty", "Rate", "Amount", "VAT", "Total"].map((h) => (
                   <th
                     key={h}
@@ -693,10 +693,10 @@ export default function Quotation() {
   const converted = quotations.filter((q) => q.status === "converted").length;
 
   return (
-    <div className="p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
+          <h1 className="text-[15px] font-semibold text-gray-900">
             Quotations / Pro-forma Invoices
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -708,7 +708,7 @@ export default function Quotation() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -733,12 +733,12 @@ export default function Quotation() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="Search party / quotation no"
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
         />
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
         >
           {["ALL", "draft", "sent", "accepted", "rejected", "converted", "expired"].map((s) => (
             <option key={s} value={s}>
@@ -758,7 +758,7 @@ export default function Quotation() {
         ) : (
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <tr className="bg-gray-50 border-b border-gray-200">
                 {[
                   "Quotation No",
                   "Date (BS)",
@@ -847,12 +847,12 @@ export default function Quotation() {
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-white rounded-lg border p-4 w-full max-w-sm">
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-2">Delete quotation?</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-2">Delete quotation?</h2>
             <p className="text-[12px] text-gray-600 mb-4">This action cannot be undone.</p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg"
               >
                 Cancel
               </button>

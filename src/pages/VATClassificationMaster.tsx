@@ -1,19 +1,24 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store";
-import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
+import { Plus, X, Save, Search } from "lucide-react";
 import toast from "@/lib/appToast";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyForm = () => ({
@@ -25,14 +30,47 @@ const emptyForm = () => ({
   isActive: true,
 });
 
+const getTaxabilityLabel = (taxability: string) => {
+  switch (taxability) {
+    case "taxable":
+      return "Taxable";
+    case "exempt":
+      return "Exempt";
+    case "zero_rated":
+      return "Zero Rated";
+    case "non_vat":
+      return "Non-VAT";
+    default:
+      return taxability;
+  }
+};
+
+const getInputOutputLabel = (io: string) => {
+  switch (io) {
+    case "input":
+      return "Input";
+    case "output":
+      return "Output";
+    case "both":
+      return "Both";
+    default:
+      return io;
+  }
+};
+
 const VATClassificationMaster: React.FC = () => {
   const {
     vatClassifications,
     addVATClassification,
     updateVATClassification,
     deleteVATClassification,
+    initLifecycle,
   } = useStore();
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { branchFilter, matchBranch } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = "vat-classifications";
+
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,19 +127,80 @@ const VATClassificationMaster: React.FC = () => {
     });
   }, [vatClassifications, searchTerm, matchBranch, branchFilter]);
 
+  const columns = useMemo<EnterpriseColumnDef<any>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Name",
+        cell: (classification) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">
+            {classification.name}
+          </span>
+        ),
+      },
+      {
+        id: "taxability",
+        header: "Taxability",
+        cell: (classification) => (
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+            {getTaxabilityLabel(classification.taxability)}
+          </span>
+        ),
+      },
+      {
+        id: "vatRate",
+        header: "VAT rate %",
+        align: "right",
+        cell: (classification) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">
+            {classification.vatRate}%
+          </span>
+        ),
+      },
+      {
+        id: "inputOutput",
+        header: "Input/output",
+        cell: (classification) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {getInputOutputLabel(classification.inputOutput)}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (classification) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              classification.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {classification.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const resetForm = () => {
     setForm(emptyForm());
     setSelected(null);
     setShowForm(false);
+    clearEntity(pageId);
   };
 
-  const openAdd = () => {
+  const handleOpenCreate = () => {
     setForm(emptyForm());
     setSelected(null);
     setShowForm(true);
+    openEntity(pageId, "new");
   };
 
-  const loadFormForEdit = (classification: any) => {
+  const handleOpenEdit = (classification: any) => {
     setForm({
       name: classification.name || "",
       taxability: classification.taxability || "",
@@ -112,7 +211,37 @@ const VATClassificationMaster: React.FC = () => {
     });
     setSelected(classification);
     setShowForm(true);
+    openEntity(pageId, classification.id);
   };
+
+  // Deep link: /app/vat-classifications/:id | /app/vat-classifications/new
+  useEffect(() => {
+    if (route.pageId !== pageId) return;
+    if (route.entityId === "new") {
+      setSelected(null);
+      setForm(emptyForm());
+      setShowForm(true);
+      return;
+    }
+    if (route.entityId) {
+      const classification = (vatClassifications || []).find((c) => c.id === route.entityId);
+      if (classification) {
+        setSelected(classification);
+        setForm({
+          name: classification.name || "",
+          taxability: classification.taxability || "",
+          vatRate: classification.vatRate || 0,
+          inputOutput: classification.inputOutput || "both",
+          effectiveDate: classification.effectiveDate || "",
+          isActive: classification.isActive ?? true,
+        });
+        setShowForm(true);
+      }
+      return;
+    }
+    if (showForm) setShowForm(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, vatClassifications]);
 
   const handleTaxabilityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -154,86 +283,51 @@ const VATClassificationMaster: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!window.confirm("Delete this VAT classification?")) return;
+  const handleDelete = async (classification: any) => {
+    const snapshot = { ...classification };
     try {
-      await deleteVATClassification(id);
-      toast.success("Deleted");
-      if (selected && selected.id === id) {
-        resetForm();
-      }
+      await deleteVATClassification(classification.id);
+      if (selected?.id === classification.id) resetForm();
+      toast.undo(`"${classification.name}" deleted`, async () => {
+        try {
+          const { id, ...rest } = snapshot;
+          await addVATClassification({ ...rest, id } as any);
+        } catch (err: any) {
+          toast.error(err?.message || "Failed to restore VAT classification.");
+        }
+      });
     } catch (error) {
       console.error("Delete error:", error);
       toast.error("An error occurred while deleting.");
     }
   };
 
-  const getTaxabilityLabel = (taxability: string) => {
-    switch (taxability) {
-      case "taxable":
-        return "Taxable";
-      case "exempt":
-        return "Exempt";
-      case "zero_rated":
-        return "Zero Rated";
-      case "non_vat":
-        return "Non-VAT";
-      default:
-        return taxability;
-    }
-  };
-
-  const getInputOutputLabel = (io: string) => {
-    switch (io) {
-      case "input":
-        return "Input";
-      case "output":
-        return "Output";
-      case "both":
-        return "Both";
-      default:
-        return io;
-    }
-  };
-
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">
-                VAT Classification Master (Nepal)
-              </h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Manage tax classifications and nature of transactions
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="VAT Classification Master (Nepal)"
+            description="Manage tax classifications and nature of transactions"
+            meta={
+              <PageMeta>
+                {filteredClassifications.length} of {(vatClassifications || []).length}{" "}
+                classifications
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={handleOpenCreate}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 Add classification
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+          />
 
-          <div className="relative mb-3 max-w-xs">
+          <div className="relative max-w-xs">
             <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
               type="text"
@@ -245,99 +339,50 @@ const VATClassificationMaster: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filteredClassifications.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={
-                  searchTerm
-                    ? "No classifications match your search"
-                    : "No VAT classifications found"
-                }
-                hint={
-                  searchTerm
-                    ? "Try a different search term."
-                    : 'Click "Add classification" to create your first VAT classification.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Name</th>
-                    <th className={th}>Taxability</th>
-                    <th className={`${th} text-right`}>VAT rate %</th>
-                    <th className={th}>Input/output</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredClassifications.map((classification) => (
-                    <tr
-                      key={classification.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => loadFormForEdit(classification)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{classification.name}</td>
-                      <td className={td}>
-                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-                          {getTaxabilityLabel(classification.taxability)}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right font-mono`}>{classification.vatRate}%</td>
-                      <td className={td}>{getInputOutputLabel(classification.inputOutput)}</td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            classification.isActive
-                              ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {classification.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              loadFormForEdit(classification);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(classification.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filteredClassifications.length} classification
-                {filteredClassifications.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filteredClassifications}
+            getRowId={(classification) => classification.id}
+            loading={vatClassifications == null || initLifecycle === "loading"}
+            emptyTitle={
+              searchTerm ? "No classifications match your search" : "No VAT classifications found"
+            }
+            emptyDescription={
+              searchTerm
+                ? "Try a different search term."
+                : 'Click "Add classification" to create your first VAT classification.'
+            }
+            emptyAction={
+              !searchTerm ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={handleOpenCreate}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add classification
+                </Button>
+              ) : undefined
+            }
+            onRowClick={handleOpenEdit}
+            rowActions={(classification) => [
+              { label: "Edit", onSelect: () => handleOpenEdit(classification) },
+              {
+                label: "Delete",
+                destructive: true,
+                onSelect: () => handleDelete(classification),
+              },
+            ]}
+            caption="VAT classifications"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[400px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {selected ? "Edit VAT classification" : "Add VAT classification"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -379,7 +424,7 @@ const VATClassificationMaster: React.FC = () => {
               </div>
               <div>
                 <label className={labelCls}>VAT rate %</label>
-                <div className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 flex items-center justify-end font-mono text-gray-700">
+                <div className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-gray-50 flex items-center justify-end font-mono text-gray-700">
                   {form.vatRate}%
                 </div>
               </div>
@@ -409,11 +454,11 @@ const VATClassificationMaster: React.FC = () => {
               </div>
             </div>
 
-            <div className="border border-gray-200 rounded-md p-3 bg-gray-50">
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
               <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
                 <input
                   type="checkbox"
-                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                  className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />

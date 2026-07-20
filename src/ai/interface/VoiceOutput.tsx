@@ -76,7 +76,7 @@ const VoiceOutput: React.FC<VoiceOutputProps> = ({ text, outputLanguage, compact
       type="button"
       onClick={toggle}
       title={speaking ? "Stop speaking" : "Listen"}
-      className={`rounded ${compact ? "p-0.5" : "p-1"} ${
+      className={`${compact ? "rounded-md p-0.5" : "rounded p-1"} ${
         speaking ? "text-[var(--ds-action-primary)]" : "text-gray-400 hover:text-gray-600"
       }`}
     >

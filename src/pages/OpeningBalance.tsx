@@ -42,10 +42,10 @@ const btn2 =
 const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
-const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-700";
 const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-200";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -167,8 +167,8 @@ const Modal = ({ open, title, children, onClose }: any) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
-          <h3 className="text-[15px] font-semibold text-gray-800">{title}</h3>
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
+          <h3 className="text-[15px] font-semibold text-gray-700">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
             <X className="h-4 w-4" />
           </button>
@@ -1260,7 +1260,7 @@ export default function OpeningBalance() {
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
         <div className="overflow-auto max-h-[58vh]">
           <table className="w-full min-w-[900px] text-left border-collapse whitespace-nowrap">
-            <thead className="sticky top-0 z-10 bg-[#f5f6fa] shadow-sm">
+            <thead className="sticky top-0 z-10 bg-gray-50 shadow-sm">
               <tr>
                 <th className={th}>Account</th>
                 <th className={th}>Group</th>
@@ -1274,7 +1274,7 @@ export default function OpeningBalance() {
             <tbody>
               {ledgerGridRows.map((r) => (
                 <tr key={r.accountId} className="border-b border-gray-100 hover:bg-gray-50/50">
-                  <td className={`${td} font-medium text-gray-800`}>{r.accountName}</td>
+                  <td className={`${td} font-medium text-gray-700`}>{r.accountName}</td>
                   <td className={td}>{r.group || "-"}</td>
                   <td className={`${td} text-right font-medium`}>{r.dr ? money(r.dr) : "-"}</td>
                   <td className={`${td} text-right font-medium`}>{r.cr ? money(r.cr) : "-"}</td>
@@ -1293,14 +1293,14 @@ export default function OpeningBalance() {
                   <td className={`${td} text-center p-1`}>
                     <div className="inline-flex gap-1 items-center justify-center">
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded-lg text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
                         onClick={() => openLedgerModal(r)}
                       >
                         <Calculator className="h-4 w-4" />
                       </button>
                       {r.id && (
                         <button
-                          className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                           onClick={() => deleteRow("ledger", r)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -1319,7 +1319,7 @@ export default function OpeningBalance() {
               )}
             </tbody>
             <tfoot>
-              <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
+              <tr className="bg-gray-50 border-t-2 border-gray-200">
                 <td className={`${td} font-semibold`} colSpan={2}>
                   Total
                 </td>
@@ -1341,7 +1341,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <Package className="h-4 w-4 text-gray-500" /> Stock Opening
             </h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1357,7 +1357,7 @@ export default function OpeningBalance() {
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
         <div className="overflow-auto max-h-[58vh]">
           <table className="w-full min-w-[900px] text-left border-collapse whitespace-nowrap">
-            <thead className="sticky top-0 bg-[#f5f6fa] shadow-sm">
+            <thead className="sticky top-0 bg-gray-50 shadow-sm">
               <tr>
                 <th className={th}>Item</th>
                 <th className={th}>Warehouse</th>
@@ -1372,7 +1372,7 @@ export default function OpeningBalance() {
             <tbody>
               {scopedStockRows.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                  <td className={`${td} font-medium text-gray-800`}>{itemName(items, r.itemId)}</td>
+                  <td className={`${td} font-medium text-gray-700`}>{itemName(items, r.itemId)}</td>
                   <td className={td}>{warehouseName(warehouses, r.warehouseId)}</td>
                   <td className={td}>{r.batchNo || "-"}</td>
                   <td className={`${td} text-right font-medium`}>
@@ -1384,13 +1384,13 @@ export default function OpeningBalance() {
                   <td className={`${td} text-center p-1`}>
                     <div className="inline-flex gap-1 items-center justify-center">
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded-lg text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
                         onClick={() => openStockModal(r)}
                       >
                         <Calculator className="h-4 w-4" />
                       </button>
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                         onClick={() => deleteRow("stock", r)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -1408,7 +1408,7 @@ export default function OpeningBalance() {
               )}
             </tbody>
             <tfoot>
-              <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
+              <tr className="bg-gray-50 border-t-2 border-gray-200">
                 <td className={`${td} font-semibold`} colSpan={5}>
                   Total Stock Value
                 </td>
@@ -1427,7 +1427,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-gray-500" /> Bill-wise Opening
             </h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1443,7 +1443,7 @@ export default function OpeningBalance() {
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
         <div className="overflow-auto max-h-[58vh]">
           <table className="w-full min-w-[950px] text-left border-collapse whitespace-nowrap">
-            <thead className="sticky top-0 bg-[#f5f6fa] shadow-sm">
+            <thead className="sticky top-0 bg-gray-50 shadow-sm">
               <tr>
                 <th className={th}>Party / Account</th>
                 <th className={th}>Bill No</th>
@@ -1458,7 +1458,7 @@ export default function OpeningBalance() {
             <tbody>
               {scopedBillRows.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                  <td className={`${td} font-medium text-gray-800`}>
+                  <td className={`${td} font-medium text-gray-700`}>
                     {accountName(accounts, r.accountId)}
                   </td>
                   <td className={td}>{r.billNo}</td>
@@ -1480,13 +1480,13 @@ export default function OpeningBalance() {
                   <td className={`${td} text-center p-1`}>
                     <div className="inline-flex gap-1 items-center justify-center">
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded-lg text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
                         onClick={() => openBillModal(r)}
                       >
                         <Calculator className="h-4 w-4" />
                       </button>
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                         onClick={() => deleteRow("bill", r)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -1504,7 +1504,7 @@ export default function OpeningBalance() {
               )}
             </tbody>
             <tfoot>
-              <tr className="bg-[#f5f6fa] border-t-2 border-gray-200">
+              <tr className="bg-gray-50 border-t-2 border-gray-200">
                 <td className={`${td} font-semibold`} colSpan={5}>
                   Bill-wise Totals
                 </td>
@@ -1525,7 +1525,7 @@ export default function OpeningBalance() {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-gray-500" /> Validation & Control Summary
             </h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1541,7 +1541,7 @@ export default function OpeningBalance() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className={card}>
-          <h4 className="text-[13px] font-semibold text-gray-800 mb-3 flex items-center gap-2">
+          <h4 className="text-[13px] font-semibold text-gray-700 mb-3 flex items-center gap-2">
             <Database className="h-4 w-4 text-gray-500" /> Control Totals
           </h4>
           <div className="space-y-1">
@@ -1561,14 +1561,14 @@ export default function OpeningBalance() {
                 className="flex justify-between border-b border-gray-100 py-2 last:border-0"
               >
                 <span className="text-[12px] text-gray-600 font-medium">{k}</span>
-                <span className="text-[12px] font-semibold text-gray-800">{v}</span>
+                <span className="text-[12px] font-semibold text-gray-700">{v}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div className={card}>
-          <h4 className="text-[13px] font-semibold text-gray-800 mb-3 flex items-center gap-2">
+          <h4 className="text-[13px] font-semibold text-gray-700 mb-3 flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-gray-500" /> Validation Issues
           </h4>
           <div className="space-y-2 max-h-96 overflow-auto">
@@ -1606,10 +1606,10 @@ export default function OpeningBalance() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-[var(--ds-action-primary)]" /> Opening Balances
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1621,7 +1621,7 @@ export default function OpeningBalance() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -1940,7 +1940,7 @@ export default function OpeningBalance() {
           <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
             <div className="overflow-auto max-h-96">
               <table className="w-full text-left border-collapse whitespace-nowrap">
-                <thead className="sticky top-0 bg-[#f5f6fa] shadow-sm">
+                <thead className="sticky top-0 bg-gray-50 shadow-sm">
                   <tr>
                     <th className={th}>Type</th>
                     <th className={th}>Master</th>
@@ -1965,7 +1965,7 @@ export default function OpeningBalance() {
                             {r.type}
                           </span>
                         </td>
-                        <td className={`${td} font-medium text-gray-800`}>
+                        <td className={`${td} font-medium text-gray-700`}>
                           {r.type === "stock"
                             ? itemName(items, r.itemId)
                             : accountName(accounts, r.accountId)}
@@ -2005,7 +2005,7 @@ export default function OpeningBalance() {
           <div className="flex flex-wrap justify-between items-center gap-3 pt-2 border-t border-gray-200">
             <div className="text-[12px] text-gray-600">
               Total rows:{" "}
-              <span className="font-semibold text-gray-800">{importPreview.length}</span>
+              <span className="font-semibold text-gray-700">{importPreview.length}</span>
               <span className="mx-2 text-gray-300">|</span>
               Invalid rows:{" "}
               <span className="font-semibold text-red-600">

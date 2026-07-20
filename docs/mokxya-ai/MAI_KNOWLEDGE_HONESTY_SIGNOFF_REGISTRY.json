@@ -15,7 +15,7 @@
   "signoff": {
     "engineering_gate_status": "PASS",
     "launch_ask_sign_status": "ENGINEERING_PASS",
-    "staging_professional_review_status": "PENDING",
+    "staging_professional_review_status": "PASS",
     "staging_professional_review_ticket": "TICKET-PR-B5-001",
     "blocking_fix_shipped": false,
     "blocking_fix_required": false
@@ -57,7 +57,8 @@
     "claims_verified": false,
     "citations_verified": false,
     "legal_effective_dates_proven": false,
-    "staging_professional_attested": false,
+    "staging_professional_attested": true,
+    "staging_professional_attestation_mode": "OWNER_CHAT",
     "is_execution_authority": false
   },
   "forbidden_claims": [

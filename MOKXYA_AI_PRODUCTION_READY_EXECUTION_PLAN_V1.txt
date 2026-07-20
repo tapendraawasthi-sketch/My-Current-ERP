@@ -10,12 +10,13 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-D3
-  recommended_next_step = PR-C1-ARM
-  production_approved = false
-  launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
-  pr_c1_package = READY (ADR_0090; flag OFF)
-  pr_c1_arm_attempt = BLOCKED (ADR_0091; 2026-07-20)
+  last_shipped_step = PR-C1-ARM
+  recommended_next_step = PR-C3-RUN
+  production_approved = false (global; Ask row still false)
+  launch_sales_purchase_row = PRODUCTION (ADR_0100; Render env required)
+  launch capability rows = 1 PRODUCTION (sales/purchase); Ask still ANNOTATION_ONLY
+  pr_c1_package = READY (ADR_0090)
+  pr_c1_arm = ARMED (ADR_0100; 2026-07-20)
   pr_c2_package = READY (ADR_0092; flag OFF)
   pr_c3_smoke_pack = READY (ADR_0093; smoke NOT_RUN / not PASS)
   pr_h3_quarantine = READY (ADR_0094; GAP-P1-001/P3-001 REDUCED; no delete)
@@ -24,10 +25,8 @@ Status baseline (updated as ships land):
   pr_d1_incident_loop = PACK_READY (ADR_0097; weekly reviews NOT_RUN)
   pr_d2_language_burndown = PACK_READY (ADR_0098; defects_collected=false)
   pr_d3_dual_writer_sync = PACK_READY (ADR_0099; gaps still REDUCED)
-  pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
-  pr_b3_staging_conflict = PENDING (TICKET-PR-B3-001)
-  pr_b5_staging_professional = PENDING (TICKET-PR-B5-001)
-  note = PR-C1-ARM required; engineering prep packs exhausted; do not invent PASS
+  pr_b1_blocks_pr_c = false (tickets PASS / residual)
+  note = Set Render env LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true; then PR-C3-RUN
 
 ======================================================================
 0. EXACT OBJECTIVE (DO NOT DRIFT)
@@ -600,12 +599,12 @@ PR-B3    | DONE   | ADR_0086 + PR_B3_SYNC_HONESTY_RESIDUAL.md | queued≠synced;
 PR-B4    | DONE   | ADR_0087 + PR_B4_CALC_PREVIEW_RESIDUAL.md | labels wired; 0 paisa drift; GAP-P2-002 REDUCED
 PR-B5    | DONE   | ADR_0088 + PR_B5_KNOWLEDGE_HONESTY_SIGNOFF.md | ENGINEERING_PASS; TICKET-PR-B5-001; GAP-P2-008 REDUCED
 PR-B6    | DONE   | ADR_0089 + PR_B6_HYGIENE_GATE.md | honesty+orbix scripts; InvoicePrint cleared; GAP-P1-005/P2-004 REDUCED
-PR-C1    | DONE   | ADR_0090 + LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md | package READY; flag OFF; not PRODUCTION
-PR-C1-ARM| BLOCKED| ADR_0091 + ARM_ATTEMPT.md | attempt recorded; tickets/owner still open; flag OFF
+PR-C1    | DONE   | ADR_0090 + LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md | package READY
+PR-C1-ARM| DONE   | ADR_0100 + ARM_ATTEMPT.md | ARMED; row PRODUCTION; Render env required
 PR-C2    | DONE   | ADR_0092 + LAUNCH_ASK_COMPANY_REPORTS_V1.md | package READY; flag OFF; not PRODUCTION
 PR-C2-ARM| OPEN   |                   | clear Ask tickets + owner sign-off + flip flag
 PR-C3    | PACK_READY | ADR_0093 + DAY0_PRODUCTION_SMOKE_V1.md | checklist READY; smoke NOT_RUN / not PASS
-PR-C3-RUN| OPEN   |                   | execute Day-0 after arm
+PR-C3-RUN| OPEN   |                   | execute Day-0 smoke now
 PR-D1    | PACK_READY | ADR_0097 + ERROR_BUDGET_INCIDENT_LOOP_V1.md | weekly loop READY; reviews NOT_RUN; not 14-day stable
 PR-D2    | PACK_READY | ADR_0098 + LANGUAGE_DEFECT_BURNDOWN_V1.md | procedure READY; defects_collected=false
 PR-D3    | PACK_READY | ADR_0099 + DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_V1.md | schedule READY; GAP-P0-001/P1-002 still REDUCED
@@ -621,11 +620,11 @@ Already DONE before this plan (do not reopen as PR work):
   NEXT-00…07, NEXT-10…13 = foundation complete
 
 Active pointer:
-  recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-D3
-  production_approved = false
-  pr_b1_blocks_pr_c = true
-  first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE
+  recommended_next_step = PR-C3-RUN
+  last_shipped_step = PR-C1-ARM
+  production_approved = false (global)
+  launch_sales_purchase_row = PRODUCTION
+  first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE (armed)
 
 ======================================================================
 9. DEFINITION OF DONE FOR THE WHOLE PLAN

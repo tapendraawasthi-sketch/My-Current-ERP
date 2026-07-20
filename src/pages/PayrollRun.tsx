@@ -591,7 +591,7 @@ const PayrollRun: React.FC = () => {
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Attendance</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Attendance</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">Attendance entries.</p>
             <p className="text-[12px] text-gray-500 mt-0.5">Process and manage employee payroll</p>
           </div>
@@ -599,7 +599,7 @@ const PayrollRun: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -640,7 +640,7 @@ const PayrollRun: React.FC = () => {
 
         {/* Step 1: Setup */}
         {step === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div>
                 <label className="block text-[12px] font-medium text-gray-600 mb-1">
@@ -650,7 +650,7 @@ const PayrollRun: React.FC = () => {
                   type="text"
                   value={selectedYear}
                   readOnly
-                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-gray-50 text-gray-500 w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-gray-50 text-gray-500 w-full"
                 />
               </div>
               <div>
@@ -658,7 +658,7 @@ const PayrollRun: React.FC = () => {
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   {nepaliMonths.map((month, index) => (
                     <option key={index + 1} value={index + 1}>
@@ -675,7 +675,7 @@ const PayrollRun: React.FC = () => {
                   type="number"
                   value={workingDays}
                   onChange={(e) => setWorkingDays(Number(e.target.value))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -686,14 +686,14 @@ const PayrollRun: React.FC = () => {
                   type="date"
                   value={payrollDate}
                   onChange={(e) => setPayrollDate(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
             </div>
 
             <div className="flex justify-end pt-2 border-t border-gray-100">
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={handleLoadEmployees}
               >
                 <UserCheck size={14} />
@@ -705,11 +705,11 @@ const PayrollRun: React.FC = () => {
 
         {/* Step 2: Attendance */}
         {step === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden flex flex-col">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-[13px] font-semibold text-gray-800">Attendance & Details</h2>
+              <h2 className="text-[13px] font-semibold text-gray-700">Attendance & Details</h2>
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={handleComputeSalary}
               >
                 <Calculator size={14} />
@@ -721,40 +721,40 @@ const PayrollRun: React.FC = () => {
               <table className="w-full min-w-max border-collapse">
                 <thead>
                   <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Emp Code
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Name
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Department
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Basic Salary
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Present Days
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-red-600">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-red-600">
                       Absent Days
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-amber-600">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-amber-600">
                       OT Hours
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Advance Deduct
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Other Deduct
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Arrears
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-green-600">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-green-600">
                       Bonus
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-12">
                       Edit
                     </th>
                   </tr>
@@ -785,7 +785,7 @@ const PayrollRun: React.FC = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-3 py-2 text-[12px] text-gray-800 font-medium">
+                      <td className="px-3 py-2 text-[12px] text-gray-700 font-medium">
                         {record.name}
                       </td>
                       <td className="px-3 py-2 text-[12px] text-gray-600">
@@ -834,7 +834,7 @@ const PayrollRun: React.FC = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-3 py-2 text-[12px] text-gray-800 font-medium text-right bg-blue-50/30">
+                      <td className="px-3 py-2 text-[12px] text-gray-700 font-medium text-right bg-blue-50/30">
                         {editingCell?.empId === record.empId &&
                         editingCell?.field === "presentDays" ? (
                           <input
@@ -988,7 +988,7 @@ const PayrollRun: React.FC = () => {
                       </td>
                       <td className="px-3 py-2 text-center text-gray-400 group-hover:text-blue-500 transition-colors">
                         <button
-                          className="p-1 hover:bg-blue-50 rounded"
+                          className="p-1 hover:bg-blue-50 rounded-lg"
                           onClick={() =>
                             startEditing(record.empId, "basicSalary", record.basicSalary)
                           }
@@ -1014,11 +1014,11 @@ const PayrollRun: React.FC = () => {
 
         {/* Step 4: Summary */}
         {step === 4 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-[13px] font-semibold text-gray-800">Payroll Summary</h2>
+              <h2 className="text-[13px] font-semibold text-gray-700">Payroll Summary</h2>
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={handlePostToAccounts}
               >
                 <CheckCircle size={14} />
@@ -1030,40 +1030,40 @@ const PayrollRun: React.FC = () => {
               <table className="w-full min-w-max border-collapse">
                 <thead>
                   <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Employee Name
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Gross
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       SSF Emp
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       PF Emp
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Tax TDS
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       CIT
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       OT Pay
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Advance
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Other
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Total Deductions
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-[var(--ds-action-primary)]">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-[var(--ds-action-primary)]">
                       Net Salary
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Employer Cost
                     </th>
                   </tr>
@@ -1074,7 +1074,7 @@ const PayrollRun: React.FC = () => {
                       key={result.employeeId}
                       className="border-b border-gray-100 hover:bg-gray-50"
                     >
-                      <td className="px-3 py-2 text-[12px] text-gray-800 font-medium">
+                      <td className="px-3 py-2 text-[12px] text-gray-700 font-medium">
                         {result.employeeName}
                       </td>
                       <td className="px-3 py-2 text-[12px] text-gray-700 text-right">
@@ -1101,7 +1101,7 @@ const PayrollRun: React.FC = () => {
                       <td className="px-3 py-2 text-[12px] text-red-600 text-right">
                         {money(result.otherDeduct)}
                       </td>
-                      <td className="px-3 py-2 text-[12px] text-gray-800 font-medium text-right bg-gray-50/50">
+                      <td className="px-3 py-2 text-[12px] text-gray-700 font-medium text-right bg-gray-50/50">
                         {money(result.totalDeductions)}
                       </td>
                       <td
@@ -1115,8 +1115,8 @@ const PayrollRun: React.FC = () => {
                     </tr>
                   ))}
                   <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">TOTALS</td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700">TOTALS</td>
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                       {money(totals.grossEarnings)}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] font-bold text-red-700 text-right">
@@ -1140,13 +1140,13 @@ const PayrollRun: React.FC = () => {
                     <td className="px-3 py-2.5 text-[12px] font-bold text-red-700 text-right">
                       {money(totals.otherDeduct)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                       {money(totals.totalDeductions)}
                     </td>
                     <td className="px-3 py-2.5 text-[13px] font-bold text-[var(--ds-action-primary)] text-right">
                       {money(totals.netSalary)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                       {money(totals.employerCost)}
                     </td>
                   </tr>
@@ -1158,13 +1158,13 @@ const PayrollRun: React.FC = () => {
 
         {/* Step 5: Post & Export */}
         {step === 5 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-6 max-w-4xl mx-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
               <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                 <CheckCircle size={20} className="text-green-600" />
               </div>
               <div>
-                <h2 className="text-[15px] font-bold text-gray-800">Payroll Posted Successfully</h2>
+                <h2 className="text-[15px] font-bold text-gray-700">Payroll Posted Successfully</h2>
                 <p className="text-[12px] text-gray-500">
                   Journal vouchers have been created. You can now export the required documents.
                 </p>
@@ -1173,7 +1173,7 @@ const PayrollRun: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <button
-                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-md flex flex-col items-center gap-3 transition-all"
+                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-lg flex flex-col items-center gap-3 transition-all"
                 onClick={handleExportExcel}
               >
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -1186,7 +1186,7 @@ const PayrollRun: React.FC = () => {
               </button>
 
               <button
-                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-md flex flex-col items-center gap-3 transition-all"
+                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-lg flex flex-col items-center gap-3 transition-all"
                 onClick={handleExportBank}
               >
                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
@@ -1199,7 +1199,7 @@ const PayrollRun: React.FC = () => {
               </button>
 
               <button
-                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-md flex flex-col items-center gap-3 transition-all"
+                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-lg flex flex-col items-center gap-3 transition-all"
                 onClick={handleExportPF}
               >
                 <div className="w-10 h-10 rounded-full bg-[var(--ds-status-info-surface)] flex items-center justify-center">
@@ -1212,7 +1212,7 @@ const PayrollRun: React.FC = () => {
               </button>
 
               <button
-                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-md flex flex-col items-center gap-3 transition-all"
+                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-lg flex flex-col items-center gap-3 transition-all"
                 onClick={handleExportSSF}
               >
                 <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
@@ -1225,7 +1225,7 @@ const PayrollRun: React.FC = () => {
               </button>
 
               <button
-                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-md flex flex-col items-center gap-3 transition-all"
+                className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-lg flex flex-col items-center gap-3 transition-all"
                 onClick={handleExportTaxCertificate}
               >
                 <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">

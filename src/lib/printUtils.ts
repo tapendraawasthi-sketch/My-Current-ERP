@@ -748,6 +748,12 @@ async function voucherHTML(voucher: AccountingVoucher, opts: PrintOptions): Prom
   const printConfig = resolvePrintConfig(opts, "voucher");
   const cs = voucher.companySettings || ({} as CompanySettings);
   const vType = (voucher.type || "Journal").toUpperCase();
+  const printedAt = new Date().toLocaleString("en-IN");
+
+  const logoHtml =
+    printConfig.showLogo && cs.logo
+      ? `<img src="${cs.logo}" class="logo-img" alt="Logo" />`
+      : '<div style="width:75pt;height:55pt;"></div>';
 
   const linesHTML = (voucher.lines || [])
     .map(
@@ -775,11 +781,21 @@ tfoot td { background: #e8f5e9; font-weight: bold; }
 </head>
 <body>
 ${printBannerHtml(printConfig, "header")}
-<div class="company-center" style="margin-bottom:8pt;">
-  ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ""}
-  <div class="company-name-en">${cs.name || ""}</div>
-  <div style="font-size:8pt;">${cs.address || ""}${cs.phone ? " | Ph: " + cs.phone : ""}</div>
-  <div style="margin-top:5pt;"><span class="invoice-title">${vType} VOUCHER</span></div>
+<!-- STEP 6.4 — auditor letterhead (logo + address + PAN/phone) -->
+<div class="header-grid" style="grid-template-columns:80pt 1fr 90pt;">
+  <div>${logoHtml}</div>
+  <div class="company-center">
+    ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ""}
+    <div class="company-name-en">${cs.name || ""}</div>
+    <div style="font-size:8pt; margin-top:2pt;">${cs.address || ""}</div>
+    <div style="font-size:8pt;">
+      ${cs.panNumber ? "PAN: <strong>" + cs.panNumber + "</strong>" : ""}
+      ${cs.phone ? (cs.panNumber ? " | " : "") + "Ph: " + cs.phone : ""}
+      ${cs.email ? " | " + cs.email : ""}
+    </div>
+    <div style="margin-top:5pt;"><span class="invoice-title">${vType} VOUCHER</span></div>
+  </div>
+  <div style="text-align:right;font-size:7.5pt;color:#555;">Printed: ${printedAt}</div>
 </div>
 
 <div class="divider"></div>
@@ -826,8 +842,9 @@ ${
 }
 
 <div class="sig-row" style="margin-top:30pt;">
-  <div class="sig-box"><div class="sig-line"></div>Prepared By</div>
-  <div class="sig-box"><div class="sig-line"></div>Approved By</div>
+  <div class="sig-box"><div class="sig-line"></div>Prepared by</div>
+  <div class="sig-box"><div class="sig-line"></div>Checked by</div>
+  <div class="sig-box"><div class="sig-line"></div>Approved by</div>
 </div>
 
 ${printBannerHtml(printConfig, "footer")}
@@ -1116,9 +1133,16 @@ export function generateVoucherPDF(voucher: any, companySettings: any, _accounts
     })),
     companySettings: {
       name: companySettings?.companyNameEn || companySettings?.name || "",
-      nameNepali: companySettings?.nameNepali || "",
-      address: companySettings?.address || "",
-      panNumber: companySettings?.panNumber || "",
+      nameNepali:
+        companySettings?.companyNameNe ||
+        companySettings?.companyNameNp ||
+        companySettings?.nameNepali ||
+        "",
+      address: companySettings?.address || companySettings?.companyAddress || "",
+      panNumber: companySettings?.panNumber || companySettings?.pan || "",
+      phone: companySettings?.phone || companySettings?.mobile || "",
+      email: companySettings?.email || "",
+      logo: companySettings?.logo || companySettings?.logoUrl || "",
     },
   };
   // Fire-and-forget (can't await in sync function)

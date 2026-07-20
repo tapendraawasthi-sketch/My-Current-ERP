@@ -43,13 +43,13 @@ export default function Troubleshooting() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Troubleshooting</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Troubleshooting</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">System diagnostics and utilities</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-md border border-gray-200 p-4 mb-6">
-        <h2 className="text-[13px] font-semibold text-gray-800 mb-3">System Actions</h2>
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <h2 className="text-[13px] font-semibold text-gray-700 mb-3">System Actions</h2>
         <div className="flex gap-3">
           <button
             onClick={handleClearCache}
@@ -59,15 +59,15 @@ export default function Troubleshooting() {
           </button>
           <button
             onClick={fetchStats}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
           >
             Refresh Stats
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-md border border-gray-200 p-4">
-        <h2 className="text-[13px] font-semibold text-gray-800 mb-3">Database Statistics</h2>
+      <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <h2 className="text-[13px] font-semibold text-gray-700 mb-3">Database Statistics</h2>
         {loading ? (
           <div className="text-[12px] text-gray-500">Loading database statistics...</div>
         ) : (
@@ -82,7 +82,7 @@ export default function Troubleshooting() {
                   <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide truncate">
                     {table}
                   </span>
-                  <span className="text-[15px] font-semibold text-gray-800 mt-1">{count}</span>
+                  <span className="text-[15px] font-semibold text-gray-700 mt-1">{count}</span>
                 </div>
               ))}
           </div>

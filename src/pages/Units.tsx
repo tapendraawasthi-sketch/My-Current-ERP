@@ -1,15 +1,20 @@
 // @ts-nocheck
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store";
 import toast from "@/lib/appToast";
 import { DBUnit } from "../lib/db";
-import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
-import { ReportEmptyState } from "../components/ReportEmptyState";
+import { Plus, X, Save, Search } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -27,12 +32,14 @@ const DECIMAL_OPTIONS = [
 ];
 
 export default function Units() {
-  const { units, addUnit, updateUnit, deleteUnit } = useStore();
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { units, addUnit, updateUnit, deleteUnit, initLifecycle } = useStore();
+  const { branchFilter, matchBranch } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = "units";
 
   const [showForm, setShowForm] = useState(false);
   const [editingUnit, setEditingUnit] = useState<DBUnit | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
   const emptyForm = {
@@ -58,16 +65,69 @@ export default function Units() {
     });
   }, [units, search, matchBranch, branchFilter]);
 
+  const columns = useMemo<EnterpriseColumnDef<DBUnit>[]>(
+    () => [
+      {
+        id: "code",
+        header: "Code",
+        cell: (unit) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{unit.code || "—"}</span>
+        ),
+      },
+      {
+        id: "name",
+        header: "Name",
+        cell: (unit) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{unit.name}</span>
+        ),
+      },
+      {
+        id: "symbol",
+        header: "Symbol",
+        cell: (unit) => (
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700 font-mono">
+            {unit.symbol || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "decimalPlaces",
+        header: "Decimal places",
+        align: "center",
+        cell: (unit) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{unit.decimalPlaces ?? 2}</span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (unit) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              unit.isActive !== false ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}
+          >
+            {unit.isActive !== false ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const resetForm = () => {
     setShowForm(false);
     setEditingUnit(null);
     setFormData(emptyForm as any);
+    clearEntity(pageId);
   };
 
   const handleOpenCreate = () => {
     setEditingUnit(null);
     setFormData(emptyForm as any);
     setShowForm(true);
+    openEntity(pageId, "new");
   };
 
   const handleOpenEdit = (unit: DBUnit) => {
@@ -80,7 +140,36 @@ export default function Units() {
       isActive: unit.isActive !== false,
     });
     setShowForm(true);
+    openEntity(pageId, unit.id);
   };
+
+  // Deep link: /app/units/:id | /app/units/new
+  useEffect(() => {
+    if (route.pageId !== pageId) return;
+    if (route.entityId === "new") {
+      setEditingUnit(null);
+      setFormData(emptyForm as any);
+      setShowForm(true);
+      return;
+    }
+    if (route.entityId) {
+      const unit = units.find((u) => u.id === route.entityId);
+      if (unit) {
+        setEditingUnit(unit);
+        setFormData({
+          code: unit.code || "",
+          name: unit.name || "",
+          symbol: unit.symbol || "",
+          decimalPlaces: unit.decimalPlaces ?? 2,
+          isActive: unit.isActive !== false,
+        });
+        setShowForm(true);
+      }
+      return;
+    }
+    if (showForm) setShowForm(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, units]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,60 +224,48 @@ export default function Units() {
     }
   };
 
-  const handleDeleteRequest = (unit: DBUnit, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    setConfirmDeleteId(unit.id);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!confirmDeleteId) return;
+  const handleDelete = async (unit: DBUnit) => {
+    const snapshot = { ...unit };
     try {
-      await deleteUnit(confirmDeleteId);
-      toast.success("Unit deleted successfully.");
+      await deleteUnit(unit.id);
+      toast.undo(`"${unit.name}" deleted`, async () => {
+        try {
+          const { id, ...rest } = snapshot;
+          await addUnit({ ...rest, id } as any);
+        } catch (err: any) {
+          toast.error(err?.message || "Failed to restore unit.");
+        }
+      });
     } catch (err: any) {
       toast.error(err?.message || "Failed to delete unit.");
-    } finally {
-      setConfirmDeleteId(null);
     }
   };
 
-  const unitToDelete = units.find((u) => u.id === confirmDeleteId);
-
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Units of Measure</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Manage measurement units used for stock items (kg, pcs, ltr, etc.)
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Units of Measure"
+            description="Manage measurement units used for stock items (kg, pcs, ltr, etc.)"
+            meta={
+              <PageMeta>
+                {filtered.length} of {units.length} units
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={handleOpenCreate}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 New unit
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+          />
 
-          <div className="relative mb-3 max-w-xs">
+          <div className="relative max-w-xs">
             <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
               placeholder="Search units..."
@@ -199,94 +276,44 @@ export default function Units() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={search ? "No units match your search" : "No units found"}
-                hint={
-                  search
-                    ? "Try a different search term."
-                    : 'Click "New unit" to create your first unit of measure.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Code</th>
-                    <th className={th}>Name</th>
-                    <th className={th}>Symbol</th>
-                    <th className={`${th} text-center`}>Decimal places</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((unit) => (
-                    <tr
-                      key={unit.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => handleOpenEdit(unit)}
-                    >
-                      <td className={`${td} font-mono`}>{unit.code || "—"}</td>
-                      <td className={`${td} font-medium text-gray-800`}>{unit.name}</td>
-                      <td className={td}>
-                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700 font-mono">
-                          {unit.symbol || "—"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-center font-mono`}>{unit.decimalPlaces ?? 2}</td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            unit.isActive !== false
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {unit.isActive !== false ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenEdit(unit);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDeleteRequest(unit, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} unit{filtered.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(unit) => unit.id}
+            loading={units == null || initLifecycle === "loading"}
+            emptyTitle={search ? "No units match your search" : "No units found"}
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "New unit" to create your first unit of measure.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={handleOpenCreate}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  New unit
+                </Button>
+              ) : undefined
+            }
+            onRowClick={handleOpenEdit}
+            rowActions={(unit) => [
+              { label: "Edit", onSelect: () => handleOpenEdit(unit) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(unit) },
+            ]}
+            caption="Units of measure"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[360px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editingUnit ? "Edit unit" : "New unit"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -349,7 +376,7 @@ export default function Units() {
                 Number of decimal places allowed when entering quantities
               </p>
             </div>
-            <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+            <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 hover:bg-gray-100">
               <input
                 type="checkbox"
                 checked={formData.isActive !== false}
@@ -368,41 +395,6 @@ export default function Units() {
             <button type="button" className={btnOutline} onClick={resetForm}>
               Cancel
             </button>
-          </div>
-        </div>
-      )}
-
-      {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-md border border-gray-200 w-full max-w-sm shadow-xl">
-            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
-              <h2 className="text-[13px] font-semibold text-gray-800">Delete unit</h2>
-            </div>
-            <div className="p-4">
-              <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete{" "}
-                <strong>
-                  "{unitToDelete?.name}" ({unitToDelete?.symbol})
-                </strong>
-                ? This action cannot be undone.
-              </p>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  className={btnOutline}
-                  onClick={() => setConfirmDeleteId(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDeleteConfirm}
-                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}

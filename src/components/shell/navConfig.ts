@@ -237,11 +237,52 @@ export const SHELL_NAV: ShellNavGroup[] = [
   },
 ];
 
+/**
+ * STEP 2.2 — Daily 12 default favourites (ordered).
+ * Seeded once into pinned nav; role filter may shorten the list.
+ * Full leaf catalogue stays in Command Palette + “All menus…”.
+ */
+export const DAILY_NAV_FAVOURITES: readonly string[] = [
+  "billing",
+  "purchase",
+  "receipt",
+  "payment",
+  "journal",
+  "day-book",
+  "accounts",
+  "parties-sales",
+  "items",
+  "trial-balance",
+  "bank-reconciliation",
+  "sales-register",
+] as const;
+
+export const DAILY_NAV_PIN_CAP = 12;
+
 /** Canonical page → primary module for active-state highlighting */
 export const PAGE_MODULE: Record<string, string> = {};
 for (const g of SHELL_NAV) {
   if (g.page) PAGE_MODULE[g.page] = g.id;
   for (const i of g.items) PAGE_MODULE[i.page] = g.id;
+}
+
+/** Resolve Daily-12 seed ids present in the role-filtered item list. */
+export function resolveDailyFavouriteIds(items: ShellNavItem[]): string[] {
+  const byId = new Map(items.map((i) => [i.id, i]));
+  const ordered: string[] = [];
+  for (const id of DAILY_NAV_FAVOURITES) {
+    if (byId.has(id)) ordered.push(id);
+    if (ordered.length >= DAILY_NAV_PIN_CAP) break;
+  }
+  if (ordered.length >= Math.min(8, DAILY_NAV_PIN_CAP)) return ordered;
+  // Fallback: favouriteEligible fillers if role hid most Daily-12 entries
+  for (const i of items) {
+    if (!i.favouriteEligible || i.orbix || !i.page) continue;
+    if (ordered.includes(i.id)) continue;
+    ordered.push(i.id);
+    if (ordered.length >= DAILY_NAV_PIN_CAP) break;
+  }
+  return ordered;
 }
 
 export function findNavLabel(page: string): string {

@@ -275,15 +275,15 @@ export function BillAllocationPanel({
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
       {/* Header */}
-      <div className="bg-[var(--ds-status-info-surface)] border-b border-[var(--ds-status-info)]/20 px-4 py-2.5 flex items-center justify-between flex-wrap gap-2">
-        <div className="text-[12px] font-semibold text-[var(--ds-status-info)]">Bill Allocation</div>
+      <div className="bg-blue-50 border-b border-blue-100 px-5 py-3 flex items-center justify-between flex-wrap gap-2">
+        <div className="text-[13px] font-semibold text-blue-700">Bill Allocation</div>
         <button
           type="button"
           onClick={applyFIFO}
           disabled={outstandingBills.length === 0 || amountReceived <= 0}
-          className="flex items-center gap-1.5 h-7 px-3 text-[11px] bg-[var(--ds-action-primary)] text-white rounded hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-1.5 h-8 px-4 text-[12px] font-medium bg-[var(--ds-action-primary)] text-white rounded-md hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
         >
           <Zap size={12} />
           Auto-fill (FIFO)
@@ -291,7 +291,7 @@ export function BillAllocationPanel({
       </div>
 
       {/* Status bar */}
-      <div className="bg-gray-50 px-4 py-2 flex flex-wrap gap-4 text-[12px] border-b border-gray-200">
+      <div className="bg-gray-50/70 px-5 py-2.5 flex flex-wrap gap-4 text-[12px] border-b border-gray-100">
         <span>
           Received: <strong className="text-green-700">{fmt(amountReceived)}</strong>
         </span>
@@ -317,30 +317,30 @@ export function BillAllocationPanel({
 
       {/* Table */}
       {outstandingBills.length === 0 ? (
-        <div className="px-4 py-6 text-center text-[12px] text-gray-500">
+        <div className="px-5 py-10 text-center text-[13px] text-gray-400">
           No outstanding bills for this party. Amount will be posted as <strong>advance</strong>.
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-[12px]">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Bill No.
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Due Date
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Days Overdue
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Original
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Outstanding
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider w-40">
                   Allocate Now
                 </th>
               </tr>
@@ -351,25 +351,25 @@ export function BillAllocationPanel({
                 const isOverAlloc = alloc.amount > bill.balanceAmount + 0.005;
                 const dueDateStr = bill.dueDate ? bill.dueDate.toLocaleDateString("en-NP") : "—";
                 return (
-                  <tr key={bill.billNo} className="hover:bg-gray-50">
-                    <td className="px-3 py-2.5 font-mono text-[11px] text-blue-600">
+                  <tr key={bill.billNo} className="hover:bg-blue-50/30 transition-colors">
+                    <td className="px-4 py-2.5 font-mono text-[11px] text-blue-600">
                       {bill.billNo}
                     </td>
-                    <td className="px-3 py-2.5 text-gray-700">{dueDateStr}</td>
-                    <td className="px-3 py-2.5 text-right">
+                    <td className="px-4 py-2.5 text-gray-700">{dueDateStr}</td>
+                    <td className="px-4 py-2.5 text-right">
                       {bill.daysOverdue > 0 ? (
                         <span className="text-red-600 font-semibold">{bill.daysOverdue}</span>
                       ) : (
                         <span className="text-green-500">Not due</span>
                       )}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-700">
+                    <td className="px-4 py-2.5 text-right font-mono text-gray-700">
                       {fmt(bill.originalAmount)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono font-semibold text-gray-800">
+                    <td className="px-4 py-2.5 text-right font-mono font-semibold text-gray-800">
                       {fmt(bill.balanceAmount)}
                     </td>
-                    <td className="px-3 py-2.5 text-right">
+                    <td className="px-4 py-2.5 text-right">
                       <input
                         type="number"
                         min={0}
@@ -378,7 +378,7 @@ export function BillAllocationPanel({
                         value={alloc.amount || ""}
                         placeholder="0.00"
                         onChange={(e) => updateOverride(bill.billNo, e.target.value)}
-                        className={`w-36 text-right px-2 py-1 border rounded text-[12px] focus:outline-none focus:ring-2 ${
+                        className={`w-36 text-right px-2 py-1 border rounded-md text-[12px] focus:outline-none focus:ring-2 ${
                           isOverAlloc
                             ? "border-red-400 focus:ring-red-300 bg-red-50"
                             : alloc.amount > 0
@@ -400,7 +400,7 @@ export function BillAllocationPanel({
 
       {/* Footer note */}
       {unallocated > 0.005 && (
-        <div className="px-4 py-2 bg-orange-50 border-t border-orange-100 text-[11px] text-orange-700 flex items-center gap-1.5">
+        <div className="px-5 py-2.5 bg-amber-50 border-t border-amber-100 text-[12px] text-amber-700 flex items-center gap-1.5">
           <AlertCircle size={12} />
           Rs. {unallocated.toFixed(2)} will be posted as <strong>advance</strong> for future bill
           adjustment.

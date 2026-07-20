@@ -266,16 +266,16 @@ const SutraAIChat: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-4 left-4 z-[9998] w-[440px] flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
+      className="fixed bottom-4 left-4 z-[9998] w-[440px] flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden"
       style={{ maxHeight: "min(85vh, 720px)", minHeight: 480 }}
       data-component="sutra-ai-chat"
     >
       {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-2.5 bg-[var(--ds-action-primary)] text-white flex-shrink-0">
+      <div className="flex items-center gap-2.5 px-4 py-3 bg-[var(--ds-action-primary)] text-white flex-shrink-0">
         <Brain className="h-4 w-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <span className="font-semibold text-[13px]">SUTRA AI</span>
-          <p className="text-[10px] text-blue-100 truncate">
+          <span className="font-bold tracking-wide text-[13px]">SUTRA AI</span>
+          <p className="text-[10px] text-white/60 truncate">
             {headerSubtitle}
           </p>
         </div>
@@ -283,7 +283,7 @@ const SutraAIChat: React.FC = () => {
           <button
             type="button"
             onClick={handleCacheHeaderClick}
-            className="text-[9px] font-mono text-blue-100 hover:text-white px-1 py-0.5 rounded hover:bg-white/10 flex-shrink-0"
+            className="text-[9px] font-mono text-white/50 hover:text-white px-1 py-0.5 rounded hover:bg-white/10 flex-shrink-0 transition-colors"
             title={cacheSparkTooltip}
           >
             {cacheHitRatePct != null ? `${cacheHitRatePct}% ` : ""}
@@ -292,7 +292,7 @@ const SutraAIChat: React.FC = () => {
         )}
         {lastReplyMeta?.llmCacheHit && (
           <span
-            className="text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded bg-amber-100/90 text-amber-900 flex-shrink-0"
+            className="text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-amber-100/90 text-amber-900 flex-shrink-0"
             title={cachedBadgeTooltip}
           >
             {cachedBadgeLabel}
@@ -318,7 +318,7 @@ const SutraAIChat: React.FC = () => {
             setSyncMessage(formatChatSyncMessage("chat_exported", languageConfig.outputLanguage));
           }}
           title="Export chat"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
+          className="p-1.5 rounded-md hover:bg-white/15 transition-colors"
         >
           <FileDown className="h-3.5 w-3.5" />
         </button>
@@ -330,7 +330,7 @@ const SutraAIChat: React.FC = () => {
             );
           }}
           title="Export learning"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
+          className="p-1.5 rounded-md hover:bg-white/15 transition-colors"
         >
           <CloudDownload className="h-3.5 w-3.5" />
         </button>
@@ -338,7 +338,7 @@ const SutraAIChat: React.FC = () => {
           type="button"
           onClick={() => importRef.current?.click()}
           title="Import learning"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
+          className="p-1.5 rounded-md hover:bg-white/15 transition-colors"
         >
           <CloudUpload className="h-3.5 w-3.5" />
         </button>
@@ -362,7 +362,7 @@ const SutraAIChat: React.FC = () => {
             if (window.confirm("Clear all messages?")) clearHistory();
           }}
           title="Clear history"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
+          className="p-1.5 rounded-md hover:bg-white/15 transition-colors"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -370,7 +370,7 @@ const SutraAIChat: React.FC = () => {
           type="button"
           onClick={closePanel}
           title="Close"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
+          className="p-1.5 rounded-md hover:bg-white/15 transition-colors"
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -391,7 +391,7 @@ const SutraAIChat: React.FC = () => {
       />
 
       {syncMessage && (
-        <p className="px-3 py-1 text-[10px] text-gray-600 bg-blue-50 border-b border-blue-100">
+        <p className="px-4 py-1.5 text-[10px] text-blue-600 bg-blue-50 border-b border-blue-100">
           {syncMessage}
         </p>
       )}
@@ -410,7 +410,7 @@ const SutraAIChat: React.FC = () => {
       )}
 
       {proactiveAlerts.length > 0 && (
-        <div className="px-3 py-2 bg-amber-50 border-b border-amber-200 flex-shrink-0">
+        <div className="px-4 py-2.5 bg-amber-50/80 border-b border-amber-100 flex-shrink-0">
           <p className="text-[10px] font-semibold text-amber-800 uppercase tracking-wide mb-1">
             {formatProactiveAlertsHeader(languageConfig.outputLanguage)}
           </p>
@@ -438,11 +438,11 @@ const SutraAIChat: React.FC = () => {
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2 min-h-0">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0">
         {dailyDigest && (
           <div
             ref={digestBarRef}
-            className={`-mx-3 px-3 py-2 mb-1 bg-[#eef2ff] border-b border-[#c7d2fe] ${
+            className={`-mx-3 px-3 py-2 mb-1 bg-indigo-50/80 border-b border-indigo-100 ${
               digestPinned ? "sticky top-0 z-10 shadow-sm" : ""
             }`}
           >
@@ -458,7 +458,7 @@ const SutraAIChat: React.FC = () => {
                     writeDigestPinnedPreference(next);
                     return next;
                   })}
-                  className={`text-[10px] font-medium px-1 ${
+                  className={`text-[10px] font-medium px-1 rounded hover:bg-gray-100 transition-colors ${
                     digestPinned ? "text-[var(--ds-action-primary)]" : "text-gray-500 hover:text-gray-700"
                   }`}
                   title={digestPinUi.title}
@@ -468,7 +468,7 @@ const SutraAIChat: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => snoozeDailyDigest(1)}
-                  className="text-[10px] text-gray-500 hover:text-gray-700 font-medium px-1"
+                  className="text-[10px] text-gray-500 hover:text-gray-700 font-medium px-1 rounded hover:bg-gray-100 transition-colors"
                   title={formatDigestSnoozeTitle("1h", languageConfig.outputLanguage)}
                 >
                   {formatDigestSnoozeChip("1h", languageConfig.outputLanguage)}
@@ -476,7 +476,7 @@ const SutraAIChat: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => snoozeDailyDigest(4)}
-                  className="text-[10px] text-gray-500 hover:text-gray-700 font-medium px-1"
+                  className="text-[10px] text-gray-500 hover:text-gray-700 font-medium px-1 rounded hover:bg-gray-100 transition-colors"
                   title={formatDigestSnoozeTitle("4h", languageConfig.outputLanguage)}
                 >
                   {formatDigestSnoozeChip("4h", languageConfig.outputLanguage)}
@@ -484,7 +484,7 @@ const SutraAIChat: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => dismissDailyDigest()}
-                  className="text-[10px] text-gray-500 hover:text-gray-700 font-medium px-1"
+                  className="text-[10px] text-gray-500 hover:text-gray-700 font-medium px-1 rounded hover:bg-gray-100 transition-colors"
                   title={formatDigestSnoozeTitle("tomorrow", languageConfig.outputLanguage)}
                 >
                   {formatDigestSnoozeChip("tomorrow", languageConfig.outputLanguage)}
@@ -500,17 +500,17 @@ const SutraAIChat: React.FC = () => {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[85%] px-2.5 py-1.5 rounded-lg text-[12px] leading-relaxed whitespace-pre-wrap ${
+              className={`max-w-[82%] px-3 py-2 rounded-2xl text-[12px] leading-relaxed whitespace-pre-wrap shadow-sm ${
                 msg.role === "user"
-                  ? "bg-[var(--ds-action-primary)] text-white rounded-br-sm"
-                  : "bg-[#f5f6fa] text-gray-800 border border-gray-200 rounded-bl-sm"
+                  ? "bg-[var(--ds-action-primary)] text-white rounded-br-md"
+                  : "bg-gray-50 text-gray-700 border border-gray-100 rounded-bl-md"
               }`}
             >
               {msg.correctedFrom && (
                 <p className="text-[9px] opacity-70 line-through mb-0.5">{msg.correctedFrom}</p>
               )}
               {msg.autoCorrected && (
-                <span className="inline-block mb-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase bg-green-100 text-green-700 border border-green-200">
+                <span className="inline-block mb-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold uppercase bg-green-50 text-green-600 border border-green-100">
                   {formatAutoCorrectedLabel(languageConfig.outputLanguage)}
                 </span>
               )}
@@ -544,7 +544,7 @@ const SutraAIChat: React.FC = () => {
                 </div>
               )}
               {msg.processingTimeMs != null && msg.role === "assistant" && (
-                <p className="text-[9px] text-gray-400 mt-1 text-right flex items-center justify-end gap-1.5">
+                <p className="text-[9px] text-gray-300 mt-1 text-right flex items-center justify-end gap-1.5">
                   {msg.llmCacheHit && (
                     <span className="px-1 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold uppercase text-[8px]">
                       {cachedBadgeLabel}
@@ -554,20 +554,20 @@ const SutraAIChat: React.FC = () => {
                 </p>
               )}
               {msg.processingTimeMs == null && msg.llmCacheHit && msg.role === "assistant" && (
-                <p className="text-[9px] text-gray-400 mt-1 text-right">
+                <p className="text-[9px] text-gray-300 mt-1 text-right">
                   <span className="px-1 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold uppercase text-[8px]">
                     {cachedBadgeLabel}
                   </span>
                 </p>
               )}
               {msg.actions && msg.actions.length > 0 && msg.role === "assistant" && (
-                <div className="flex flex-wrap gap-1.5 mt-2 pt-1.5 border-t border-gray-200">
+                <div className="flex flex-wrap gap-2 mt-2.5 pt-2 border-t border-gray-100">
                   {msg.actions.map((action) => (
                     <button
                       key={action.id}
                       type="button"
                       onClick={() => executeAction(action)}
-                      className="h-7 px-2.5 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded-md"
+                      className="h-7 px-2.5 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded-lg shadow-sm transition-colors"
                     >
                       {languageConfig.outputLanguage === "english"
                         ? action.label
@@ -656,13 +656,13 @@ const SutraAIChat: React.FC = () => {
                 />
               )}
               {msg.role === "assistant" && msg.id !== "welcome" && (
-                <div className="flex items-center gap-1 mt-1.5 pt-1 border-t border-gray-100">
+                <div className="flex items-center gap-1.5 mt-1.5 pt-1 border-t border-gray-50">
                   <button
                     type="button"
                     title="Helpful"
                     disabled={Boolean(msg.feedbackGiven)}
                     onClick={() => recordFeedback(msg.id, true)}
-                    className={`p-0.5 rounded ${msg.feedbackGiven === "up" ? "text-green-600" : "text-gray-400 hover:text-gray-600"}`}
+                    className={`p-0.5 rounded ${msg.feedbackGiven === "up" ? "text-green-600" : "text-gray-400 hover:text-green-500"}`}
                   >
                     <ThumbsUp className="h-3 w-3" />
                   </button>
@@ -671,7 +671,7 @@ const SutraAIChat: React.FC = () => {
                     title="Not helpful"
                     disabled={Boolean(msg.feedbackGiven)}
                     onClick={() => recordFeedback(msg.id, false)}
-                    className={`p-0.5 rounded ${msg.feedbackGiven === "down" ? "text-red-600" : "text-gray-400 hover:text-gray-600"}`}
+                    className={`p-0.5 rounded ${msg.feedbackGiven === "down" ? "text-red-600" : "text-gray-400 hover:text-red-400"}`}
                   >
                     <ThumbsDown className="h-3 w-3" />
                   </button>
@@ -693,7 +693,7 @@ const SutraAIChat: React.FC = () => {
         )}
 
         {isLoading && (
-          <div className="flex items-center gap-2 text-[11px] text-gray-500 px-1">
+          <div className="flex items-center gap-2 text-[11px] text-gray-400 px-1 py-1">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             {formatAnalyzingLabel(languageConfig.outputLanguage)}
           </div>
@@ -703,7 +703,7 @@ const SutraAIChat: React.FC = () => {
       </div>
 
       {/* Input */}
-      <div className="flex-shrink-0 px-3 py-2 border-t border-gray-200 bg-white">
+      <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100 bg-white">
         <div className="flex gap-2 relative">
           <VoiceInput
             disabled={isLoading}
@@ -751,19 +751,19 @@ const SutraAIChat: React.FC = () => {
               }}
               placeholder="Type in Nepali, English, or Roman Nepali..."
               disabled={isLoading}
-              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] disabled:opacity-50"
+              className="w-full h-9 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-gray-50 focus:bg-white transition-all focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] disabled:opacity-50"
             />
           </div>
           <button
             type="button"
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-40 text-white text-[12px] font-medium rounded-md flex items-center gap-1"
+            className="h-9 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-40 text-white text-[12px] font-medium rounded-lg shadow-sm flex items-center gap-1"
           >
             <Send className="h-3.5 w-3.5" />
           </button>
         </div>
-        <p className="text-[9px] text-gray-400 mt-1 text-center">
+        <p className="text-[9px] text-gray-300 mt-1.5 text-center">
           Ctrl+Shift+A · Tab to autocomplete · Esc to close
         </p>
       </div>

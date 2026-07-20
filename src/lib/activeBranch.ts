@@ -1,10 +1,13 @@
 /**
  * Active branch helpers (Wave K / Function 23).
- * Source of truth: localStorage erp_default_branch + BranchSwitcher events.
+ * Working branch (stamps): localStorage erp_default_branch + ContextSwitcher.
+ * List/report view filter: optional erp_branch_view_filter === "all" (STEP 2.4).
  * Does not invent balances — only IDs for stamp/filter.
  */
 
 export const ACTIVE_BRANCH_KEY = "erp_default_branch";
+/** When set to "all", lists/reports show every branch; stamps still use ACTIVE_BRANCH_KEY. */
+export const BRANCH_VIEW_FILTER_KEY = "erp_branch_view_filter";
 export const BRANCH_CHANGED_EVENT = "orbix-branch-changed";
 
 export function readActiveBranchId(): string {
@@ -12,6 +15,29 @@ export function readActiveBranchId(): string {
     return localStorage.getItem(ACTIVE_BRANCH_KEY) || "";
   } catch {
     return "";
+  }
+}
+
+/** View filter for lists/reports — "all" or the working branch id. */
+export function readBranchViewFilter(): string {
+  try {
+    if (localStorage.getItem(BRANCH_VIEW_FILTER_KEY) === "all") return "all";
+  } catch {
+    /* ignore */
+  }
+  return readActiveBranchId() || "all";
+}
+
+export function writeBranchViewFilter(filterId: string): void {
+  try {
+    if (filterId === "all") {
+      localStorage.setItem(BRANCH_VIEW_FILTER_KEY, "all");
+    } else {
+      localStorage.removeItem(BRANCH_VIEW_FILTER_KEY);
+      if (filterId) localStorage.setItem(ACTIVE_BRANCH_KEY, filterId);
+    }
+  } catch {
+    /* ignore */
   }
 }
 

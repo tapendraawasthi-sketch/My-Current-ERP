@@ -4,7 +4,7 @@ import { useStore } from "../store/useStore";
 import { RefreshCw, CheckSquare } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 
-const BORDER = "1px solid #000";
+const BORDER = "1px solid #374151";
 const BG_HEADER = "var(--ds-surface-hover)";
 const BTN = (bg: string): React.CSSProperties => ({
   padding: "5px 14px",
@@ -14,7 +14,7 @@ const BTN = (bg: string): React.CSSProperties => ({
   fontSize: 12,
   fontWeight: 600,
   cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
+  color: bg === "#fff" ? "#374151" : "#fff",
 });
 
 const BULK_OPERATIONS = [
@@ -155,7 +155,7 @@ export default function BulkUpdations() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-auto"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-auto"
             aria-label="Branch"
           >
             <option value="all">All branches</option>

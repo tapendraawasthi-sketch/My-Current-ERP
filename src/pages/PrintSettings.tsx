@@ -61,7 +61,7 @@ export default function PrintSettings() {
           <button
             type="button"
             onClick={() => setCurrentPage("cheque-printing")}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
           >
             Cheque printing
           </button>
@@ -147,7 +147,7 @@ export default function PrintSettings() {
             >
               <input
                 type="checkbox"
-                className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 checked={prefs[key]}
                 onChange={(e) => setPrefs((p) => ({ ...p, [key]: e.target.checked }))}
               />

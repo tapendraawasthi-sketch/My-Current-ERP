@@ -224,24 +224,42 @@ export function ErrorSummary({
 export function EmptyState({
   title,
   description,
+  icon,
   primaryAction,
   secondaryAction,
   className,
 }: {
   title: string;
   description?: React.ReactNode;
+  /** Small lucide (or similar) icon — optional, no heavy illustrations. */
+  icon?: React.ReactNode;
   primaryAction?: React.ReactNode;
   secondaryAction?: React.ReactNode;
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col items-start gap-3 rounded-[var(--ds-radius-md)] border border-dashed border-[var(--ds-border-default)] bg-[var(--ds-surface-subtle)] px-6 py-8", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-start gap-3 rounded-[var(--ds-radius-md)] border border-dashed border-[var(--ds-border-default)] bg-[var(--ds-surface-subtle)] px-6 py-8",
+        className,
+      )}
+      data-testid="empty-state"
+    >
+      {icon ? (
+        <span className="flex h-9 w-9 items-center justify-center rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] text-[var(--ds-text-subtle)]">
+          {icon}
+        </span>
+      ) : null}
       <h3 className="ds-text-card-title">{title}</h3>
-      {description ? <p className="ds-text-body max-w-md text-[var(--ds-text-muted)]">{description}</p> : null}
-      <div className="flex flex-wrap gap-2">
-        {primaryAction}
-        {secondaryAction}
-      </div>
+      {description ? (
+        <p className="ds-text-body max-w-md text-[var(--ds-text-muted)]">{description}</p>
+      ) : null}
+      {(primaryAction || secondaryAction) && (
+        <div className="flex flex-wrap gap-2">
+          {primaryAction}
+          {secondaryAction}
+        </div>
+      )}
     </div>
   );
 }

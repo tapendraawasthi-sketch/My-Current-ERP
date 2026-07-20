@@ -223,10 +223,10 @@ export default function MakerCheckerApproval() {
   };
 
   return (
-    <div className="p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Voucher Approval Queue</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Voucher Approval Queue</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Review and approve/reject vouchers submitted for posting
           </p>
@@ -236,7 +236,7 @@ export default function MakerCheckerApproval() {
             <select
               value={branchFilter}
               onChange={(event) => setBranchFilter(event.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -249,7 +249,7 @@ export default function MakerCheckerApproval() {
           )}
           <button
             type="button"
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" />
             Download
@@ -260,7 +260,7 @@ export default function MakerCheckerApproval() {
             <select
               value={filterType}
               onChange={(event) => setFilterType(event.target.value)}
-              className="h-8 pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {VOUCHER_TYPES.map((type) => (
                 <option key={type} value={type}>
@@ -274,7 +274,7 @@ export default function MakerCheckerApproval() {
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
             placeholder="Search vouchers..."
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-48"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-48"
           />
         </div>
       </div>
@@ -334,30 +334,30 @@ export default function MakerCheckerApproval() {
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <table className="w-full border-collapse">
-          <thead className="bg-[#f5f6fa] border-b border-gray-200">
+          <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Voucher No
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Type
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Date (BS)
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Narration
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Amount (Dr)
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Created By
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Status
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Actions
               </th>
             </tr>
@@ -451,10 +451,10 @@ export default function MakerCheckerApproval() {
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200">
-              <h2 className="text-[14px] font-semibold text-gray-800">Approve Voucher</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Approve Voucher</h2>
             </div>
             <div className="p-4 space-y-3">
-              <div className="bg-[#f5f6fa] border border-gray-200 rounded-md p-3 text-[12px] text-gray-700">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-[12px] text-gray-700">
                 <div className="flex justify-between mb-1">
                   <span>Voucher No</span>
                   <span className="font-mono font-medium">{getVoucherNo(selectedVoucher)}</span>
@@ -475,7 +475,7 @@ export default function MakerCheckerApproval() {
                 onChange={(event) => setApproveRemark(event.target.value)}
                 placeholder="Add approval remark (optional)"
                 rows={3}
-                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               />
             </div>
             <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
@@ -485,7 +485,7 @@ export default function MakerCheckerApproval() {
                   setShowApproveModal(false);
                   setSelectedVoucher(null);
                 }}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               >
                 Cancel
               </button>
@@ -533,7 +533,7 @@ export default function MakerCheckerApproval() {
                   setShowRejectModal(false);
                   setSelectedVoucher(null);
                 }}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               >
                 Cancel
               </button>

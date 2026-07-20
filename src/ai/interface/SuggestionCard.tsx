@@ -38,9 +38,9 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
   const isNewProduct = best.correctionType === "new_product";
 
   return (
-    <div className="mx-3 mb-2 rounded-md border border-amber-200 bg-amber-50 overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-2 bg-amber-100 border-b border-amber-200">
-        <AlertTriangle className="h-3.5 w-3.5 text-amber-600 flex-shrink-0" />
+    <div className="mx-3 mb-2 rounded-xl border border-amber-200/80 bg-amber-50/80 shadow-sm overflow-hidden">
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-100/80 border-b border-amber-200/60">
+        <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0" />
         <span className="text-[11px] font-medium text-amber-800">
           {unknownWords?.length ? `Unknown word: "${unknownWords[0]}"` : "Possible correction detected"}
         </span>
@@ -52,13 +52,13 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
         </p>
 
         {!isNewProduct && (
-          <div className="rounded-md border border-[#c7d2fe] bg-white p-2.5">
+          <div className="rounded-lg border border-indigo-100 bg-white p-3 shadow-sm">
             <div className="flex items-center justify-between mb-1">
               <p className="text-[10px] font-semibold text-[var(--ds-action-primary)] uppercase tracking-wide">
                 ✨ Best match
               </p>
               <span
-                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase ${confidenceBadge(best.confidence)}`}
+                className={`px-1.5 py-0.5 rounded-full text-[9px] font-semibold uppercase ${confidenceBadge(best.confidence)}`}
               >
                 {Math.round(best.confidence * 100)}%
               </span>
@@ -97,14 +97,14 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
               <button
                 type="button"
                 onClick={() => onSelect(best)}
-                className="h-7 px-2.5 flex items-center gap-1 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-md"
+                className="h-7 px-2.5 flex items-center gap-1 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-lg shadow-sm transition-colors"
               >
                 <Check className="h-3 w-3" /> Use This
               </button>
               <button
                 type="button"
                 onClick={onReject}
-                className="h-7 px-2.5 flex items-center gap-1 bg-white border border-gray-300 text-gray-600 text-[11px] font-medium rounded-md hover:bg-gray-50"
+                className="h-7 px-2.5 flex items-center gap-1 bg-white border border-gray-200 text-gray-600 text-[11px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <X className="h-3 w-3" /> Not This
               </button>
@@ -125,7 +125,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
                 className={`w-full text-left px-2.5 py-1.5 rounded-md border text-[11px] flex items-center gap-2 ${
                   s.correctionType === "new_product"
                     ? "border-dashed border-gray-300 bg-gray-50 text-gray-600 hover:bg-gray-100"
-                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                    : "border-gray-100 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-200 transition-colors"
                 }`}
               >
                 {s.correctionType === "new_product" && <Package className="h-3 w-3 flex-shrink-0" />}
@@ -136,7 +136,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
           </div>
         )}
 
-        <div className="pt-1 border-t border-amber-200">
+        <div className="pt-1 border-t border-amber-100">
           <p className="text-[10px] text-gray-500 mb-1">💬 Or type your correction:</p>
           <div className="flex gap-1">
             <input
@@ -149,7 +149,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
                   setCustomText("");
                 }
               }}
-              className="flex-1 h-7 px-2 text-[11px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="flex-1 h-8 px-2 text-[11px] border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               placeholder="Type what you meant..."
             />
             <button

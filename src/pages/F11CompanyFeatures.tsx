@@ -1,8 +1,13 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import { useTallyKeyboard } from "../hooks/useTallyKeyboard";
+import {
+  BUSINESS_NATURES,
+  applyNatureToCompanySettings,
+  getNatureProfile,
+} from "@/lib/businessNature";
 
 interface CompanyFeatures {
   show_more_features: boolean;
@@ -96,7 +101,53 @@ const F11CompanyFeatures = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("accounting");
-  const { setCurrentPage, companySettings } = useStore();
+  const [businessNature, setBusinessNature] = useState("");
+  const [natureDirty, setNatureDirty] = useState(false);
+  const { setCurrentPage, companySettings, updateCompanySettings } = useStore();
+
+  const natureHint = useMemo(() => {
+    if (!businessNature) return "";
+    return getNatureProfile(businessNature).hint;
+  }, [businessNature]);
+
+  useEffect(() => {
+    setBusinessNature(companySettings?.businessNature || "");
+  }, [companySettings?.businessNature]);
+
+  const applyNaturePreset = (natureId: string) => {
+    setBusinessNature(natureId);
+    setNatureDirty(true);
+    const profile = getNatureProfile(natureId);
+    setFeatures((prev) => ({
+      ...prev,
+      maintain_inventory: profile.features.enableInventory,
+      enable_batches: profile.features.enableBatchTracking,
+      enable_job_order_processing: profile.features.enableJobWork || profile.features.enableProduction,
+      enable_cost_centres: profile.features.enableCostCenter,
+      enable_cost_tracking: profile.features.enableCostCenter,
+      maintain_payroll: profile.features.enablePayroll,
+      enable_bill_wise_entry: profile.features.enableBillWiseTracking,
+    }));
+    setIsDirty(true);
+  };
+
+  const saveBusinessNature = async () => {
+    if (!businessNature) {
+      toast.error("Select a business nature first.");
+      return;
+    }
+    try {
+      const patched = applyNatureToCompanySettings(
+        { ...(companySettings || {}), name: companySettings?.name || companySettings?.companyNameEn || "Company" },
+        businessNature,
+      );
+      await updateCompanySettings(patched);
+      setNatureDirty(false);
+      toast.success("Business nature applied. Sidebar menus updated.");
+    } catch {
+      toast.error("Could not save business nature.");
+    }
+  };
 
   const fetchFeatures = async () => {
     try {
@@ -233,7 +284,7 @@ const F11CompanyFeatures = () => {
             style={{
               padding: "2px 8px",
               background: value ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
-              color: value ? "#fff" : "#000",
+              color: value ? "#fff" : "#374151",
               border: value ? "none" : "1px solid #888",
               cursor: disabled ? "not-allowed" : "pointer",
               pointerEvents: disabled ? "none" : "auto",
@@ -247,7 +298,7 @@ const F11CompanyFeatures = () => {
             style={{
               padding: "2px 8px",
               background: !value ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
-              color: !value ? "#fff" : "#000",
+              color: !value ? "#fff" : "#374151",
               border: !value ? "none" : "1px solid #888",
               cursor: disabled ? "not-allowed" : "pointer",
               pointerEvents: disabled ? "none" : "auto",
@@ -312,7 +363,7 @@ const F11CompanyFeatures = () => {
               value={features.vat_registration_number}
               onChange={(e) => handleTextChange("vat_registration_number", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -336,7 +387,7 @@ const F11CompanyFeatures = () => {
               value={features.vat_applicable_from}
               onChange={(e) => handleTextChange("vat_applicable_from", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -384,7 +435,7 @@ const F11CompanyFeatures = () => {
               value={features.gst_registration_type}
               onChange={(e) => handleTextChange("gst_registration_type", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -416,7 +467,7 @@ const F11CompanyFeatures = () => {
               value={features.gstin}
               onChange={(e) => handleTextChange("gstin", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -441,7 +492,7 @@ const F11CompanyFeatures = () => {
               value={features.gst_applicable_from}
               onChange={(e) => handleTextChange("gst_applicable_from", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -480,7 +531,7 @@ const F11CompanyFeatures = () => {
               value={features.tan_number}
               onChange={(e) => handleTextChange("tan_number", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -505,7 +556,7 @@ const F11CompanyFeatures = () => {
               value={features.tds_applicable_from}
               onChange={(e) => handleTextChange("tds_applicable_from", e.target.value)}
               style={{
-                border: "1px solid #000",
+                border: "1px solid #e5e7eb",
                 background: "#fff",
                 padding: "2px 6px",
                 fontFamily: "monospace",
@@ -542,7 +593,7 @@ const F11CompanyFeatures = () => {
             value={features.tcs_applicable_from}
             onChange={(e) => handleTextChange("tcs_applicable_from", e.target.value)}
             style={{
-              border: "1px solid #000",
+              border: "1px solid #e5e7eb",
               background: "#fff",
               padding: "2px 6px",
               fontFamily: "monospace",
@@ -578,7 +629,7 @@ const F11CompanyFeatures = () => {
             value={features.excise_registration_number}
             onChange={(e) => handleTextChange("excise_registration_number", e.target.value)}
             style={{
-              border: "1px solid #000",
+              border: "1px solid #e5e7eb",
               background: "#fff",
               padding: "2px 6px",
               fontFamily: "monospace",
@@ -614,7 +665,7 @@ const F11CompanyFeatures = () => {
             value={features.service_tax_registration_number}
             onChange={(e) => handleTextChange("service_tax_registration_number", e.target.value)}
             style={{
-              border: "1px solid #000",
+              border: "1px solid #e5e7eb",
               background: "#fff",
               padding: "2px 6px",
               fontFamily: "monospace",
@@ -714,7 +765,7 @@ const F11CompanyFeatures = () => {
                       value={features.pf_registration_number}
                       onChange={(e) => handleTextChange("pf_registration_number", e.target.value)}
                       style={{
-                        border: "1px solid #000",
+                        border: "1px solid #e5e7eb",
                         background: "#fff",
                         padding: "2px 6px",
                         fontFamily: "monospace",
@@ -738,7 +789,7 @@ const F11CompanyFeatures = () => {
                       value={features.esi_registration_number}
                       onChange={(e) => handleTextChange("esi_registration_number", e.target.value)}
                       style={{
-                        border: "1px solid #000",
+                        border: "1px solid #e5e7eb",
                         background: "#fff",
                         padding: "2px 6px",
                         fontFamily: "monospace",
@@ -808,7 +859,7 @@ const F11CompanyFeatures = () => {
         background: "var(--ds-surface-muted)",
         fontFamily: "monospace",
         fontSize: 13,
-        color: "#000",
+        color: "#374151",
       }}
     >
       {/* Header */}
@@ -822,7 +873,68 @@ const F11CompanyFeatures = () => {
         }}
       >
         <div style={{ fontSize: 14, fontWeight: "bold" }}>Company Features Alteration</div>
-        <div>{companySettings?.company_name || "Company"}</div>
+        <div>{companySettings?.company_name || companySettings?.name || "Company"}</div>
+      </div>
+
+      {/* Business nature — drives module visibility */}
+      <div
+        style={{
+          background: "#eef2ff",
+          borderBottom: "1px solid #c7d2fe",
+          padding: "10px 12px",
+        }}
+        data-testid="f11-business-nature"
+      >
+        <div style={{ fontWeight: "bold", marginBottom: 4, fontSize: 12 }}>
+          Business nature (industry pack)
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <select
+            value={businessNature}
+            onChange={(e) => applyNaturePreset(e.target.value)}
+            style={{
+              height: 32,
+              minWidth: 280,
+              fontSize: 12,
+              border: "1px solid #374151",
+              borderRadius: 6,
+              padding: "0 8px",
+              background: "#fff",
+            }}
+          >
+            <option value="">— Select business nature —</option>
+            {BUSINESS_NATURES.map((n) => (
+              <option key={n.id} value={n.id}>
+                {n.label}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={saveBusinessNature}
+            disabled={!natureDirty && businessNature === (companySettings?.businessNature || "")}
+            style={{
+              height: 32,
+              padding: "0 12px",
+              fontSize: 12,
+              fontWeight: 500,
+              borderRadius: 6,
+              background: "#1557b0",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              opacity:
+                !natureDirty && businessNature === (companySettings?.businessNature || "")
+                  ? 0.5
+                  : 1,
+            }}
+          >
+            Apply nature to menus
+          </button>
+        </div>
+        {natureHint ? (
+          <div style={{ fontSize: 11, color: "#4b5563", marginTop: 6 }}>{natureHint}</div>
+        ) : null}
       </div>
 
       {/* Show More/All Toggles */}
@@ -830,7 +942,7 @@ const F11CompanyFeatures = () => {
         style={{
           background: "var(--ds-surface-hover)",
           padding: "4px 12px",
-          borderBottom: "1px solid #000",
+          borderBottom: "1px solid #374151",
           display: "flex",
           gap: "24px",
         }}
@@ -842,7 +954,7 @@ const F11CompanyFeatures = () => {
             style={{
               padding: "2px 8px",
               background: features.show_more_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
-              color: features.show_more_features ? "#fff" : "#000",
+              color: features.show_more_features ? "#fff" : "#374151",
               border: features.show_more_features ? "none" : "1px solid #888",
               cursor: "pointer",
             }}
@@ -854,7 +966,7 @@ const F11CompanyFeatures = () => {
             style={{
               padding: "2px 8px",
               background: !features.show_more_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
-              color: !features.show_more_features ? "#fff" : "#000",
+              color: !features.show_more_features ? "#fff" : "#374151",
               border: !features.show_more_features ? "none" : "1px solid #888",
               cursor: "pointer",
             }}
@@ -869,7 +981,7 @@ const F11CompanyFeatures = () => {
             style={{
               padding: "2px 8px",
               background: features.show_all_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
-              color: features.show_all_features ? "#fff" : "#000",
+              color: features.show_all_features ? "#fff" : "#374151",
               border: features.show_all_features ? "none" : "1px solid #888",
               cursor: "pointer",
             }}
@@ -881,7 +993,7 @@ const F11CompanyFeatures = () => {
             style={{
               padding: "2px 8px",
               background: !features.show_all_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
-              color: !features.show_all_features ? "#fff" : "#000",
+              color: !features.show_all_features ? "#fff" : "#374151",
               border: !features.show_all_features ? "none" : "1px solid #888",
               cursor: "pointer",
             }}
@@ -892,7 +1004,7 @@ const F11CompanyFeatures = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ background: "var(--ds-surface-hover)", borderBottom: "1px solid #000", display: "flex" }}>
+      <div style={{ background: "var(--ds-surface-hover)", borderBottom: "1px solid #374151", display: "flex" }}>
         {["accounting", "inventory", "taxation", "online", "payroll", "others"].map((tab) => (
           <div
             key={tab}
@@ -902,7 +1014,7 @@ const F11CompanyFeatures = () => {
               cursor: "pointer",
               borderRight: "1px solid #888",
               background: activeSection === tab ? "var(--ds-action-primary)" : "transparent",
-              color: activeSection === tab ? "#fff" : "#000",
+              color: activeSection === tab ? "#fff" : "#374151",
             }}
             onMouseEnter={(e) => {
               if (activeSection !== tab) e.currentTarget.style.background = "var(--ds-surface-hover)";

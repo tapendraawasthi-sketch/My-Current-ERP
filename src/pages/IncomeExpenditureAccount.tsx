@@ -161,7 +161,7 @@ const IncomeExpenditureAccount: React.FC = () => {
       <RebuildBalancesAction />
       <button
         onClick={() => setModalOpen(true)}
-        className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+        className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
       >
         Reconfigure
       </button>
@@ -191,7 +191,7 @@ const IncomeExpenditureAccount: React.FC = () => {
         onExportCsv={handleExport}
         meta={extraActions}
         filterSlot={
-          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
             {(
               [
                 { label: "Summary", value: "summary" as ReportDepth },
@@ -222,7 +222,7 @@ const IncomeExpenditureAccount: React.FC = () => {
             ) : (
             <div className="space-y-4">
               <div className="border-b border-gray-200 pb-3 mb-4 text-center">
-                <div className="text-[15px] font-semibold text-gray-800">
+                <div className="text-[15px] font-semibold text-gray-700">
                   {useStore.getState().companySettings?.companyNameEn ||
                     useStore.getState().companySettings?.name ||
                     "Company Name"}
@@ -258,8 +258,8 @@ const IncomeExpenditureAccount: React.FC = () => {
                   <table className="w-full shrink-0 mt-auto">
                     <tfoot>
                       <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)] font-bold text-[12px]">
-                        <td className="px-3 py-2 text-gray-800">Total Income</td>
-                        <td className="px-3 py-2 text-right font-mono text-gray-800">
+                        <td className="px-3 py-2 text-gray-700">Total Income</td>
+                        <td className="px-3 py-2 text-right font-mono text-gray-700">
                           {fmtAmt(totalIncome)}
                         </td>
                       </tr>
@@ -280,8 +280,8 @@ const IncomeExpenditureAccount: React.FC = () => {
                   <table className="w-full shrink-0 mt-auto">
                     <tfoot>
                       <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)] font-bold text-[12px]">
-                        <td className="px-3 py-2 text-gray-800">Total Expenses</td>
-                        <td className="px-3 py-2 text-right font-mono text-gray-800">
+                        <td className="px-3 py-2 text-gray-700">Total Expenses</td>
+                        <td className="px-3 py-2 text-right font-mono text-gray-700">
                           {fmtAmt(totalExpense)}
                         </td>
                       </tr>

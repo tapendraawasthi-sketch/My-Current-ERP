@@ -1,4 +1,4 @@
-# PR-C2 — Release package sign note
+# PR-C2 — Ask company reports release package sign note
 
 **Date:** 2026-07-20  
 **ADR:** ADR_0092  
@@ -10,7 +10,8 @@
 | Row production_approved | **false** |
 | Owner sign-off | **PENDING** (`OWNER_SIGNOFF.md`) |
 | Staging golden path | **PENDING** (PR-B1 tickets) |
-| NEXT-20 / first PRODUCTION row | still **PR-C1-ARM** |
+| Zero mutation documented | **true** |
+| NEXT-20 (first PRODUCTION row) | **OPEN** (still PR-C1-ARM) |
 
 ## Verdict
 
@@ -20,6 +21,7 @@ PR-C2 **package** is complete for engineering review.
 ## Explicit non-claims
 
 - Not production_approved  
-- Not second PRODUCTION row live  
+- Not NEXT-20 DONE  
 - Not staging green  
 - Not owner-signed  
+- Not Ask Mode mutation authority  

@@ -127,10 +127,10 @@ const BatchSummary: React.FC = () => {
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
       if (columnKey === "itemName") {
-        return <span className="font-bold text-gray-800">TOTAL</span>;
+        return <span className="font-bold text-gray-700">TOTAL</span>;
       }
       if (["qty", "value"].includes(columnKey)) {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
+        return <span className="font-bold font-mono text-gray-700">{formatNumber(value)}</span>;
       }
       return "";
     }
@@ -189,7 +189,7 @@ const BatchSummary: React.FC = () => {
             <select
               value={selectedItemId}
               onChange={(e) => setSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
             >
               <option value="">All Items</option>
               {uniqueItems.map((item) => (
@@ -204,7 +204,7 @@ const BatchSummary: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -225,7 +225,7 @@ const BatchSummary: React.FC = () => {
                 type="number"
                 value={expiringWithinDays}
                 onChange={(e) => setExpiringWithinDays(parseInt(e.target.value) || 30)}
-                className="h-8 pl-2.5 pr-8 text-[12px] font-mono font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[70px]"
+                className="h-8 pl-2.5 pr-8 text-[12px] font-mono font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[70px]"
                 min="0"
               />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">
@@ -267,7 +267,7 @@ const BatchSummary: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <ReportGrid
           columns={[
             { key: "itemName", label: "Item Name" },
@@ -306,7 +306,7 @@ const BatchSummary: React.FC = () => {
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">All Items</option>
               {uniqueItems.map((item) => (
@@ -323,7 +323,7 @@ const BatchSummary: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -342,7 +342,7 @@ const BatchSummary: React.FC = () => {
               type="number"
               value={pendingExpiringWithinDays}
               onChange={(e) => setPendingExpiringWithinDays(parseInt(e.target.value) || 30)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               min="0"
             />
           </label>

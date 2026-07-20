@@ -27,7 +27,7 @@ function money(v: number): string {
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -114,7 +114,7 @@ function Modal({ open, title, children, onClose, wide = false }) {
         className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full ${wide ? "max-w-6xl" : "max-w-3xl"} flex flex-col max-h-[90vh]`}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-          <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
@@ -735,10 +735,10 @@ export default function BOMProduction() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Package size={18} className="text-[var(--ds-action-primary)]" /> BOM & Production
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -749,7 +749,7 @@ export default function BOMProduction() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -770,7 +770,7 @@ export default function BOMProduction() {
             className={`px-4 py-2 text-[12px] rounded-t-md font-medium flex items-center gap-1.5 transition-colors ${
               activeTab === t.id
                 ? "bg-white text-[var(--ds-action-primary)] border-t border-l border-r border-gray-200 shadow-[0_-2px_0_0_var(--ds-action-primary)]"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-700"
             }`}
           >
             {t.icon} {t.id}
@@ -787,7 +787,7 @@ export default function BOMProduction() {
             </button>
           </div>
 
-          <div className="overflow-x-auto rounded-md border border-gray-200">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -1042,7 +1042,7 @@ export default function BOMProduction() {
           </div>
 
           <div className={cardClass}>
-            <div className="overflow-x-auto rounded-md border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -1068,7 +1068,7 @@ export default function BOMProduction() {
                     const bom = boms.find((b) => b.id === po.bomId);
                     return (
                       <tr key={po.id} className="bg-white hover:bg-gray-50">
-                        <td className={`${tableCellClass} font-mono font-medium text-gray-800`}>
+                        <td className={`${tableCellClass} font-mono font-medium text-gray-700`}>
                           {po.orderNo}
                         </td>
                         <td className={`${tableCellClass} font-medium`}>
@@ -1115,7 +1115,7 @@ export default function BOMProduction() {
                           )}
                           {po.status === "In-Process" && (
                             <button
-                              className="h-8 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                              className="h-8 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                               onClick={() => setSelectedPO(po)}
                             >
                               Complete Production
@@ -1207,7 +1207,7 @@ export default function BOMProduction() {
                   />
                 </div>
                 <button
-                  className="h-8 px-4 bg-white border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-[12px] font-medium rounded-md transition-colors"
+                  className="h-8 px-4 bg-white border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-[12px] font-medium rounded-lg transition-colors"
                   onClick={() => previewComplete(selectedPO)}
                 >
                   Preview Completion
@@ -1215,7 +1215,7 @@ export default function BOMProduction() {
               </div>
 
               {completionPreview && (
-                <div className="border border-emerald-200 rounded-md p-4 bg-white shadow-sm">
+                <div className="border border-emerald-200 rounded-lg p-4 bg-white shadow-sm">
                   <div className="flex items-center gap-6 mb-4 text-[12px]">
                     <div className="flex flex-col">
                       <span className="text-gray-500 font-medium">Standard Cost</span>
@@ -1243,7 +1243,7 @@ export default function BOMProduction() {
                   </div>
                   <div className="flex justify-end pt-3 border-t border-gray-100">
                     <button
-                      className="h-8 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      className="h-8 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                       onClick={confirmComplete}
                     >
                       <CheckCircle size={14} /> Confirm Complete Production
@@ -1328,7 +1328,7 @@ export default function BOMProduction() {
               </div>
             </div>
 
-            <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-4">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide">
                   Materials Sent
@@ -1495,7 +1495,7 @@ export default function BOMProduction() {
               Outstanding Job Work
             </h2>
 
-            <div className="overflow-x-auto rounded-md border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -1613,7 +1613,7 @@ export default function BOMProduction() {
 
           {costSheet ? (
             <div className="space-y-4">
-              <div className="overflow-x-auto rounded-md border border-gray-200 shadow-sm">
+              <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
@@ -1666,13 +1666,13 @@ export default function BOMProduction() {
                 </table>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-4 flex flex-wrap items-center justify-between gap-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex gap-8">
                   <div className="flex flex-col">
                     <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
                       Total Standard Cost
                     </span>
-                    <span className="text-[16px] font-bold text-gray-800">
+                    <span className="text-[16px] font-bold text-gray-700">
                       Rs. {money(costSheet.standardCost)}
                     </span>
                   </div>
@@ -1680,7 +1680,7 @@ export default function BOMProduction() {
                     <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
                       Total Actual Cost
                     </span>
-                    <span className="text-[16px] font-bold text-gray-800">
+                    <span className="text-[16px] font-bold text-gray-700">
                       Rs. {money(costSheet.actualCost)}
                     </span>
                   </div>
@@ -1720,7 +1720,7 @@ export default function BOMProduction() {
         onClose={() => setBomModal(false)}
         wide
       >
-        <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
           <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide mb-3">
             Master Details
           </h3>
@@ -1818,9 +1818,9 @@ export default function BOMProduction() {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-md border border-gray-200">
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
           <table className="w-full border-collapse">
-            <thead className="bg-[#f5f6fa]">
+            <thead className="bg-gray-50">
               <tr>
                 {[
                   "Item",

@@ -27,7 +27,7 @@ const fmt = (n: number) =>
   });
 
 const thCls =
-  "px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  "px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-200";
 const tdCls = "px-4 py-2 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
 
@@ -506,7 +506,7 @@ export default function CashFlowStatement() {
         <tr key={idx}>
           <td
             colSpan={2}
-            className="px-4 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200"
+            className="px-4 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-200"
           >
             {line.label}
             {line.note && (
@@ -539,7 +539,7 @@ export default function CashFlowStatement() {
       return (
         <tr key={idx} className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
           <td
-            className="px-4 py-2.5 text-[12px] font-bold text-gray-800 border-b border-gray-100"
+            className="px-4 py-2.5 text-[12px] font-bold text-gray-700 border-b border-gray-100"
             style={{ paddingLeft: 16 + indent }}
           >
             {line.label}
@@ -585,7 +585,7 @@ export default function CashFlowStatement() {
           )}
         </td>
         <td
-          className={`px-4 py-2 text-[12px] font-mono text-right border-b border-gray-100 ${line.amount < 0 ? "text-red-600" : "text-gray-800"}`}
+          className={`px-4 py-2 text-[12px] font-mono text-right border-b border-gray-100 ${line.amount < 0 ? "text-red-600" : "text-gray-700"}`}
         >
           {line.amount < 0 ? `(${fmt(line.amount)})` : fmt(line.amount)}
         </td>
@@ -641,11 +641,11 @@ export default function CashFlowStatement() {
 
   // ─── Main render ──────────────────────────────────────────────────────────
   return (
-    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="erp-report p-4 md:p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Cash Flow Statement</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Cash Flow Statement</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             {companySettings?.name || "Company"} — {fromDate} to {toDate} •{" "}
             {method === "indirect" ? "Indirect Method (IAS 7)" : "Direct Method (IAS 7)"}
@@ -654,7 +654,7 @@ export default function CashFlowStatement() {
         <div className="flex items-center gap-2">
           <button
             onClick={exportToExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" /> Export
           </button>
@@ -671,7 +671,7 @@ export default function CashFlowStatement() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
@@ -682,7 +682,7 @@ export default function CashFlowStatement() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         {branchOptions.length > 0 && (
@@ -693,7 +693,7 @@ export default function CashFlowStatement() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="all">All branches</option>
               {branchOptions.map((b) => (
@@ -710,7 +710,7 @@ export default function CashFlowStatement() {
           <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Method
           </label>
-          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+          <div className="flex rounded-lg border border-gray-300 overflow-hidden">
             {(["indirect", "direct"] as CFMethod[]).map((m) => (
               <button
                 key={m}
@@ -794,8 +794,8 @@ export default function CashFlowStatement() {
 
       {/* Main statement */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
-        <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 flex justify-between">
-          <span className="text-[12px] font-semibold text-gray-800">
+        <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between">
+          <span className="text-[12px] font-semibold text-gray-700">
             Statement of Cash Flows — {method === "indirect" ? "Indirect" : "Direct"} Method
           </span>
           <span className="text-[11px] text-gray-500">

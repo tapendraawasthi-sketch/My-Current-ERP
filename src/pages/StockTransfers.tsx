@@ -208,10 +208,10 @@ const StockTransfers: React.FC = () => {
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
       if (columnKey === "voucherNo") {
-        return <span className="font-bold text-gray-800">TOTAL</span>;
+        return <span className="font-bold text-gray-700">TOTAL</span>;
       }
       if (columnKey === "qty" || columnKey === "value") {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
+        return <span className="font-bold font-mono text-gray-700">{formatNumber(value)}</span>;
       }
       return "";
     }
@@ -252,7 +252,7 @@ const StockTransfers: React.FC = () => {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -270,7 +270,7 @@ const StockTransfers: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -280,14 +280,14 @@ const StockTransfers: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
           <select
             value={selectedFromWarehouseId}
             onChange={(e) => setSelectedFromWarehouseId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[130px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[130px]"
           >
             <option value="" disabled>
               From Whse...
@@ -302,7 +302,7 @@ const StockTransfers: React.FC = () => {
           <select
             value={selectedToWarehouseId}
             onChange={(e) => setSelectedToWarehouseId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[130px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[130px]"
           >
             <option value="" disabled>
               To Whse...
@@ -317,7 +317,7 @@ const StockTransfers: React.FC = () => {
           <select
             value={selectedItemId}
             onChange={(e) => setSelectedItemId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
           >
             <option value="" disabled>
               Select Item...
@@ -331,7 +331,7 @@ const StockTransfers: React.FC = () => {
         </div>
       }
     >
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <ReportGrid
           columns={[
             { key: "date", label: "Date" },
@@ -372,7 +372,7 @@ const StockTransfers: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -382,7 +382,7 @@ const StockTransfers: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -391,7 +391,7 @@ const StockTransfers: React.FC = () => {
             <select
               value={pendingSelectedFromWarehouseId}
               onChange={(e) => setPendingSelectedFromWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {warehouseOptions.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -406,7 +406,7 @@ const StockTransfers: React.FC = () => {
             <select
               value={pendingSelectedToWarehouseId}
               onChange={(e) => setPendingSelectedToWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {warehouseOptions.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -421,7 +421,7 @@ const StockTransfers: React.FC = () => {
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {itemOptions.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -437,7 +437,7 @@ const StockTransfers: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>

@@ -11,8 +11,6 @@ import toast from "@/lib/appToast";
 import {
   Plus,
   Download,
-  Edit2,
-  Trash2,
   X,
   AlertTriangle,
   Package,
@@ -20,9 +18,17 @@ import {
   Search,
   Save,
 } from "lucide-react";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { stampMovementBranch } from "../lib/activeBranch";
+import { getDB } from "../lib/db";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
@@ -32,19 +38,14 @@ const fmt = (n: number) =>
   });
 
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white " +
+  "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white " +
   "focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
-const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
+const labelCls = "text-[11px] font-medium text-gray-600 block mb-1";
 const formLabelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
-const thCls =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 " +
-  "uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
-const tdCls = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
-const amtCls = `${tdCls} font-mono text-right`;
+  "h-8 px-3 bg-white border border-[var(--ds-border-default)] text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 
 // Days until expiry
 const daysUntilExpiry = (expiryDate: string): number => {
@@ -90,7 +91,10 @@ export default function BatchManagement() {
   const warehouses = store.warehouses || [];
   const batches = store.batches || [];
   const serialNumbers = store.serialNumbers || [];
-  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
+  const { branchFilter, matchMovement } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = "batch-management";
 
   const [activeTab, setActiveTab] = useState<"batch" | "serial">("batch");
 
@@ -349,105 +353,402 @@ export default function BatchManagement() {
 
   const showForm = showBatchModal || showSNModal;
 
+  const openBatchAdd = () => {
+    setActiveTab("batch");
+    setBatchForm(emptyBatch());
+    setEditingBatchId(null);
+    setShowSNModal(false);
+    setShowBatchModal(true);
+    openEntity(pageId, "new");
+  };
+
+  const openSNAdd = () => {
+    setActiveTab("serial");
+    setSnForm(emptySN());
+    setEditingSNId(null);
+    setShowBatchModal(false);
+    setShowSNModal(true);
+    openEntity(pageId, "new");
+  };
+
   const openBatchEdit = (batch: any) => {
+    setActiveTab("batch");
     setBatchForm({ ...batch });
     setEditingBatchId(batch.id);
+    setShowSNModal(false);
     setShowBatchModal(true);
+    openEntity(pageId, batch.id);
   };
 
   const openSNEdit = (sn: any) => {
+    setActiveTab("serial");
     setSnForm({ ...sn });
     setEditingSNId(sn.id);
+    setShowBatchModal(false);
     setShowSNModal(true);
+    openEntity(pageId, sn.id);
   };
 
   const resetBatchForm = () => {
     setShowBatchModal(false);
     setEditingBatchId(null);
     setBatchForm(emptyBatch());
+    clearEntity(pageId);
   };
 
   const resetSNForm = () => {
     setShowSNModal(false);
     setEditingSNId(null);
     setSnForm(emptySN());
+    clearEntity(pageId);
   };
+
+  const deleteBatchRow = async (batch: any) => {
+    const snapshot = { ...batch };
+    try {
+      await store.deleteBatch(batch.id);
+      if (editingBatchId === batch.id) resetBatchForm();
+      toast.undo(`Batch "${batch.batchNo}" deleted`, async () => {
+        try {
+          const db = getDB();
+          if (db.batches) await db.batches.put(snapshot);
+          if (store.loadBatches) await store.loadBatches();
+        } catch {
+          toast.error("Failed to restore batch.");
+        }
+      });
+    } catch {
+      toast.error("Failed to delete batch");
+    }
+  };
+
+  const deleteSNRow = async (sn: any) => {
+    const snapshot = { ...sn };
+    try {
+      await store.deleteSerialNumber(sn.id);
+      if (editingSNId === sn.id) resetSNForm();
+      toast.undo(`Serial "${sn.serialNo}" deleted`, async () => {
+        try {
+          const db = getDB();
+          if (db.serialNumbers) await db.serialNumbers.put(snapshot);
+          if (store.loadSerialNumbers) await store.loadSerialNumbers();
+        } catch {
+          toast.error("Failed to restore serial number.");
+        }
+      });
+    } catch {
+      toast.error("Failed to delete serial number");
+    }
+  };
+
+  const batchColumns = useMemo<EnterpriseColumnDef<any>[]>(
+    () => [
+      {
+        id: "batchNo",
+        header: "Batch no.",
+        cell: (batch) => (
+          <div>
+            <span className="font-mono text-[12px] font-medium text-[var(--ds-text-default)]">
+              {batch.batchNo}
+            </span>
+            {batch.supplierBatchNo ? (
+              <div className="text-[10px] text-[var(--ds-text-muted)] font-normal">
+                Supplier: {batch.supplierBatchNo}
+              </div>
+            ) : null}
+          </div>
+        ),
+      },
+      {
+        id: "itemName",
+        header: "Item",
+        cell: (batch) => <span className="text-[12px]">{batch.itemName}</span>,
+      },
+      {
+        id: "manufacturingDate",
+        header: "Mfg. date",
+        cell: (batch) => batch.manufacturingDate || "—",
+      },
+      {
+        id: "expiryDate",
+        header: "Expiry date",
+        cell: (batch) => {
+          const days = daysUntilExpiry(batch.expiryDate);
+          const isExpired = batch.expiryDate && days <= 0;
+          const isNearExpiry = batch.expiryDate && days > 0 && days <= 30;
+          return (
+            <span
+              className={
+                isExpired
+                  ? "text-red-600 font-medium"
+                  : isNearExpiry
+                    ? "text-amber-700 font-medium"
+                    : ""
+              }
+            >
+              {batch.expiryDate || "—"}
+            </span>
+          );
+        },
+      },
+      {
+        id: "daysLeft",
+        header: "Days left",
+        cell: (batch) => {
+          if (!batch.expiryDate) return "—";
+          const days = daysUntilExpiry(batch.expiryDate);
+          const isExpired = days <= 0;
+          const isNearExpiry = days > 0 && days <= 30;
+          return (
+            <span
+              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                isExpired
+                  ? "bg-red-100 text-red-700"
+                  : isNearExpiry
+                    ? "bg-amber-100 text-amber-700"
+                    : "bg-green-100 text-green-700"
+              }`}
+            >
+              {isExpired ? "Expired" : `${days}d`}
+            </span>
+          );
+        },
+      },
+      {
+        id: "purchaseDate",
+        header: "Purchase date",
+        cell: (batch) => batch.purchaseDate || "—",
+      },
+      {
+        id: "purchaseRate",
+        header: "Rate",
+        align: "right",
+        financial: true,
+        cell: (batch) => <span className="font-mono text-[12px]">{fmt(batch.purchaseRate)}</span>,
+      },
+      {
+        id: "currentQty",
+        header: "Qty",
+        align: "right",
+        financial: true,
+        cell: (batch) => (
+          <span
+            className={`font-mono text-[12px] font-medium ${
+              (batch.currentQty || 0) <= 0 ? "text-red-500" : "text-[var(--ds-text-default)]"
+            }`}
+          >
+            {fmt(batch.currentQty)}
+          </span>
+        ),
+      },
+      {
+        id: "value",
+        header: "Value",
+        align: "right",
+        financial: true,
+        cell: (batch) => (
+          <span className="font-mono text-[12px] font-medium text-[var(--ds-action-primary)]">
+            {fmt((batch.currentQty || 0) * (batch.purchaseRate || 0))}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: (batch) => {
+          const days = daysUntilExpiry(batch.expiryDate);
+          const isExpired = batch.expiryDate && days <= 0;
+          return (
+            <span
+              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                isExpired
+                  ? "bg-red-100 text-red-700"
+                  : (batch.currentQty || 0) <= 0
+                    ? "bg-gray-100 text-gray-700"
+                    : "bg-green-100 text-green-700"
+              }`}
+            >
+              {isExpired ? "Expired" : (batch.currentQty || 0) <= 0 ? "Empty" : "Active"}
+            </span>
+          );
+        },
+      },
+    ],
+    [],
+  );
+
+  const snColumns = useMemo<EnterpriseColumnDef<any>[]>(
+    () => [
+      {
+        id: "serialNo",
+        header: "Serial no.",
+        cell: (sn) => (
+          <span className="font-mono text-[12px] font-medium text-[var(--ds-text-default)]">
+            {sn.serialNo}
+          </span>
+        ),
+      },
+      {
+        id: "itemName",
+        header: "Item",
+        cell: (sn) => <span className="text-[12px]">{sn.itemName}</span>,
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: (sn) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              snStatusColors[sn.status] || "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {sn.status}
+          </span>
+        ),
+      },
+      {
+        id: "purchaseDate",
+        header: "Purchase date",
+        cell: (sn) => sn.purchaseDate || "—",
+      },
+      {
+        id: "purchaseRate",
+        header: "Purchase rate",
+        align: "right",
+        financial: true,
+        cell: (sn) => (
+          <span className="font-mono text-[12px]">
+            {sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}
+          </span>
+        ),
+      },
+      {
+        id: "soldDate",
+        header: "Sold date",
+        cell: (sn) => sn.soldDate || "—",
+      },
+      {
+        id: "soldToPartyName",
+        header: "Sold to",
+        cell: (sn) => sn.soldToPartyName || "—",
+      },
+      {
+        id: "invoiceNo",
+        header: "Invoice",
+        cell: (sn) => (
+          <span className="text-[11px] font-mono text-[var(--ds-text-muted)]">
+            {sn.invoiceNo || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "warrantyExpiry",
+        header: "Warranty expiry",
+        cell: (sn) => {
+          const expired = sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0;
+          return (
+            <span className={expired ? "text-red-600" : ""}>
+              {sn.warrantyExpiry || "—"}
+              {expired ? " (Expired)" : ""}
+            </span>
+          );
+        },
+      },
+    ],
+    [],
+  );
+
+  // Deep link: /app/batch-management/new | /app/batch-management/:id
+  useEffect(() => {
+    if (route.pageId !== pageId) return;
+    if (route.entityId === "new") {
+      if (activeTab === "serial") {
+        setEditingSNId(null);
+        setSnForm(emptySN());
+        setShowSNModal(true);
+        setShowBatchModal(false);
+      } else {
+        setEditingBatchId(null);
+        setBatchForm(emptyBatch());
+        setShowBatchModal(true);
+        setShowSNModal(false);
+      }
+      return;
+    }
+    if (route.entityId) {
+      const batch = batches.find((b: any) => b.id === route.entityId);
+      if (batch) {
+        setActiveTab("batch");
+        setBatchForm({ ...batch });
+        setEditingBatchId(batch.id);
+        setShowBatchModal(true);
+        setShowSNModal(false);
+        return;
+      }
+      const sn = serialNumbers.find((s: any) => s.id === route.entityId);
+      if (sn) {
+        setActiveTab("serial");
+        setSnForm({ ...sn });
+        setEditingSNId(sn.id);
+        setShowSNModal(true);
+        setShowBatchModal(false);
+      }
+      return;
+    }
+    setShowBatchModal(false);
+    setShowSNModal(false);
+    setEditingBatchId(null);
+    setEditingSNId(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, batches, serialNumbers, activeTab]);
+
+  const pageMeta =
+    activeTab === "batch"
+      ? `${filteredBatches.length} of ${batches.length} batches`
+      : `${filteredSNs.length} of ${serialNumbers.length} serial numbers`;
+
+  const tabAddLabel = activeTab === "batch" ? "Add batch" : "Add serial no.";
+  const handleTabAdd = activeTab === "batch" ? openBatchAdd : openSNAdd;
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
-      <div className="p-4 pb-0 shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">
-              Batch &amp; Serial Number Tracking
-            </h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Track inventory by batch/lot or individual serial number
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {branchOptions.length > 0 && (
-              <select
-                value={branchFilter}
-                onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                aria-label="Branch"
-              >
-                <option value="all">All branches</option>
-                {branchOptions.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name || b.code || b.id}
-                  </option>
-                ))}
-              </select>
-            )}
-            {activeTab === "batch" ? (
-              <>
-                <button type="button" onClick={exportBatches} className={btnOutline}>
-                  <Download className="h-3.5 w-3.5" /> Export
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBatchForm(emptyBatch());
-                    setEditingBatchId(null);
-                    setShowBatchModal(true);
-                  }}
-                  className={btnPrimary}
-                >
-                  <Plus className="h-3.5 w-3.5" /> Add batch
-                </button>
-              </>
-            ) : (
-              <>
-                <button type="button" onClick={exportSNs} className={btnOutline}>
-                  <Download className="h-3.5 w-3.5" /> Export
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSnForm(emptySN());
-                    setEditingSNId(null);
-                    setShowSNModal(true);
-                  }}
-                  className={btnPrimary}
-                >
-                  <Plus className="h-3.5 w-3.5" /> Add serial no.
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+    <div className="flex h-full min-h-0 flex-col bg-gray-50 overflow-hidden">
+      <div className="p-4 pb-0 shrink-0 flex flex-col gap-3">
+        <PageHeader
+          title="Batch & Serial Number Tracking"
+          description="Track inventory by batch/lot or individual serial number"
+          meta={<PageMeta>{pageMeta}</PageMeta>}
+          primaryAction={
+            <Button
+              variant="primary"
+              size="small"
+              onClick={handleTabAdd}
+              startIcon={<Plus className="h-3.5 w-3.5" />}
+            >
+              {tabAddLabel}
+            </Button>
+          }
+          secondaryActions={[
+            <Button
+              key="export"
+              variant="secondary"
+              size="small"
+              onClick={activeTab === "batch" ? exportBatches : exportSNs}
+              startIcon={<Download className="h-3.5 w-3.5" />}
+            >
+              Export
+            </Button>,
+          ]}
+        />
 
-        <div className="flex gap-1 mb-3">
+        <div className="flex gap-1 mb-1">
           <button
             type="button"
             onClick={() => setActiveTab("batch")}
             className={`h-8 px-4 text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 transition-colors ${
               activeTab === "batch"
                 ? "bg-[var(--ds-action-primary)] text-white"
-                : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
+                : "bg-white border border-[var(--ds-border-default)] text-gray-600 hover:bg-gray-50"
             }`}
           >
             <Package className="h-3.5 w-3.5" /> Batch / lot tracking
@@ -458,7 +759,7 @@ export default function BatchManagement() {
             className={`h-8 px-4 text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 transition-colors ${
               activeTab === "serial"
                 ? "bg-[var(--ds-action-primary)] text-white"
-                : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
+                : "bg-white border border-[var(--ds-border-default)] text-gray-600 hover:bg-gray-50"
             }`}
           >
             <Hash className="h-3.5 w-3.5" /> Serial number tracking
@@ -478,7 +779,7 @@ export default function BatchManagement() {
                     {
                       label: "Total batches",
                       value: batchStats.total,
-                      color: "text-gray-800",
+                      color: "text-gray-700",
                       isAmt: false,
                     },
                     {
@@ -500,8 +801,8 @@ export default function BatchManagement() {
                       isAmt: true,
                     },
                   ].map((k) => (
-                    <div key={k.label} className="bg-white border border-gray-200 rounded-md p-3">
-                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
+                      <p className="text-[11px] font-medium text-gray-500">
                         {k.label}
                       </p>
                       <p className={`text-[12px] font-bold font-mono mt-1 ${k.color}`}>
@@ -527,7 +828,7 @@ export default function BatchManagement() {
                   </div>
                 )}
 
-                <div className="bg-white border border-gray-200 rounded-md p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+                <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
                   <div className="flex-1 min-w-[180px] relative">
                     <label className={labelCls}>Search</label>
                     <Search className="h-3.5 w-3.5 absolute left-2.5 bottom-2 text-gray-400 pointer-events-none" />
@@ -555,127 +856,46 @@ export default function BatchManagement() {
                 </div>
 
                 {filteredBatches.length === 0 ? (
-                  <div className="bg-white border border-gray-200 rounded-md">
-                    <ReportEmptyState
-                      message="No batches found"
-                      hint='Click "Add batch" to begin tracking inventory by lot.'
-                    />
-                  </div>
+                  <EnterpriseDataTable
+                    columns={batchColumns}
+                    rows={[]}
+                    getRowId={(batch) => batch.id}
+                    emptyTitle={
+                      batchSearch || filterExpiry !== "ALL"
+                        ? "No batches match your filters"
+                        : "No batches found"
+                    }
+                    emptyDescription={
+                      batchSearch || filterExpiry !== "ALL"
+                        ? "Try adjusting search or expiry filters."
+                        : 'Click "Add batch" to begin tracking inventory by lot.'
+                    }
+                    emptyAction={
+                      !batchSearch && filterExpiry === "ALL" ? (
+                        <Button
+                          variant="primary"
+                          size="small"
+                          onClick={openBatchAdd}
+                          startIcon={<Plus className="h-3.5 w-3.5" />}
+                        >
+                          Add batch
+                        </Button>
+                      ) : undefined
+                    }
+                    caption="Batches"
+                  />
                 ) : (
-                  <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse" style={{ minWidth: 1000 }}>
-                        <thead>
-                          <tr>
-                            <th className={thCls}>Batch no.</th>
-                            <th className={thCls}>Item</th>
-                            <th className={thCls}>Mfg. date</th>
-                            <th className={thCls}>Expiry date</th>
-                            <th className={thCls}>Days left</th>
-                            <th className={thCls}>Purchase date</th>
-                            <th className={`${thCls} text-right`}>Rate</th>
-                            <th className={`${thCls} text-right`}>Qty</th>
-                            <th className={`${thCls} text-right`}>Value</th>
-                            <th className={thCls}>Status</th>
-                            <th className={`${thCls} text-right`}>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredBatches.map((batch: any) => {
-                            const days = daysUntilExpiry(batch.expiryDate);
-                            const isExpired = batch.expiryDate && days <= 0;
-                            const isNearExpiry = batch.expiryDate && days > 0 && days <= 30;
-                            const value = (batch.currentQty || 0) * (batch.purchaseRate || 0);
-                            return (
-                              <tr
-                                key={batch.id}
-                                className={`group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] ${isExpired ? "bg-red-50" : isNearExpiry ? "bg-amber-50" : ""}`}
-                                onClick={() => openBatchEdit(batch)}
-                              >
-                                <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
-                                  {batch.batchNo}
-                                  {batch.supplierBatchNo && (
-                                    <div className="text-[10px] text-gray-400 font-normal">
-                                      Supplier: {batch.supplierBatchNo}
-                                    </div>
-                                  )}
-                                </td>
-                                <td className={tdCls}>{batch.itemName}</td>
-                                <td className={tdCls}>{batch.manufacturingDate || "—"}</td>
-                                <td
-                                  className={`${tdCls} ${isExpired ? "text-red-600 font-medium" : isNearExpiry ? "text-amber-700 font-medium" : ""}`}
-                                >
-                                  {batch.expiryDate || "—"}
-                                </td>
-                                <td className="px-3 py-2.5 text-[12px] border-b border-gray-100">
-                                  {batch.expiryDate ? (
-                                    <span
-                                      className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : isNearExpiry ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"}`}
-                                    >
-                                      {isExpired ? "Expired" : `${days}d`}
-                                    </span>
-                                  ) : (
-                                    "—"
-                                  )}
-                                </td>
-                                <td className={tdCls}>{batch.purchaseDate}</td>
-                                <td className={amtCls}>{fmt(batch.purchaseRate)}</td>
-                                <td
-                                  className={`${amtCls} font-medium ${(batch.currentQty || 0) <= 0 ? "text-red-500" : "text-gray-800"}`}
-                                >
-                                  {fmt(batch.currentQty)}
-                                </td>
-                                <td className={`${amtCls} text-[var(--ds-action-primary)] font-medium`}>
-                                  {fmt(value)}
-                                </td>
-                                <td className="px-3 py-2.5 border-b border-gray-100">
-                                  <span
-                                    className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : (batch.currentQty || 0) <= 0 ? "bg-gray-100 text-gray-700" : "bg-green-100 text-green-700"}`}
-                                  >
-                                    {isExpired
-                                      ? "Expired"
-                                      : (batch.currentQty || 0) <= 0
-                                        ? "Empty"
-                                        : "Active"}
-                                  </span>
-                                </td>
-                                <td className="px-3 py-2.5 border-b border-gray-100 text-right">
-                                  <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                      type="button"
-                                      className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        openBatchEdit(batch);
-                                      }}
-                                    >
-                                      <Edit2 className="h-3.5 w-3.5" />
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                                      onClick={async (e) => {
-                                        e.stopPropagation();
-                                        if (confirm("Delete this batch?")) {
-                                          await store.deleteBatch(batch.id);
-                                          toast.success("Batch deleted");
-                                        }
-                                      }}
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                      {filteredBatches.length} batch{filteredBatches.length === 1 ? "" : "es"}
-                    </div>
-                  </div>
+                  <EnterpriseDataTable
+                    columns={batchColumns}
+                    rows={filteredBatches}
+                    getRowId={(batch) => batch.id}
+                    onRowClick={openBatchEdit}
+                    rowActions={(batch) => [
+                      { label: "Edit", onSelect: () => openBatchEdit(batch) },
+                      { label: "Delete", destructive: true, onSelect: () => deleteBatchRow(batch) },
+                    ]}
+                    caption="Batches"
+                  />
                 )}
               </>
             )}
@@ -684,13 +904,13 @@ export default function BatchManagement() {
               <>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 no-print">
                   {[
-                    { label: "Total units", value: snStats.total, color: "text-gray-800" },
+                    { label: "Total units", value: snStats.total, color: "text-gray-700" },
                     { label: "Available", value: snStats.available, color: "text-green-700" },
                     { label: "Sold", value: snStats.sold, color: "text-gray-600" },
                     { label: "Damaged", value: snStats.damaged, color: "text-red-600" },
                   ].map((k) => (
-                    <div key={k.label} className="bg-white border border-gray-200 rounded-md p-3">
-                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
+                      <p className="text-[11px] font-medium text-gray-500">
                         {k.label}
                       </p>
                       <p className={`text-[12px] font-bold font-mono mt-1 ${k.color}`}>{k.value}</p>
@@ -698,7 +918,7 @@ export default function BatchManagement() {
                   ))}
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-md p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+                <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
                   <div className="flex-1 min-w-[180px] relative">
                     <label className={labelCls}>Search</label>
                     <Search className="h-3.5 w-3.5 absolute left-2.5 bottom-2 text-gray-400 pointer-events-none" />
@@ -711,7 +931,7 @@ export default function BatchManagement() {
                   </div>
                   <div>
                     <label className={labelCls}>Status</label>
-                    <div className="flex rounded-md border border-gray-300 overflow-hidden">
+                    <div className="flex rounded-lg border border-[var(--ds-border-default)] overflow-hidden">
                       {["ALL", "available", "sold", "returned", "damaged", "reserved"].map((s) => (
                         <button
                           key={s}
@@ -727,101 +947,46 @@ export default function BatchManagement() {
                 </div>
 
                 {filteredSNs.length === 0 ? (
-                  <div className="bg-white border border-gray-200 rounded-md">
-                    <ReportEmptyState
-                      message="No serial numbers found"
-                      hint='Click "Add serial no." to register a unit.'
-                    />
-                  </div>
+                  <EnterpriseDataTable
+                    columns={snColumns}
+                    rows={[]}
+                    getRowId={(sn) => sn.id}
+                    emptyTitle={
+                      snSearch || snStatusFilter !== "ALL"
+                        ? "No serial numbers match your filters"
+                        : "No serial numbers found"
+                    }
+                    emptyDescription={
+                      snSearch || snStatusFilter !== "ALL"
+                        ? "Try adjusting search or status filters."
+                        : 'Click "Add serial no." to register a unit.'
+                    }
+                    emptyAction={
+                      !snSearch && snStatusFilter === "ALL" ? (
+                        <Button
+                          variant="primary"
+                          size="small"
+                          onClick={openSNAdd}
+                          startIcon={<Plus className="h-3.5 w-3.5" />}
+                        >
+                          Add serial no.
+                        </Button>
+                      ) : undefined
+                    }
+                    caption="Serial numbers"
+                  />
                 ) : (
-                  <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse" style={{ minWidth: 900 }}>
-                        <thead>
-                          <tr>
-                            <th className={thCls}>Serial no.</th>
-                            <th className={thCls}>Item</th>
-                            <th className={thCls}>Status</th>
-                            <th className={thCls}>Purchase date</th>
-                            <th className={`${thCls} text-right`}>Purchase rate</th>
-                            <th className={thCls}>Sold date</th>
-                            <th className={thCls}>Sold to</th>
-                            <th className={thCls}>Invoice</th>
-                            <th className={thCls}>Warranty expiry</th>
-                            <th className={`${thCls} text-right`}>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredSNs.map((sn: any) => (
-                            <tr
-                              key={sn.id}
-                              className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                              onClick={() => openSNEdit(sn)}
-                            >
-                              <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
-                                {sn.serialNo}
-                              </td>
-                              <td className={tdCls}>{sn.itemName}</td>
-                              <td className="px-3 py-2.5 border-b border-gray-100">
-                                <span
-                                  className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${snStatusColors[sn.status] || "bg-gray-100 text-gray-700"}`}
-                                >
-                                  {sn.status}
-                                </span>
-                              </td>
-                              <td className={tdCls}>{sn.purchaseDate || "—"}</td>
-                              <td className={amtCls}>
-                                {sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}
-                              </td>
-                              <td className={tdCls}>{sn.soldDate || "—"}</td>
-                              <td className={tdCls}>{sn.soldToPartyName || "—"}</td>
-                              <td className="px-3 py-2.5 text-[11px] font-mono text-gray-600 border-b border-gray-100">
-                                {sn.invoiceNo || "—"}
-                              </td>
-                              <td
-                                className={`${tdCls} ${sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 ? "text-red-600" : ""}`}
-                              >
-                                {sn.warrantyExpiry || "—"}
-                                {sn.warrantyExpiry &&
-                                  daysUntilExpiry(sn.warrantyExpiry) <= 0 &&
-                                  " (Expired)"}
-                              </td>
-                              <td className="px-3 py-2.5 border-b border-gray-100 text-right">
-                                <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button
-                                    type="button"
-                                    className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      openSNEdit(sn);
-                                    }}
-                                  >
-                                    <Edit2 className="h-3.5 w-3.5" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                                    onClick={async (e) => {
-                                      e.stopPropagation();
-                                      if (confirm("Delete this serial number?")) {
-                                        await store.deleteSerialNumber(sn.id);
-                                        toast.success("Deleted");
-                                      }
-                                    }}
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                      {filteredSNs.length} serial number{filteredSNs.length === 1 ? "" : "s"}
-                    </div>
-                  </div>
+                  <EnterpriseDataTable
+                    columns={snColumns}
+                    rows={filteredSNs}
+                    getRowId={(sn) => sn.id}
+                    onRowClick={openSNEdit}
+                    rowActions={(sn) => [
+                      { label: "Edit", onSelect: () => openSNEdit(sn) },
+                      { label: "Delete", destructive: true, onSelect: () => deleteSNRow(sn) },
+                    ]}
+                    caption="Serial numbers"
+                  />
                 )}
               </>
             )}
@@ -831,7 +996,7 @@ export default function BatchManagement() {
         {showBatchModal && (
           <div className="w-full lg:w-[420px] xl:w-[480px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
-              <span className="text-[13px] font-semibold text-gray-800">
+              <span className="text-[13px] font-semibold text-gray-700">
                 {editingBatchId ? "Edit batch" : "Add batch / lot"}
               </span>
               <button
@@ -988,7 +1153,7 @@ export default function BatchManagement() {
         {showSNModal && (
           <div className="w-full lg:w-[420px] xl:w-[480px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
-              <span className="text-[13px] font-semibold text-gray-800">
+              <span className="text-[13px] font-semibold text-gray-700">
                 {editingSNId ? "Edit serial number" : "Add serial number"}
               </span>
               <button

@@ -1,12 +1,18 @@
 // src/pages/VoucherTypeMaster.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import toast from "@/lib/appToast";
-import { Plus, Edit2, Search, X, Save } from "lucide-react";
+import { Plus, Search, X, Save } from "lucide-react";
 import { NumberingType, RenumberingFrequency, RoundOffMode } from "../lib/busyTypes";
 import { getDB } from "../lib/db";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 interface VoucherSeriesItem {
   id: string;
@@ -237,8 +243,6 @@ const DEFAULT_SERIES: Omit<VoucherSeriesItem, "id">[] = [
   },
 ];
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -496,11 +500,60 @@ export default function VoucherTypeMaster() {
     );
   };
 
+  const columns = useMemo<EnterpriseColumnDef<VoucherSeriesItem>[]>(
+    () => [
+      {
+        id: "seriesName",
+        header: "Series name",
+        cell: (item) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{item.seriesName}</span>
+        ),
+      },
+      {
+        id: "description",
+        header: "Description",
+        cell: (item) => (
+          <span className="text-[12px] text-[var(--ds-text-muted)] max-w-[180px] truncate block">
+            {item.description || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "prefix",
+        header: "Prefix",
+        cell: (item) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{item.prefix || "—"}</span>
+        ),
+      },
+      {
+        id: "currentNumber",
+        header: "Current #",
+        align: "right",
+        cell: (item) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">#{item.currentNumber}</span>
+        ),
+      },
+      {
+        id: "numberingType",
+        header: "Numbering",
+        cell: (item) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">{item.numberingType}</span>
+        ),
+      },
+      {
+        id: "features",
+        header: "Features",
+        cell: (item) => renderFeatureBadges(item),
+      },
+    ],
+    [],
+  );
+
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       {/* Voucher type nav */}
       <div className="w-52 shrink-0 flex flex-col border-r border-gray-200 bg-white">
-        <div className="px-3 py-2.5 border-b border-gray-200 bg-[#f5f6fa] text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+        <div className="px-3 py-2.5 border-b border-gray-200 bg-gray-50 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
           Voucher types
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -537,42 +590,50 @@ export default function VoucherTypeMaster() {
 
       {/* Series list */}
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">
-                Voucher Series Configuration
-              </h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Numbering, features, settlement, and round-off per voucher type and series
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Voucher Series Configuration"
+            description="Numbering, features, settlement, and round-off per voucher type and series"
+            meta={
+              <PageMeta>
+                {filteredSeries.length} series for {selectedType}
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={openAdd}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 Add series
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+            secondaryActions={[
+              ...(branchOptions.length > 0
+                ? [
+                    <select
+                      key="branch"
+                      value={branchFilter}
+                      onChange={(e) => setBranchFilter(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      aria-label="Branch"
+                    >
+                      <option value="all">All branches</option>
+                      {branchOptions.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name || b.code || b.id}
+                        </option>
+                      ))}
+                    </select>,
+                  ]
+                : []),
+            ]}
+          />
 
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2">
             <div className="relative flex-1 max-w-xs">
-              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
               <input
                 placeholder={`Search ${selectedType} series...`}
                 value={search}
@@ -580,76 +641,39 @@ export default function VoucherTypeMaster() {
                 className={`${inputCls} pl-8`}
               />
             </div>
-            <span className="text-[11px] text-gray-500">{selectedType}</span>
+            <span className="text-[11px] text-[var(--ds-text-muted)]">{selectedType}</span>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filteredSeries.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={
-                  search
-                    ? "No series match your search"
-                    : `No series configured for ${selectedType}`
-                }
-                hint={
-                  search
-                    ? "Try a different search term."
-                    : 'Click "Add series" to create a new voucher series.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Series name</th>
-                    <th className={th}>Description</th>
-                    <th className={th}>Prefix</th>
-                    <th className={`${th} text-right`}>Current #</th>
-                    <th className={th}>Numbering</th>
-                    <th className={th}>Features</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredSeries.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => openEdit(item)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{item.seriesName}</td>
-                      <td className={`${td} text-gray-500 max-w-[180px] truncate`}>
-                        {item.description || "—"}
-                      </td>
-                      <td className={`${td} font-mono`}>{item.prefix || "—"}</td>
-                      <td className={`${td} text-right font-mono`}>#{item.currentNumber}</td>
-                      <td className={td}>{item.numberingType}</td>
-                      <td className={td}>{renderFeatureBadges(item)}</td>
-                      <td className={`${td} text-right`}>
-                        <button
-                          type="button"
-                          className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openEdit(item);
-                          }}
-                        >
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filteredSeries.length} series for {selectedType}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filteredSeries}
+            getRowId={(item) => item.id}
+            emptyTitle={
+              search ? "No series match your search" : `No series configured for ${selectedType}`
+            }
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "Add series" to create a new voucher series.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add series
+                </Button>
+              ) : undefined
+            }
+            onRowClick={openEdit}
+            rowActions={(item) => [{ label: "Edit", onSelect: () => openEdit(item) }]}
+            caption={`${selectedType} voucher series`}
+          />
         </div>
       </div>
 
@@ -658,7 +682,7 @@ export default function VoucherTypeMaster() {
         <div className="w-[min(640px,100%)] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
             <div>
-              <span className="text-[13px] font-semibold text-gray-800">
+              <span className="text-[13px] font-semibold text-gray-700">
                 {editItem ? "Edit" : "Add"} voucher series — {form.voucherType}
               </span>
               <p className="text-[11px] text-gray-500 mt-0.5">
@@ -805,7 +829,7 @@ export default function VoucherTypeMaster() {
                 {featureToggles.map(({ key, label, desc }) => (
                   <div
                     key={key}
-                    className="flex items-start gap-3 p-3 border border-gray-200 rounded-md hover:bg-gray-50"
+                    className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
                   >
                     <input
                       type="checkbox"
@@ -815,13 +839,13 @@ export default function VoucherTypeMaster() {
                       className="mt-0.5 rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     <label htmlFor={key} className="cursor-pointer flex-1">
-                      <div className="text-[12px] font-medium text-gray-800">{label}</div>
+                      <div className="text-[12px] font-medium text-gray-700">{label}</div>
                       <div className="text-[11px] text-gray-500 mt-0.5">{desc}</div>
                     </label>
                   </div>
                 ))}
                 {form.autoRoundOff && (
-                  <div className="p-3 border border-gray-200 bg-gray-50 rounded-md">
+                  <div className="p-3 border border-gray-200 bg-gray-50 rounded-lg">
                     <label className={labelCls}>Round off mode</label>
                     <select
                       value={form.roundOffMode}
@@ -835,7 +859,7 @@ export default function VoucherTypeMaster() {
                   </div>
                 )}
                 {form.itemwiseDescription && (
-                  <div className="p-3 border border-gray-200 bg-gray-50 rounded-md">
+                  <div className="p-3 border border-gray-200 bg-gray-50 rounded-lg">
                     <label className={labelCls}>Description lines per item</label>
                     <input
                       type="number"

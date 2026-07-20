@@ -10,9 +10,10 @@
 | Claim | Evidence |
 |-------|----------|
 | Release dossier filed | `docs/mokxya-ai/releases/LAUNCH_ASK_COMPANY_REPORTS_V1.md` |
-| Capability gate wired (OFF) | registry + `launchAskCompanyReportsReleasePolicy` |
+| Capability gate wired (OFF) | registry + `launch_ask_company_reports_release_policy.py` + `launchAskCompanyReportsReleasePolicy.ts` |
 | Zero-mutation disclosed | dossier §3 + policy constants |
 | Monitoring / rollback documented | dossier §6–7 |
+| Artifacts | `artifacts/prod-ready-pr-c2/` (RUN_STATUS, tickets, OWNER_SIGNOFF PENDING) |
 | Flag not armed | `flag_armed=false`; row `production_approved=false` |
 
 ## Not proven (blocks arm)

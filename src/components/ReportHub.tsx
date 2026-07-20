@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { PageHeader } from "@/design-system";
+import { PAGE_SHORTCUT_HINTS, shortcutTitle } from "./shell/shortcutHints";
 
 interface Report {
   label: string;
@@ -37,7 +38,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
         label: "General Ledger",
         page: "ledger",
         desc: "Account-wise running balance",
-        shortcut: "Ctrl+L",
+        shortcut: PAGE_SHORTCUT_HINTS.ledger,
       },
       { label: "Party Ledger", page: "party-statement", desc: "Customer / Supplier statement" },
       { label: "Cash Book", page: "cash-flow", desc: "Cash receipts and payments" },
@@ -53,14 +54,14 @@ const REPORT_CATEGORIES: ReportCategory[] = [
         label: "Trial Balance",
         page: "trial-balance",
         desc: "Debit / Credit balance summary",
-        shortcut: "Ctrl+T",
+        shortcut: PAGE_SHORTCUT_HINTS["trial-balance"],
       },
       { label: "Profit & Loss", page: "profit-loss", desc: "Income and expense statement" },
       {
         label: "Balance Sheet",
         page: "balance-sheet",
         desc: "Assets, liabilities & equity",
-        shortcut: "Ctrl+B",
+        shortcut: PAGE_SHORTCUT_HINTS["balance-sheet"],
       },
       { label: "Cash Flow", page: "cash-flow", desc: "Cash inflow and outflow" },
       {
@@ -127,7 +128,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
         label: "VAT Reports",
         page: "vat-reports",
         desc: "Annex-A, B, C — IRD Nepal filing",
-        shortcut: "Ctrl+G",
+        shortcut: PAGE_SHORTCUT_HINTS["vat-reports"],
       },
       { label: "GSTR-1", page: "gstr1", desc: "Outward supplies statement" },
       { label: "GSTR-3B", page: "gstr3b", desc: "Monthly return summary" },
@@ -151,6 +152,7 @@ const ReportRow: React.FC<{
     <button
       type="button"
       onClick={onClick}
+      title={shortcutTitle(report.label, report.page)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{

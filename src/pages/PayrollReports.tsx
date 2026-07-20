@@ -53,7 +53,7 @@ function tabCls(active) {
     "inline-flex items-center border-b-2 px-1 py-2 text-[12px] font-medium transition-colors",
     active
       ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
-      : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800",
+      : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-700",
   ].join(" ");
 }
 
@@ -417,7 +417,7 @@ export default function PayrollReports() {
     <div className={sectionCls}>
       <div className="flex flex-col gap-3 border-b border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[13px] font-semibold text-gray-800">SSF portal export</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700">SSF portal export</h2>
           <p className="mt-0.5 text-[11px] text-gray-500">
             Prepare the monthly contribution file for SSF portal upload.
           </p>
@@ -439,26 +439,26 @@ export default function PayrollReports() {
         <div className="overflow-x-auto">
           <table className="data-table w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   SSF Member No
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employee Name
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Department
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Gross Salary
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employee Contribution
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employer Contribution
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Total SSF
                 </th>
               </tr>
@@ -479,7 +479,7 @@ export default function PayrollReports() {
                 </tr>
               ))}
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
-                <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                <td className="px-3 py-2.5 text-gray-700">TOTAL</td>
                 <td className="px-3 py-2.5" />
                 <td className="px-3 py-2.5" />
                 <td className={`${amountCellCls} font-bold`}>{money(ssfTotals.grossSalary)}</td>
@@ -502,7 +502,7 @@ export default function PayrollReports() {
     <div className={sectionCls}>
       <div className="flex flex-col gap-3 border-b border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[13px] font-semibold text-gray-800">PF contribution schedule</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700">PF contribution schedule</h2>
           <p className="mt-0.5 text-[11px] text-gray-500">
             Print the challan or export the monthly provident fund schedule.
           </p>
@@ -528,23 +528,23 @@ export default function PayrollReports() {
         <div className="overflow-x-auto">
           <table className="data-table w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employee Code
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Name
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Basic Salary
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employee PF
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employer PF
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Total PF
                 </th>
               </tr>
@@ -564,7 +564,7 @@ export default function PayrollReports() {
                 </tr>
               ))}
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
-                <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                <td className="px-3 py-2.5 text-gray-700">TOTAL</td>
                 <td className="px-3 py-2.5" />
                 <td className={`${amountCellCls} font-bold`}>{money(pfTotals.basicSalary)}</td>
                 <td className={`${amountCellCls} font-bold`}>{money(pfTotals.employeePF)}</td>
@@ -582,7 +582,7 @@ export default function PayrollReports() {
     <div className={sectionCls}>
       <div className="flex flex-col gap-3 border-b border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[13px] font-semibold text-gray-800">CIT schedule</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700">CIT schedule</h2>
           <p className="mt-0.5 text-[11px] text-gray-500">
             Review monthly CIT deductions before exporting the schedule.
           </p>
@@ -604,14 +604,14 @@ export default function PayrollReports() {
         <div className="overflow-x-auto">
           <table className="data-table w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Employee Name
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Basic Salary
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   CIT Deducted
                 </th>
               </tr>
@@ -628,7 +628,7 @@ export default function PayrollReports() {
                 </tr>
               ))}
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
-                <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                <td className="px-3 py-2.5 text-gray-700">TOTAL</td>
                 <td className={`${amountCellCls} font-bold`}>{money(citTotals.basicSalary)}</td>
                 <td className={`${amountCellCls} font-bold`}>{money(citTotals.citDeducted)}</td>
               </tr>
@@ -642,7 +642,7 @@ export default function PayrollReports() {
   const renderIncomeTaxAdvanceInstallments = () => (
     <div className={sectionCls}>
       <div className="border-b border-gray-200 px-4 py-3">
-        <h2 className="text-[13px] font-semibold text-gray-800">Income tax advance installments</h2>
+        <h2 className="text-[13px] font-semibold text-gray-700">Income tax advance installments</h2>
         <p className="mt-0.5 text-[11px] text-gray-500">
           Track installment targets against the estimated annual tax liability.
         </p>
@@ -667,26 +667,26 @@ export default function PayrollReports() {
         <div className="overflow-x-auto">
           <table className="data-table w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Installment No
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Due Month
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Due Date (BS)
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Amount Required
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Amount Paid
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Status
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Actions
                 </th>
               </tr>
@@ -765,7 +765,7 @@ export default function PayrollReports() {
     return (
       <div className={sectionCls}>
         <div className="border-b border-gray-200 px-4 py-3">
-          <h2 className="text-[13px] font-semibold text-gray-800">Compliance calendar</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700">Compliance calendar</h2>
           <p className="mt-0.5 text-[11px] text-gray-500">
             Monitor SSF, PF, TDS return, and salary TDS deposit completion month by month.
           </p>
@@ -790,10 +790,10 @@ export default function PayrollReports() {
             const pfKind = isPFCompleted ? "success" : pfDeadline < now ? "danger" : "warning";
 
             return (
-              <div key={month.name} className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+              <div key={month.name} className="rounded-lg border border-gray-200 bg-[#fcfcfd] p-4">
                 <div className="mb-3 flex items-start justify-between">
                   <div>
-                    <h3 className="text-[12px] font-semibold text-gray-800">{month.name}</h3>
+                    <h3 className="text-[12px] font-semibold text-gray-700">{month.name}</h3>
                     <p className="mt-0.5 text-[11px] text-gray-500">{month.days} days</p>
                   </div>
                   <CalendarDays className="h-4 w-4 text-[var(--ds-action-primary)]" />
@@ -828,7 +828,7 @@ export default function PayrollReports() {
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-md border border-gray-200 bg-white p-2.5"
+                      className="rounded-lg border border-gray-200 bg-white p-2.5"
                     >
                       <div className="mb-2 flex items-center justify-between gap-2">
                         <span className="text-[12px] text-gray-700">{item.label}</span>
@@ -853,10 +853,10 @@ export default function PayrollReports() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-gray-50 p-4 md:p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Payroll compliance reports</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Payroll compliance reports</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             SSF, PF, CIT, tax installments, and recurring payroll compliance tracking
           </p>
@@ -864,7 +864,7 @@ export default function PayrollReports() {
         <div className="flex items-center gap-2" />
       </div>
 
-      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
+      <div className="no-print mb-4 rounded-lg border border-gray-200 bg-white p-3">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           <div>
             <label className={labelCls}>Fiscal year</label>
@@ -927,13 +927,13 @@ export default function PayrollReports() {
       </div>
 
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Active Employees
               </p>
-              <p className="mt-2 text-[18px] font-semibold text-gray-800">
+              <p className="mt-2 text-[18px] font-semibold text-gray-700">
                 {activeEmployees.length}
               </p>
               <p className="mt-1 text-[11px] text-gray-500">
@@ -943,33 +943,33 @@ export default function PayrollReports() {
             <Users className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Gross Salary
           </p>
-          <p className="mt-2 text-[18px] font-semibold text-gray-800">
+          <p className="mt-2 text-[18px] font-semibold text-gray-700">
             {money(ssfTotals.grossSalary)}
           </p>
           <p className="mt-1 text-[11px] text-gray-500">
             For {selectedMonth || "the selected month"}
           </p>
         </div>
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total SSF
           </p>
-          <p className="mt-2 text-[18px] font-semibold text-gray-800">
+          <p className="mt-2 text-[18px] font-semibold text-gray-700">
             {money(ssfTotals.totalSSF)}
           </p>
           <p className="mt-1 text-[11px] text-gray-500">Employee plus employer contribution</p>
         </div>
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Compliance Complete
               </p>
-              <p className="mt-2 text-[18px] font-semibold text-gray-800">
+              <p className="mt-2 text-[18px] font-semibold text-gray-700">
                 {complianceSummary.completed}/{complianceSummary.total}
               </p>
               <p className="mt-1 text-[11px] text-gray-500">

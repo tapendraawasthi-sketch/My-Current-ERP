@@ -19,4 +19,4 @@
 - [ ] Reconfirm completes; no dual silent apply
 - [ ] Attach notes/screenshots under this folder
 
-**Attestation status:** PENDING (engineering narrative landed; operator exercise open)
+**Attestation status:** PASS via owner residual (2026-07-20 — `approved b3`; exercise not fully run)

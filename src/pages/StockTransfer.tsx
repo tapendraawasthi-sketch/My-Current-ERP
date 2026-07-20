@@ -192,7 +192,7 @@ const StockTransfer: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -220,7 +220,7 @@ const StockTransfer: React.FC = () => {
         <div className="text-[12px]">Transfer No.: {transferNo}</div>
       </div>
 
-      <div className="bg-white border rounded-md p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="bg-white border rounded-lg p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
         <Field label="Transfer No." value={transferNo} readOnly />
         <Field label="AD Date" value={date} onChange={setDate} type="date" />
         <Field
@@ -262,7 +262,7 @@ const StockTransfer: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white border rounded-md overflow-hidden">
+      <div className="bg-white border rounded-lg overflow-hidden">
         <table className="w-full text-[12px]">
           <thead className="bg-[var(--ds-canvas)]">
             <tr>

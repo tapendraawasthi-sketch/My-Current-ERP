@@ -1,8 +1,8 @@
 // src/pages/StockSummaryReport.tsx
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
-import { Download, Package, AlertTriangle } from "lucide-react";
+import { formatCurrency, formatNumber } from "../lib/utils";
+import { Package, AlertTriangle } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import {
   computeStockSummary,
@@ -10,6 +10,7 @@ import {
   movementsToStockRaw,
 } from "../lib/stockValuation";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { ReportWorkspace } from "@/features/reports";
 
 type ViewMode = "alphabetical" | "group_wise" | "critical_level";
 
@@ -135,113 +136,126 @@ export default function StockSummaryReport() {
         : sorted.length > 0;
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+    "h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+
+  const exportCsv = () => {
+    const rows = (viewMode === "critical_level" ? criticalItems : sorted).map((r) =>
+      [r.code, r.name, r.group, r.unit, r.qty, r.avgRate, r.value]
+        .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
+        .join(","),
+    );
+    const blob = new Blob(
+      [["Code,Item,Group,Unit,Qty,Avg Rate,Value", ...rows].join("\n")],
+      { type: "text/csv;charset=utf-8;" },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "stock-summary.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
-    <div className="erp-report p-4 bg-[var(--ds-canvas)] min-h-screen">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock summary</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">Quantities and values.</p>
-          <p className="text-[12px] text-gray-500 mt-0.5">
-            Closing stock — {valuationMethod.toUpperCase().replace("_", " ")} valuation
-          </p>
-        </div>
-        <button className="flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50">
-          <Download className="h-3.5 w-3.5" /> Export
-        </button>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        {[
-          { label: "Total Items", value: totals.totalItems, color: "text-gray-800" },
-          {
-            label: "Stock Value",
-            value: `Rs. ${formatNumber(totals.totalValue)}`,
-            color: "text-[var(--ds-action-primary)]",
-          },
-          { label: "Zero Stock", value: totals.zeroStockItems, color: "text-amber-600" },
-          { label: "Critical Items", value: totals.criticalItems, color: "text-red-600" },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-md border border-gray-200 bg-white p-3">
-            <div className="text-[12px] text-gray-500 font-semibold uppercase tracking-wide">
-              {stat.label}
-            </div>
-            <div className={`text-[16px] font-bold ${stat.color} mt-1`}>{stat.value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-gray-200 bg-white p-3">
-        <div className="flex gap-1">
-          {(
-            [
-              ["alphabetical", "Alphabetical"],
-              ["group_wise", "Group-wise"],
-              ["critical_level", "Critical Level"],
-            ] as const
-          ).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setViewMode(key)}
-              className={`h-8 rounded-md px-3 text-[12px] font-medium transition-colors ${viewMode === key ? "bg-[var(--ds-action-primary)] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+    <ReportWorkspace
+      title="Stock summary"
+      description={`Quantities and values — ${valuationMethod.toUpperCase().replace("_", " ")} valuation`}
+      periodLabel={`As on ${asOnDate}`}
+      onExportCsv={exportCsv}
+      kpiSlot={
+        <>
+          {[
+            { label: "Total Items", value: String(totals.totalItems), color: "text-gray-700" },
+            {
+              label: "Stock Value",
+              value: formatCurrency(totals.totalValue),
+              color: "text-[var(--ds-action-primary)]",
+            },
+            { label: "Zero Stock", value: String(totals.zeroStockItems), color: "text-amber-600" },
+            { label: "Critical Items", value: String(totals.criticalItems), color: "text-red-600" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3"
             >
-              {label}
-              {key === "critical_level" && totals.criticalItems > 0 && (
-                <span
-                  className={`ml-1.5 rounded px-1.5 py-0.5 text-[12px] ${viewMode === key ? "bg-white/20" : "bg-red-100 text-red-700"}`}
-                >
-                  {totals.criticalItems}
-                </span>
-              )}
-            </button>
+              <div className="text-[11px] text-[var(--ds-text-muted)] font-semibold uppercase tracking-wide">
+                {stat.label}
+              </div>
+              <div className={`text-[16px] font-bold ${stat.color} mt-1`}>{stat.value}</div>
+            </div>
           ))}
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="text-[12px] text-gray-500">As on:</span>
-          <input
-            type="date"
-            value={asOnDate}
-            onChange={(e) => setAsOnDate(e.target.value)}
-            className={inputCls}
-          />
-        </div>
-        {branchOptions.length > 0 && (
-          <select
-            value={branchFilter}
-            onChange={(e) => setBranchFilter(e.target.value)}
-            aria-label="Branch"
-            className={inputCls}
-          >
-            <option value="all">All branches</option>
-            {branchOptions.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name || b.code || b.id}
-              </option>
+        </>
+      }
+      filterSlot={
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex gap-1">
+            {(
+              [
+                ["alphabetical", "Alphabetical"],
+                ["group_wise", "Group-wise"],
+                ["critical_level", "Critical Level"],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setViewMode(key)}
+                className={`h-8 rounded-md px-3 text-[12px] font-medium transition-colors ${viewMode === key ? "bg-[var(--ds-action-primary)] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              >
+                {label}
+                {key === "critical_level" && totals.criticalItems > 0 && (
+                  <span
+                    className={`ml-1.5 rounded px-1.5 py-0.5 text-[12px] ${viewMode === key ? "bg-white/20" : "bg-red-100 text-red-700"}`}
+                  >
+                    {totals.criticalItems}
+                  </span>
+                )}
+              </button>
             ))}
-          </select>
-        )}
-        <input
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search items..."
-          className={`${inputCls} w-44`}
-        />
-        <label className="flex items-center gap-2 cursor-pointer">
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[12px] text-gray-500">As on:</span>
+            <input
+              type="date"
+              value={asOnDate}
+              onChange={(e) => setAsOnDate(e.target.value)}
+              className={inputCls}
+            />
+          </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              aria-label="Branch"
+              className={inputCls}
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <input
-            type="checkbox"
-            checked={showZeroBalance}
-            onChange={(e) => setShowZeroBalance(e.target.checked)}
-            className="rounded"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search items..."
+            className={`${inputCls} w-44`}
           />
-          <span className="text-[12px] text-gray-700">Show Zero Balance</span>
-        </label>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
+          <label className="flex items-center gap-2 cursor-pointer pb-1">
+            <input
+              type="checkbox"
+              checked={showZeroBalance}
+              onChange={(e) => setShowZeroBalance(e.target.checked)}
+              className="rounded"
+            />
+            <span className="text-[12px] text-gray-700">Show Zero Balance</span>
+          </label>
+        </div>
+      }
+    >
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
         {!hasDisplayRows ? (
           <ReportEmptyState
             icon={<Package className="mx-auto h-8 w-8 text-gray-300" />}
@@ -266,7 +280,7 @@ export default function StockSummaryReport() {
                     {group} — {groupItems.length} items
                   </span>
                   <span className="font-mono">
-                    Rs. {formatNumber(groupItems.reduce((s, i) => s + i.value, 0))}
+                    {formatCurrency(groupItems.reduce((s, i) => s + i.value, 0))}
                   </span>
                 </div>
                 <StockTable items={groupItems} />
@@ -276,15 +290,13 @@ export default function StockSummaryReport() {
           <StockTable items={sorted} />
         )}
 
-        {/* Grand Total */}
         {hasDisplayRows && (
-          <div className="flex justify-between border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] px-4 py-2.5 text-[12px] font-bold text-gray-800">
+          <div className="flex justify-between border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] px-4 py-2.5 text-[12px] font-bold text-gray-700">
             <span>
               TOTAL — {viewMode === "critical_level" ? criticalItems.length : sorted.length} items
             </span>
             <span className="font-mono">
-              Rs.{" "}
-              {formatNumber(
+              {formatCurrency(
                 (viewMode === "critical_level" ? criticalItems : sorted).reduce(
                   (s, i) => s + i.value,
                   0,
@@ -294,7 +306,7 @@ export default function StockSummaryReport() {
           </div>
         )}
       </div>
-    </div>
+    </ReportWorkspace>
   );
 }
 
@@ -380,7 +392,7 @@ function StockTable({ items }: { items: StockRow[] }) {
                     </span>
                   )}
                   <span
-                    className={`text-[12px] ${isAtReorder ? "font-semibold text-red-800" : "text-gray-800"}`}
+                    className={`text-[12px] ${isAtReorder ? "font-semibold text-red-800" : "text-gray-700"}`}
                   >
                     {item.name}
                   </span>
@@ -389,7 +401,7 @@ function StockTable({ items }: { items: StockRow[] }) {
               <td className="px-3 py-2.5 text-[12px] text-gray-500">{item.group}</td>
               <td className="px-3 py-2.5 text-[12px] text-gray-500">{item.unit}</td>
               <td
-                className={`px-3 py-2.5 text-[12px] font-mono text-right font-bold ${item.qty === 0 ? "text-gray-400" : "text-gray-800"}`}
+                className={`px-3 py-2.5 text-[12px] font-mono text-right font-bold ${item.qty === 0 ? "text-gray-400" : "text-gray-700"}`}
               >
                 {formatNumber(item.qty)}
               </td>
@@ -397,7 +409,7 @@ function StockTable({ items }: { items: StockRow[] }) {
                 {item.avgRate > 0 ? formatNumber(item.avgRate) : "—"}
               </td>
               <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-green-700">
-                Rs. {formatNumber(item.value)}
+                {formatCurrency(item.value)}
               </td>
               <td className="px-3 py-2.5">
                 {item.isBelowMin ? (

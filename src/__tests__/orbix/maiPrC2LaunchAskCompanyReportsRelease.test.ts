@@ -56,5 +56,13 @@ describe("PR-C2 Ask company reports release package", () => {
     expect(
       existsSync(join(ROOT, "artifacts/prod-ready-pr-c2/OWNER_SIGNOFF.md")),
     ).toBe(true);
+    expect(
+      existsSync(
+        join(
+          ROOT,
+          "docs/mokxya-ai/baselines/PR_C2_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_PACKAGE.md",
+        ),
+      ),
+    ).toBe(true);
   });
 });

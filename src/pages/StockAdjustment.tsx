@@ -162,7 +162,7 @@ export default function StockAdjustment() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Adjustment</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Stock Adjustment</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">Adjust physical stock quantities</p>
         </div>
         <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ export default function StockAdjustment() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -187,14 +187,14 @@ export default function StockAdjustment() {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 grid grid-cols-3 gap-4">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 grid grid-cols-3 gap-4">
         <div>
           <label className="block text-[11px] font-medium text-gray-600 mb-1">Date</label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
@@ -208,7 +208,7 @@ export default function StockAdjustment() {
               // reset lines qty when warehouse changes
               setLines(lines.map((l) => ({ ...l, systemQty: 0, adjustedQty: 0 })));
             }}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             <option value="">-- Select Godown --</option>
             {scopedWarehouses.map((w: DBWarehouse) => (
@@ -227,31 +227,31 @@ export default function StockAdjustment() {
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="e.g. Damage, Physical Verification"
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-12">
                 #
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Item
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                 System Qty
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                 Adjusted Qty
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                 Difference
               </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-16">
                 Action
               </th>
             </tr>

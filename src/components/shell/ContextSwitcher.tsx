@@ -17,15 +17,11 @@ import type { FiscalYear } from "../../store/store.types";
 import {
   ACTIVE_BRANCH_KEY,
   BRANCH_CHANGED_EVENT,
+  BRANCH_VIEW_FILTER_KEY,
   readActiveBranchId,
+  writeBranchViewFilter,
 } from "../../lib/activeBranch";
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "C";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
-}
+import { Avatar } from "@/design-system";
 
 type Panel = "main" | "branch" | "fy";
 
@@ -42,6 +38,13 @@ export const ContextSwitcher: React.FC = () => {
   const [panel, setPanel] = useState<Panel>("main");
   const [fyQuery, setFyQuery] = useState("");
   const [activeBranchId, setActiveBranchId] = useState(readActiveBranchId);
+  const [viewAllBranches, setViewAllBranches] = useState(() => {
+    try {
+      return localStorage.getItem(BRANCH_VIEW_FILTER_KEY) === "all";
+    } catch {
+      return false;
+    }
+  });
   const rootRef = useRef<HTMLDivElement>(null);
 
   const companyName =
@@ -93,28 +96,39 @@ export const ContextSwitcher: React.FC = () => {
   }, [open]);
 
   useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === ACTIVE_BRANCH_KEY) setActiveBranchId(e.newValue || "");
+    const syncView = () => {
+      setActiveBranchId(readActiveBranchId());
+      try {
+        setViewAllBranches(localStorage.getItem(BRANCH_VIEW_FILTER_KEY) === "all");
+      } catch {
+        setViewAllBranches(false);
+      }
     };
-    const onCustom = () => setActiveBranchId(readActiveBranchId());
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === ACTIVE_BRANCH_KEY || e.key === BRANCH_VIEW_FILTER_KEY) syncView();
+    };
     window.addEventListener("storage", onStorage);
-    window.addEventListener(BRANCH_CHANGED_EVENT, onCustom as EventListener);
+    window.addEventListener(BRANCH_CHANGED_EVENT, syncView as EventListener);
     return () => {
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener(BRANCH_CHANGED_EVENT, onCustom as EventListener);
+      window.removeEventListener(BRANCH_CHANGED_EVENT, syncView as EventListener);
     };
   }, []);
 
-  const branchLabel = activeBranch?.name || activeBranch?.code || null;
+  const branchLabel = viewAllBranches
+    ? "All branches"
+    : activeBranch?.name || activeBranch?.code || null;
   const fyLabel = currentFiscalYear?.name || "FY";
   const summary = [branchLabel, fyLabel].filter(Boolean).join(" · ");
 
   const selectBranch = (id: string) => {
-    setActiveBranchId(id);
-    try {
-      localStorage.setItem(ACTIVE_BRANCH_KEY, id);
-    } catch {
-      /* ignore */
+    if (id === "all") {
+      setViewAllBranches(true);
+      writeBranchViewFilter("all");
+    } else {
+      setViewAllBranches(false);
+      setActiveBranchId(id);
+      writeBranchViewFilter(id);
     }
     window.dispatchEvent(new Event(BRANCH_CHANGED_EVENT));
     setPanel("main");
@@ -134,9 +148,7 @@ export const ContextSwitcher: React.FC = () => {
         aria-label="Company, branch, and fiscal year"
         title={`${companyName}${summary ? ` · ${summary}` : ""}`}
       >
-        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--ds-surface-muted)] text-[12px] font-semibold text-[var(--ds-action-primary)]">
-          {initials(companyName)}
-        </span>
+        <Avatar name={companyName} seed={companySettings?.id || companyName} size="sm" />
         <span className="min-w-0 text-left">
           <span className="block truncate text-[12px] font-medium text-[var(--ds-text-default)]">
             {companyName}
@@ -235,11 +247,27 @@ export const ContextSwitcher: React.FC = () => {
                 className="flex w-full items-center gap-2 border-b border-[var(--ds-border-default)] px-3 py-2 text-left text-[12px] font-medium text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-muted)]"
                 onClick={() => setPanel("main")}
               >
-                ← Working branch
+                ← Branch
               </button>
               <div className="max-h-56 overflow-y-auto py-1">
+                <button
+                  type="button"
+                  role="menuitem"
+                  className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[12px] hover:bg-[var(--ds-surface-muted)] ${
+                    viewAllBranches
+                      ? "bg-[var(--ds-surface-muted)] text-[var(--ds-action-primary)]"
+                      : "text-[var(--ds-text-default)]"
+                  }`}
+                  onClick={() => selectBranch("all")}
+                >
+                  <span className="truncate font-medium">All branches</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-[11px] text-[var(--ds-text-subtle)]">lists only</span>
+                    {viewAllBranches ? <Check className="h-3.5 w-3.5 flex-shrink-0" /> : null}
+                  </span>
+                </button>
                 {activeList.map((b) => {
-                  const selected = b.id === activeBranch?.id;
+                  const selected = !viewAllBranches && b.id === activeBranch?.id;
                   return (
                     <button
                       key={b.id}

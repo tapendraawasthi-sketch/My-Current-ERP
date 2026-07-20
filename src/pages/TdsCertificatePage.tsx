@@ -48,10 +48,10 @@ const TdsCertificatePage: React.FC = () => {
   }, [tdsEntries, partyId, fiscalYearBS, matchBranch, branchFilter]);
 
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <FileCheck className="h-4 w-4 text-[var(--ds-action-primary)]" />
             TDS Certificate
           </h1>
@@ -63,7 +63,7 @@ const TdsCertificatePage: React.FC = () => {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -83,7 +83,7 @@ const TdsCertificatePage: React.FC = () => {
             <select
               value={partyId}
               onChange={(e) => setPartyId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             >
               <option value="">— Select Party —</option>
               {scopedParties.map((p) => (
@@ -101,7 +101,7 @@ const TdsCertificatePage: React.FC = () => {
               type="text"
               value={fiscalYearBS}
               onChange={(e) => setFiscalYearBS(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
           <div>
@@ -113,7 +113,7 @@ const TdsCertificatePage: React.FC = () => {
               value={certificateDateBS}
               onChange={(e) => setCertificateDateBS(e.target.value)}
               placeholder="2081-09-15"
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
           <div>
@@ -124,7 +124,7 @@ const TdsCertificatePage: React.FC = () => {
               type="text"
               value={authorizedPersonName}
               onChange={(e) => setAuthorizedPersonName(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
           <div>
@@ -133,7 +133,7 @@ const TdsCertificatePage: React.FC = () => {
               type="text"
               value={authorizedPersonDesignation}
               onChange={(e) => setAuthorizedPersonDesignation(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
         </div>

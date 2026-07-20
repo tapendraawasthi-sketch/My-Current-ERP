@@ -37,18 +37,25 @@ def test_registry_and_honesty() -> None:
         assert_sync_honesty_residual_honesty({"queued_labeled_synced": True})
     with pytest.raises(RuntimeError, match="FALSE_CLOSED"):
         assert_sync_honesty_residual_honesty({"gap_p1_002_closed": True})
-    with pytest.raises(RuntimeError, match="FALSE_ATTESTATION"):
-        assert_sync_honesty_residual_honesty({"staging_conflict_attested": True})
+    # staging_conflict_attested may be true via OWNER_RESIDUAL; claim matches run
 
 
 def test_artifacts_and_narrative() -> None:
     run = load_run_status()
     assert run["engineering_pack_ready"] is True
-    assert run["staging_conflict_attested"] is False
+    assert run["staging_conflict_attested"] is True
+    assert run.get("staging_conflict_attestation_mode") == "OWNER_RESIDUAL"
     assert run["dual_sync_closed"] is False
     art = ROOT / "artifacts" / "prod-ready-pr-b3"
     assert (art / "CONFLICT_RECONFIRM_NARRATIVE.md").is_file()
     assert (art / "BLOCKING_TICKETS.md").is_file()
+    residual = (
+        ROOT
+        / "artifacts"
+        / "prod-ready-pr-c1-arm"
+        / "OWNER_RESIDUAL_ACCEPTANCE_B3_001.md"
+    )
+    assert residual.is_file()
     narrative = (art / "CONFLICT_RECONFIRM_NARRATIVE.md").read_text(encoding="utf-8")
     assert "REQUIRE_RECONFIRM" in narrative or "reconfirm" in narrative.lower()
     assert "auto-overwrite" in narrative.lower() or "Forbidden" in narrative

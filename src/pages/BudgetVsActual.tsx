@@ -1,24 +1,18 @@
 // @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store";
-import {
-  Target,
-  TrendingUp,
-  TrendingDown,
-  Download,
-  Filter,
-  AlertTriangle,
-  CheckCircle,
-} from "lucide-react";
 import * as XLSX from "xlsx";
+import { formatCurrency } from "../lib/utils";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import {
+  ReportWorkspace,
+  useReportQueryParams,
+  applyBranchQueryParam,
+} from "@/features/reports";
 
 type ViewMode = "summary" | "ledger" | "monthly";
 type BudgetType = "all" | "income" | "expense";
 
-function fmt(n: number) {
-  return n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 function pct(actual: number, budget: number) {
   if (!budget) return 0;
   return Math.round((actual / budget) * 100);
@@ -31,19 +25,36 @@ export default function BudgetVsActual() {
     budgets = [],
     currentFiscalYear,
     companySettings,
+    initLifecycle,
   } = useStore();
+  const storeLoading = initLifecycle === "loading" || initLifecycle === "initializing";
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const defaultFrom = currentFiscalYear?.startDate || new Date().getFullYear() + "-01-01";
+  const defaultTo = currentFiscalYear?.endDate || new Date().getFullYear() + "-12-31";
+  const { params, writeParams } = useReportQueryParams({ from: defaultFrom, to: defaultTo });
 
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
   const [budgetType, setBudgetType] = useState<BudgetType>("all");
-  const [fromDate, setFromDate] = useState(
-    currentFiscalYear?.startDate || new Date().getFullYear() + "-01-01",
-  );
-  const [toDate, setToDate] = useState(
-    currentFiscalYear?.endDate || new Date().getFullYear() + "-12-31",
-  );
+  const [fromDate, setFromDate] = useState(() => params.from || defaultFrom);
+  const [toDate, setToDate] = useState(() => params.to || defaultTo);
   const [threshold, setThreshold] = useState(90); // alert at 90% consumed
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    if (params.from) setFromDate(params.from);
+    if (params.to) setToDate(params.to);
+    if (params.branch) applyBranchQueryParam(params.branch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const syncQuery = () => {
+    writeParams({
+      fy: currentFiscalYear?.id || currentFiscalYear?.name,
+      from: fromDate,
+      to: toDate,
+      branch: branchFilter,
+    });
+  };
 
   // ── Classify accounts ─────────────────────────────────────────────────────
   const incomeKeywords = [
@@ -256,104 +267,151 @@ export default function BudgetVsActual() {
   }
 
   return (
-    <div className="erp-report p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen space-y-4">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Budget vs actual</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">
-            Plan vs real figures.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {branchOptions.length > 0 && (
-            <select
-              value={branchFilter}
-              onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              aria-label="Branch"
+    <ReportWorkspace
+      title="Budget vs actual"
+      description="Plan vs real figures."
+      periodLabel={`${fromDate} to ${toDate}`}
+      loading={storeLoading}
+      onPrint={() => window.print()}
+      onExportExcel={exportExcel}
+      onShowReport={syncQuery}
+      showReportLabel="Apply filters"
+      kpiSlot={
+        <>
+          {[
+            {
+              label: "Budget Income",
+              value: formatCurrency(totals.totalBudgetIncome),
+              color: "text-[var(--ds-action-primary)]",
+            },
+            {
+              label: "Actual Income",
+              value: formatCurrency(totals.totalActualIncome),
+              color: "text-green-700",
+            },
+            {
+              label: "Budget Expense",
+              value: formatCurrency(totals.totalBudgetExpense),
+              color: "text-amber-700",
+            },
+            {
+              label: "Actual Expense",
+              value: formatCurrency(totals.totalActualExpense),
+              color: "text-red-700",
+            },
+            {
+              label: "Net Budget Surplus",
+              value: formatCurrency(totals.totalBudgetIncome - totals.totalBudgetExpense),
+              color: "text-gray-700",
+            },
+            {
+              label: "Net Actual Surplus",
+              value: formatCurrency(totals.totalActualIncome - totals.totalActualExpense),
+              color: "text-green-700",
+            },
+            {
+              label: "Alert Items",
+              value: String(totals.alertCount),
+              color: "text-red-600",
+            },
+            {
+              label: "On Track Items",
+              value: String(totals.onTrackCount),
+              color: "text-green-600",
+            },
+          ].map((card) => (
+            <div
+              key={card.label}
+              className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3"
             >
-              <option value="all">All branches</option>
-              {branchOptions.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name || b.code || b.id}
-                </option>
-              ))}
-            </select>
+              <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+                {card.label}
+              </div>
+              <div className={`text-[16px] font-bold mt-1 font-mono ${card.color}`}>{card.value}</div>
+            </div>
+          ))}
+        </>
+      }
+      filterSlot={
+        <div className="flex flex-wrap items-end gap-3">
+          {branchOptions.length > 0 && (
+            <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+              Branch
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
-          <button
-            onClick={exportExcel}
-            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-          >
-            <Download className="w-3.5 h-3.5" /> Export Excel
-          </button>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">From Date</label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            From date
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">To Date</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            To date
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Type</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Type
             <select
               value={budgetType}
               onChange={(e) => setBudgetType(e.target.value as BudgetType)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="all">All</option>
               <option value="income">Income</option>
               <option value="expense">Expense</option>
             </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Alert Threshold %
-            </label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Alert threshold %
             <input
               type="number"
               value={threshold}
               onChange={(e) => setThreshold(+e.target.value)}
               min={50}
               max={100}
-              className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-24 text-right"
             />
-          </div>
-          <div className="flex-1 min-w-48">
-            <label className="block text-xs font-medium text-gray-600 mb-1">Search Account</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1 min-w-48">
+            Search account
             <input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search…"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
-          </div>
-          {/* View mode */}
+          </label>
           <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
             {(["summary", "ledger", "monthly"] as ViewMode[]).map((m) => (
               <button
                 key={m}
+                type="button"
                 onClick={() => setViewMode(m)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize ${
+                className={`px-3 py-1.5 rounded-md text-[12px] font-medium capitalize ${
                   viewMode === m
-                    ? "bg-white text-blue-600 shadow-sm"
-                    : "text-gray-600 hover:text-gray-800"
+                    ? "bg-white text-[var(--ds-action-primary)] shadow-sm"
+                    : "text-gray-600 hover:text-gray-700"
                 }`}
               >
                 {m}
@@ -361,69 +419,9 @@ export default function BudgetVsActual() {
             ))}
           </div>
         </div>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          {
-            label: "Budget Income",
-            value: fmt(totals.totalBudgetIncome),
-            color: "blue",
-            icon: Target,
-          },
-          {
-            label: "Actual Income",
-            value: fmt(totals.totalActualIncome),
-            color: "green",
-            icon: TrendingUp,
-          },
-          {
-            label: "Budget Expense",
-            value: fmt(totals.totalBudgetExpense),
-            color: "orange",
-            icon: Target,
-          },
-          {
-            label: "Actual Expense",
-            value: fmt(totals.totalActualExpense),
-            color: "red",
-            icon: TrendingDown,
-          },
-          {
-            label: "Net Budget Surplus",
-            value: fmt(totals.totalBudgetIncome - totals.totalBudgetExpense),
-            color: "indigo",
-            icon: Target,
-          },
-          {
-            label: "Net Actual Surplus",
-            value: fmt(totals.totalActualIncome - totals.totalActualExpense),
-            color: "teal",
-            icon: TrendingUp,
-          },
-          { label: "Alert Items", value: totals.alertCount, color: "red", icon: AlertTriangle },
-          {
-            label: "On Track Items",
-            value: totals.onTrackCount,
-            color: "green",
-            icon: CheckCircle,
-          },
-        ].map((card) => (
-          <div
-            key={card.label}
-            className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-100`}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-500">{card.label}</span>
-              <card.icon className={`w-4 h-4 text-${card.color}-500`} />
-            </div>
-            <div className={`text-lg font-bold text-${card.color}-700`}>{card.value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* ── SUMMARY VIEW ──────────────────────────────────────────────────── */}
+      }
+    >
+      <div className="space-y-4">
       {viewMode === "summary" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {(["income", "expense"] as const).map((type) => {
@@ -444,7 +442,7 @@ export default function BudgetVsActual() {
                     {type}
                   </h3>
                   <div className="text-xs text-gray-600">
-                    Budget: {fmt(totalBudget)} | Actual: {fmt(totalActual)}
+                    Budget: {formatCurrency(totalBudget)} | Actual: {formatCurrency(totalActual)}
                   </div>
                 </div>
                 <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
@@ -455,11 +453,11 @@ export default function BudgetVsActual() {
                         <StatusBadge row={r} />
                       </div>
                       <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span>Budget: {fmt(r.budget)}</span>
-                        <span>Actual: {fmt(r.actual)}</span>
+                        <span>Budget: {formatCurrency(r.budget)}</span>
+                        <span>Actual: {formatCurrency(r.actual)}</span>
                         <span className={r.isFavourable ? "text-green-600" : "text-red-600"}>
                           Var: {r.variance > 0 ? "+" : ""}
-                          {fmt(r.variance)}
+                          {formatCurrency(r.variance)}
                         </span>
                       </div>
                       <ProgressBar pct={r.utilization} favourable={r.isFavourable} />
@@ -508,7 +506,7 @@ export default function BudgetVsActual() {
                   key={r.id}
                   className={`hover:bg-gray-50 ${r.utilization >= 100 && !r.isFavourable ? "bg-red-50" : ""}`}
                 >
-                  <td className="px-4 py-3 font-medium text-gray-800">{r.name}</td>
+                  <td className="px-4 py-3 font-medium text-gray-700">{r.name}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{r.group}</td>
                   <td className="px-4 py-3">
                     <span
@@ -517,13 +515,13 @@ export default function BudgetVsActual() {
                       {r.type}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right font-medium">{fmt(r.budget)}</td>
-                  <td className="px-4 py-3 text-right">{fmt(r.actual)}</td>
+                  <td className="px-4 py-3 text-right font-medium font-mono">{formatCurrency(r.budget)}</td>
+                  <td className="px-4 py-3 text-right font-mono">{formatCurrency(r.actual)}</td>
                   <td
-                    className={`px-4 py-3 text-right font-medium ${r.isFavourable ? "text-green-600" : "text-red-600"}`}
+                    className={`px-4 py-3 text-right font-medium font-mono ${r.isFavourable ? "text-green-600" : "text-red-600"}`}
                   >
                     {r.variance > 0 ? "+" : ""}
-                    {fmt(r.variance)}
+                    {formatCurrency(r.variance)}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
@@ -561,29 +559,29 @@ export default function BudgetVsActual() {
           <table className="w-full text-xs whitespace-nowrap">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-gray-500 sticky left-0 bg-gray-50">
+                <th className="px-4 py-3 text-left font-semibold text-gray-400 sticky left-0 bg-gray-50">
                   Account
                 </th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-500">Budget (Annual)</th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-400">Budget (Annual)</th>
                 {months.map((m) => (
-                  <th key={m} className="px-3 py-3 text-center font-semibold text-gray-500">
+                  <th key={m} className="px-3 py-3 text-center font-semibold text-gray-400">
                     {new Date(m + "-01").toLocaleDateString("en-IN", {
                       month: "short",
                       year: "2-digit",
                     })}
                   </th>
                 ))}
-                <th className="px-4 py-3 text-right font-semibold text-gray-500">YTD Actual</th>
+                <th className="px-4 py-3 text-right font-semibold text-gray-400">YTD Actual</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {rows.map((r: any) => (
                 <tr key={r.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white">
+                  <td className="px-4 py-2 font-medium text-gray-700 sticky left-0 bg-white">
                     {r.name}
                   </td>
-                  <td className="px-4 py-2 text-right text-blue-700 font-medium">
-                    {fmt(r.budget)}
+                  <td className="px-4 py-2 text-right text-[var(--ds-action-primary)] font-medium font-mono">
+                    {formatCurrency(r.budget)}
                   </td>
                   {months.map((m) => {
                     const monthlyAct = (monthlyActualMap[r.id] || {})[m] || 0;
@@ -595,7 +593,7 @@ export default function BudgetVsActual() {
                         className={`px-3 py-2 text-right ${over ? "text-red-600 font-medium" : "text-gray-700"}`}
                       >
                         {monthlyAct > 0 ? (
-                          fmt(monthlyAct)
+                          formatCurrency(monthlyAct)
                         ) : (
                           <span className="text-gray-300">—</span>
                         )}
@@ -605,7 +603,7 @@ export default function BudgetVsActual() {
                   <td
                     className={`px-4 py-2 text-right font-semibold ${r.isFavourable ? "text-green-700" : "text-red-700"}`}
                   >
-                    {fmt(r.actual)}
+                    {formatCurrency(r.actual)}
                   </td>
                 </tr>
               ))}
@@ -613,6 +611,7 @@ export default function BudgetVsActual() {
           </table>
         </div>
       )}
-    </div>
+      </div>
+    </ReportWorkspace>
   );
 }

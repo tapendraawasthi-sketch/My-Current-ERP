@@ -17,7 +17,7 @@ import {
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
 
-const BORDER = "1px solid #000";
+const BORDER = "1px solid #374151";
 const BG = "#E4F1D9";
 const BG_CARD = "var(--ds-surface-muted)";
 const BG_HEADER = "var(--ds-surface-hover)";
@@ -248,7 +248,7 @@ export default function MultiCurrencyHub() {
           marginBottom: "20px",
         }}
       >
-        <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>Exchange Rates</h2>
+        <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#374151" }}>Exchange Rates</h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={fetchNRBRates}
@@ -319,7 +319,7 @@ export default function MultiCurrencyHub() {
       </div>
 
       {lastFetchTime && (
-        <div style={{ marginBottom: "15px", fontSize: "12px", color: "#000000" }}>
+        <div style={{ marginBottom: "15px", fontSize: "12px", color: "#374151" }}>
           Last fetched: {lastFetchTime}
         </div>
       )}
@@ -400,7 +400,7 @@ export default function MultiCurrencyHub() {
 
   const renderForeignVouchersTab = () => (
     <div style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}>
-      <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
+      <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#374151", marginBottom: "20px" }}>
         Foreign Vouchers
       </h2>
       <div style={{ overflowX: "auto" }}>
@@ -453,7 +453,7 @@ export default function MultiCurrencyHub() {
 
   const renderForexGainLossTab = () => (
     <div style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}>
-      <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
+      <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#374151", marginBottom: "20px" }}>
         Forex Gain/Loss
       </h2>
       <div style={{ overflowX: "auto" }}>
@@ -527,7 +527,7 @@ export default function MultiCurrencyHub() {
 
   const renderRevaluationTab = () => (
     <div style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}>
-      <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
+      <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#374151", marginBottom: "20px" }}>
         Revaluation
       </h2>
       <div style={{ marginBottom: "20px" }}>
@@ -610,7 +610,7 @@ export default function MultiCurrencyHub() {
         style={{
           fontSize: "24px",
           fontWeight: "bold",
-          color: "#000000",
+          color: "#374151",
           marginBottom: "20px",
           display: "flex",
           alignItems: "center",
@@ -622,7 +622,7 @@ export default function MultiCurrencyHub() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -648,7 +648,7 @@ export default function MultiCurrencyHub() {
             onClick={() => setActiveTab(tab.id)}
             style={{
               backgroundColor: activeTab === tab.id ? BG_HEADER : "transparent",
-              color: activeTab === tab.id ? "#000000" : "#666",
+              color: activeTab === tab.id ? "#374151" : "#666",
               border: BORDER,
               padding: "10px 16px",
               borderRadius: "4px 4px 0 0",
@@ -697,7 +697,7 @@ export default function MultiCurrencyHub() {
               style={{
                 fontSize: "18px",
                 fontWeight: "bold",
-                color: "#000000",
+                color: "#374151",
                 marginBottom: "15px",
               }}
             >

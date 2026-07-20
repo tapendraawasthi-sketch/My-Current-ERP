@@ -1,22 +1,49 @@
 // src/pages/StockLedgerReport.tsx
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
-import { Download } from "lucide-react";
-import { formatNumber } from "../lib/utils";
+import { formatCurrency, formatNumber } from "../lib/utils";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import {
+  ReportWorkspace,
+  useReportQueryParams,
+  applyBranchQueryParam,
+} from "@/features/reports";
+
+function defaultFrom() {
+  const d = new Date();
+  d.setDate(1);
+  return d.toISOString().split("T")[0];
+}
 
 export default function StockLedgerReport() {
-  const { items, stockMovements } = useStore();
+  const { items, stockMovements, initLifecycle, currentFiscalYear } = useStore();
+  const storeLoading = initLifecycle === "loading" || initLifecycle === "initializing";
   const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
-  const [selectedItem, setSelectedItem] = useState("");
-  const [fromDate, setFromDate] = useState(() => {
-    const d = new Date();
-    d.setDate(1);
-    return d.toISOString().split("T")[0];
+  const { params, writeParams } = useReportQueryParams({
+    from: defaultFrom(),
+    to: new Date().toISOString().split("T")[0],
   });
-  const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedItem, setSelectedItem] = useState("");
+  const [fromDate, setFromDate] = useState(() => params.from || defaultFrom());
+  const [toDate, setToDate] = useState(() => params.to || new Date().toISOString().split("T")[0]);
   const [showZeroStock, setShowZeroStock] = useState(true);
+
+  useEffect(() => {
+    if (params.from) setFromDate(params.from);
+    if (params.to) setToDate(params.to);
+    if (params.branch) applyBranchQueryParam(params.branch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate once from URL
+  }, []);
+
+  const syncQuery = () => {
+    writeParams({
+      fy: currentFiscalYear?.id || currentFiscalYear?.name,
+      from: fromDate,
+      to: toDate,
+      branch: branchFilter,
+    });
+  };
 
   const ledgerData = useMemo(() => {
     if (!selectedItem) return null;
@@ -89,35 +116,25 @@ export default function StockLedgerReport() {
   }, [selectedItem, items, stockMovements, fromDate, toDate, matchMovement, branchFilter]);
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
-  const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
+    "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[var(--ds-canvas)] overflow-y-auto p-4 md:p-6">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock ledger report</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">
-            Item-wise movement history with running balance (IN/OUT transactions)
-          </p>
-        </div>
-        <button
-          type="button"
-          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
-        >
-          <Download className="h-3.5 w-3.5" />
-          Export
-        </button>
-      </div>
-
-      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div className="md:col-span-2">
-            <label className={labelCls}>Select item (F4)</label>
+    <ReportWorkspace
+      title="Stock ledger report"
+      description="Item-wise movement history with running balance (IN/OUT transactions)"
+      periodLabel={`${fromDate} to ${toDate}`}
+      loading={storeLoading}
+      onPrint={() => window.print()}
+      onShowReport={syncQuery}
+      showReportLabel="Apply filters"
+      filterSlot={
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Select item (F4)
             <select
               value={selectedItem}
               onChange={(e) => setSelectedItem(e.target.value)}
-              className={`${inputCls} w-full`}
+              className={`${inputCls} min-w-[200px]`}
             >
               <option value="">— Select item to view ledger —</option>
               {(items || [])
@@ -128,32 +145,32 @@ export default function StockLedgerReport() {
                   </option>
                 ))}
             </select>
-          </div>
-          <div>
-            <label className={labelCls}>From date</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            From date
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className={`${inputCls} w-full`}
+              className={inputCls}
             />
-          </div>
-          <div>
-            <label className={labelCls}>To date</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            To date
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className={`${inputCls} w-full`}
+              className={inputCls}
             />
-          </div>
+          </label>
           {branchOptions.length > 0 && (
-            <div>
-              <label className={labelCls}>Branch</label>
+            <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+              Branch
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className={`${inputCls} w-full`}
+                className={inputCls}
               >
                 <option value="all">All branches</option>
                 {branchOptions.map((b) => (
@@ -162,26 +179,24 @@ export default function StockLedgerReport() {
                   </option>
                 ))}
               </select>
-            </div>
-          )}
-          <div className="flex items-end pb-1">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showZeroStock}
-                onChange={(e) => setShowZeroStock(e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-[12px] text-gray-700">Show zero stock</span>
             </label>
-          </div>
+          )}
+          <label className="flex items-center gap-2 cursor-pointer pb-1">
+            <input
+              type="checkbox"
+              checked={showZeroStock}
+              onChange={(e) => setShowZeroStock(e.target.checked)}
+              className="rounded"
+            />
+            <span className="text-[12px] text-gray-700">Show zero stock</span>
+          </label>
         </div>
-      </div>
-
+      }
+    >
       {selectedItem && ledgerData ? (
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex-1 min-h-0 flex flex-col">
+        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white flex flex-col">
           <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-canvas)] flex justify-between items-center">
-            <span className="text-[12px] font-semibold text-gray-800">
+            <span className="text-[12px] font-semibold text-gray-700">
               {(ledgerData.item as any)?.name} — stock ledger
             </span>
             <span className="text-[12px] text-gray-500">
@@ -201,7 +216,7 @@ export default function StockLedgerReport() {
               <span className="text-amber-700">
                 Value:{" "}
                 <span className="font-mono font-semibold">
-                  Rs. {formatNumber(ledgerData.openingValue)}
+                  {formatCurrency(ledgerData.openingValue)}
                 </span>
               </span>
             </div>
@@ -214,7 +229,7 @@ export default function StockLedgerReport() {
                 hint="Adjust the date range or check stock journal entries."
               />
             ) : (
-              <table className="w-full min-w-[900px] border-collapse">
+              <table className="w-full min-w-[900px] border-collapse report-table">
                 <thead>
                   <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                     {[
@@ -261,16 +276,16 @@ export default function StockLedgerReport() {
                         {row.rate > 0 ? formatNumber(row.rate) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] font-mono text-right text-green-700">
-                        {row.inValue > 0 ? `Rs. ${formatNumber(row.inValue)}` : "—"}
+                        {row.inValue > 0 ? formatCurrency(row.inValue) : "—"}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] font-mono text-right text-red-600">
-                        {row.outValue > 0 ? `Rs. ${formatNumber(row.outValue)}` : "—"}
+                        {row.outValue > 0 ? formatCurrency(row.outValue) : "—"}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-700">
                         {formatNumber(row.balance)}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
-                        Rs. {formatNumber(row.balanceValue)}
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-700">
+                        {formatCurrency(row.balanceValue)}
                       </td>
                     </tr>
                   ))}
@@ -281,7 +296,7 @@ export default function StockLedgerReport() {
 
           {ledgerData.rows.length > 0 && (
             <>
-              <div className="px-3 py-2.5 border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] flex justify-between text-[12px] font-semibold text-gray-800">
+              <div className="px-3 py-2.5 border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] flex justify-between text-[12px] font-semibold text-gray-700">
                 <span>Closing balance</span>
                 <div className="flex gap-8">
                   <span className="font-mono">
@@ -289,7 +304,7 @@ export default function StockLedgerReport() {
                     {(ledgerData.item as any)?.unit || "Pcs"}
                   </span>
                   <span className="font-mono">
-                    Rs. {formatNumber(ledgerData.rows[ledgerData.rows.length - 1].balanceValue)}
+                    {formatCurrency(ledgerData.rows[ledgerData.rows.length - 1].balanceValue)}
                   </span>
                 </div>
               </div>
@@ -300,13 +315,13 @@ export default function StockLedgerReport() {
           )}
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-md flex-1">
+        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
           <ReportEmptyState
             message="Select an item to view its stock ledger"
             hint="Shows all IN/OUT transactions with running balance."
           />
         </div>
       )}
-    </div>
+    </ReportWorkspace>
   );
 }

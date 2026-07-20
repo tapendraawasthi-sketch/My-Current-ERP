@@ -1,11 +1,17 @@
 // src/pages/StandardNarrationMaster.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import toast from "@/lib/appToast";
-import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
+import { Plus, Search, X, Save } from "lucide-react";
 import { getDB } from "../lib/db";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 interface StandardNarration {
   id: string;
@@ -112,8 +118,6 @@ const DEFAULTS: Omit<StandardNarration, "id">[] = [
   },
 ];
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -169,6 +173,53 @@ export default function StandardNarrationMaster() {
     [narrations, searchTerm, categoryFilter, matchBranch, branchFilter],
   );
 
+  const columns = useMemo<EnterpriseColumnDef<StandardNarration>[]>(
+    () => [
+      {
+        id: "text",
+        header: "Narration text",
+        cell: (item) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{item.text}</span>
+        ),
+      },
+      {
+        id: "category",
+        header: "Category",
+        cell: (item) => (
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]">
+            {item.category}
+          </span>
+        ),
+      },
+      {
+        id: "voucherTypes",
+        header: "Voucher types",
+        cell: (item) => (
+          <span className="text-[11px] text-[var(--ds-text-muted)]">{item.voucherTypes.join(", ")}</span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (item) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              item.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)]"
+            }`}
+          >
+            {item.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const hasFilters = searchTerm.trim() !== "" || categoryFilter !== "All";
+
   const resetForm = () => {
     setShowForm(false);
     setEditItem(null);
@@ -220,58 +271,72 @@ export default function StandardNarrationMaster() {
     }
   };
 
-  const handleDelete = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this narration?")) return;
+  const handleDelete = async (item: StandardNarration) => {
+    const snapshot = { ...item };
     try {
       const db = getDB();
-      if (db.standardNarrations) await db.standardNarrations.delete(id);
-      setNarrations((prev) => prev.filter((n) => n.id !== id));
-      toast.success("Deleted");
+      if (db.standardNarrations) await db.standardNarrations.delete(item.id);
+      setNarrations((prev) => prev.filter((n) => n.id !== item.id));
+      toast.undo("Narration deleted", async () => {
+        try {
+          if (db.standardNarrations) await db.standardNarrations.put(snapshot);
+          setNarrations((prev) => [...prev, snapshot]);
+        } catch {
+          toast.error("Failed to restore narration");
+        }
+      });
     } catch {
       toast.error("Failed to delete");
     }
   };
 
-  const hasFilters = searchTerm.trim() !== "" || categoryFilter !== "All";
-
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Standard Narration Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Pre-defined narrations — press F4 in vouchers to pick from list
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Standard Narration Master"
+            description="Pre-defined narrations — press F4 in vouchers to pick from list"
+            meta={
+              <PageMeta>
+                {filtered.length} of {narrations.length} narrations
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={openAdd}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 Add narration
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+            secondaryActions={[
+              ...(branchOptions.length > 0
+                ? [
+                    <select
+                      key="branch"
+                      value={branchFilter}
+                      onChange={(e) => setBranchFilter(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      aria-label="Branch"
+                    >
+                      <option value="all">All branches</option>
+                      {branchOptions.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name || b.code || b.id}
+                        </option>
+                      ))}
+                    </select>,
+                  ]
+                : []),
+            ]}
+          />
 
-          <div className="flex flex-wrap items-center gap-3 mb-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="relative max-w-xs flex-1 min-w-[200px]">
-              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
               <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -294,94 +359,43 @@ export default function StandardNarrationMaster() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={hasFilters ? "No narrations match your filters" : "No narrations found"}
-                hint={
-                  hasFilters
-                    ? "Try a different search or category."
-                    : 'Click "Add narration" to create a standard narration.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Narration text</th>
-                    <th className={th}>Category</th>
-                    <th className={th}>Voucher types</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => openEdit(item)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{item.text}</td>
-                      <td className={td}>
-                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-                          {item.category}
-                        </span>
-                      </td>
-                      <td className={`${td} text-[11px] text-gray-500`}>
-                        {item.voucherTypes.join(", ")}
-                      </td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            item.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {item.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEdit(item);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(item.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} narration{filtered.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(item) => item.id}
+            emptyTitle={hasFilters ? "No narrations match your filters" : "No narrations found"}
+            emptyDescription={
+              hasFilters
+                ? "Try a different search or category."
+                : 'Click "Add narration" to create a standard narration.'
+            }
+            emptyAction={
+              !hasFilters ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add narration
+                </Button>
+              ) : undefined
+            }
+            onRowClick={openEdit}
+            rowActions={(item) => [
+              { label: "Edit", onSelect: () => openEdit(item) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(item) },
+            ]}
+            caption="Standard narrations"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[360px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editItem ? "Edit narration" : "Add narration"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -395,7 +409,7 @@ export default function StandardNarrationMaster() {
               <textarea
                 value={form.text}
                 onChange={(e) => setForm((p) => ({ ...p, text: e.target.value }))}
-                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
+                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
                 rows={3}
                 placeholder="e.g. Being goods sold as per tax invoice"
               />
@@ -416,7 +430,7 @@ export default function StandardNarrationMaster() {
             </div>
             <div>
               <label className={labelCls}>Applicable voucher types</label>
-              <div className="grid grid-cols-1 gap-1 mt-1 border border-gray-200 rounded-md p-2 bg-gray-50">
+              <div className="grid grid-cols-1 gap-1 mt-1 border border-gray-200 rounded-lg p-2 bg-gray-50">
                 {VOUCHER_TYPES.map((vt) => (
                   <label key={vt} className="flex items-center gap-2 cursor-pointer py-0.5">
                     <input
@@ -438,7 +452,7 @@ export default function StandardNarrationMaster() {
                 ))}
               </div>
             </div>
-            <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+            <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 hover:bg-gray-100">
               <input
                 type="checkbox"
                 checked={form.isActive}

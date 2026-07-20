@@ -462,14 +462,14 @@ const ExceptionReports: React.FC = () => {
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
           {branchOptions.length > 0 && (
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -485,7 +485,7 @@ const ExceptionReports: React.FC = () => {
     >
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Issues
           </span>
@@ -495,7 +495,7 @@ const ExceptionReports: React.FC = () => {
             {summaryCounts.totalIssues}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Negative Stock
           </span>
@@ -505,7 +505,7 @@ const ExceptionReports: React.FC = () => {
             {summaryCounts.negativeStock}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Overdue &gt; 60 days
           </span>
@@ -515,7 +515,7 @@ const ExceptionReports: React.FC = () => {
             {summaryCounts.overdueGT60}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Post-Dated
           </span>
@@ -558,7 +558,7 @@ const ExceptionReports: React.FC = () => {
 
       {/* Active tab content */}
       {activeData.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-gray-500 border border-gray-200 rounded-md bg-gray-50">
+        <div className="flex flex-col items-center justify-center p-12 text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
           <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4">
             <svg
               className="w-6 h-6"
@@ -593,7 +593,7 @@ const ExceptionReports: React.FC = () => {
           </p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <ReportGrid
             columns={getColumns()}
             data={activeData}
@@ -616,7 +616,7 @@ const ExceptionReports: React.FC = () => {
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
           {branchOptions.length > 0 && (
@@ -625,7 +625,7 @@ const ExceptionReports: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>

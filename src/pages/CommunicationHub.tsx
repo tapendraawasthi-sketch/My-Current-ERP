@@ -37,7 +37,7 @@ function money(v: number): string {
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -415,7 +415,7 @@ export default function CommunicationHub() {
     const html = selected
       .map((row: any) => {
         return `
-          <div style="page-break-after:always;font-family:Arial;padding:30px;color:#000">
+          <div style="page-break-after:always;font-family:Arial;padding:30px;color:#374151">
             <h2>${companySettings?.name || ""}</h2>
             <p>${companySettings?.address || ""}</p>
             <hr/>
@@ -759,7 +759,7 @@ export default function CommunicationHub() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -864,7 +864,7 @@ export default function CommunicationHub() {
           {selectedInvoice && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className={`${cardClass} border-t-4 border-t-blue-500`}>
-                <h2 className="text-[14px] font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
+                <h2 className="text-[14px] font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
                   <Mail size={16} className="text-blue-500" /> Send via Email
                 </h2>
 
@@ -932,7 +932,7 @@ export default function CommunicationHub() {
 
               <div className="space-y-6">
                 <div className={`${cardClass} border-t-4 border-t-green-500`}>
-                  <h2 className="text-[14px] font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
+                  <h2 className="text-[14px] font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
                     <MessageSquare size={16} className="text-green-500" /> Send via WhatsApp
                   </h2>
 
@@ -965,7 +965,7 @@ export default function CommunicationHub() {
 
                     <div className="pt-2">
                       <button
-                        className="w-full h-8 px-3 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        className="w-full h-8 px-3 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                         onClick={sendWhatsApp}
                       >
                         <MessageSquare size={14} /> Open in WhatsApp Web
@@ -999,7 +999,7 @@ export default function CommunicationHub() {
       {activeTab === "Bulk Reminders" && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className={`${cardClass} lg:col-span-1 space-y-4`}>
-            <h2 className="text-[13px] font-semibold text-gray-800 uppercase tracking-wide border-b border-gray-200 pb-2">
+            <h2 className="text-[13px] font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200 pb-2">
               Reminder Settings
             </h2>
 
@@ -1077,7 +1077,7 @@ export default function CommunicationHub() {
 
           <div className={`${cardClass} lg:col-span-3`}>
             <div className="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
-              <h2 className="text-[14px] font-semibold text-gray-800">
+              <h2 className="text-[14px] font-semibold text-gray-700">
                 Overdue Parties{" "}
                 <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[11px] ml-2">
                   {overdueReminderRows.length} Found
@@ -1088,7 +1088,7 @@ export default function CommunicationHub() {
                   <Mail size={14} /> Email Selected ({selectedReminderParties.length})
                 </button>
                 <button
-                  className="h-8 px-3 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                  className="h-8 px-3 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                   onClick={sendBulkWhatsApp}
                 >
                   <MessageSquare size={14} /> WhatsApp Selected ({selectedReminderParties.length})
@@ -1099,14 +1099,14 @@ export default function CommunicationHub() {
               </div>
             </div>
 
-            <div className="overflow-x-auto border border-gray-200 rounded-md">
+            <div className="overflow-x-auto border border-gray-200 rounded-lg">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
                     <th className={`${tableHeadClass} w-10 text-center`}>
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                        className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                         checked={
                           overdueReminderRows.length > 0 &&
                           selectedReminderParties.length === overdueReminderRows.length
@@ -1133,7 +1133,7 @@ export default function CommunicationHub() {
                       <td className={`${tableCellClass} text-center`}>
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                          className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                           checked={selectedReminderParties.includes(row.party.id)}
                           onChange={() => toggleReminderParty(row.party.id)}
                         />
@@ -1203,7 +1203,7 @@ export default function CommunicationHub() {
                 <Upload size={24} />
               </div>
               <div>
-                <h2 className="text-[14px] font-bold text-gray-800">Upload Tally XML Export</h2>
+                <h2 className="text-[14px] font-bold text-gray-700">Upload Tally XML Export</h2>
                 <p className="text-[11px] text-gray-500">
                   Import masters and vouchers directly from Tally ERP9 / Prime.
                 </p>
@@ -1231,12 +1231,12 @@ export default function CommunicationHub() {
           </div>
 
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-100 pb-2">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-100 pb-2">
               Import Preview
             </h2>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-center">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
                 <div className="text-[24px] font-bold text-[var(--ds-action-primary)]">
                   {tallyPreview.ledgers.length}
                 </div>
@@ -1249,7 +1249,7 @@ export default function CommunicationHub() {
                   </div>
                 )}
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-center">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
                 <div className="text-[24px] font-bold text-green-600">
                   {tallyPreview.vouchers.length}
                 </div>
@@ -1312,24 +1312,24 @@ export default function CommunicationHub() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className={`${cardClass} md:col-span-1 space-y-6`}>
             <div>
-              <h2 className="text-[13px] font-semibold text-gray-800 uppercase tracking-wide border-b border-gray-200 pb-2 mb-4">
+              <h2 className="text-[13px] font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200 pb-2 mb-4">
                 1. Download Template
               </h2>
               <div className="flex flex-col gap-2">
                 <button
-                  className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
+                  className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
                   onClick={downloadJournalTemplate}
                 >
                   <FileSpreadsheet size={16} className="text-green-600" /> Journal Entry Template
                 </button>
                 <button
-                  className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
+                  className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
                   onClick={downloadSalesInvoiceTemplate}
                 >
                   <FileSpreadsheet size={16} className="text-blue-600" /> Sales Invoice Template
                 </button>
                 <button
-                  className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
+                  className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
                   onClick={downloadOpeningTemplate}
                 >
                   <FileSpreadsheet size={16} className="text-[var(--ds-status-info)]" /> Opening Balance Template
@@ -1338,7 +1338,7 @@ export default function CommunicationHub() {
             </div>
 
             <div>
-              <h2 className="text-[13px] font-semibold text-gray-800 uppercase tracking-wide border-b border-gray-200 pb-2 mb-4">
+              <h2 className="text-[13px] font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200 pb-2 mb-4">
                 2. Upload File
               </h2>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50 relative cursor-pointer group">
@@ -1365,7 +1365,7 @@ export default function CommunicationHub() {
             </div>
 
             <div>
-              <h2 className="text-[13px] font-semibold text-gray-800 uppercase tracking-wide border-b border-gray-200 pb-2 mb-4">
+              <h2 className="text-[13px] font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200 pb-2 mb-4">
                 3. Action
               </h2>
               <div className="flex flex-col gap-2">
@@ -1394,7 +1394,7 @@ export default function CommunicationHub() {
           </div>
 
           <div className={`${cardClass} md:col-span-2`}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4">Data Preview</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4">Data Preview</h2>
 
             {voucherImportErrors.length > 0 && (
               <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4 max-h-32 overflow-y-auto">
@@ -1410,7 +1410,7 @@ export default function CommunicationHub() {
             )}
 
             {voucherImportRows.length > 0 ? (
-              <div className="overflow-x-auto border border-gray-200 rounded-md">
+              <div className="overflow-x-auto border border-gray-200 rounded-lg">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
@@ -1450,7 +1450,7 @@ export default function CommunicationHub() {
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-64 text-gray-400 border-2 border-dashed border-gray-200 rounded-md bg-gray-50">
+              <div className="flex flex-col items-center justify-center h-64 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
                 <FileSpreadsheet size={32} className="mb-2 opacity-50" />
                 <p className="text-[13px] font-medium text-gray-600">No data loaded</p>
                 <p className="text-[11px]">Upload a template file to preview data here.</p>
@@ -1464,7 +1464,7 @@ export default function CommunicationHub() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className={`${cardClass} lg:col-span-1 space-y-6`}>
             <div>
-              <h2 className="text-[13px] font-semibold text-gray-800 uppercase tracking-wide border-b border-gray-200 pb-2 mb-3">
+              <h2 className="text-[13px] font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200 pb-2 mb-3">
                 1. Select Bank Format
               </h2>
               <div className="flex gap-2 flex-wrap">
@@ -1485,7 +1485,7 @@ export default function CommunicationHub() {
             </div>
 
             <div>
-              <h2 className="text-[13px] font-semibold text-gray-800 uppercase tracking-wide border-b border-gray-200 pb-2 mb-3">
+              <h2 className="text-[13px] font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200 pb-2 mb-3">
                 2. Upload Statement
               </h2>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50 relative cursor-pointer group">
@@ -1527,10 +1527,10 @@ export default function CommunicationHub() {
 
           <div className={`${cardClass} lg:col-span-3`}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Parsed Transactions</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Parsed Transactions</h2>
             </div>
 
-            <div className="overflow-x-auto border border-gray-200 rounded-md">
+            <div className="overflow-x-auto border border-gray-200 rounded-lg">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>

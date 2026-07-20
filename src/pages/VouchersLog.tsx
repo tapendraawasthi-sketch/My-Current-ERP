@@ -1,9 +1,8 @@
 // @ts-nocheck
 import { DualDate } from "../components/ui/DualDate";
 import React, { useState, useMemo } from "react";
-import { Filter, Download, Printer, Eye, Edit, X, Trash2, Calendar } from "lucide-react";
+import { Filter, Download, Printer, Eye, Edit, X, Trash2 } from "lucide-react";
 import SearchableTable from "../components/ui/SearchableTable";
-import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import Select from "../components/ui/Select";
 import Input from "../components/ui/Input";
@@ -12,6 +11,7 @@ import { VoucherStatus, VoucherType, JournalEntry } from "../lib/types";
 import { formatCurrency } from "../lib/utils";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { Button, PageHeader, PageMeta } from "@/design-system";
 
 const VouchersLog: React.FC = () => {
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
@@ -212,40 +212,45 @@ const VouchersLog: React.FC = () => {
       render: (voucher: JournalEntry) => (
         <div className="flex items-center gap-1">
           <Button
-            size="xs"
-            variant="ghost"
+            variant="quiet"
+            size="small"
             onClick={() => handleView(voucher)}
-            icon={<Eye className="h-3 w-3" />}
+            startIcon={<Eye className="h-3 w-3" />}
+            aria-label="View voucher"
           />
           {voucher.status !== VoucherStatus.CANCELLED && (
             <Button
-              size="xs"
-              variant="ghost"
+              variant="quiet"
+              size="small"
               onClick={() => handleEdit(voucher)}
-              icon={<Edit className="h-3 w-3" />}
+              startIcon={<Edit className="h-3 w-3" />}
+              aria-label="Edit voucher"
             />
           )}
           {voucher.status !== VoucherStatus.CANCELLED && (
             <Button
-              size="xs"
-              variant="ghost"
+              variant="quiet"
+              size="small"
               onClick={() => handleCancel(voucher)}
-              icon={<X className="h-3 w-3" />}
+              startIcon={<X className="h-3 w-3" />}
+              aria-label="Cancel voucher"
             />
           )}
           {voucher.status === VoucherStatus.DRAFT && (
             <Button
-              size="xs"
-              variant="ghost"
+              variant="quiet"
+              size="small"
               onClick={() => handleDelete(voucher)}
-              icon={<Trash2 className="h-3 w-3" />}
+              startIcon={<Trash2 className="h-3 w-3" />}
+              aria-label="Delete voucher"
             />
           )}
           <Button
-            size="xs"
-            variant="ghost"
+            variant="quiet"
+            size="small"
             onClick={() => handlePrint(voucher)}
-            icon={<Printer className="h-3 w-3" />}
+            startIcon={<Printer className="h-3 w-3" />}
+            aria-label="Print voucher"
           />
         </div>
       ),
@@ -271,54 +276,65 @@ const VouchersLog: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#000000]">Vouchers Log</h1>
-        <div className="flex items-center gap-2">
-          {branchOptions.length > 0 && (
-            <select
-              value={branchFilter}
-              onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              aria-label="Branch"
-            >
-              <option value="all">All branches</option>
-              {branchOptions.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name || b.code || b.id}
-                </option>
-              ))}
-            </select>
-          )}
-          {selectedVouchers.length > 0 && (
-            <>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleBulkPrint}
-                icon={<Printer className="h-4 w-4" />}
-              >
-                Bulk Print ({selectedVouchers.length})
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleBulkExport}
-                icon={<Download className="h-4 w-4" />}
-              >
-                Bulk Export ({selectedVouchers.length})
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
+    <div className="flex flex-col gap-4 p-4 pb-8">
+      <PageHeader
+        title="Vouchers Log"
+        description="Browse, filter, and manage accounting vouchers."
+        meta={
+          <PageMeta>
+            {filteredVouchers.length} voucher{filteredVouchers.length === 1 ? "" : "s"}
+          </PageMeta>
+        }
+        secondaryActions={[
+          ...(branchOptions.length > 0
+            ? [
+                <select
+                  key="branch"
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>,
+              ]
+            : []),
+          ...(selectedVouchers.length > 0
+            ? [
+                <Button
+                  key="bulk-print"
+                  variant="secondary"
+                  size="small"
+                  onClick={handleBulkPrint}
+                  startIcon={<Printer className="h-4 w-4" />}
+                >
+                  Bulk Print ({selectedVouchers.length})
+                </Button>,
+                <Button
+                  key="bulk-export"
+                  variant="secondary"
+                  size="small"
+                  onClick={handleBulkExport}
+                  startIcon={<Download className="h-4 w-4" />}
+                >
+                  Bulk Export ({selectedVouchers.length})
+                </Button>,
+              ]
+            : []),
+        ]}
+      />
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#000000]">Total Posted</p>
+              <p className="text-sm text-[#374151]">Total Posted</p>
               <p className="text-2xl font-bold text-green-600">{stats.posted}</p>
             </div>
             <Badge variant="success" dot />
@@ -327,7 +343,7 @@ const VouchersLog: React.FC = () => {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#000000]">Total Draft</p>
+              <p className="text-sm text-[#374151]">Total Draft</p>
               <p className="text-2xl font-bold text-amber-600">{stats.draft}</p>
             </div>
             <Badge variant="warning" dot />
@@ -336,7 +352,7 @@ const VouchersLog: React.FC = () => {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#000000]">Total Cancelled</p>
+              <p className="text-sm text-[#374151]">Total Cancelled</p>
               <p className="text-2xl font-bold text-red-600">{stats.cancelled}</p>
             </div>
             <Badge variant="danger" dot />
@@ -347,8 +363,8 @@ const VouchersLog: React.FC = () => {
       {/* Filters */}
       <Card className="p-4">
         <div className="flex items-center gap-2 mb-4">
-          <Filter className="h-4 w-4 text-[#000000]" />
-          <span className="font-medium text-[#000000]">Filters</span>
+          <Filter className="h-4 w-4 text-[#374151]" />
+          <span className="font-medium text-[#374151]">Filters</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <Select

@@ -150,7 +150,7 @@ export default function PhysicalStockPage2() {
     <div className="p-4 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Physical stock count</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Physical stock count</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">Count vs books.</p>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Record actual physical stock count — system auto-generates Stock journal for variances
@@ -161,7 +161,7 @@ export default function PhysicalStockPage2() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -175,7 +175,7 @@ export default function PhysicalStockPage2() {
           {loaded && (
             <button
               onClick={exportCSV}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" /> Export CSV
             </button>
@@ -240,7 +240,7 @@ export default function PhysicalStockPage2() {
             {
               label: "Total Items",
               value: summary.total,
-              color: "text-gray-800",
+              color: "text-gray-700",
               bg: "bg-gray-50",
             },
             {
@@ -305,7 +305,7 @@ export default function PhysicalStockPage2() {
                     className={`hover:bg-gray-50 ${line.variance !== 0 ? (line.varianceType === "excess" ? "bg-blue-50/30" : "bg-red-50/30") : ""}`}
                   >
                     <td className="px-3 py-2 text-[12px] text-gray-400">{idx + 1}</td>
-                    <td className="px-3 py-2 text-[12px] font-medium text-gray-800">
+                    <td className="px-3 py-2 text-[12px] font-medium text-gray-700">
                       {line.itemName}
                     </td>
                     <td className="px-3 py-2 text-[12px] text-gray-500">{line.unit}</td>

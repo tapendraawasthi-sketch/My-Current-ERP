@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, Building2, CheckCircle, Shield, FileText } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+  Button,
+} from "@/design-system";
 
 export default function SignInForm() {
   const { login } = useStore();
@@ -206,19 +215,28 @@ export default function SignInForm() {
         </div>
       </div>
 
-      {showForgotPassword && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#f9fafb] rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-semibold mb-4">Forgot Password?</h3>
-            <p className="mb-4" style={{ color: "#1f2937" }}>
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent size="small" showClose>
+          <DialogHeader>
+            <DialogTitle>Forgot password?</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <p className="text-[12px] text-gray-600">
               Please contact your system administrator to reset your password.
             </p>
-            <button onClick={() => setShowForgotPassword(false)} className="btn-primary w-full">
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="primary"
+              size="small"
+              className="w-full"
+              onClick={() => setShowForgotPassword(false)}
+            >
               Close
-            </button>
-          </div>
-        </div>
-      )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

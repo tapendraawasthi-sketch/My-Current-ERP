@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import { Plus, Edit2, Trash2, Tags, X, Save } from "lucide-react";
+import toast from "@/lib/appToast";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
 
-const BORDER = "1px solid #000";
+const BORDER = "1px solid #374151";
 const BG_HEADER = "var(--ds-surface-hover)";
 const BG_ROW_ALT = "#F5FAF0";
 const INPUT_STYLE: React.CSSProperties = {
@@ -25,7 +26,7 @@ const BTN = (bg: string): React.CSSProperties => ({
   fontSize: 12,
   fontWeight: 600,
   cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
+  color: bg === "#fff" ? "#374151" : "#fff",
 });
 
 const DEFAULT_FORM = {
@@ -88,6 +89,24 @@ export default function DiscountStructureMaster() {
     resetForm();
   };
 
+  const handleDelete = async (d: any) => {
+    if (!confirm("Delete?")) return;
+    const snapshot = { ...d };
+    try {
+      await deleteDiscountStructure(d.id);
+      if (selected?.id === d.id) resetForm();
+      toast.undo(`"${d.name}" deleted`, async () => {
+        try {
+          await addDiscountStructure({ ...snapshot });
+        } catch {
+          toast.error("Failed to restore discount structure.");
+        }
+      });
+    } catch {
+      toast.error("Failed to delete discount structure.");
+    }
+  };
+
   const discountTypeLabel = (v: string) =>
     ({
       simple: "Simple",
@@ -128,7 +147,7 @@ export default function DiscountStructureMaster() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -208,9 +227,7 @@ export default function DiscountStructureMaster() {
                         </button>
                         <button
                           style={{ ...BTN("#fff"), color: "#c00" }}
-                          onClick={async () => {
-                            if (confirm("Delete?")) await deleteDiscountStructure(d.id);
-                          }}
+                          onClick={() => handleDelete(d)}
                         >
                           <Trash2 style={{ width: 12, height: 12 }} />
                         </button>

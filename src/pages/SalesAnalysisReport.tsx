@@ -1,25 +1,52 @@
 // src/pages/SalesAnalysisReport.tsx
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
-import { formatNumber } from "../lib/utils";
-import { Download } from "lucide-react";
+import { formatCurrency, formatNumber } from "../lib/utils";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import {
+  ReportWorkspace,
+  useReportQueryParams,
+  applyBranchQueryParam,
+} from "@/features/reports";
 
 type GroupBy = "party" | "item" | "month";
 
+function yearStart() {
+  const d = new Date();
+  d.setMonth(0);
+  d.setDate(1);
+  return d.toISOString().split("T")[0];
+}
+
 export default function SalesAnalysisReport() {
-  const { invoices, parties, items } = useStore();
+  const { invoices, parties, items, initLifecycle, currentFiscalYear } = useStore();
+  const storeLoading = initLifecycle === "loading" || initLifecycle === "initializing";
   const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
-  const [fromDate, setFromDate] = useState(() => {
-    const d = new Date();
-    d.setMonth(0);
-    d.setDate(1);
-    return d.toISOString().split("T")[0];
+  const { params, writeParams } = useReportQueryParams({
+    from: yearStart(),
+    to: new Date().toISOString().split("T")[0],
   });
-  const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState(() => params.from || yearStart());
+  const [toDate, setToDate] = useState(() => params.to || new Date().toISOString().split("T")[0]);
   const [groupBy, setGroupBy] = useState<GroupBy>("party");
   const [voucherType, setVoucherType] = useState<"sales" | "purchase" | "both">("sales");
+
+  useEffect(() => {
+    if (params.from) setFromDate(params.from);
+    if (params.to) setToDate(params.to);
+    if (params.branch) applyBranchQueryParam(params.branch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const syncQuery = () => {
+    writeParams({
+      fy: currentFiscalYear?.id || currentFiscalYear?.name,
+      from: fromDate,
+      to: toDate,
+      branch: branchFilter,
+    });
+  };
 
   const salesInvoices = useMemo(
     () =>
@@ -108,76 +135,94 @@ export default function SalesAnalysisReport() {
   const maxSales = analysisData.length > 0 ? Math.max(...analysisData.map((r) => r.totalSales)) : 1;
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
-  const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
+    "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[var(--ds-canvas)] overflow-y-auto p-4 md:p-6">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Sales analysis</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">Sales breakdown.</p>
-          <p className="text-[12px] text-gray-500 mt-0.5">
-            Party turnover, item-wise sales, month-wise trends and purchase analysis
-          </p>
-        </div>
-        <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50 flex items-center gap-1.5">
-          <Download className="h-3.5 w-3.5" /> Export Excel
-        </button>
-      </div>
-
-      {/* Filters */}
-      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div>
-            <label className={labelCls}>From Date</label>
+    <ReportWorkspace
+      title="Sales analysis"
+      description="Party turnover, item-wise sales, month-wise trends and purchase analysis"
+      periodLabel={`${fromDate} to ${toDate}`}
+      loading={storeLoading}
+      onPrint={() => window.print()}
+      onShowReport={syncQuery}
+      showReportLabel="Apply filters"
+      kpiSlot={
+        <>
+          <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3">
+            <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+              Total {voucherType === "purchase" ? "purchases" : "sales"}
+            </div>
+            <div className="text-[16px] font-bold text-gray-700 mt-1 font-mono">
+              {formatCurrency(totals.totalSales)}
+            </div>
+          </div>
+          <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3">
+            <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+              Total invoices
+            </div>
+            <div className="text-[16px] font-bold text-gray-700 mt-1">{totals.totalInvoices}</div>
+          </div>
+          <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3">
+            <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+              Avg per invoice
+            </div>
+            <div className="text-[16px] font-bold text-gray-700 mt-1 font-mono">
+              {formatCurrency(totals.totalInvoices > 0 ? totals.totalSales / totals.totalInvoices : 0)}
+            </div>
+          </div>
+        </>
+      }
+      filterSlot={
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            From date
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className={`${inputCls} w-full`}
+              className={inputCls}
             />
-          </div>
-          <div>
-            <label className={labelCls}>To Date</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            To date
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className={`${inputCls} w-full`}
+              className={inputCls}
             />
-          </div>
-          <div>
-            <label className={labelCls}>Voucher Type</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Voucher type
             <select
               value={voucherType}
               onChange={(e) => setVoucherType(e.target.value as any)}
-              className={`${inputCls} w-full`}
+              className={inputCls}
             >
               <option value="sales">Sales</option>
               <option value="purchase">Purchase</option>
               <option value="both">Both</option>
             </select>
-          </div>
-          <div>
-            <label className={labelCls}>Group By</label>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Group by
             <select
               value={groupBy}
               onChange={(e) => setGroupBy(e.target.value as GroupBy)}
-              className={`${inputCls} w-full`}
+              className={inputCls}
             >
               <option value="party">Party / Account</option>
               <option value="item">Item</option>
               <option value="month">Month-wise</option>
             </select>
-          </div>
+          </label>
           {branchOptions.length > 0 && (
-            <div>
-              <label className={labelCls}>Branch</label>
+            <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+              Branch
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className={`${inputCls} w-full`}
+                className={inputCls}
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -187,39 +232,12 @@ export default function SalesAnalysisReport() {
                   </option>
                 ))}
               </select>
-            </div>
+            </label>
           )}
         </div>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
-            Total {voucherType === "purchase" ? "purchases" : "sales"}
-          </p>
-          <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
-            Rs. {formatNumber(totals.totalSales)}
-          </p>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
-            Total invoices
-          </p>
-          <p className="text-[14px] font-semibold text-gray-800 mt-0.5">{totals.totalInvoices}</p>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
-            Avg per invoice
-          </p>
-          <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
-            Rs.{" "}
-            {formatNumber(totals.totalInvoices > 0 ? totals.totalSales / totals.totalInvoices : 0)}
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex-1 min-h-0 flex flex-col">
+      }
+    >
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white flex flex-col">
         <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-canvas)]">
           <span className="text-[12px] font-semibold text-gray-600">
             Analysis by{" "}
@@ -236,32 +254,32 @@ export default function SalesAnalysisReport() {
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
+              <table className="w-full border-collapse report-table">
                 <thead>
                   <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       #
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       {groupBy === "party"
                         ? "Party / Account"
                         : groupBy === "item"
                           ? "Item Name"
                           : "Month"}
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Invoices
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Total Qty
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Avg/Invoice
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Total Amount
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-36">
                       Share
                     </th>
                   </tr>
@@ -277,7 +295,7 @@ export default function SalesAnalysisReport() {
                         className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
                       >
                         <td className="px-3 py-2.5 text-[12px] text-gray-400">{idx + 1}</td>
-                        <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
+                        <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">
                           {row.label}
                         </td>
                         <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
@@ -287,10 +305,10 @@ export default function SalesAnalysisReport() {
                           {formatNumber(row.totalQty)}
                         </td>
                         <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
-                          Rs. {formatNumber(row.avgPerInvoice)}
+                          {formatCurrency(row.avgPerInvoice)}
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
-                          Rs. {formatNumber(row.totalSales)}
+                        <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-700">
+                          {formatCurrency(row.totalSales)}
                         </td>
                         <td className="px-3 py-2.5">
                           <div className="flex items-center gap-2">
@@ -312,14 +330,14 @@ export default function SalesAnalysisReport() {
               </table>
             </div>
 
-            <div className="px-3 py-2.5 border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] flex justify-between text-[12px] font-semibold text-gray-800">
+            <div className="px-3 py-2.5 border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] flex justify-between text-[12px] font-semibold text-gray-700">
               <span>
                 Grand total — {analysisData.length}{" "}
                 {groupBy === "party" ? "parties" : groupBy === "item" ? "items" : "months"}
               </span>
               <div className="flex gap-8">
                 <span className="font-mono">{totals.totalInvoices} invoices</span>
-                <span className="font-mono">Rs. {formatNumber(totals.totalSales)}</span>
+                <span className="font-mono">{formatCurrency(totals.totalSales)}</span>
               </div>
             </div>
             <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-canvas)] text-[12px] text-gray-500">
@@ -328,6 +346,6 @@ export default function SalesAnalysisReport() {
           </>
         )}
       </div>
-    </div>
+    </ReportWorkspace>
   );
 }

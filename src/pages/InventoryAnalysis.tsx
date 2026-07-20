@@ -563,12 +563,12 @@ const InventoryAnalysis: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Inventory analysis index</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Inventory analysis index</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Comprehensive insights into stock and movement
             </p>
@@ -577,7 +577,7 @@ const InventoryAnalysis: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -616,7 +616,7 @@ const InventoryAnalysis: React.FC = () => {
         {/* Tab Content Panels */}
 
         {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden max-w-full">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden max-w-full">
             <div className="p-3 border-b border-gray-200 flex justify-between items-center bg-white">
               <div className="flex gap-2">
                 <button
@@ -639,7 +639,7 @@ const InventoryAnalysis: React.FC = () => {
                 </button>
               </div>
               <button
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
                 onClick={exportTab1ToExcel}
               >
                 <Download size={14} />
@@ -650,29 +650,29 @@ const InventoryAnalysis: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Item Code
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Item Name
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Group
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Sales Qty
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Sales Value
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       COGS
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Gross Profit
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Margin %
                     </th>
                   </tr>
@@ -707,22 +707,22 @@ const InventoryAnalysis: React.FC = () => {
                     </tr>
                   ))}
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">TOTALS</td>
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700">TOTALS</td>
                     <td className="px-3 py-2.5"></td>
                     <td className="px-3 py-2.5"></td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                       {tab1Totals.salesQty}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right font-mono">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right font-mono">
                       {money(tab1Totals.salesValue)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right font-mono">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right font-mono">
                       {money(tab1Totals.purchaseCost)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right font-mono">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right font-mono">
                       {money(tab1Totals.grossProfit)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                    <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                       {tab1Totals.salesValue > 0
                         ? ((tab1Totals.grossProfit / tab1Totals.salesValue) * 100).toFixed(2) + "%"
                         : "0.00%"}
@@ -735,14 +735,14 @@ const InventoryAnalysis: React.FC = () => {
         )}
 
         {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden max-w-full">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden max-w-full">
             <div className="p-3 border-b border-gray-200 flex justify-between items-center bg-white">
               <div className="flex gap-2 items-center">
                 <label className="text-[11px] font-medium text-gray-600">Analysis Period:</label>
                 <select
                   value={analysisPeriod}
                   onChange={(e) => setAnalysisPeriod(Number(e.target.value))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value={30}>Last 30 days</option>
                   <option value={60}>Last 60 days</option>
@@ -752,7 +752,7 @@ const InventoryAnalysis: React.FC = () => {
                 </select>
               </div>
               <button
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
                 onClick={exportTab2ToExcel}
               >
                 <Download size={14} />
@@ -794,25 +794,25 @@ const InventoryAnalysis: React.FC = () => {
                   <table className="w-full min-w-max border-collapse">
                     <thead>
                       <tr className="bg-white border-y border-gray-200">
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Item Code
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Item Name
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Sales in Period
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Last Sale Date
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Days Since Last Sale
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Classification
                         </th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Actions
                         </th>
                       </tr>
@@ -889,25 +889,25 @@ const InventoryAnalysis: React.FC = () => {
                   <table className="w-full min-w-max border-collapse">
                     <thead>
                       <tr className="bg-white border-y border-gray-200">
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Item Code
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Item Name
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Sales in Period
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Last Sale Date
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Days Since Last Sale
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Classification
                         </th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Actions
                         </th>
                       </tr>
@@ -984,25 +984,25 @@ const InventoryAnalysis: React.FC = () => {
                   <table className="w-full min-w-max border-collapse">
                     <thead>
                       <tr className="bg-white border-y border-gray-200">
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Item Code
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Item Name
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Sales in Period
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Last Sale Date
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Days Since Last Sale
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Classification
                         </th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                           Actions
                         </th>
                       </tr>
@@ -1050,9 +1050,9 @@ const InventoryAnalysis: React.FC = () => {
         )}
 
         {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden max-w-full">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden max-w-full">
             <div className="p-4 border-b border-gray-200 bg-white">
-              <h2 className="text-[13px] font-semibold text-gray-800 mb-4">Stock Aging Analysis</h2>
+              <h2 className="text-[13px] font-semibold text-gray-700 mb-4">Stock Aging Analysis</h2>
 
               {/* Summary Bars */}
               <div className="grid grid-cols-6 gap-3">
@@ -1071,7 +1071,7 @@ const InventoryAnalysis: React.FC = () => {
                       <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                         {["0-30", "31-60", "61-90", "91-180", "181-365", "365+"][index]} days
                       </div>
-                      <div className="text-[11px] font-mono font-medium text-gray-800 mt-0.5">
+                      <div className="text-[11px] font-mono font-medium text-gray-700 mt-0.5">
                         {money(total.value)}
                       </div>
                     </div>
@@ -1083,7 +1083,7 @@ const InventoryAnalysis: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     <th
                       className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
                       rowSpan={2}
@@ -1125,7 +1125,7 @@ const InventoryAnalysis: React.FC = () => {
                       Total Value
                     </th>
                   </tr>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     {Array(6)
                       .fill(0)
                       .map((_, i) => (
@@ -1178,7 +1178,7 @@ const InventoryAnalysis: React.FC = () => {
         )}
 
         {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden flex min-h-[400px]">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex min-h-[400px]">
             {/* Sidebar - Warehouse List */}
             <div className="w-1/4 max-w-[250px] border-r border-gray-200 bg-gray-50 flex flex-col">
               <div className="p-3 border-b border-gray-200">
@@ -1214,19 +1214,19 @@ const InventoryAnalysis: React.FC = () => {
               {selectedWarehouseId ? (
                 <>
                   <div className="p-3 border-b border-gray-200 flex justify-between items-center bg-white">
-                    <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+                    <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
                       <Warehouse size={16} className="text-gray-400" />
                       {warehouses.find((w) => w.id === selectedWarehouseId)?.name}
                     </h3>
                     <div className="flex gap-4 items-center">
                       <div className="text-[12px]">
                         <span className="text-gray-500 mr-1">Total Value:</span>
-                        <span className="font-mono font-bold text-gray-800">
+                        <span className="font-mono font-bold text-gray-700">
                           {money(godownTotalValue)}
                         </span>
                       </div>
                       <button
-                        className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+                        className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
                         onClick={exportTab4ToExcel}
                       >
                         <Download size={14} />
@@ -1237,30 +1237,30 @@ const InventoryAnalysis: React.FC = () => {
 
                   <div className="flex-1 overflow-auto">
                     <table className="w-full min-w-max border-collapse">
-                      <thead className="sticky top-0 bg-[#f5f6fa] shadow-sm z-10">
+                      <thead className="sticky top-0 bg-gray-50 shadow-sm z-10">
                         <tr>
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200">
                             Item Code
                           </th>
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200">
                             Item Name
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200">
                             Opening Qty
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200 text-[#059669]">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200 text-[#059669]">
                             Received
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200 text-[#dc2626]">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200 text-[#dc2626]">
                             Issued
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200">
                             Closing Qty
                           </th>
-                          <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200">
                             Unit
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-200">
                             Value
                           </th>
                         </tr>
@@ -1286,7 +1286,7 @@ const InventoryAnalysis: React.FC = () => {
                             <td className="px-3 py-2.5 text-[12px] text-[#dc2626] font-medium text-right">
                               {item.issued}
                             </td>
-                            <td className="px-3 py-2.5 text-[12px] text-gray-800 font-semibold text-right">
+                            <td className="px-3 py-2.5 text-[12px] text-gray-700 font-semibold text-right">
                               {item.closingQty}
                             </td>
                             <td className="px-3 py-2.5 text-[11px] text-gray-500 text-center">
@@ -1321,21 +1321,21 @@ const InventoryAnalysis: React.FC = () => {
         )}
 
         {activeTab === 4 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden max-w-full">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden max-w-full">
             <div className="overflow-x-auto">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Category / Item
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Items Count
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Total Qty
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Total Value
                     </th>
                   </tr>
@@ -1347,7 +1347,7 @@ const InventoryAnalysis: React.FC = () => {
                         className="bg-gray-50 hover:bg-gray-100 border-b border-gray-200 cursor-pointer"
                         onClick={() => toggleGroup(group.groupId)}
                       >
-                        <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">
+                        <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-700">
                           <div className="flex items-center gap-2">
                             <span className="text-gray-400">
                               {expandedGroups.has(group.groupId) ? (
@@ -1362,7 +1362,7 @@ const InventoryAnalysis: React.FC = () => {
                         <td className="px-3 py-2.5 text-[12px] font-medium text-gray-600 text-right">
                           {group.itemCount}
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800 text-right">
+                        <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-700 text-right">
                           {group.totalQty}
                         </td>
                         <td className="px-3 py-2.5 text-[12px] font-mono font-bold text-[var(--ds-action-primary)] text-right">
@@ -1396,16 +1396,16 @@ const InventoryAnalysis: React.FC = () => {
                   )}
                   {categoryValuationData.length > 0 && (
                     <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700">
                         GRAND TOTAL
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                         {categoryValuationData.reduce((sum, group) => sum + group.itemCount, 0)}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right">
+                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right">
                         {categoryValuationData.reduce((sum, group) => sum + group.totalQty, 0)}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-right font-mono">
+                      <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-right font-mono">
                         {money(
                           categoryValuationData.reduce((sum, group) => sum + group.totalValue, 0),
                         )}

@@ -15,13 +15,29 @@
 
 ## Sutra ERP — Design System & Project Rules (read before any UI task)
 
-Brand & tone: professional accounting software (Busy Cloud / Tally Cloud style), not a consumer app. Sharp corners, dense data tables, no decorative gradients/blur/heavy shadows.
+Brand & tone: professional accounting software (Busy Cloud / Tally Cloud style), not a consumer app. Sharp corners, dense data tables, no decorative gradients/blur/heavy shadows. Avoid shout UI (oversized type, decorative gradients, purple/violet accents).
 
-Colors: primary #1557b0 (hover #0f4a96), success #059669, warning #d97706, danger #dc2626, info #0284c7. Sidebar bg #1e2433, sidebar hover #273148, sidebar border #2d3748. Page bg #f5f6fa. These live as CSS vars in src/styles.css — use Tailwind arbitrary values matching them, never re-introduce indigo/purple/violet.
+### Migrated pages (prefer this)
 
-Typography: page title `text-[15px] font-semibold text-gray-800`; page subtitle `text-[11px] text-gray-500`; section/table header `text-[10px] font-semibold text-gray-500 uppercase tracking-wide`; form label `text-[11px] font-medium text-gray-600`; body/cell text `text-[12px]`; never use font-black, text-base, text-xl, tracking-widest, or uppercase on data/names/amounts.
+Use tokens from `src/design-system/foundations/tokens.css` via Tailwind `var(--ds-*)` / DS primitives (`Button`, `Input`, `PageHeader`, `Avatar`, `EnterpriseDataTable`, etc.). Do not hardcode brand hex on surfaces already on `--ds-*`.
 
-Standard page header (use for every list/report page, no exceptions):
+- Brand: `--ds-action-primary` / `--ds-brand-*` (reference hex #1557b0 / hover #0f4a96)
+- Surfaces: `--ds-canvas`, `--ds-surface`, `--ds-surface-muted`
+- Text: `--ds-text-strong`, `--ds-text-default`, `--ds-text-muted`, `--ds-text-subtle`
+- Borders / status: `--ds-border-default`, `--ds-status-*`
+- Dark mode: `[data-theme="dark"]` overrides the same `--ds-*` keys (ThemeContext)
+
+Typography on migrated pages: page title ~15px semibold `--ds-text-strong`; subtitle ~11px `--ds-text-muted`; table headers ~10px uppercase tracking-wide muted; body/cells ~12px; never font-black, text-base/xl, tracking-widest, or uppercase on data/names/amounts.
+
+Prefer `PageHeader` / DS layout composites over hand-rolled page chrome.
+
+### Legacy Busy tips (unmigrated pages only)
+
+Colors (also in `src/styles.css`): primary #1557b0 (hover #0f4a96), success #059669, warning #d97706, danger #dc2626, info #0284c7. Sidebar bg #1e2433, hover #273148, border #2d3748. Page bg #f5f6fa. Never re-introduce indigo/purple/violet.
+
+Typography: page title `text-[15px] font-semibold text-gray-800`; page subtitle `text-[11px] text-gray-500`; section/table header `text-[10px] font-semibold text-gray-500 uppercase tracking-wide`; form label `text-[11px] font-medium text-gray-600`; body/cell text `text-[12px]`.
+
+Standard page header (list/report pages not yet on PageHeader):
 
 <div className="flex items-center justify-between mb-4">
   <div>

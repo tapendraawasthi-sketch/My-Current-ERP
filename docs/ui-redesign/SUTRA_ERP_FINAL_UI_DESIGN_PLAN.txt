@@ -1,0 +1,613 @@
+================================================================================
+SUTRA ERP — FINAL UI DESIGN PLAN (WORKING AUTHORITY)
+================================================================================
+Document ID : SUTRA_ERP_FINAL_UI_DESIGN_PLAN
+Format      : Plain text (.txt) — this file is the execution checklist hereafter
+Created     : 2026-07-19
+Role        : Make Sutra ERP simplest, easiest, full-featured, premium, professional
+Audience    : Cursor agents + human implementers
+Status      : ACTIVE — follow this plan step-by-step for all future UI work
+
+Related docs (supporting, not overriding this file unless marked DONE here):
+  - docs/ui-redesign/ORBIX_UI_SIMPLE_PREMIUM_IA_PLAN.md  (IA / progressive disclosure)
+  - docs/ui-redesign/UI_PAGE_COMPOSITION_SPEC.md         (PageHeader floorplan)
+  - AGENTS.md                                           (Busy Cloud visual rules for unmigrated pages)
+
+NON-NEGOTIABLES
+---------------
+N1. Do NOT delete routes, pages, or posting capabilities.
+N2. Do NOT change voucher/invoice engines, accounting math, or sync behaviour.
+N3. Every demoted control must remain reachable in <=2 clicks or Ctrl/Cmd+K.
+N4. Prefer design-system tokens (var(--ds-*)) on every touched file.
+N5. One primary CTA per region (header / filter / footer).
+N6. Plain Nepal-business English; Lucide icons only; no emoji chrome.
+N7. Commit only when the user asks; keep branches working for Lovable sync.
+N8. Dead files (StockItems.tsx, PurchaseInvoiceForm.tsx, ReturnInvoiceForm.tsx):
+    do not open or edit.
+
+================================================================================
+PART A — PRODUCT NORTH STAR
+================================================================================
+
+One sentence:
+  A calm ledger desk: open app → see what needs attention + one next action →
+  open a document with only the fields needed for THIS posting → advanced
+  controls one click away — never gone.
+
+What "premium + professional" means for Sutra (Busy / Tally Cloud adult software):
+  - One visual language (--ds-* tokens)
+  - Dense data tables, quiet chrome, sharp corners, no decorative gradients
+  - Clear hierarchy: title 15px semibold → subtitle 11px muted → labels 11px → body 12px
+  - Primary brand #1557b0 via tokens; never reintroduce indigo/purple/violet themes
+  - Amounts: monospace, right-aligned, formatCurrency() everywhere
+  - Status colors only for real status (posted/draft/cancelled/warning)
+
+What "simplest + easiest" means:
+  - Fewer things competing for the eye on first paint
+  - Defaults hide rarity; power users expand (progressive disclosure)
+  - One place for company / branch / FY identity (TopCommandBar)
+  - Daily work in primary nav (~8–12 favourites); long tail via Command Palette
+  - Same functions — relocated, collapsed, or demoted — never removed
+
+What "full of functions" means:
+  - Every existing master, voucher, report, and utility stays reachable
+  - Power paths: Ctrl/Cmd+K palette, ? shortcut help, F12 config, deep links
+  - Undo toasts on destructive/soft-reversible actions
+  - Bookmarkable URLs (/app/:page and /app/:page/:entityId)
+
+================================================================================
+PART B — CURRENT BASELINE (AS OF 2026-07-19) — DO NOT REDO
+================================================================================
+
+DONE — Foundation CSS (52-step overhaul)
+  [x] src/styles.css: #000000 purged; duplicates removed; horizontal table borders;
+      card shadows; button/input/sidebar/spacing/empty-state refinements;
+      consolidated @media print
+
+DONE — Design-system adoption (Wave A start)
+  [x] page-enter remount on PageContentFrame
+  [x] toast.undo() in src/lib/appToast.ts
+  [x] PageHeader + EnterpriseDataTable on many masters (Parties, ItemMaster, Units,
+      Warehouses, BankAccounts, SalesPersons, Employees, Sale/Purchase/Tax types,
+      PayHeads, BillSundry, Scheme, StandardNarration, VoucherType list, Godown, …)
+  [x] Loading skeletons on key lists (loading= prop on EnterpriseDataTable)
+
+DONE — Architecture (Wave B start)
+  [x] ChartOfAccounts split → src/components/chart-of-accounts/*
+  [x] Gateway structural styles → Tailwind
+  [x] BillingInvoice split → src/pages/billing/*
+  [x] react-router-dom + PageUrlSync (/app/:pageId)
+  [x] Entity deep links (/app/:page/:id) on Parties, Items, Billing, Units,
+      Warehouses, Employees
+  [x] renderPage registry extracted to src/routing/renderPage.tsx
+  [x] Breadcrumb drill stack (navCrumbStore) + entity labels
+  [x] ShortcutHelpModal (? key) in AppShell
+  [x] Parties/ItemMaster use DS Dialog
+  [x] StockSummaryReport on ReportWorkspace
+  [x] Command Palette already exists (Ctrl/Cmd+K)
+
+STILL PARTIAL
+  [~] ~30+ pages use PageHeader; some pages still custom h1 + raw tables
+  [x] Priority report pack on ReportWorkspace (STEP 1.2); other niche reports TBD
+  [x] App renders via routeTable + AppPageRoutes (switch deleted)
+  [x] Invoice/voucher progressive disclosure (STEP 2.3)
+  [x] Nav Daily-12 + module roots; long tail via palette (STEP 2.2)
+  [~] Parallel tokens (--ds-* / --ox-* / gray-*) on unmigrated pages
+  [x] Home Today = single calm stack + More (STEP 2.1)
+  [x] Priority modals on DS Dialog (STEP 1.4); niche ConfirmDialog legacy TBD
+  [~] Print templates functional; TB/BS/P&L/voucher letterhead improved (STEP 6.4)
+  [x] Dark mode --ds-* brand/intelligence + ThemeContext toggle
+  [~] Mobile: shell drawer + Orbix fullscreen; tables sticky; forms stack CSS
+
+================================================================================
+PART C — DESIGN SYSTEM FLOORPLANS (USE THESE, DO NOT INVENT NEW ONES)
+================================================================================
+
+C1. LIST MASTER PAGE
+  PageHeader(title, description, meta count, primaryAction, secondaryActions?)
+  → search / FilterBar
+  → EnterpriseDataTable(columns, rows, loading, empty*, rowActions, onRowClick)
+  → Dialog (create/edit) OR side panel for dense masters
+  → toast.undo on delete
+  → deep link: openEntity(pageId, id|new) / clearEntity(pageId)
+
+C2. SUMMARY REPORT PAGE
+  ReportWorkspace(title, description, periodLabel, onPrint?, onExport*)
+  → filterSlot
+  → kpiSlot (optional 3–4 cards)
+  → Surface with report-table / StatementTable / erp-bs-table
+  → keep navy .fs-report theme for statutory printed statements (intentional)
+
+C3. TRANSACTION / DOCUMENT PAGE
+  TransactionRouteShell or TransactionWorkspace (one document header only)
+  → essential fields first
+  → Optional / Rare sections collapsed by default
+  → StickyActionBar for save/post
+  → undo toast after post when safe
+
+C4. DASHBOARD / HOME
+  PageHeader
+  → Attention strip (what needs action)
+  → 3–4 KPIs max above fold
+  → 4 quick actions
+  → Everything else below fold or “More”
+
+C5. DIALOG / MODAL
+  Always: Dialog + DialogContent + DialogHeader + DialogTitle + DialogBody
+  Never: raw position:fixed overlays for new work
+  Escape + focus trap required (Radix provides)
+
+C6. NUMBERS
+  Always: formatCurrency() / formatNumber() from src/lib/utils.ts
+  Table amounts: font-mono text-right (ds-financial-value)
+
+================================================================================
+PART D — EXECUTION ROADMAP (FROM NOW — DO IN ORDER)
+================================================================================
+
+Agents and humans MUST execute the next unfinished step before skipping ahead,
+unless the user explicitly names a different step. Mark steps [x] when done
+by editing this file.
+
+------------------------------------------------------------------------------
+PHASE 0 — WORKING AGREEMENT (ALWAYS ON)
+------------------------------------------------------------------------------
+STEP 0.1  Before any UI edit: re-read NON-NEGOTIABLES + the floorplan (C1–C6)
+          that matches the page type.
+STEP 0.2  Prefer existing DS primitives over new CSS or one-off class strings.
+STEP 0.3  After a page migration: deep links + undo delete + loading prop +
+          formatCurrency on amount cells.
+STEP 0.4  Update this file’s checkboxes when a STEP is completed.
+
+------------------------------------------------------------------------------
+PHASE 1 — CONSISTENCY SWEEP (HIGHEST ROI)  ← START HERE IF RESUMING
+------------------------------------------------------------------------------
+Goal: Every daily-use screen looks like it belongs to one product.
+
+STEP 1.1  Migrate remaining MASTER list pages to C1 floorplan
+          Priority order:
+            [x] LedgerMaster
+            [x] ItemGroupMaster
+            [x] PriceLists (list surface) — PriceListMaster left as matrix/editor tool
+            [x] BranchMaster
+            [x] MiscMasters (list tabs)
+            [x] VATClassificationMaster
+            [x] BatchManagement (batch + serial list tables)
+            [x] UsersManagement (list table only; keep permission logic)
+          Acceptance: PageHeader + EnterpriseDataTable + DS Dialog/panel;
+                      toast.undo; deep links where create/edit exists.
+
+STEP 1.2  Migrate remaining REPORT pages to C2 floorplan
+          Priority order:
+            [x] VatReports (already on ReportWorkspace)
+            [x] SalesRegister / PurchaseRegister (already on ReportWorkspace)
+            [x] CashBook / BankBook (already on ReportWorkspace)
+            [x] StockLedgerReport / SalesAnalysisReport / InventoryReport
+            [x] PartyLedgerStatement / PartyStatement (re-export; already C2)
+            [x] InterestCalculation / BudgetVsActual / RatioAnalysis
+          Acceptance: ReportWorkspace; KPI strip where summary; formatCurrency;
+                      print still works.
+
+STEP 1.3  Kill duplicate headers on TRANSACTION pages
+          [x] Billing / SalesInvoiceForm — one document header only
+          [x] PurchaseVoucher / Payment / Receipt / Contra / Journal —
+              same rule (TransactionRouteShell owns title; form does not repeat)
+          [x] Remove redundant font-bold on field labels → font-medium
+          Acceptance: No double title bars; StickyActionBar for commit.
+
+STEP 1.4  Standardize ALL remaining modals to C5 Dialog
+          Priority:
+            [x] ChartOfAccounts delete → ConfirmDialogFoundation (forms stay page panels)
+            [x] CbmsStatusBadge modal → Dialog
+            [x] F12Panel shell → Dialog
+            [x] Auth: ChangePasswordModal + SignInForm forgot-password → Dialog
+                (Gateway has no raw overlays)
+          Acceptance: Escape closes; focus trapped; DS radius/shadow.
+
+STEP 1.5  Token cleanup on touched files
+          [x] Replace remaining bg-[#f5f6fa] / border-gray-300 / #1557b0 raw
+              with var(--ds-*) or approved Tailwind mappings on every file
+              you edit in Phase 1.
+          [x] Do not big-bang rewrite untouched files “just for tokens”.
+
+------------------------------------------------------------------------------
+PHASE 2 — SIMPLICITY (PROGRESSIVE DISCLOSURE)
+------------------------------------------------------------------------------
+Goal: Same power, calmer first paint.
+
+STEP 2.1  Home / FinancialDashboard
+          [x] Above fold: Attention + max 4 KPIs + max 4 quick actions
+          [x] Move secondary widgets below fold or into “More”
+          [x] Keep all metrics reachable; do not invent balances
+
+STEP 2.2  Primary nav “Daily 12”
+          [x] Show favourites + module roots in PrimarySideNav by default
+          [x] Full leaf list remains in Command Palette + “All menus”
+          [x] Do not delete any destination from palette/index
+
+STEP 2.3  Transaction progressive fields
+          [x] SalesInvoiceForm: Essential open; Optional/Rare collapsed
+          [x] Apply same pattern to Payment / Receipt / Journal line grids
+          [x] “Show advanced” toggle persists per user (localStorage ok)
+
+STEP 2.4  One identity strip
+          [x] Remove page-local Branch <select> where shell BranchSwitcher exists
+              OR keep page filter but hide shell duplicate on that page —
+              pick ONE pattern and document it in a one-line comment in
+              useBranchFilter.ts
+          [x] Pages stop repeating Company / FY in local headers
+
+STEP 2.5  Typography quieting
+          [x] On migrated pages: section labels use text-[11px] font-medium
+              text-gray-500 (or ds-text-metadata) — not tracking-widest shout
+          [x] Status badges stay uppercase; data names/amounts never uppercase
+
+------------------------------------------------------------------------------
+PHASE 3 — PREMIUM INTERACTION
+------------------------------------------------------------------------------
+Goal: Feels alive and trustworthy like Xero / Zoho Books — without consumer fluff.
+
+STEP 3.1  Undo everywhere it is safe
+          [x] Delete masters (remaining)
+          [x] Soft-cancel / reverse where domain allows
+          [x] Never undo irreversible statutory CBMS submits — show clear success only
+
+STEP 3.2  Skeleton floorplans
+          [x] TableSkeleton / FormSkeleton / KpiSkeleton composites in design-system
+          [x] Wire on Home, top 10 lists, top 5 reports
+
+STEP 3.3  Empty states with CTA
+          [x] Top 5 empties: parties, items, invoices, vouchers, no-search-results
+          [x] Icon + one sentence + primary CTA (no heavy illustrations required)
+
+STEP 3.4  Breadcrumb drill-down expansion
+          [x] Trial Balance → group → ledger pushes crumbs (like GeneralLedger)
+          [x] Balance Sheet / P&L drill paths push crumbs
+          [x] Party list → Party statement → push crumbs
+
+STEP 3.5  Shortcut hints on toolbars
+          [x] Tooltip on Balance Sheet button shows Ctrl+B etc.
+          [x] Keep ShortcutHelpModal as source of truth; don’t invent conflicting keys
+
+STEP 3.6  Micro-motion (subtle only)
+          [x] Keep page-enter
+          [x] Dialog open/close use existing DS transitions
+          [x] No bounce/spring noise on data tables
+
+------------------------------------------------------------------------------
+PHASE 4 — ROUTING & INFORMATION ARCHITECTURE (TRUE WEB APP)
+------------------------------------------------------------------------------
+Goal: Bookmark, share, back/forward feel native.
+
+STEP 4.1  Entity deep links for remaining high-traffic entities
+          [x] LedgerMaster / chart ledger open (done with STEP 1.1)
+          [x] Journal / Payment / Receipt voucher by id
+          [x] Sales order / Purchase order by id
+
+STEP 4.2  Query params for report state
+          [x] ?fy= & from= & to= & branch= on ReportWorkspace pages
+          [x] Sync from URL on load; write on Apply/Show report
+
+STEP 4.3  Declarative routes (incremental strangler)
+          [x] Introduce route table mapping pageId → element (may wrap renderPage)
+          [x] Migrate 10 pages at a time to <Route> entries
+              [x] Batch 1: dashboard, parties, items, billing, purchase, payment,
+                  receipt, journal, trial-balance, balance-sheet
+              [x] Batch 2: accounts, day-book, bank-reconciliation, sales-register,
+                  profit-loss, ledger, contra, sales-order, purchase-order, cash-book
+              [x] Batch 3: sales-return, purchase-return, purchase-register, bank-book,
+                  party-statement, stock-summary, delivery-challan, goods-receipt,
+                  outstanding-receivables, outstanding-payables
+              [x] Batch 4: settings, fiscal-year, users, ledgers, warehouses, units,
+                  debit-note, credit-note, quotation, vat-reports
+              [x] Batch 5: orbix, stock-transfer, physical-stock, stock-journal,
+                  production, voucher-entry, configuration-hub, cash-flow,
+                  aging-report, branch-master
+              [x] Batch 6 (final): all remaining masters/payroll/POS/misc
+          [x] Keep setCurrentPage working via PageUrlSync until switch is empty
+          [x] Final: delete giant switch when coverage = 100%
+
+STEP 4.4  Shareable document URLs
+          [x] /app/billing/:invoiceId already; ensure print/PDF opens same id
+          [x] Add copy-link control on document header (optional, low priority)
+
+------------------------------------------------------------------------------
+PHASE 5 — MEGA-COMPONENT DEBT
+------------------------------------------------------------------------------
+Goal: Enable incremental UI work without rewriting 2000-line files.
+
+STEP 5.1  ChartOfAccounts — extract form panels
+          [x] CoaGroupForm / CoaLedgerForm / CoaFeaturesPanel from orchestrator
+          [x] Keep ChartOfAccounts.tsx as thin controller
+
+STEP 5.2  SalesInvoiceForm — split
+          [x] InvoiceHeader / InvoiceLineGrid / InvoiceTotals / InvoiceActions
+          [x] Progressive disclosure (Phase 2.3) lives here
+
+STEP 5.3  Gateway — finish Tailwind conversion
+          [x] Remove remaining dynamic inline colors where token maps exist
+          [x] Keep metric logic intact
+
+STEP 5.4  Auth screens polish only (no flow changes)
+          [x] CompanyLoginScreen / GatewayScreen / SignUpWizard — DS Button/Input/FormField
+          [x] Branded loading already partially done; keep calm
+
+------------------------------------------------------------------------------
+PHASE 6 — DATA PRESENTATION & TRUST
+------------------------------------------------------------------------------
+STEP 6.1  formatCurrency / formatNumber audit
+          [x] Grep toLocaleString and ad-hoc Rs. prefixes; replace on touch
+          [x] Single options object for decimals / negative style
+
+STEP 6.2  Summary vs Detail visual distinction
+          [x] SummaryReportLayout: KPI strip + condensed table
+          [x] DetailReportLayout: entity header card + transaction table
+          [x] Apply to Trial Balance (summary) vs General Ledger (detail)
+
+STEP 6.3  Dashboard charts (recharts already in package.json)
+          [x] One cash/sales trend on Home (role-aware; no invented numbers)
+          [x] Sparklines in KPI cards only if data is real
+
+STEP 6.4  Print templates (auditor-ready)
+          [~] Sales Invoice / Payment Receipt / Balance Sheet / P&L / Trial Balance
+              [x] TB / BS / P&L via ReportWorkspace PrintDocumentHeader (+ address/phone/logo)
+              [x] Sales Invoice — existing InvoicePrint letterhead + prefs
+              [x] Payment/Receipt/Journal voucher print — logo letterhead + 3 sig lines
+                  (generateVoucherPDF / voucherHTML + VoucherPrint chrome)
+          [x] Company logo + address header; page numbers; signature blocks
+          [x] Keep consolidated @media print; extend per-template classes
+
+------------------------------------------------------------------------------
+PHASE 7 — POLISH (LAST)
+------------------------------------------------------------------------------
+STEP 7.1  Dark mode — complete --ds-* dark values + toggle (ThemeContext exists)
+          [x] [data-theme="dark"] brand/intelligence tokens; ThemeContext + TopCommandBar toggle
+
+STEP 7.2  Avatar component (name-hash colour, sizes) — replace hardcoded green circles
+          [x] Avatar primitive; TopCommandBar / ContextSwitcher / CompanySwitcher wired
+          [x] SuccessAvatar on invoice/payment/receipt/contra success (+ post toast)
+
+STEP 7.3  Responsive tables: sticky first column + horizontal scroll wrapper
+          [x] EnterpriseDataTable stickyFirstColumn; ScrollableTable + sticky CSS
+
+STEP 7.4  Mobile: AI chat full-screen overlay; forms stack; nav drawer already exists
+          [x] EKhataPanel ≤767px fullscreen; form grid stack CSS; nav drawer unchanged
+
+STEP 7.5  Remove dead chrome files only after confirming unmounted (do not rush)
+          [x] BusyShell / RightButtonBar confirmed no-op stubs; import commented in
+              renderPage — leave stubs; delete later when safe
+
+STEP 7.6  Update AGENTS.md Busy tips to point at --ds-* for migrated pages
+          [x] Migrated-pages tip prefers --ds-* / DS primitives; legacy Busy tips retained
+          (avoid reintroducing shout UI)
+
+================================================================================
+PART E — PER-STEP WORKFLOW (HOW TO EXECUTE ANY STEP)
+================================================================================
+
+1. Identify STEP id (e.g. 1.1 LedgerMaster).
+2. Open only the files named by that step (+ shared DS/routing if required).
+3. Apply the matching floorplan (C1–C6).
+4. Preserve all business logic, store calls, and validations.
+5. Add: deep links, toast.undo, loading, formatCurrency as applicable.
+6. Lint the touched files.
+7. Mark the STEP [x] in THIS file.
+8. Stop or continue to the next unchecked STEP — do not jump phases without
+   finishing Phase 1 unless the user redirects.
+
+Definition of Done for a migrated LIST page:
+  - PageHeader with one primary action
+  - EnterpriseDataTable (not raw <table> for the main list)
+  - Empty + loading states
+  - Create/Edit via Dialog or existing side panel
+  - Delete uses toast.undo when reversible
+  - Amounts use formatCurrency
+  - URL deep link for entity when create/edit exists
+  - No business logic regressions
+
+Definition of Done for a migrated REPORT page:
+  - ReportWorkspace chrome
+  - Filters in filterSlot; KPIs in kpiSlot when summary
+  - Print/export hooks wired if previously present
+  - formatCurrency on money columns
+  - Statutory navy .fs-report preserved where already used for print
+
+================================================================================
+PART F — PRIORITY IF TIME-BOXED (CHEAT SHEET)
+================================================================================
+
+If only one day of work:
+  → Finish Phase 1.1 top 4 masters + Phase 1.3 Billing header dedupe
+
+If only one week:
+  → Complete Phase 1 entirely + Phase 2.1 Home + Phase 2.3 invoice progressive fields
+
+If aiming at “premium competitor” feel:
+  → Phase 1 + 2 + 3.1–3.4 + Phase 4.2–4.3
+
+Never start with:
+  → Dark mode, empty illustrations, or full mobile redesign before Phase 1–2
+
+================================================================================
+PART G — CHANGE LOG (APPEND WHEN STEPS COMPLETE)
+================================================================================
+
+2026-07-19  Plan created. Baseline recorded (CSS 52-steps, Wave A/B, routing,
+            deep links, Dialog on Parties/Items, ShortcutHelpModal, StockSummary
+            on ReportWorkspace). Next execution target: PHASE 1 STEP 1.1.
+
+2026-07-19  STEP 1.1 complete. C1 floorplan on LedgerMaster, ItemGroupMaster,
+            PriceLists, BranchMaster, MiscMasters, VATClassificationMaster,
+            BatchManagement, UsersManagement (Users tab). PriceListMaster left
+            as pricing matrix/editor (not a simple list). Next: STEP 1.2
+            reports → ReportWorkspace.
+
+2026-07-19  STEP 1.2 complete. Migrated StockLedgerReport, SalesAnalysisReport,
+            InterestCalculation, BudgetVsActual, RatioAnalysis to ReportWorkspace.
+            Registers/books/VAT/Inventory/PartyStatement already C2. Next: STEP 1.3
+            transaction header dedupe.
+
+2026-07-19  STEP 1.3 complete. Removed duplicate h1 on Payment/Receipt/Purchase/
+            Contra lists; SalesInvoiceForm flattened under shell Surface;
+            StickyActionBar on invoice + payment/receipt/journal/contra/purchase
+            commit rows; field labels font-medium. Next: STEP 1.4 modals → Dialog.
+
+2026-07-19  STEP 1.4 complete. CoaDeleteDialog → ConfirmDialogFoundation overlay;
+            CbmsStatusBadge, F12Panel, ChangePasswordModal, SignIn forgot-password
+            → DS Dialog (Escape + focus trap). Gateway clean. Next: STEP 1.5
+            token cleanup on Phase-1 touched files / Phase 2.
+
+2026-07-19  STEP 1.5 complete. Token cleanup on Phase-1 touched masters/txns/CoA
+            (border-gray-300 → --ds-border-default; #1557b0/#f5f6fa → ds vars).
+            Phase 1 closed. Next: PHASE 2 STEP 2.1 Home declutter.
+
+2026-07-19  STEP 2.1 complete. Home Today is a single-column stack: Attention (≤4)
+            → Money picture (≤4 KPIs) → Do next (≤4). Activity/ageing/Orbix/trust
+            stay in collapsed “More”. Next: STEP 2.2 Daily-12 nav.
+
+2026-07-19  STEP 2.2 complete. DAILY_NAV_FAVOURITES (12) seeds “Daily” pins;
+            modules stay collapsed (no auto-expand); accordion shows ≤6 primary
+            leaves + “All in Module…”; full catalogue unchanged in Ctrl+K.
+            Next: STEP 2.3 transaction progressive fields.
+
+2026-07-19  STEP 2.3 complete. Invoice essential header (party/date/no); due/
+            address/ref under More header; Show advanced for line cols; sundries
+            + Rare fields collapsed. Journal sub-ledger behind Show advanced;
+            Payment/Receipt reference + optional cols same pattern (persisted).
+            Next: STEP 2.4 one identity strip.
+
+2026-07-19  STEP 2.4 complete. Shell ContextSwitcher owns Company/Branch/FY;
+            “All branches” is shell view-only (erp_branch_view_filter; stamps
+            keep working branch). Page-local Branch selects removed on Home,
+            C1 masters, Billing/Payment/Receipt/Purchase/Contra/Units/Parties;
+            Purchase Company/FY chips removed. ReportWorkspace may keep scope
+            filters. Documented in useBranchFilter.ts. Next: STEP 2.5 typography.
+
+2026-07-19  STEP 2.5 complete. Section/KPI labels quieted to text-[11px]
+            font-medium (no uppercase tracking shout) on Contra, Branch/Batch/
+            Ledger/Purchase, invoice+voucher forms, report KPIs, Users groups.
+            Table headers + status badges keep uppercase. Phase 2 closed.
+            Next: PHASE 3 premium interaction.
+
+2026-07-19  STEP 3.1 complete. toast.undo on remaining master deletes (16 pages
+            + DiscountStructure); soft-cancel undo on Optional/Order/Purchase/
+            Sales/ReversingJournals status flips. cancelVoucher ledger reversals
+            and CBMS submits stay success-only (not undoable). Next: STEP 3.2
+            skeletons.
+
+2026-07-19  STEP 3.2 complete. TableSkeleton / FormSkeleton / KpiSkeleton in DS;
+            Home uses Kpi+Table skeletons; EDT loading rows use Skeleton;
+            ReportWorkspace.loading wired on Stock ledger / Sales analysis /
+            Budget / Interest / Ratios; Employees/Warehouses/SalesPersons
+            loading props. Next: STEP 3.3 empty states with CTA.
+
+2026-07-19  STEP 3.3 complete. EmptyState + icon + CTA on Parties, Items,
+            Billing invoices, Payment/Receipt/Journal vouchers; Clear search/
+            filters when filtered empty. Next: STEP 3.4 breadcrumbs.
+
+2026-07-19  STEP 3.4 complete. Trial Balance / Balance Sheet / P&L push drill
+            crumbs; Parties → Statement opens party-statement with Parties →
+            name crumb path. Next: STEP 3.5 shortcut hints.
+
+2026-07-19  STEP 3.5–3.6 complete. PAGE_SHORTCUT_HINTS shared by ShortcutHelpModal,
+            PrimarySideNav titles, ReportHub badges/tooltips (Ctrl+B etc.).
+            page-enter + Dialog transitions already in place; no table bounce.
+            Phase 3 closed. Next: PHASE 4 STEP 4.1 voucher deep links.
+
+2026-07-19  STEP 4.1 complete. /app/payment|receipt|journal/:id|new deep links;
+            sales-order / purchase-order same pattern; Breadcrumb voucher labels.
+            Next: STEP 4.2 report query params.
+
+2026-07-19  STEP 4.2 complete. useReportQueryParams (?fy&from&to&branch) on Stock
+            ledger, Sales analysis, Ratios, Budget vs actual, Interest; Apply
+            filters writes URL; branch query syncs shell view filter. Next:
+            STEP 4.3 declarative routes.
+
+2026-07-19  STEP 4.3 batch 1 complete. routeTable.tsx maps 10 surfaces
+            (dashboard/parties/items/billing/purchase/payment/receipt/journal/
+            trial-balance/balance-sheet + aliases); AppPageRoutes registers
+            <Route>s; renderPage consults table then legacy switch; PageUrlSync
+            + setCurrentPage unchanged. Final switch deletion deferred until
+            coverage = 100%. Next: STEP 4.4 shareable document URLs.
+
+2026-07-19  STEP 4.4 complete. Save/print sync /app/billing/:id; list print
+            opens same entity id; Copy link on invoice toolbar + success.
+            Phase 4 closed except remaining route-table batches. Next: PHASE 5
+            STEP 5.1 ChartOfAccounts extract.
+
+2026-07-19  STEP 5.1 complete. CoaGroupForm / CoaLedgerForm / CoaFeaturesPanel
+            extracted under chart-of-accounts/; ChartOfAccounts ~912 lines as
+            controller (state, save/validate, keyboard, masterConfig, tree).
+            Next: STEP 5.2 SalesInvoiceForm split.
+
+2026-07-19  STEP 5.2 complete. InvoiceHeader / InvoiceLineGrid / InvoiceTotals /
+            InvoiceActions extracted; SalesInvoiceForm ~1135 lines keeps posting
+            + progressive disclosure toggles as props. Next: STEP 5.3 Gateway
+            Tailwind conversion.
+
+2026-07-19  STEP 5.3 complete. Gateway.tsx accents → --ox/--ds tokens; NavRow/
+            ActionTile/SectionPanel use --gw-accent + group-hover; violet
+            #7c3aed removed; metric math unchanged. Next: STEP 5.4 auth polish.
+
+2026-07-19  STEP 5.4 complete. CompanyLoginScreen FormField; GatewayScreen DS
+            Input search; SignUpWizard Step4AdminAccount FormField; shell
+            already DS Button. Phase 5 closed. Next: PHASE 6 STEP 6.1
+            formatCurrency audit.
+
+2026-07-19  STEP 6.1 complete. MONEY_FORMAT_DEFAULTS + formatCurrency/formatNumber/
+            formatCompactCurrency options; Gateway, CoA, TB, BS, EDT, billing
+            table, home format on shared helpers. Next: STEP 6.2 layouts.
+
+2026-07-19  STEP 6.2 complete. SummaryReportLayout (TB + BS) with KPI strip;
+            DetailReportLayout on LedgerStatementView. Next: STEP 6.3 charts.
+
+2026-07-19  STEP 6.3 complete. HomeSalesTrend from posted sales invoices;
+            sparklines on sales KPIs when ≥2 days; salesVoucher gated.
+            Next: STEP 6.4 print chrome.
+
+2026-07-19  STEP 6.4 partial. PrintDocumentHeader/Signatures on ReportWorkspace
+            + TB/BS letterhead fields + GL statement; @page page label in
+            print.css. Invoice/Payment/P&L templates still use existing print
+            paths — extend on touch. Phase 6 mostly closed; Phase 7 polish next.
+
+2026-07-20  PHASE 7 complete. Dark --ds-* brand/intelligence; Avatar in shell
+            switchers + TopCommandBar; sticky tables + ScrollableTable; mobile
+            Orbix fullscreen (hide maximize); BusyShell/RightButtonBar verified
+            dead stubs (kept); AGENTS.md --ds-* tip for migrated pages.
+            Deferred: route-table batches, invoice/P&L print templates, full
+            renderPage switch deletion, success-screen Avatar swap on touch.
+
+2026-07-20  STEP 4.3 batch 2 + STEP 6.4 P&L letterhead. routeTable covers 20
+            canonical surfaces (+ aliases); renderPage cases removed for batch 2.
+            ProfitLoss ReportWorkspace gets address/phone/logoUrl. Next: batch 3
+            (registers/books/returns) or Payment receipt print chrome.
+
+2026-07-20  STEP 4.3 batch 3 + STEP 6.4 voucher print. +10 surfaces (returns,
+            registers/books, party statement, stock summary, DC/GRN, AR/AP).
+            generateVoucherPDF passes logo/phone/email/Nepali name; voucherHTML
+            letterhead + Prepared/Checked/Approved. Next: batch 4 (settings/
+            masters/misc vouchers) or full switch deletion when near 100%.
+
+2026-07-20  STEP 4.3 batch 4. +10 surfaces (settings/FY/users, ledgers/
+            warehouses/units, debit/credit notes, quotation + purchase-
+            quotation alias, VAT). routeTable ≈ 40 canonical. Next: batch 5
+            (inventory vouchers / hub / remaining reports) then switch delete.
+
+2026-07-20  STEP 4.3 batch 5. +10 surfaces (Orbix, stock transfer/physical/
+            journal/production, voucher-entry, configuration-hub, cash-flow,
+            aging, branch-master). routeTable ≈ 50 canonical. Next: batch 6
+            (remaining masters/payroll/POS/misc) then delete switch.
+
+2026-07-20  STEP 4.3 COMPLETE. Batch 6 migrated all remaining surfaces;
+            renderPage.tsx is declarative lookup + dashboard fallback only.
+            Giant switch deleted. PageUrlSync / setCurrentPage unchanged.
+
+2026-07-20  STEP 7.2 complete. SuccessAvatar (name-hash + check badge) on
+            SalesInvoiceForm / Payment / Receipt / Contra success screens and
+            invoice post toast. UI redesign plan execution closed for go-loop
+            scope; remaining [~] items are ongoing polish (PageHeader coverage,
+            token unification on unmigrated pages).
+
+================================================================================
+END OF PLAN — KEEP THIS FILE AS THE SINGLE UI EXECUTION AUTHORITY
+================================================================================

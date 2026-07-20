@@ -219,12 +219,12 @@ const LeaveManagement: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Leave Management</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Leave Management</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Manage leave policies, applications, and employee balances
             </p>
@@ -233,7 +233,7 @@ const LeaveManagement: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -265,11 +265,11 @@ const LeaveManagement: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Leave Policy</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Leave Policy</h2>
               <button
-                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingLeaveType(null);
                   setShowLeaveModal(true);
@@ -280,29 +280,29 @@ const LeaveManagement: React.FC = () => {
               </button>
             </div>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Leave Type
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Days/Year
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Carry Forward
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Max Carry Forward
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Is Encashable
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Encashment Rate
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -310,7 +310,7 @@ const LeaveManagement: React.FC = () => {
                 <tbody>
                   {leaveTypes.map((type) => (
                     <tr key={type.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-2.5 text-[12px] text-gray-800 font-medium">
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
                         {type.name}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right">
@@ -387,7 +387,7 @@ const LeaveManagement: React.FC = () => {
         )}
 
         {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
             <div className="mb-6 max-w-sm">
               <label className="block text-[11px] font-medium text-gray-600 mb-1">
                 Select Employee
@@ -395,7 +395,7 @@ const LeaveManagement: React.FC = () => {
               <select
                 value={selectedEmployee}
                 onChange={(e) => setSelectedEmployee(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
               >
                 <option value="">Select Employee</option>
                 {scopedEmployees
@@ -409,23 +409,23 @@ const LeaveManagement: React.FC = () => {
             </div>
 
             {selectedEmployee ? (
-              <div className="border border-gray-200 rounded-md overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Leave Type
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Entitled Days
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Days Taken
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Balance
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Encashable Amount
                       </th>
                     </tr>
@@ -435,7 +435,7 @@ const LeaveManagement: React.FC = () => {
                       const balance = calculateLeaveBalance(selectedEmployee, type.id);
                       return (
                         <tr key={type.id} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="px-3 py-2.5 text-[12px] text-gray-800 font-medium">
+                          <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
                             {type.name}
                           </td>
                           <td className="px-3 py-2.5 text-[12px] text-gray-700 text-right">
@@ -457,7 +457,7 @@ const LeaveManagement: React.FC = () => {
                 </table>
               </div>
             ) : (
-              <div className="text-center py-10 border-2 border-dashed border-gray-200 rounded-md">
+              <div className="text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
                 <p className="text-[13px] text-gray-500">
                   Select an employee to view their leave ledger
                 </p>
@@ -467,8 +467,8 @@ const LeaveManagement: React.FC = () => {
         )}
 
         {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-6 mb-4 max-w-3xl">
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-6 pb-2 border-b border-gray-100">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-4 max-w-3xl">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-6 pb-2 border-b border-gray-100">
               Apply Leave
             </h2>
 
@@ -480,7 +480,7 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveForm.employeeId}
                   onChange={(e) => handleFormChange("employeeId", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="">Select Employee</option>
                   {scopedEmployees
@@ -499,7 +499,7 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveForm.leaveTypeId}
                   onChange={(e) => handleFormChange("leaveTypeId", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="">Select Leave Type</option>
                   {leaveTypes.map((type) => (
@@ -517,7 +517,7 @@ const LeaveManagement: React.FC = () => {
                   type="date"
                   value={leaveForm.fromDate}
                   onChange={(e) => handleFormChange("fromDate", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -528,7 +528,7 @@ const LeaveManagement: React.FC = () => {
                   type="date"
                   value={leaveForm.toDate}
                   onChange={(e) => handleFormChange("toDate", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div className="md:col-span-2">
@@ -538,7 +538,7 @@ const LeaveManagement: React.FC = () => {
                 <textarea
                   value={leaveForm.reason}
                   onChange={(e) => handleFormChange("reason", e.target.value)}
-                  className="p-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full h-24 resize-none"
+                  className="p-2 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full h-24 resize-none"
                   placeholder="Provide detailed reason for the leave application..."
                 />
               </div>
@@ -546,7 +546,7 @@ const LeaveManagement: React.FC = () => {
 
             <div className="flex justify-end pt-4 border-t border-gray-100">
               <button
-                className="h-8 px-6 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                className="h-8 px-6 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm"
                 onClick={handleSubmitLeave}
               >
                 Submit Leave Application
@@ -556,14 +556,14 @@ const LeaveManagement: React.FC = () => {
         )}
 
         {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
             <div className="flex flex-wrap gap-4 mb-6">
               <div>
                 <label className="block text-[11px] font-medium text-gray-600 mb-1">Month</label>
                 <select
                   value={leaveFilter.month}
                   onChange={(e) => setLeaveFilter((prev) => ({ ...prev, month: e.target.value }))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="">All Months</option>
                   {Array.from({ length: 12 }, (_, i) => (
@@ -580,7 +580,7 @@ const LeaveManagement: React.FC = () => {
                   onChange={(e) =>
                     setLeaveFilter((prev) => ({ ...prev, employee: e.target.value }))
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="">All Employees</option>
                   {scopedEmployees
@@ -597,7 +597,7 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveFilter.status}
                   onChange={(e) => setLeaveFilter((prev) => ({ ...prev, status: e.target.value }))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="all">All</option>
                   <option value="pending">Pending</option>
@@ -607,35 +607,35 @@ const LeaveManagement: React.FC = () => {
               </div>
             </div>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Employee Name
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Leave Type
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       From Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       To Date
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Days
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide max-w-xs">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide max-w-xs">
                       Reason
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Approved By
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -647,7 +647,7 @@ const LeaveManagement: React.FC = () => {
 
                     return (
                       <tr key={app.id} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="px-3 py-2.5 text-[12px] text-gray-800 font-medium">
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 font-medium">
                           {emp?.name || "Unknown"}
                         </td>
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">
@@ -684,13 +684,13 @@ const LeaveManagement: React.FC = () => {
                           {app.status === "pending" && (
                             <div className="flex items-center justify-center gap-2">
                               <button
-                                className="h-6 px-2 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 rounded text-[11px] font-medium transition-colors"
+                                className="h-6 px-2 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 rounded-lg text-[11px] font-medium transition-colors"
                                 onClick={() => updateLeaveStatus(app.id, "approved")}
                               >
                                 Approve
                               </button>
                               <button
-                                className="h-6 px-2 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 rounded text-[11px] font-medium transition-colors"
+                                className="h-6 px-2 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 rounded-lg text-[11px] font-medium transition-colors"
                                 onClick={() => updateLeaveStatus(app.id, "rejected")}
                               >
                                 Reject
@@ -718,9 +718,9 @@ const LeaveManagement: React.FC = () => {
       {/* Leave Type Modal */}
       {showLeaveModal && (
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-md shadow-xl border border-gray-200 w-full max-w-md flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-[#f5f6fa]">
-              <h2 className="text-[15px] font-semibold text-gray-800">
+          <div className="bg-white rounded-lg shadow-xl border border-gray-200 w-full max-w-md flex flex-col overflow-hidden">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+              <h2 className="text-[15px] font-semibold text-gray-700">
                 {editingLeaveType ? "Edit Leave Type" : "Add New Leave Type"}
               </h2>
               <button
@@ -745,7 +745,7 @@ const LeaveManagement: React.FC = () => {
                   onChange={(e) =>
                     setEditingLeaveType((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -761,7 +761,7 @@ const LeaveManagement: React.FC = () => {
                       daysPerYear: Number(e.target.value),
                     }))
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
 
@@ -795,7 +795,7 @@ const LeaveManagement: React.FC = () => {
                           maxCarryForward: Number(e.target.value),
                         }))
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 )}
@@ -832,7 +832,7 @@ const LeaveManagement: React.FC = () => {
                           encashmentRate: Number(e.target.value),
                         }))
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 )}
@@ -841,7 +841,7 @@ const LeaveManagement: React.FC = () => {
 
             <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
               <button
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => {
                   setShowLeaveModal(false);
                   setEditingLeaveType(null);

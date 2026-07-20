@@ -22,35 +22,35 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-6 flex items-center justify-center min-h-[50vh]">
-          <div className="max-w-[420px] w-full bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-            <div className="w-12 h-12 bg-red-100 border border-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 text-[22px] font-bold">
+        <div className="p-8 flex items-center justify-center min-h-[60vh] bg-[#f8fafc]">
+          <div className="max-w-[440px] w-full bg-white border border-gray-100 rounded-2xl p-8 text-center shadow-xl">
+            <div className="w-14 h-14 bg-red-50 border border-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-[24px] font-bold">
               !
             </div>
-            <h2 className="text-[16px] font-bold text-gray-800 mb-2">Something went wrong</h2>
-            <p className="text-[12px] text-gray-600 mb-4">
+            <h2 className="text-[17px] font-semibold text-gray-900 mb-2">Something went wrong</h2>
+            <p className="text-[13px] text-gray-500 mb-6 leading-relaxed">
               An unexpected error occurred. Please try again or refresh.
             </p>
             <div className="flex gap-2 justify-center">
               <button
                 onClick={() => window.location.reload()}
-                className="h-8 px-4 font-semibold text-[12px] bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] border border-transparent rounded cursor-pointer text-white transition-colors"
+                className="h-9 px-5 font-semibold text-[13px] bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] border border-transparent rounded-lg cursor-pointer text-white transition-colors shadow-sm"
               >
                 Refresh Page
               </button>
               <button
                 onClick={() => this.setState({ hasError: false })}
-                className="h-8 px-4 font-semibold text-[12px] bg-white border border-gray-300 rounded cursor-pointer text-gray-700 hover:bg-gray-50 transition-colors"
+                className="h-9 px-5 font-semibold text-[13px] bg-white border border-gray-200 rounded-lg cursor-pointer text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Try Again
               </button>
             </div>
             {this.state.error && (
               <details className="mt-4 text-left">
-                <summary className="text-[11px] font-semibold text-gray-500 cursor-pointer hover:text-gray-700">
+                <summary className="text-[12px] font-medium text-gray-400 cursor-pointer hover:text-gray-600">
                   ▶ Error Details
                 </summary>
-                <pre className="text-[10px] bg-gray-50 border border-gray-200 p-2 rounded mt-2 overflow-x-auto whitespace-pre-wrap text-gray-700 font-mono">
+                <pre className="text-[11px] bg-gray-50 border border-gray-100 p-3 rounded-lg mt-2 overflow-x-auto whitespace-pre-wrap text-gray-600 font-mono leading-relaxed max-h-[200px] overflow-y-auto">
                   {this.state.error.toString()}
                 </pre>
               </details>

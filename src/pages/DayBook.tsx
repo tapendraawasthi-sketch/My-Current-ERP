@@ -510,7 +510,7 @@ const DayBook: React.FC = () => {
                 ))}
               </select>
             )}
-            <div className="flex items-center overflow-hidden rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)]">
+            <div className="flex items-center overflow-hidden rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)]">
               <button
                 type="button"
                 onClick={() => setViewMode("condensed")}
@@ -726,7 +726,7 @@ const DayBook: React.FC = () => {
                   <p className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
                     Ledger entries
                   </p>
-                  <div className="overflow-hidden rounded-md border border-[var(--ds-border-default)]">
+                  <div className="overflow-hidden rounded-lg border border-[var(--ds-border-default)]">
                     <table className="report-table w-full text-[12px]">
                       <thead>
                         <tr className="border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">

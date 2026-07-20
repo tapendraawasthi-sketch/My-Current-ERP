@@ -29,4 +29,4 @@
 ## Pointer
 
 recommended_next_step → **PR-C1-ARM**  
-PR-H4 remains OPEN (eval vacuous-green forbid beyond honesty packs).
+PR-H4 shipped as ADR_0095 (vacuous-green forbid); `recommended_next_step` remains PR-C1-ARM.

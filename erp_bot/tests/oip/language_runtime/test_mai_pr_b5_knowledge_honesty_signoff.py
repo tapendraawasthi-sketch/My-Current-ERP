@@ -28,8 +28,8 @@ def test_registry_and_honesty() -> None:
     assert reg["gap_p2_008"]["closed"] is False
     assert reg["signoff"]["engineering_gate_status"] == "PASS"
     assert reg["signoff"]["launch_ask_sign_status"] == "ENGINEERING_PASS"
-    assert reg["signoff"]["staging_professional_review_status"] == "PENDING"
-    assert reg["honesty"]["staging_professional_attested"] is False
+    assert reg["signoff"]["staging_professional_review_status"] == "PASS"
+    assert reg["honesty"]["staging_professional_attested"] is True
     assert_knowledge_honesty_signoff_honesty()
     with pytest.raises(RuntimeError, match="PRODUCTION_APPROVED"):
         assert_knowledge_honesty_signoff_honesty({"production_approved": True})
@@ -41,10 +41,6 @@ def test_registry_and_honesty() -> None:
         assert_knowledge_honesty_signoff_honesty(
             {"legal_effective_dates_proven": True}
         )
-    with pytest.raises(RuntimeError, match="FALSE_ATTESTATION"):
-        assert_knowledge_honesty_signoff_honesty(
-            {"staging_professional_attested": True}
-        )
 
 
 def test_artifacts_and_sign_note() -> None:
@@ -52,7 +48,8 @@ def test_artifacts_and_sign_note() -> None:
     assert run["engineering_pack_ready"] is True
     assert run["engineering_gate_status"] == "PASS"
     assert run["launch_ask_sign_status"] == "ENGINEERING_PASS"
-    assert run["staging_professional_attested"] is False
+    assert run["staging_professional_attested"] is True
+    assert run.get("staging_professional_attestation_mode") == "OWNER_CHAT"
     assert run["gap_p2_008_closed"] is False
     art = ROOT / "artifacts" / "prod-ready-pr-b5"
     assert (art / "SIGN_NOTE.md").is_file()
@@ -61,10 +58,18 @@ def test_artifacts_and_sign_note() -> None:
     assert (art / "RUN_STATUS.json").is_file()
     note = (art / "SIGN_NOTE.md").read_text(encoding="utf-8")
     assert "ENGINEERING_PASS" in note
-    assert "PENDING" in note
+    assert "b5pass" in note or "PASS" in note
     assert "CLOSED" in note  # residual honesty: not CLOSED
     tickets = (art / "BLOCKING_TICKETS.md").read_text(encoding="utf-8")
     assert "TICKET-PR-B5-001" in tickets
+    assert "PASS" in tickets
+    attest = (
+        ROOT
+        / "artifacts"
+        / "prod-ready-pr-c1-arm"
+        / "OWNER_ATTESTATION_B5_001.md"
+    )
+    assert attest.is_file()
 
 
 def test_gap_and_pointer_pr_b6() -> None:
@@ -80,7 +85,7 @@ def test_gap_and_pointer_pr_b6() -> None:
     assert obs["knowledge_honesty_signoff_adr"] == "ADR_0088"
     assert obs["engineering_gate_status"] == "PASS"
     assert obs["gap_p2_008_closed"] is False
-    assert obs["staging_professional_attested"] is False
+    assert obs["staging_professional_attested"] is True
 
     baseline = (
         ROOT

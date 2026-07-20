@@ -151,10 +151,10 @@ const ContraRegister: React.FC = () => {
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
       if (columnKey === "voucherNo") {
-        return <span className="font-bold text-gray-800">TOTAL</span>;
+        return <span className="font-bold text-gray-700">TOTAL</span>;
       }
       if (columnKey === "amount") {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
+        return <span className="font-bold font-mono text-gray-700">{formatNumber(value)}</span>;
       }
       return ""; // Hide other values in total row
     }
@@ -197,7 +197,7 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -207,7 +207,7 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -215,7 +215,7 @@ const ContraRegister: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -232,40 +232,40 @@ const ContraRegister: React.FC = () => {
             placeholder="Search voucher no, narration..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
           />
         </>
       }
     >
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-4 mb-4 text-[12px]">
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Cash → Bank
           </div>
-          <div className="text-[14px] font-mono font-medium text-gray-800">
+          <div className="text-[14px] font-mono font-medium text-gray-700">
             Rs. {formatNumber(summaryStats.cashToBank)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Bank → Cash
           </div>
-          <div className="text-[14px] font-mono font-medium text-gray-800">
+          <div className="text-[14px] font-mono font-medium text-gray-700">
             Rs. {formatNumber(summaryStats.bankToCash)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Bank → Bank
           </div>
-          <div className="text-[14px] font-mono font-medium text-gray-800">
+          <div className="text-[14px] font-mono font-medium text-gray-700">
             Rs. {formatNumber(summaryStats.bankToBank)}
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <ReportGrid
           columns={columns}
           data={data}
@@ -287,7 +287,7 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -297,7 +297,7 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -307,7 +307,7 @@ const ContraRegister: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -326,7 +326,7 @@ const ContraRegister: React.FC = () => {
               type="text"
               value={pendingSearchText}
               onChange={(e) => setPendingSearchText(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               placeholder="Voucher no or narration"
             />
           </label>

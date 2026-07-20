@@ -30,7 +30,7 @@ function money(v: number): string {
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -96,7 +96,7 @@ function Modal({ open, title, children, onClose }) {
     >
       <div className="bg-white border border-gray-200 shadow-xl rounded-lg w-full flex flex-col max-w-xl">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-          <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
@@ -433,10 +433,10 @@ export default function YearEndProcess() {
 
   if (!isAllowed) {
     return (
-      <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 p-4 text-gray-700 flex items-center justify-center">
         <div className={`${cardClass} max-w-md text-center py-8`}>
           <Shield size={48} className="mx-auto text-red-500 mb-4" />
-          <h1 className="text-[16px] font-bold text-gray-800 mb-2">Access Denied</h1>
+          <h1 className="text-[16px] font-bold text-gray-900 mb-2">Access Denied</h1>
           <p className="text-[12px] text-gray-600">
             Year-end processing is restricted to admin and manager roles.
           </p>
@@ -751,10 +751,10 @@ export default function YearEndProcess() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Shield size={18} className="text-[var(--ds-action-primary)]" /> Year-End Process
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -766,7 +766,7 @@ export default function YearEndProcess() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch filter"
           >
             <option value="all">All branches</option>
@@ -819,7 +819,7 @@ export default function YearEndProcess() {
       {currentStep === 1 && (
         <div className={`${cardClass} max-w-4xl mx-auto`}>
           <div className="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
-            <h2 className="text-[14px] font-semibold text-gray-800">Pre-Closing Verification</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700">Pre-Closing Verification</h2>
             <button className={outlineBtn} onClick={runChecks}>
               <RefreshCw size={14} /> Re-run Checks
             </button>
@@ -868,9 +868,9 @@ export default function YearEndProcess() {
             ))}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg">
             <div>
-              <div className="text-[14px] font-bold text-gray-800">
+              <div className="text-[14px] font-bold text-gray-700">
                 {passedCount} of {totalCount} checks passed
               </div>
               {failedAutomated && (
@@ -886,7 +886,7 @@ export default function YearEndProcess() {
                 <label className="text-[11px] flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     checked={manualOverride}
                     onChange={(e) => setManualOverride(e.target.checked)}
                   />
@@ -908,7 +908,7 @@ export default function YearEndProcess() {
       {currentStep === 2 && (
         <div className={`${cardClass} max-w-5xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-4">
-            <h2 className="text-[14px] font-semibold text-gray-800">Year-End Adjustments</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700">Year-End Adjustments</h2>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Post required year-end adjustment entries for provisions, depreciation, and closing
               values.
@@ -929,7 +929,7 @@ export default function YearEndProcess() {
                 Rs. {money(gratuityAmount)}
               </div>
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm whitespace-nowrap"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm whitespace-nowrap"
                 onClick={postGratuityJournal}
               >
                 Post Journal
@@ -937,7 +937,7 @@ export default function YearEndProcess() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-md border border-gray-200 mb-6">
+          <div className="overflow-x-auto rounded-lg border border-gray-200 mb-6">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -1002,11 +1002,11 @@ export default function YearEndProcess() {
             </table>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg">
             <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer">
               <input
                 type="checkbox"
-                className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 checked={allEntriesPosted}
                 onChange={(e) => setAllEntriesPosted(e.target.checked)}
               />
@@ -1031,7 +1031,7 @@ export default function YearEndProcess() {
       {currentStep === 3 && (
         <div className={`${cardClass} max-w-4xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-6">
-            <h2 className="text-[14px] font-semibold text-gray-800">Close Profit & Loss</h2>
+            <h2 className="text-[14px] font-semibold text-gray-700">Close Profit & Loss</h2>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Transfer all income and expense balances to Retained Earnings to clear them for the
               next fiscal year.
@@ -1039,7 +1039,7 @@ export default function YearEndProcess() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+            <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
               <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">
                 Total Income
               </div>
@@ -1047,7 +1047,7 @@ export default function YearEndProcess() {
                 Rs. {money(plSummary.totalIncome)}
               </div>
             </div>
-            <div className="border border-gray-200 rounded-md p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+            <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
               <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-1">
                 Total Expenses
               </div>
@@ -1071,16 +1071,16 @@ export default function YearEndProcess() {
             </div>
           </div>
 
-          <h3 className="text-[13px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 flex justify-between items-center">
+          <h3 className="text-[13px] font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2 flex justify-between items-center">
             Closing Entries Journal Preview
             <span className="text-[11px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
               {closingPreview.incomeLines.length + closingPreview.expenseLines.length + 1} lines
             </span>
           </h3>
 
-          <div className="overflow-x-auto rounded-md border border-gray-200 mb-6 max-h-80">
+          <div className="overflow-x-auto rounded-lg border border-gray-200 mb-6 max-h-80">
             <table className="w-full border-collapse">
-              <thead className="sticky top-0 bg-[#f5f6fa]">
+              <thead className="sticky top-0 bg-gray-50">
                 <tr>
                   {["Account", "Debit", "Credit"].map((h) => (
                     <th
@@ -1142,7 +1142,7 @@ export default function YearEndProcess() {
             </div>
           )}
 
-          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg">
             <button className={outlineBtn} onClick={() => setCurrentStep(2)}>
               Back
             </button>
@@ -1166,7 +1166,7 @@ export default function YearEndProcess() {
       {currentStep === 4 && (
         <div className={`${cardClass} max-w-3xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-6">
-            <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h2 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <Lock size={16} /> Lock the Fiscal Year
             </h2>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1183,7 +1183,7 @@ export default function YearEndProcess() {
             </div>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
             <h3 className="text-[11px] uppercase tracking-wide font-semibold text-gray-500 mb-3 border-b border-gray-200 pb-2">
               Fiscal Year Summary
             </h3>
@@ -1204,12 +1204,12 @@ export default function YearEndProcess() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg">
             <button className={outlineBtn} onClick={() => setCurrentStep(3)}>
               Back
             </button>
             <button
-              className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+              className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors shadow-sm"
               onClick={() => setLockModal(true)}
             >
               <Lock size={14} /> Lock {currentFiscalYear?.name}
@@ -1221,7 +1221,7 @@ export default function YearEndProcess() {
       {currentStep === 5 && (
         <div className={`${cardClass} max-w-5xl mx-auto`}>
           <div className="border-b border-gray-100 pb-3 mb-6">
-            <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h2 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <CalendarDays size={16} /> Activate Next Fiscal Year
             </h2>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1230,8 +1230,8 @@ export default function YearEndProcess() {
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
-            <h3 className="text-[12px] font-semibold text-gray-800 mb-3 flex items-center gap-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+            <h3 className="text-[12px] font-semibold text-gray-700 mb-3 flex items-center gap-2">
               <Settings size={14} /> New Fiscal Year Settings
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -1290,16 +1290,16 @@ export default function YearEndProcess() {
             </div>
           </div>
 
-          <h3 className="text-[13px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 flex justify-between items-center">
+          <h3 className="text-[13px] font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2 flex justify-between items-center">
             Balance Sheet Roll-over Preview
             <span className="text-[11px] font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
               {balanceSheetRollover.length} accounts
             </span>
           </h3>
 
-          <div className="overflow-x-auto rounded-md border border-gray-200 mb-6 max-h-[400px]">
+          <div className="overflow-x-auto rounded-lg border border-gray-200 mb-6 max-h-[400px]">
             <table className="w-full border-collapse">
-              <thead className="sticky top-0 bg-[#f5f6fa]">
+              <thead className="sticky top-0 bg-gray-50">
                 <tr>
                   {["Account Name", "Closing Balance", "New Opening Balance"].map((h) => (
                     <th
@@ -1459,7 +1459,7 @@ export default function YearEndProcess() {
               Cancel
             </button>
             <button
-              className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={
                 lockConfirmName !== currentFiscalYear?.name ||
                 (currentUser?.role === "admin" && requiredPin && adminPin !== requiredPin)

@@ -395,11 +395,11 @@ const SalesPurchaseAnalysis: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f5f6fa] pb-20">
+    <div className="flex flex-col h-full bg-gray-50 pb-20">
       <div className="p-4 bg-white border-b border-gray-200">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Sales & Purchase Analysis</h1>
+            <h1 className="text-xl font-bold text-gray-900">Sales & Purchase Analysis</h1>
             <p className="text-sm text-gray-600">
               Top customers, vendors, products and business trends
             </p>
@@ -409,7 +409,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -430,7 +430,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
             <select
               value={topN}
               onChange={(e) => setTopN(Number(e.target.value))}
-              className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {[5, 10, 20].map((n) => (
                 <option key={n} value={n}>
@@ -441,7 +441,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
             <select
               value={filterPeriod}
               onChange={(e) => setFilterPeriod(e.target.value as any)}
-              className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="thisYear">This Year</option>
               <option value="thisQuarter">This Quarter</option>
@@ -515,24 +515,24 @@ const SalesPurchaseAnalysis: React.FC = () => {
                   <div className="lg:col-span-2">
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-[#f5f6fa]">
+                        <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Rank
                             </th>
-                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Party Name
                             </th>
-                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Invoice Count
                             </th>
-                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Total Amount
                             </th>
-                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Avg Invoice
                             </th>
-                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Last Transaction
                             </th>
                           </tr>
@@ -657,24 +657,24 @@ const SalesPurchaseAnalysis: React.FC = () => {
                   <div className="lg:col-span-2">
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-[#f5f6fa]">
+                        <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Rank
                             </th>
-                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Party Name
                             </th>
-                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Invoice Count
                             </th>
-                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Total Amount
                             </th>
-                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Avg Invoice
                             </th>
-                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                               Last Transaction
                             </th>
                           </tr>
@@ -819,24 +819,24 @@ const SalesPurchaseAnalysis: React.FC = () => {
 
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-[#f5f6fa]">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Rank
                         </th>
-                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Item Name
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Total Qty
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Total Amount
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Avg Rate
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Gross Margin %
                         </th>
                       </tr>
@@ -906,7 +906,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
               <select
                 value={trendMonths}
                 onChange={(e) => setTrendMonths(Number(e.target.value))}
-                className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               >
                 {[3, 6, 12].map((n) => (
                   <option key={n} value={n}>
@@ -966,21 +966,21 @@ const SalesPurchaseAnalysis: React.FC = () => {
 
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-[#f5f6fa]">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Month
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Sales
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Purchases
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Gross Profit
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Margin %
                         </th>
                       </tr>

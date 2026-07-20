@@ -2,12 +2,13 @@
   "schema_version": "1.0.0",
   "step": "PR-B5",
   "authority": "ADR_0088",
-  "as_of": "2026-07-19",
+  "as_of": "2026-07-20",
   "engineering_pack_ready": true,
   "engineering_gate_status": "PASS",
   "launch_ask_sign_status": "ENGINEERING_PASS",
-  "staging_professional_attested": false,
-  "staging_professional_review_status": "PENDING",
+  "staging_professional_attested": true,
+  "staging_professional_review_status": "PASS",
+  "staging_professional_attestation_mode": "OWNER_CHAT",
   "blocking_fix_required": false,
   "production_approved": false,
   "gap_p2_008_closed": false,
@@ -16,8 +17,10 @@
     "notes": "test_mai_next13_knowledge_citation 10 passed; critical cases ABSTAIN_UNGROUNDED"
   },
   "staging": {
-    "professional_review": "PENDING",
-    "ticket": "TICKET-PR-B5-001"
+    "professional_review": "PASS_OWNER_ATTESTATION",
+    "ticket": "TICKET-PR-B5-001",
+    "attestation_note": "artifacts/prod-ready-pr-c1-arm/OWNER_ATTESTATION_B5_001.md",
+    "owner_decision": "b5pass (2026-07-20)"
   },
-  "blocks_pr_c_with_pr_b1_tickets": true
+  "blocks_pr_c_with_pr_b1_tickets": false
 }

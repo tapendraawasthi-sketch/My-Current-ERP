@@ -6,9 +6,11 @@ import { ChevronRight, ChevronDown, ArrowLeft, Settings, Search } from "lucide-r
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import ErpReportModal from "../components/reporting/ErpReportModal";
-import { ReportWorkspace } from "@/features/reports";
+import { SummaryReportLayout } from "@/features/reports";
 import { readActiveBranchId } from "../lib/activeBranch";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { pushDrillCrumb, useNavCrumbStore } from "../routing/navCrumbStore";
+import { formatCurrency, formatNumber } from "@/lib/utils";
 
 type TBVariant = "closing-alphabetical" | "closing-groupwise" | "opening";
 
@@ -65,11 +67,7 @@ const isDebitNature = (type: string): boolean => {
 
 const money = (n: number, round = false) => {
   if (n === 0 || !n) return "—";
-  const val = round ? Math.round(Math.abs(n)) : Math.abs(n);
-  return val.toLocaleString("en-IN", {
-    minimumFractionDigits: round ? 0 : 2,
-    maximumFractionDigits: round ? 0 : 2,
-  });
+  return formatNumber(Math.abs(n), { decimals: round ? 0 : 2 });
 };
 
 export default function TrialBalance() {
@@ -496,6 +494,7 @@ export default function TrialBalance() {
       const acc = accounts.find((a) => a.id === row.id);
       setSelectedAccount(acc);
       setDrillStack((prev) => [...prev, { type: "ledger", id: row.id, name: row.name, data: acc }]);
+      pushDrillCrumb({ page: "trial-balance", label: row.name, entityId: row.id });
     } else {
       toggleExpand(row.id);
     }
@@ -503,10 +502,12 @@ export default function TrialBalance() {
 
   const drillIntoVoucher = (txn: any) => {
     setSelectedVoucher(txn);
+    const label = txn.voucherNo || txn.invoiceNo || "Voucher";
     setDrillStack((prev) => [
       ...prev,
-      { type: "voucher", id: txn.id, name: txn.voucherNo || txn.invoiceNo, data: txn },
+      { type: "voucher", id: txn.id, name: label, data: txn },
     ]);
+    pushDrillCrumb({ page: "trial-balance", label, entityId: txn.id });
   };
 
   const drillBack = () => {
@@ -520,6 +521,8 @@ export default function TrialBalance() {
     } else if (prev.type === "ledger") {
       setSelectedVoucher(null);
     }
+    const crumbs = useNavCrumbStore.getState().stack;
+    if (crumbs.length > 1) useNavCrumbStore.getState().popTo(crumbs.length - 2);
   };
 
   // ─── Ledger transactions for drill-down ────────────────────────────────────
@@ -617,7 +620,7 @@ export default function TrialBalance() {
         <>
           <button
             onClick={() => setShowOptions(false)}
-            className="h-8 px-3.5 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3.5 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
           >
             Cancel
           </button>
@@ -647,7 +650,7 @@ export default function TrialBalance() {
             <select
               value={options.branchId}
               onChange={(e) => setOpt("branchId", e.target.value)}
-              className="h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 w-full px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="all">All branches</option>
               {branchOptions.map((b) => (
@@ -693,7 +696,7 @@ export default function TrialBalance() {
             <select
               value={options.selectedGroupId}
               onChange={(e) => setOpt("selectedGroupId", e.target.value)}
-              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">— All Groups —</option>
               {accounts
@@ -774,7 +777,7 @@ export default function TrialBalance() {
               <span className="w-4 shrink-0" />
             )}
             <span
-              className={`text-[12px] text-gray-800 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}
+              className={`text-[12px] text-gray-700 ${isPrimaryGroup || isSubGroup ? "font-semibold" : ""}`}
             >
               {row.name}
             </span>
@@ -837,17 +840,17 @@ export default function TrialBalance() {
     const closingBal = (accountBalances[acc.id]?.dr || 0) - (accountBalances[acc.id]?.cr || 0);
 
     return (
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div className="p-4 bg-[var(--ds-surface-muted)] border-b border-gray-200 flex items-center justify-between no-print">
           <div className="flex items-center gap-3">
             <button
               onClick={drillBack}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <div>
-              <h3 className="text-[14px] font-semibold text-gray-800">Ledger: {acc.name}</h3>
+              <h3 className="text-[14px] font-semibold text-gray-700">Ledger: {acc.name}</h3>
               <p className="text-[12px] text-gray-500">
                 {options.fromDate} to {options.toDate}
               </p>
@@ -867,25 +870,25 @@ export default function TrialBalance() {
           <table className="report-table w-full text-[12px] border-collapse">
             <thead>
               <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                   Date
                 </th>
-                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                   Particulars
                 </th>
-                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                   Type
                 </th>
-                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                <th className="px-3 py-2.5 text-center border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                   Vch No
                 </th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                   Debit
                 </th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                   Credit
                 </th>
-                <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                   Balance
                 </th>
               </tr>
@@ -900,7 +903,7 @@ export default function TrialBalance() {
                   <td className="px-3 py-2.5 border-r border-gray-200 font-mono text-gray-600">
                     {t.date}
                   </td>
-                  <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">
+                  <td className="px-3 py-2.5 border-r border-gray-200 text-gray-700">
                     {t.particulars}
                   </td>
                   <td className="px-3 py-2.5 text-center border-r border-gray-200 text-[12px] text-gray-600 uppercase">
@@ -923,13 +926,13 @@ export default function TrialBalance() {
                 </tr>
               ))}
               <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)] font-bold">
-                <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800" colSpan={4}>
+                <td className="px-3 py-2.5 border-r border-gray-200 text-gray-700" colSpan={4}>
                   Closing Balance
                 </td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-700">
                   {money(accountTxn[acc.id]?.dr || 0)}
                 </td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-700">
                   {money(accountTxn[acc.id]?.cr || 0)}
                 </td>
                 <td
@@ -952,17 +955,17 @@ export default function TrialBalance() {
     if (!selectedVoucher) return null;
     const v = selectedVoucher;
     return (
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div className="p-4 bg-[var(--ds-surface-muted)] border-b border-gray-200 flex items-center justify-between no-print">
           <div className="flex items-center gap-3">
             <button
               onClick={drillBack}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <div>
-              <h3 className="text-[14px] font-semibold text-gray-800">Voucher: {v.voucherNo}</h3>
+              <h3 className="text-[14px] font-semibold text-gray-700">Voucher: {v.voucherNo}</h3>
               <p className="text-[12px] text-gray-500">
                 {v.date} · {v.type?.toUpperCase()} · {v.status?.toUpperCase()}
               </p>
@@ -972,35 +975,35 @@ export default function TrialBalance() {
         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 border-b border-gray-200 bg-gray-50">
           <div>
             <p className="text-[12px] font-semibold text-gray-500 uppercase">Voucher No</p>
-            <p className="text-[12px] font-mono text-gray-800 mt-0.5">{v.voucherNo}</p>
+            <p className="text-[12px] font-mono text-gray-700 mt-0.5">{v.voucherNo}</p>
           </div>
           <div>
             <p className="text-[12px] font-semibold text-gray-500 uppercase">Date</p>
-            <p className="text-[12px] font-mono text-gray-800 mt-0.5">{v.date}</p>
+            <p className="text-[12px] font-mono text-gray-700 mt-0.5">{v.date}</p>
           </div>
           <div>
             <p className="text-[12px] font-semibold text-gray-500 uppercase">Type</p>
-            <p className="text-[12px] text-gray-800 uppercase mt-0.5">{v.type}</p>
+            <p className="text-[12px] text-gray-700 uppercase mt-0.5">{v.type}</p>
           </div>
           <div>
             <p className="text-[12px] font-semibold text-gray-500 uppercase">Narration</p>
-            <p className="text-[12px] text-gray-800 mt-0.5 truncate">{v.narration || "—"}</p>
+            <p className="text-[12px] text-gray-700 mt-0.5 truncate">{v.narration || "—"}</p>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="report-table w-full text-[12px] border-collapse">
             <thead>
               <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                   Account
                 </th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                   Debit
                 </th>
-                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                <th className="px-3 py-2.5 text-right border-r border-gray-200 text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                   Credit
                 </th>
-                <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                   Narration
                 </th>
               </tr>
@@ -1010,7 +1013,7 @@ export default function TrialBalance() {
                 const acc = accounts.find((a) => a.id === line.accountId);
                 return (
                   <tr key={idx} className="border-b border-gray-200 bg-white">
-                    <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">
+                    <td className="px-3 py-2.5 border-r border-gray-200 text-gray-700">
                       {acc?.name || line.accountName || line.accountId}
                     </td>
                     <td className="px-3 py-2.5 text-right border-r border-gray-200 number-cell">
@@ -1024,11 +1027,11 @@ export default function TrialBalance() {
                 );
               })}
               <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)] font-bold">
-                <td className="px-3 py-2.5 border-r border-gray-200 text-gray-800">TOTAL</td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                <td className="px-3 py-2.5 border-r border-gray-200 text-gray-700">TOTAL</td>
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-700">
                   {money(v.totalDebit || v.amount || 0)}
                 </td>
-                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-800">
+                <td className="px-3 py-2.5 text-right border-r border-gray-200 font-mono text-gray-700">
                   {money(v.totalCredit || v.amount || 0)}
                 </td>
                 <td className="px-3 py-2.5"></td>
@@ -1057,10 +1060,15 @@ export default function TrialBalance() {
     companySettings?.companyNameEn || companySettings?.companyName || companySettings?.name || "Company";
 
   return (
-    <ReportWorkspace
+    <SummaryReportLayout
       title="Account totals check"
       description="Debits and credits should match."
       companyName={companyName}
+      nameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
+      pan={companySettings?.panNumber || companySettings?.pan}
+      address={companySettings?.address || companySettings?.companyAddress}
+      phone={companySettings?.phone || companySettings?.mobile}
+      logoUrl={companySettings?.logo || companySettings?.logoUrl}
       periodLabel={
         currentDrill.type === "tb"
           ? `${options.fromDate} to ${options.toDate}`
@@ -1072,8 +1080,40 @@ export default function TrialBalance() {
         currentDrill.type === "tb" && generated
           ? isBalanced
             ? { tone: "success", label: "Accounts match" }
-            : { tone: "danger", label: `Out by Rs. ${balanceDifference.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` }
+            : { tone: "danger", label: `Out by ${formatCurrency(balanceDifference)}` }
           : undefined
+      }
+      kpiSlot={
+        currentDrill.type === "tb" && generated ? (
+          <>
+            <div className="rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2">
+              <div className="text-[10px] font-medium text-gray-500">Total debit</div>
+              <div className="mt-0.5 font-mono text-[13px] font-semibold text-gray-800">
+                {formatCurrency(totalClosingDebit)}
+              </div>
+            </div>
+            <div className="rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2">
+              <div className="text-[10px] font-medium text-gray-500">Total credit</div>
+              <div className="mt-0.5 font-mono text-[13px] font-semibold text-gray-800">
+                {formatCurrency(totalClosingCredit)}
+              </div>
+            </div>
+            <div className="rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2">
+              <div className="text-[10px] font-medium text-gray-500">Difference</div>
+              <div
+                className={`mt-0.5 font-mono text-[13px] font-semibold ${isBalanced ? "text-[var(--ox-success)]" : "text-[var(--ox-danger)]"}`}
+              >
+                {formatCurrency(balanceDifference)}
+              </div>
+            </div>
+            <div className="rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2">
+              <div className="text-[10px] font-medium text-gray-500">Rows</div>
+              <div className="mt-0.5 font-mono text-[13px] font-semibold text-gray-800">
+                {flatRows.length}
+              </div>
+            </div>
+          </>
+        ) : undefined
       }
       onPrint={currentDrill.type === "tb" && generated ? handlePrint : undefined}
       onExportExcel={currentDrill.type === "tb" && generated ? handleExportExcel : undefined}
@@ -1107,7 +1147,7 @@ export default function TrialBalance() {
 
       {currentDrill.type === "tb" && generated && (
         <div
-          className="border border-gray-300 bg-white overflow-hidden"
+          className="border border-gray-200 bg-white overflow-hidden rounded-lg"
           ref={printRef}
         >
           <div className="no-print px-4 py-2.5 border-b border-gray-200 flex flex-wrap items-center gap-2">
@@ -1118,7 +1158,7 @@ export default function TrialBalance() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search accounts…"
-                className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                className="h-8 pl-8 pr-3 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
               />
             </div>
             <span className="text-[12px] text-gray-500">
@@ -1169,8 +1209,8 @@ export default function TrialBalance() {
               {options.showPrevYear ? (
                 <thead>
                   <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" />
-                    <th className="px-3 py-2 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" colSpan={2}>
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200" />
+                    <th className="px-3 py-2 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200" colSpan={2}>
                       Previous year
                     </th>
                     <th
@@ -1180,36 +1220,36 @@ export default function TrialBalance() {
                       Current year
                     </th>
                     {options.showPercentage && (
-                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide" />
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide" />
                     )}
                   </tr>
                   <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200">
                       Account Name
                     </th>
-                    <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">
+                    <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">
                       Prev Dr
                     </th>
-                    <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">
+                    <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">
                       Prev Cr
                     </th>
                     {options.displayMode === "detailed" ? (
                       <>
-                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">Op Dr</th>
-                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">Op Cr</th>
-                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">Txn Dr</th>
-                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">Txn Cr</th>
-                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">Cl Dr</th>
-                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200">Cl Cr</th>
+                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">Op Dr</th>
+                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">Op Cr</th>
+                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">Txn Dr</th>
+                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">Txn Cr</th>
+                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">Cl Dr</th>
+                        <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200">Cl Cr</th>
                       </>
                     ) : (
                       <>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Debit (Dr)</th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">Credit (Cr)</th>
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-32">Debit (Dr)</th>
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-32">Credit (Cr)</th>
                       </>
                     )}
                     {options.showPercentage && (
-                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">%</th>
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-20">%</th>
                     )}
                   </tr>
                 </thead>
@@ -1245,10 +1285,10 @@ export default function TrialBalance() {
                       </>
                     ) : (
                       <>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-32">
                           Debit (Dr)
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-32">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-32">
                           Credit (Cr)
                         </th>
                       </>
@@ -1264,22 +1304,22 @@ export default function TrialBalance() {
                   </tr>
                   {options.displayMode === "detailed" && (
                     <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200 w-28">
                         Dr
                       </th>
-                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200 w-28">
                         Cr
                       </th>
-                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200 w-28">
                         Dr
                       </th>
-                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200 w-28">
                         Cr
                       </th>
-                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200 w-28">
                         Dr
                       </th>
-                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-500 uppercase border-r border-gray-200 w-28">
+                      <th className="px-3 py-1.5 text-right text-[12px] font-semibold text-gray-400 uppercase border-r border-gray-200 w-28">
                         Cr
                       </th>
                     </tr>
@@ -1291,7 +1331,7 @@ export default function TrialBalance() {
               </tbody>
               <tfoot>
                   <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)] font-bold">
-                    <td className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700 border-r border-gray-200">
                       GRAND TOTAL
                     </td>
                     {options.displayMode === "detailed" ? (
@@ -1330,10 +1370,7 @@ export default function TrialBalance() {
                         colSpan={2}
                         className="px-3 py-2 text-right font-mono text-[12px] font-semibold text-red-700"
                       >
-                        {balanceDifference.toLocaleString("en-IN", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                        {formatNumber(balanceDifference, 2)}
                       </td>
                       {options.showPercentage && <td className="bg-red-50" />}
                     </tr>
@@ -1350,7 +1387,7 @@ export default function TrialBalance() {
       )}
 
       {currentDrill.type === "tb" && !generated && (
-        <div className="bg-white border border-gray-200 rounded-md">
+        <div className="bg-white border border-gray-200 rounded-lg">
           <ReportEmptyState
             message="Trial balance not generated"
             hint='Open Options and click "Generate Report" to view balances.'
@@ -1360,6 +1397,6 @@ export default function TrialBalance() {
 
       {currentDrill.type === "ledger" && <LedgerView />}
       {currentDrill.type === "voucher" && <VoucherView />}
-    </ReportWorkspace>
+    </SummaryReportLayout>
   );
 }

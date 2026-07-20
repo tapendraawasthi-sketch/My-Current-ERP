@@ -305,7 +305,7 @@ export default function StatutoryCompliance() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Nepal Statutory Compliance</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Nepal Statutory Compliance</h1>
           <p className="text-sm text-gray-500 mt-1">
             IRD-compliant VAT Annex A/B/C · CBMS sync status · e-TDS register · PAN verification
           </p>
@@ -315,7 +315,7 @@ export default function StatutoryCompliance() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -386,7 +386,7 @@ export default function StatutoryCompliance() {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === t.id
                 ? "bg-white text-blue-600 shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
+                : "text-gray-600 hover:text-gray-700"
             }`}
           >
             <t.icon className="w-4 h-4" /> {t.label}
@@ -465,7 +465,7 @@ export default function StatutoryCompliance() {
                     {annexARows.map((r) => (
                       <tr key={r.sn} className="hover:bg-gray-50">
                         <td className="px-3 py-2 text-center text-gray-400">{r.sn}</td>
-                        <td className="px-3 py-2 font-medium text-gray-800">{r.supplierName}</td>
+                        <td className="px-3 py-2 font-medium text-gray-700">{r.supplierName}</td>
                         <td className="px-3 py-2 font-mono text-xs">
                           {r.supplierPAN ? (
                             <span className="text-green-700">{r.supplierPAN}</span>
@@ -560,7 +560,7 @@ export default function StatutoryCompliance() {
                     {annexBRows.map((r) => (
                       <tr key={r.sn} className="hover:bg-gray-50">
                         <td className="px-3 py-2 text-center text-gray-400">{r.sn}</td>
-                        <td className="px-3 py-2 font-medium text-gray-800">{r.buyerName}</td>
+                        <td className="px-3 py-2 font-medium text-gray-700">{r.buyerName}</td>
                         <td className="px-3 py-2 font-mono text-xs">
                           {r.buyerPAN ? (
                             <span className="text-green-700">{r.buyerPAN}</span>
@@ -615,7 +615,7 @@ export default function StatutoryCompliance() {
           {annexType === "C" && (
             <div className="space-y-4">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 max-w-xl">
-                <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
                   <Receipt className="w-5 h-5 text-blue-600" /> VAT Return Summary (Annex C)
                 </h3>
                 <div className="space-y-1">
@@ -653,7 +653,7 @@ export default function StatutoryCompliance() {
                   <div
                     className={`flex justify-between py-3 rounded-lg px-3 mt-4 ${annexCData.isPayable ? "bg-orange-50" : "bg-teal-50"}`}
                   >
-                    <span className="font-bold text-gray-800">
+                    <span className="font-bold text-gray-700">
                       {annexCData.isPayable
                         ? "Net VAT Payable to IRD"
                         : "Net VAT Refundable from IRD"}
@@ -724,7 +724,7 @@ export default function StatutoryCompliance() {
 
           {/* Sync status overview */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-blue-600" /> Sync Status Overview
             </h3>
             {cbmsStats.total > 0 ? (
@@ -860,7 +860,7 @@ export default function StatutoryCompliance() {
                 {tdsRows.map((r) => (
                   <tr key={r.sn} className="hover:bg-gray-50">
                     <td className="px-4 py-2 text-center text-gray-400">{r.sn}</td>
-                    <td className="px-4 py-2 font-medium text-gray-800">{r.deducteeName}</td>
+                    <td className="px-4 py-2 font-medium text-gray-700">{r.deducteeName}</td>
                     <td className="px-4 py-2 font-mono text-xs">
                       {r.deducteePAN ? (
                         <span className="text-green-700">{r.deducteePAN}</span>
@@ -912,7 +912,7 @@ export default function StatutoryCompliance() {
       {activeTab === "pan-verify" && (
         <div className="space-y-4">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 max-w-lg">
-            <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
               <CheckCircle className="w-5 h-5 text-green-600" /> PAN / VAT Number Verification
             </h3>
             <div className="space-y-3">
@@ -997,7 +997,7 @@ export default function StatutoryCompliance() {
                   }, [])
                   .map((row, i) => (
                     <tr key={i} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 font-medium text-gray-800">{row.name}</td>
+                      <td className="px-4 py-2 font-medium text-gray-700">{row.name}</td>
                       <td className="px-4 py-2">
                         <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs">
                           Supplier

@@ -17,7 +17,10 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
+  KpiSkeleton,
+  TableSkeleton,
 } from "@/design-system";
+import { PrintDocumentHeader, PrintDocumentSignatures } from "./PrintDocumentChrome";
 
 export type ReportWorkspaceProps = {
   title: string;
@@ -28,6 +31,12 @@ export type ReportWorkspaceProps = {
   companyName?: string;
   pan?: string;
   nameNepali?: string;
+  /** Optional print letterhead fields (STEP 6.4). */
+  address?: string;
+  phone?: string;
+  logoUrl?: string | null;
+  /** When false, omit print signature block. Default true. */
+  printSignatures?: boolean;
   onRefresh?: () => void;
   onPrint?: () => void;
   onExportExcel?: () => void;
@@ -38,6 +47,8 @@ export type ReportWorkspaceProps = {
   onShowReport?: () => void;
   showReportLabel?: string;
   kpiSlot?: React.ReactNode;
+  /** When true, swaps KPI + body for floorplan skeletons (STEP 3.2). */
+  loading?: boolean;
   tabs?: Array<{ key: string; label: string }>;
   activeTab?: string;
   onTabChange?: (key: string) => void;
@@ -57,6 +68,10 @@ export function ReportWorkspace({
   companyName,
   pan,
   nameNepali,
+  address,
+  phone,
+  logoUrl,
+  printSignatures = true,
   onRefresh,
   onPrint,
   onExportExcel,
@@ -67,6 +82,7 @@ export function ReportWorkspace({
   onShowReport,
   showReportLabel = "Show report",
   kpiSlot,
+  loading,
   tabs,
   activeTab,
   onTabChange,
@@ -152,8 +168,10 @@ export function ReportWorkspace({
           {breadcrumb}
         </div>
       ) : null}
-      <div className="p-3">{children}</div>
-      {footer}
+      <div className="p-3">
+        {loading ? <TableSkeleton rows={8} columns={6} className="border-0" /> : children}
+      </div>
+      {loading ? null : footer}
     </>
   );
 
@@ -190,9 +208,24 @@ export function ReportWorkspace({
         </div>
       )}
 
-      {kpiSlot ? (
+      {loading ? (
+        <KpiSkeleton count={4} className="ds-no-print no-print" />
+      ) : kpiSlot ? (
         <div className="ds-no-print no-print grid grid-cols-2 gap-3 lg:grid-cols-4">{kpiSlot}</div>
       ) : null}
+
+      <div className="ds-print-only print-only hidden">
+        <PrintDocumentHeader
+          companyName={companyName}
+          nameNepali={nameNepali}
+          address={address}
+          pan={pan}
+          phone={phone}
+          logoUrl={logoUrl}
+          title={title}
+          periodLabel={periodLabel}
+        />
+      </div>
 
       <Surface tone="surface" className="min-h-0 flex-1 overflow-hidden">
         {tabs && tabs.length > 0 && activeTab && onTabChange ? (
@@ -215,16 +248,11 @@ export function ReportWorkspace({
         )}
       </Surface>
 
-      <div className="ds-print-only print-only hidden">
-        <div className="mb-3 text-[12px]">
-          <div className="font-semibold">{companyName}</div>
-          {nameNepali ? <div lang="ne">{nameNepali}</div> : null}
-          {pan ? <div>PAN: {pan}</div> : null}
-          <div className="mt-1 font-semibold">{title}</div>
-          {periodLabel ? <div>{periodLabel}</div> : null}
-          <div>Printed at: {new Date().toLocaleString("en-IN")}</div>
+      {printSignatures ? (
+        <div className="ds-print-only print-only hidden">
+          <PrintDocumentSignatures />
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

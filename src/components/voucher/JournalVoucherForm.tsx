@@ -17,6 +17,7 @@ import {
   NepaliDatePicker,
   ConfirmDialog,
 } from "../ui";
+import { StickyActionBar } from "@/design-system";
 import {
   BookOpen,
   Plus,
@@ -101,7 +102,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     return [emptyLine(), emptyLine()];
   });
   const hasOptionalLineData = !!(existing?.lines || []).some(
-    (l: any) => l.costCenterId || l.billRefNo,
+    (l: any) => l.costCenterId || l.billRefNo || l.subledgerId,
   );
   const [showOptionalCols, setShowOptionalCols] = usePersistedToggle(
     "orbix_txn_journal_optional",
@@ -109,6 +110,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
   );
   const showCostCenterCol = enableCostCenter && showOptionalCols;
   const showBillRefCol = enableBillWise && showOptionalCols;
+  const showSubledgerCol = showOptionalCols;
   const [dirty, setDirty] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -570,25 +572,26 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
 
           {/* Accounts grid */}
           <Card title="Account Postings" padding="none">
-            {(enableCostCenter || enableBillWise) && (
-              <div className="flex items-center justify-end gap-2 border-b border-[var(--ds-border-default)] px-3 py-2">
-                <Button
-                  variant="outline"
-                  size="xs"
-                  onClick={() => setShowOptionalCols(!showOptionalCols)}
-                  aria-pressed={showOptionalCols}
-                >
-                  {showOptionalCols ? "Hide optional columns" : "Optional columns"}
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center justify-end gap-2 border-b border-[var(--ds-border-default)] px-3 py-2">
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={() => setShowOptionalCols(!showOptionalCols)}
+                aria-pressed={showOptionalCols}
+                data-testid="journal-show-advanced"
+              >
+                {showOptionalCols ? "Hide advanced" : "Show advanced"}
+              </Button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[12px] font-semibold text-[var(--ds-text-muted)]">
                   <tr>
                     <th className="px-2 py-2.5 w-10 text-center">No.</th>
                     <th className="px-2 py-2.5 min-w-[220px]">Account</th>
-                    <th className="px-2 py-2.5 min-w-[160px]">Sub-Ledger</th>
+                    {showSubledgerCol && (
+                      <th className="px-2 py-2.5 min-w-[160px]">Sub-Ledger</th>
+                    )}
                     {showCostCenterCol && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
                     {showBillRefCol && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
                     <th className="px-2 py-2.5 min-w-[140px]">Narration</th>
@@ -613,14 +616,16 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                           disabled={readOnly}
                         />
                       </td>
-                      <td className="px-2 py-2">
-                        <AccountSelect
-                          value={line.subledgerId}
-                          onChange={(v) => updateLine(idx, "subledgerId", v)}
-                          placeholder="Optional"
-                          disabled={readOnly}
-                        />
-                      </td>
+                      {showSubledgerCol && (
+                        <td className="px-2 py-2">
+                          <AccountSelect
+                            value={line.subledgerId}
+                            onChange={(v) => updateLine(idx, "subledgerId", v)}
+                            placeholder="Optional"
+                            disabled={readOnly}
+                          />
+                        </td>
+                      )}
                       {showCostCenterCol && (
                         <td className="px-2 py-2">
                           <Select
@@ -714,7 +719,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                   <tr>
                     <td
                       colSpan={colCount - 2}
-                      className="px-3 py-3 text-right uppercase tracking-wider text-[var(--ds-text-default)] text-[12px]"
+                      className="px-3 py-3 text-right text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]"
                     >
                       Totals
                     </td>
@@ -777,39 +782,44 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
           </Card>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end gap-2.5 pb-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCancel}
-              icon={<X className="h-4 w-4" />}
-            >
-              {readOnly ? "Close" : "Cancel"}
-            </Button>
-            {!readOnly && (
-              <>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  loading={saving}
-                  onClick={() => handleSave(VoucherStatus.DRAFT)}
-                  icon={<Save className="h-4 w-4" />}
-                >
-                  {isEdit ? "Update Draft" : "Save as Draft"}
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  loading={saving}
-                  disabled={!totals.balanced}
-                  onClick={() => handleSave(VoucherStatus.POSTED)}
-                  icon={<CheckCircle2 className="h-4 w-4" />}
-                >
-                  Post
-                </Button>
-              </>
-            )}
-          </div>
+          <StickyActionBar
+            unsaved={dirty && !readOnly}
+            secondary={
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCancel}
+                icon={<X className="h-4 w-4" />}
+              >
+                {readOnly ? "Close" : "Cancel"}
+              </Button>
+            }
+            primary={
+              !readOnly ? (
+                <>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    loading={saving}
+                    onClick={() => handleSave(VoucherStatus.DRAFT)}
+                    icon={<Save className="h-4 w-4" />}
+                  >
+                    {isEdit ? "Update Draft" : "Save as Draft"}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    loading={saving}
+                    disabled={!totals.balanced}
+                    onClick={() => handleSave(VoucherStatus.POSTED)}
+                    icon={<CheckCircle2 className="h-4 w-4" />}
+                  >
+                    Post
+                  </Button>
+                </>
+              ) : null
+            }
+          />
 
           <ConfirmDialog
             isOpen={confirmCancel}

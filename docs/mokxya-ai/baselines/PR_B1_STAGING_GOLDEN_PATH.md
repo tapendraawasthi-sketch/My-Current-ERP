@@ -17,12 +17,12 @@ This ship lands the engineering evidence pack; critical rows are not all PASS.
 | `e2e/orbix-connected.spec.ts` | automated | FAIL | TICKET-PR-B1-002 (health PASS) |
 | `e2e/orbix-sales-connected.spec.ts` | automated | FAIL | TICKET-PR-B1-002 |
 | `e2e/orbix-sync.spec.ts` | automated | PARTIAL | TICKET-PR-B1-002 |
-| Romanized purchase → confirm → receipt → pending≠synced | manual | PENDING | TICKET-PR-B1-001 |
-| Devanagari/mix sale equivalent | manual | PENDING | TICKET-PR-B1-001 |
-| English sale equivalent | manual | PENDING | TICKET-PR-B1-001 |
-| Ask `balance sheet dekhaunu` (no Confirm) | manual | PENDING | TICKET-PR-B1-001 |
-| Ask sale → mode restriction / no post | manual | PENDING | TICKET-PR-B1-001 |
-| Ask fake cite → refuse/no-answer | manual | PENDING | TICKET-PR-B1-001 |
+| Romanized purchase → confirm → receipt → pending≠synced | manual | PASS | TICKET-PR-B1-001 cleared 2026-07-20 |
+| Devanagari/mix sale equivalent | manual | PASS | TICKET-PR-B1-001 cleared 2026-07-20 |
+| English sale equivalent | manual | PASS | TICKET-PR-B1-001 cleared 2026-07-20 |
+| Ask `balance sheet dekhaunu` (no Confirm) | manual | PASS | TICKET-PR-B1-001 cleared 2026-07-20 |
+| Ask sale → mode restriction / no post | manual | PASS | TICKET-PR-B1-001 cleared 2026-07-20 |
+| Ask fake cite → refuse/no-answer | manual | PASS | TICKET-PR-B1-001 cleared 2026-07-20 |
 
 ## Local connected attempt (2026-07-19)
 

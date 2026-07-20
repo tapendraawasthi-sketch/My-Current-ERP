@@ -47,16 +47,16 @@ const money = (v: any) => {
 };
 
 const btn =
-  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[var(--ds-action-primary)] text-white text-[12px] font-medium hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-lg bg-[var(--ds-action-primary)] text-white text-[12px] font-medium hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btn2 =
-  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-lg bg-white border border-gray-200 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btnDanger =
-  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-lg bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
-const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+  "w-full h-8 px-2.5 rounded-md border border-gray-200 bg-white text-[12px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-700";
 const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide bg-gray-50 border-b border-gray-200";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const escapeHtml = (unsafe: string): string => {
@@ -225,12 +225,12 @@ const makeAuditRow = (currentUser: any, action: string, narration: string, risk 
 
 const receiptCss = `
   <style>
-    body { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color:#000; }
+    body { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color:#374151; }
     .receipt { width: 310px; margin: 0 auto; font-size: 12px; }
     .center { text-align:center; }
     .bold { font-weight: 800; }
     .row { display:flex; justify-content:space-between; gap:8px; }
-    .line { border-top:1px dashed #000; margin:8px 0; }
+    .line { border-top:1px dashed #374151; margin:8px 0; }
     table { width:100%; border-collapse:collapse; font-size:11px; }
     th, td { padding:2px 0; text-align:left; }
     .right { text-align:right; }
@@ -246,8 +246,8 @@ const Modal = ({ open, title, children, onClose, max = "max-w-5xl" }: any) => {
       <div
         className={`bg-white rounded-lg shadow-xl w-full ${max} max-h-[90vh] overflow-hidden flex flex-col`}
       >
-        <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
-          <h3 className="text-[15px] font-semibold text-gray-800">{title}</h3>
+        <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-200">
+          <h3 className="text-[15px] font-semibold text-gray-700">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
             <XCircle className="h-5 w-5" />
           </button>
@@ -1150,7 +1150,7 @@ export default function POSBilling() {
         <div className={`${card} border-[var(--ds-action-primary)]/30`}>
           <div className="flex items-center justify-between gap-2 mb-3">
             <div>
-              <h4 className="text-[13px] font-semibold text-gray-800">
+              <h4 className="text-[13px] font-semibold text-gray-700">
                 Return · {returnTarget.invoiceNo || returnTarget.number}
               </h4>
               <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1169,7 +1169,7 @@ export default function POSBilling() {
               Cancel
             </button>
           </div>
-          <div className="border border-gray-200 rounded-md overflow-hidden mb-3">
+          <div className="border border-gray-200 rounded-lg overflow-hidden mb-3">
             <table className="w-full">
               <thead>
                 <tr>
@@ -1593,7 +1593,7 @@ export default function POSBilling() {
           <div className={card}>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Sale Date
                 </label>
                 <input
@@ -1605,7 +1605,7 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Warehouse
                 </label>
                 <select
@@ -1622,7 +1622,7 @@ export default function POSBilling() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Customer
                 </label>
                 <select
@@ -1640,7 +1640,7 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Held Bills
                 </label>
                 <button className={`${btn2} w-full`} onClick={() => setActiveTab("Held Bills")}>
@@ -1654,7 +1654,7 @@ export default function POSBilling() {
           <div className={card}>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
               <div className="md:col-span-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Barcode / Item Code
                 </label>
                 <div className="flex gap-2">
@@ -1680,7 +1680,7 @@ export default function POSBilling() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Search Item
                 </label>
                 <div className="relative">
@@ -1695,7 +1695,7 @@ export default function POSBilling() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                <label className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1 block">
                   Category
                 </label>
                 <select
@@ -1724,7 +1724,7 @@ export default function POSBilling() {
                   onClick={() => addToCart(i, 1)}
                   className="bg-white border border-gray-200 rounded-lg p-3 text-left hover:border-[var(--ds-action-primary)] hover:shadow-sm transition-colors"
                 >
-                  <div className="font-semibold text-[13px] text-gray-800 line-clamp-2 min-h-[40px] leading-tight">
+                  <div className="font-semibold text-[13px] text-gray-700 line-clamp-2 min-h-[40px] leading-tight">
                     {i.name}
                   </div>
                   <div className="text-[11px] text-gray-500 mt-1">
@@ -1755,13 +1755,13 @@ export default function POSBilling() {
         <div className="space-y-4">
           <div className={card}>
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
+              <h3 className="text-[14px] font-semibold flex items-center gap-2 text-gray-900">
                 <ShoppingCart className="h-5 w-5 text-[var(--ds-action-primary)]" />
                 Cart
               </h3>
 
               <button
-                className="text-gray-400 hover:text-red-600 p-1.5 rounded"
+                className="text-gray-400 hover:text-red-600 p-1.5 rounded-lg"
                 onClick={clearCart}
               >
                 <Trash2 className="h-4 w-4" />
@@ -1773,10 +1773,10 @@ export default function POSBilling() {
                 const x = lineNet(l);
 
                 return (
-                  <div key={l.id} className="border border-gray-200 rounded-md p-2 bg-gray-50">
+                  <div key={l.id} className="border border-gray-200 rounded-lg p-2 bg-gray-50">
                     <div className="flex justify-between gap-2">
                       <div>
-                        <p className="font-semibold text-[12px] leading-tight text-gray-800">
+                        <p className="font-semibold text-[12px] leading-tight text-gray-700">
                           {l.name}
                         </p>
                         <p className="text-[10px] text-gray-500">
@@ -1785,7 +1785,7 @@ export default function POSBilling() {
                       </div>
 
                       <button
-                        className="text-gray-400 hover:text-red-600 p-1 rounded"
+                        className="text-gray-400 hover:text-red-600 p-1 rounded-lg"
                         onClick={() => removeCartLine(l.id)}
                       >
                         <XCircle className="h-3 w-3" />
@@ -1797,7 +1797,7 @@ export default function POSBilling() {
                         <label className="text-[10px] font-medium text-gray-600 mb-0.5 block">
                           Qty
                         </label>
-                        <div className="flex h-7 bg-white rounded border border-gray-300 overflow-hidden">
+                        <div className="flex h-7 bg-white rounded border border-gray-200 overflow-hidden">
                           <button
                             className="px-1.5 hover:bg-gray-100 text-gray-600"
                             onClick={() =>
@@ -1808,7 +1808,7 @@ export default function POSBilling() {
                           </button>
                           <input
                             type="number"
-                            className="w-full text-center text-[11px] font-medium border-x border-gray-300 focus:outline-none"
+                            className="w-full text-center text-[11px] font-medium border-x border-gray-200 focus:outline-none"
                             value={l.qty}
                             onChange={(e) => updateCartLine(l.id, "qty", e.target.value)}
                           />
@@ -1857,14 +1857,14 @@ export default function POSBilling() {
                         VAT
                       </label>
 
-                      <span className="font-bold text-[13px] text-gray-800">{money(x.total)}</span>
+                      <span className="font-bold text-[13px] text-gray-700">{money(x.total)}</span>
                     </div>
                   </div>
                 );
               })}
 
               {!cart.length && (
-                <div className="border border-dashed border-gray-300 rounded-md p-8 text-center text-[12px] font-semibold text-gray-500">
+                <div className="border border-dashed border-gray-200 rounded-md p-8 text-center text-[12px] font-semibold text-gray-500">
                   Cart is empty.
                 </div>
               )}
@@ -1872,7 +1872,7 @@ export default function POSBilling() {
           </div>
 
           <div className={card}>
-            <h3 className="text-[13px] font-bold mb-3 flex items-center gap-2 text-gray-800">
+            <h3 className="text-[13px] font-semibold mb-3 flex items-center gap-2 text-gray-900">
               <Calculator className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Bill Summary
             </h3>
@@ -1880,12 +1880,12 @@ export default function POSBilling() {
             <div className="space-y-1.5 text-[12px]">
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Gross</span>
-                <span className="font-semibold text-gray-800">{money(cartSummary.gross)}</span>
+                <span className="font-semibold text-gray-700">{money(cartSummary.gross)}</span>
               </div>
 
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Line Discount</span>
-                <span className="font-semibold text-gray-800">
+                <span className="font-semibold text-gray-700">
                   {money(cartSummary.lineDiscount)}
                 </span>
               </div>
@@ -1918,23 +1918,23 @@ export default function POSBilling() {
 
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Taxable</span>
-                <span className="font-semibold text-gray-800">{money(cartSummary.taxable)}</span>
+                <span className="font-semibold text-gray-700">{money(cartSummary.taxable)}</span>
               </div>
 
               <div className="flex justify-between text-gray-600 pb-2">
                 <span className="font-medium">VAT 13%</span>
-                <span className="font-semibold text-gray-800">{money(cartSummary.vat)}</span>
+                <span className="font-semibold text-gray-700">{money(cartSummary.vat)}</span>
               </div>
 
               <div className="border-t border-gray-200 pt-2 flex justify-between text-[15px]">
-                <span className="font-bold text-gray-800">Grand Total</span>
+                <span className="font-bold text-gray-700">Grand Total</span>
                 <span className="font-bold text-[var(--ds-action-primary)]">{money(cartSummary.grandTotal)}</span>
               </div>
             </div>
           </div>
 
           <div className={card}>
-            <h3 className="text-[13px] font-bold mb-3 flex items-center gap-2 text-gray-800">
+            <h3 className="text-[13px] font-semibold mb-3 flex items-center gap-2 text-gray-900">
               <WalletCards className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Payment
             </h3>
@@ -2052,7 +2052,7 @@ export default function POSBilling() {
             <div className="mt-3 space-y-1 text-[12px] bg-gray-50 p-2 rounded border border-gray-100">
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Paid</span>
-                <span className="font-bold text-gray-800">{money(cartSummary.paid)}</span>
+                <span className="font-bold text-gray-700">{money(cartSummary.paid)}</span>
               </div>
 
               <div className="flex justify-between text-gray-600">
@@ -2066,7 +2066,7 @@ export default function POSBilling() {
 
               <div className="flex justify-between text-gray-600">
                 <span className="font-medium">Change</span>
-                <span className="font-bold text-gray-800">{money(cartSummary.change)}</span>
+                <span className="font-bold text-gray-700">{money(cartSummary.change)}</span>
               </div>
             </div>
 
@@ -2094,7 +2094,7 @@ export default function POSBilling() {
   const renderHeldBills = () => (
     <div className="space-y-4">
       <div className={card}>
-        <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
+        <h3 className="text-[14px] font-semibold flex items-center gap-2 text-gray-900">
           <PauseCircle className="h-5 w-5 text-[var(--ds-action-primary)]" />
           Held Bills
         </h3>
@@ -2124,10 +2124,10 @@ export default function POSBilling() {
                   <div className="text-[10px] text-gray-500">{String(h.heldAt).slice(11, 19)}</div>
                 </td>
 
-                <td className={`${td} font-bold text-gray-800`}>{h.name}</td>
+                <td className={`${td} font-bold text-gray-700`}>{h.name}</td>
                 <td className={td}>{partyName(parties, h.partyId)}</td>
                 <td className={`${td} text-right font-semibold`}>{(h.cart || []).length}</td>
-                <td className={`${td} text-right font-bold text-gray-800`}>{money(h.total)}</td>
+                <td className={`${td} text-right font-bold text-gray-700`}>{money(h.total)}</td>
 
                 <td className={`${td} text-center`}>
                   <div className="inline-flex gap-2">
@@ -2165,38 +2165,38 @@ export default function POSBilling() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <div className={card}>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Bills</p>
-          <p className="text-xl font-bold text-gray-800 mt-1">{dayStats.bills}</p>
+          <p className="text-xl font-semibold text-gray-900 mt-1">{dayStats.bills}</p>
         </div>
 
         <div className={card}>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Sales</p>
-          <p className="text-xl font-bold text-[var(--ds-action-primary)] mt-1">{money(dayStats.totalSales)}</p>
+          <p className="text-xl font-semibold text-[var(--ds-action-primary)] mt-1">{money(dayStats.totalSales)}</p>
         </div>
 
         <div className={card}>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Cash</p>
-          <p className="text-xl font-bold text-emerald-600 mt-1">{money(dayStats.cash)}</p>
+          <p className="text-xl font-semibold text-emerald-600 mt-1">{money(dayStats.cash)}</p>
         </div>
 
         <div className={card}>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
             Card/Wallet/Bank
           </p>
-          <p className="text-xl font-bold text-gray-800 mt-1">
+          <p className="text-xl font-semibold text-gray-900 mt-1">
             {money(dayStats.card + dayStats.wallet + dayStats.bank)}
           </p>
         </div>
 
         <div className={card}>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Credit</p>
-          <p className="text-xl font-bold text-amber-600 mt-1">{money(dayStats.credit)}</p>
+          <p className="text-xl font-semibold text-amber-600 mt-1">{money(dayStats.credit)}</p>
         </div>
       </div>
 
       <div className={card}>
         <div className="flex flex-wrap justify-between gap-3 items-start">
           <div>
-            <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
+            <h3 className="text-[14px] font-semibold flex items-center gap-2 text-gray-900">
               <CalendarClock className="h-5 w-5 text-[var(--ds-action-primary)]" />
               Day Close Summary
             </h3>
@@ -2221,34 +2221,34 @@ export default function POSBilling() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
-          <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+          <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Opening Cash
             </p>
-            <p className="text-lg font-bold text-gray-800 mt-1">
+            <p className="text-lg font-bold text-gray-700 mt-1">
               {money(currentSession?.openingCash || 0)}
             </p>
           </div>
 
-          <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+          <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Cash Sales
             </p>
             <p className="text-lg font-bold text-emerald-600 mt-1">{money(dayStats.cash)}</p>
           </div>
 
-          <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+          <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Expected Cash
             </p>
-            <p className="text-lg font-bold text-gray-800 mt-1">{money(dayStats.expectedCash)}</p>
+            <p className="text-lg font-bold text-gray-700 mt-1">{money(dayStats.expectedCash)}</p>
           </div>
 
-          <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+          <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Open Session
             </p>
-            <p className="text-lg font-bold text-gray-800 mt-1">{currentSession ? "Yes" : "No"}</p>
+            <p className="text-lg font-bold text-gray-700 mt-1">{currentSession ? "Yes" : "No"}</p>
           </div>
         </div>
       </div>
@@ -2272,9 +2272,9 @@ export default function POSBilling() {
           <tbody>
             {todaySales.map((inv) => (
               <tr key={inv.id} className="hover:bg-gray-50">
-                <td className={`${td} font-bold text-gray-800`}>{inv.invoiceNo || inv.number}</td>
+                <td className={`${td} font-bold text-gray-700`}>{inv.invoiceNo || inv.number}</td>
                 <td className={td}>{inv.partyName || partyName(parties, inv.partyId)}</td>
-                <td className={`${td} text-right font-bold text-gray-800`}>
+                <td className={`${td} text-right font-bold text-gray-700`}>
                   {money(inv.grandTotal || inv.total)}
                 </td>
                 <td className={`${td} text-right text-gray-600`}>
@@ -2319,7 +2319,7 @@ export default function POSBilling() {
   const renderSessionHistory = () => (
     <div className="space-y-4">
       <div className={card}>
-        <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
+        <h3 className="text-[14px] font-semibold flex items-center gap-2 text-gray-900">
           <History className="h-5 w-5 text-[var(--ds-action-primary)]" />
           Session History
         </h3>
@@ -2347,8 +2347,8 @@ export default function POSBilling() {
           <tbody>
             {sessions.map((s) => (
               <tr key={s.id} className="hover:bg-gray-50">
-                <td className={`${td} font-semibold text-gray-800`}>{s.date}</td>
-                <td className={`${td} font-bold text-gray-800`}>{s.userName}</td>
+                <td className={`${td} font-semibold text-gray-700`}>{s.date}</td>
+                <td className={`${td} font-bold text-gray-700`}>{s.userName}</td>
                 <td className={td}>{String(s.openedAt || "").slice(11, 19)}</td>
                 <td className={td}>{s.closedAt ? String(s.closedAt).slice(11, 19) : "-"}</td>
                 <td className={`${td} text-right text-gray-600`}>{money(s.openingCash)}</td>
@@ -2399,7 +2399,7 @@ export default function POSBilling() {
         <div className="space-y-4">
           <div className="border border-gray-200 rounded-lg p-4 bg-white">
             <div className="text-center">
-              <h3 className="font-bold text-[15px] text-gray-800">
+              <h3 className="font-bold text-[15px] text-gray-700">
                 {companySettings?.name || companySettings?.companyName || "Company"}
               </h3>
               <p className="text-[11px] font-medium text-gray-500">
@@ -2410,38 +2410,38 @@ export default function POSBilling() {
               </p>
             </div>
 
-            <div className="border-t border-dashed border-gray-300 my-3" />
+            <div className="border-t border-dashed border-gray-200 my-3" />
 
             <div className="text-[11px] font-medium text-gray-600 space-y-1">
               <div className="flex justify-between">
                 <span>Bill No:</span>
-                <span className="font-semibold text-gray-800">{receiptData.invoiceNo}</span>
+                <span className="font-semibold text-gray-700">{receiptData.invoiceNo}</span>
               </div>
               <div className="flex justify-between">
                 <span>Date:</span>
-                <span className="font-semibold text-gray-800">{receiptData.date}</span>
+                <span className="font-semibold text-gray-700">{receiptData.date}</span>
               </div>
               <div className="flex justify-between">
                 <span>Customer:</span>
-                <span className="font-semibold text-gray-800">{receiptData.partyName}</span>
+                <span className="font-semibold text-gray-700">{receiptData.partyName}</span>
               </div>
               <div className="flex justify-between">
                 <span>Cashier:</span>
-                <span className="font-semibold text-gray-800">{receiptData.createdByName}</span>
+                <span className="font-semibold text-gray-700">{receiptData.createdByName}</span>
               </div>
             </div>
 
-            <div className="border-t border-dashed border-gray-300 my-3" />
+            <div className="border-t border-dashed border-gray-200 my-3" />
 
             <div className="space-y-2">
               {(receiptData.lines || []).map((l: any) => (
                 <div key={l.id} className="text-[11px] text-gray-600">
-                  <div className="font-semibold text-gray-800">{l.itemName}</div>
+                  <div className="font-semibold text-gray-700">{l.itemName}</div>
                   <div className="flex justify-between mt-0.5">
                     <span>
                       {Number(l.qty || 0).toFixed(2)} × {Number(l.rate || 0).toFixed(2)}
                     </span>
-                    <span className="font-semibold text-gray-800">
+                    <span className="font-semibold text-gray-700">
                       {Number(l.lineTotal || 0).toFixed(2)}
                     </span>
                   </div>
@@ -2449,7 +2449,7 @@ export default function POSBilling() {
               ))}
             </div>
 
-            <div className="border-t border-dashed border-gray-300 my-3" />
+            <div className="border-t border-dashed border-gray-200 my-3" />
 
             <div className="text-[11px] font-medium text-gray-600 space-y-1">
               <div className="flex justify-between">
@@ -2468,7 +2468,7 @@ export default function POSBilling() {
                 <span>VAT</span>
                 <span>{Number(receiptData.vatAmount || 0).toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-bold text-[14px] text-gray-800 border-t border-gray-200 pt-2 mt-2">
+              <div className="flex justify-between font-bold text-[14px] text-gray-700 border-t border-gray-200 pt-2 mt-2">
                 <span>Total</span>
                 <span>{Number(receiptData.grandTotal || 0).toFixed(2)}</span>
               </div>
@@ -2559,7 +2559,7 @@ export default function POSBilling() {
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors ${
               activeTab === name
                 ? "bg-[var(--ds-action-primary)] text-white"
-                : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
+                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
             }`}
           >
             <Icon className="h-3.5 w-3.5" />
@@ -2591,7 +2591,7 @@ export default function POSBilling() {
       >
         <div className="space-y-4">
           <div className="p-3 rounded-md border border-blue-200 bg-blue-50 text-blue-800">
-            <p className="text-[13px] font-bold">Opening Cash</p>
+            <p className="text-[13px] font-semibold text-gray-900">Opening Cash</p>
             <p className="text-[11px] font-medium mt-1 text-blue-700">
               Enter the cash float available in drawer at start of POS session.
             </p>
@@ -2630,23 +2630,23 @@ export default function POSBilling() {
       >
         <div className="space-y-4">
           <div className="p-3 rounded-md border border-amber-200 bg-amber-50 text-amber-800">
-            <p className="text-[13px] font-bold">Cash Reconciliation</p>
+            <p className="text-[13px] font-semibold text-gray-900">Cash Reconciliation</p>
             <p className="text-[11px] font-medium mt-1 text-amber-700">
               Expected cash = opening cash + cash sales. Variance is recorded in session log.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+            <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Opening Cash
               </p>
-              <p className="text-[14px] font-bold text-gray-800 mt-0.5">
+              <p className="text-[14px] font-bold text-gray-700 mt-0.5">
                 {money(currentSession?.openingCash || 0)}
               </p>
             </div>
 
-            <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+            <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Cash Sales
               </p>
@@ -2655,16 +2655,16 @@ export default function POSBilling() {
               </p>
             </div>
 
-            <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+            <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Expected Cash
               </p>
-              <p className="text-[14px] font-bold text-gray-800 mt-0.5">
+              <p className="text-[14px] font-bold text-gray-700 mt-0.5">
                 {money(dayStats.expectedCash)}
               </p>
             </div>
 
-            <div className="border border-gray-200 bg-gray-50 rounded-md p-3">
+            <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Variance
               </p>
@@ -2724,14 +2724,14 @@ export default function POSBilling() {
             />
           </div>
 
-          <div className="border border-gray-200 bg-gray-50 rounded-md p-3 text-[12px]">
+          <div className="border border-gray-200 bg-gray-50 rounded-lg p-3 text-[12px]">
             <div className="flex justify-between text-gray-600 mb-1">
               <span className="font-medium">Lines</span>
-              <span className="font-semibold text-gray-800">{cart.length}</span>
+              <span className="font-semibold text-gray-700">{cart.length}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span className="font-medium">Total</span>
-              <span className="font-bold text-gray-800">{money(cartSummary.grandTotal)}</span>
+              <span className="font-bold text-gray-700">{money(cartSummary.grandTotal)}</span>
             </div>
           </div>
 

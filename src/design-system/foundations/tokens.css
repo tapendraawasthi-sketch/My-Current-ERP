@@ -192,6 +192,21 @@
 
 [data-theme="dark"],
 [data-ds-theme="dark"] {
+  /* Brand scale (readable on dark canvas — no purple/indigo) */
+  --ds-brand-950: #0a2740;
+  --ds-brand-900: #0c3558;
+  --ds-brand-800: #0f4a75;
+  --ds-brand-700: #1677b8;
+  --ds-brand-600: #1d8ad1;
+  --ds-brand-500: #3a9ddb;
+  --ds-brand-100: rgba(29, 138, 209, 0.18);
+  --ds-brand-50: rgba(29, 138, 209, 0.1);
+
+  --ds-intelligence-700: #1a8a96;
+  --ds-intelligence-600: #2bb3c7;
+  --ds-intelligence-100: rgba(43, 179, 199, 0.18);
+  --ds-intelligence-50: rgba(43, 179, 199, 0.1);
+
   --ds-canvas: #121a24;
   --ds-surface: #1a2430;
   --ds-surface-subtle: #16202a;

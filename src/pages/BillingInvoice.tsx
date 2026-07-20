@@ -9,56 +9,35 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
-import { Select, NepaliDatePicker, PartySelect, DualDate } from "../components/ui";
 import SalesInvoiceForm from "../components/invoice/SalesInvoiceForm";
-import { Plus, Eye, Printer, RefreshCw, Search, Download } from "lucide-react";
-import { formatNumber } from "../lib/utils";
-import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
+import { Plus } from "lucide-react";
 import { generateInvoicePDF } from "../lib/printUtils";
 import toast from "@/lib/appToast";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { peekAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
 import { useSutraAiStore } from "@/store/sutraAiStore";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import { TAB_META, btnPrimary, inputCls, type TabKey } from "./billing/types";
+import { BillingTabs } from "./billing/BillingTabs";
+import { BillingFilterBar } from "./billing/BillingFilterBar";
+import { BillingInvoiceTable } from "./billing/BillingInvoiceTable";
 
-type TabKey = "sales" | "purchase" | "sales-return" | "purchase-return";
-
-const TAB_META: Record<TabKey, { label: string; vt: VoucherType }> = {
-  sales: { label: "Sales invoices", vt: VoucherType.SALES_INVOICE },
-  purchase: { label: "Purchase invoices", vt: VoucherType.PURCHASE_INVOICE },
-  "sales-return": { label: "Sales returns", vt: VoucherType.SALES_RETURN },
-  "purchase-return": { label: "Purchase returns", vt: VoucherType.PURCHASE_RETURN },
-};
-
-const th =
-  "px-3 py-2.5 text-left text-[12px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide";
-const td =
-  "px-3 py-2.5 text-[12px] text-[var(--ds-text-default)] border-b border-[var(--ds-border-subtle)]";
-const btnPrimary =
-  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
-const btnOutline =
-  "h-8 px-3 bg-[var(--ds-surface)] border border-[var(--ds-border-default)] text-[var(--ds-text-default)] text-[12px] font-medium rounded-md hover:bg-[var(--ds-surface-muted)] inline-flex items-center gap-1.5";
-const inputCls =
-  "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
-
-const paymentBadge = (status: string) => {
-  if (status === PaymentStatus.PAID) return "bg-green-100 text-green-700";
-  if (status === PaymentStatus.PARTIAL) return "bg-amber-100 text-amber-700";
-  if (status === PaymentStatus.UNPAID) return "bg-red-100 text-red-700";
-  return "bg-gray-100 text-gray-700";
-};
-
-const statusBadge = (status: string) => {
-  if (status === VoucherStatus.POSTED) return "bg-green-100 text-green-700";
-  if (status === VoucherStatus.CANCELLED) return "bg-red-100 text-red-700";
-  return "bg-gray-100 text-gray-700";
-};
+const BILLING_PAGES = new Set([
+  "billing",
+  "sales",
+  "sales-invoice",
+  "purchase-invoice",
+  "sales-return",
+  "purchase-return",
+]);
 
 const BillingInvoice: React.FC = () => {
   const { invoices, accounts, parties, companySettings, currentPage } = useStore();
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { branchFilter, matchBranch } = useBranchFilter();
   const pendingInvoiceOpen = useSutraAiStore((s) => s.pendingInvoiceOpen);
   const clearPendingInvoiceOpen = useSutraAiStore((s) => s.clearPendingInvoiceOpen);
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [tab, setTab] = useState<TabKey>("sales");
@@ -82,6 +61,36 @@ const BillingInvoice: React.FC = () => {
     else if (currentPage === "purchase-return") setTab("purchase-return");
   }, [currentPage]);
 
+  // Deep link: /app/billing/new | /app/billing/:id
+  useEffect(() => {
+    if (!BILLING_PAGES.has(route.pageId)) return;
+    if (route.entityId === "new") {
+      setActiveId(null);
+      setEditType(tab);
+      setMode("new");
+      return;
+    }
+    if (route.entityId) {
+      const row = invoices.find((i) => i.id === route.entityId);
+      if (row) {
+        const t =
+          (Object.entries(TAB_META) as [TabKey, { vt: string }][]).find(
+            ([, m]) => m.vt === row.type,
+          )?.[0] || "sales";
+        setActiveId(row.id);
+        setEditType(t);
+        setTab(t);
+        setMode("edit");
+      }
+      return;
+    }
+    if (mode !== "list") {
+      setMode("list");
+      setActiveId(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync from URL entity only
+  }, [route.pageId, route.entityId, invoices]);
+
   useEffect(() => {
     const draft = peekAiInvoiceDraft();
     if (!draft && !pendingInvoiceOpen) return;
@@ -97,13 +106,13 @@ const BillingInvoice: React.FC = () => {
     setEditType(t);
     setActiveId(null);
     setMode("new");
+    openEntity(currentPage || "billing", "new");
     clearPendingInvoiceOpen();
-  }, [pendingInvoiceOpen, currentPage, clearPendingInvoiceOpen]);
+  }, [pendingInvoiceOpen, currentPage, clearPendingInvoiceOpen, openEntity]);
 
   const handleTabChange = (k: TabKey) => {
     setTab(k);
     setSearchTerm("");
-    // Stay on the current billing route — tab state is local (shell title covers the page).
   };
 
   const filtered = useMemo(() => {
@@ -135,6 +144,7 @@ const BillingInvoice: React.FC = () => {
     setActiveId(null);
     setEditType(tab);
     setMode("new");
+    openEntity(currentPage || "billing", "new");
   };
 
   const openEdit = (row: any) => {
@@ -144,14 +154,20 @@ const BillingInvoice: React.FC = () => {
     setActiveId(row.id);
     setEditType(t);
     setMode("edit");
+    openEntity(currentPage || "billing", row.id);
   };
 
   const backToList = () => {
     setMode("list");
     setActiveId(null);
+    clearEntity(currentPage || "billing");
   };
 
   const handlePrint = async (row: any) => {
+    // Align browser URL with the invoice being printed (shareable deep link)
+    if (row?.id) {
+      openEntity(currentPage || "billing", row.id, { replace: true });
+    }
     try {
       const blob = await generateInvoicePDF(row, companySettings, accounts, parties);
       const url = URL.createObjectURL(blob);
@@ -204,224 +220,57 @@ const BillingInvoice: React.FC = () => {
     <div className="flex h-full min-h-0 flex-col bg-[var(--ds-surface-muted)]">
       <div className="p-4 pb-0 shrink-0">
         <div className="flex items-center justify-end gap-2 mb-3">
-          {branchOptions.length > 0 && (
-            <select
-              value={branchFilter}
-              onChange={(e) => setBranchFilter(e.target.value)}
-              className={inputCls}
-              aria-label="Branch filter — All branches for list view"
-            >
-              <option value="all">All branches</option>
-              {branchOptions.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name || b.code || b.id}
-                </option>
-              ))}
-            </select>
-          )}
           <button type="button" className={btnPrimary} onClick={openNew}>
             <Plus className="h-3.5 w-3.5" />
             New {meta.label.replace(/s$/, "")}
           </button>
         </div>
 
-        <div className="flex gap-1 mb-3 bg-white border border-gray-200 rounded-md p-1 w-fit flex-wrap">
-          {(Object.keys(TAB_META) as TabKey[]).map((k) => {
-            const m = TAB_META[k];
-            const count = invoices.filter((i) => i.type === m.vt).length;
-            const active = tab === k;
-            return (
-              <button
-                key={k}
-                type="button"
-                onClick={() => handleTabChange(k)}
-                className={`flex items-center gap-1.5 h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${
-                  active ? "bg-[var(--ds-action-primary)] text-white" : "text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                {m.label}
-                <span
-                  className={`text-[12px] px-1.5 py-0.5 rounded font-semibold ${
-                    active ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        <BillingTabs tab={tab} invoices={invoices} onChange={handleTabChange} />
 
-        <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-md">
-          <span className="text-[12px] text-gray-500">From</span>
-          <div className="w-32">
-            <NepaliDatePicker value={fromDate} onChange={setFromDate} />
-          </div>
-          <span className="text-[12px] text-gray-500">To</span>
-          <div className="w-32">
-            <NepaliDatePicker value={toDate} onChange={setToDate} />
-          </div>
-          <span className="text-[12px] text-gray-500">Party</span>
-          <div className="w-48">
-            <PartySelect value={partyId} onChange={setPartyId} placeholder="All parties" />
-          </div>
-          <span className="text-[12px] text-gray-500">Payment</span>
-          <div className="w-32">
-            <Select
-              options={[
-                { value: "ALL", label: "All" },
-                { value: PaymentStatus.PAID, label: "Paid" },
-                { value: PaymentStatus.PARTIAL, label: "Partial" },
-                { value: PaymentStatus.UNPAID, label: "Unpaid" },
-              ]}
-              value={paymentFilter}
-              onChange={setPaymentFilter}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 mb-3 no-print">
-          <div className="relative max-w-xs flex-1 min-w-[200px]">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search invoice no, party or reference…"
-              data-testid="billing-search"
-              aria-label="Search invoices"
-              className={`${inputCls} w-full pl-8`}
-            />
-          </div>
-          <select
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-            className={inputCls}
-          >
-            <option value={25}>25 rows</option>
-            <option value={50}>50 rows</option>
-            <option value={100}>100 rows</option>
-          </select>
-          <span className="text-[12px] text-gray-500 whitespace-nowrap">
-            {searched.length} record{searched.length === 1 ? "" : "s"}
-          </span>
-          <button type="button" className={btnOutline} onClick={exportCsv}>
-            <Download className="h-3.5 w-3.5" />
-            Export
-          </button>
-        </div>
+        <BillingFilterBar
+          fromDate={fromDate}
+          toDate={toDate}
+          partyId={partyId}
+          paymentFilter={paymentFilter}
+          searchTerm={searchTerm}
+          pageSize={pageSize}
+          recordCount={searched.length}
+          onFromDate={setFromDate}
+          onToDate={setToDate}
+          onPartyId={setPartyId}
+          onPaymentFilter={setPaymentFilter}
+          onSearchTerm={setSearchTerm}
+          onPageSize={setPageSize}
+          onExport={exportCsv}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
-        {searched.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-md">
-            <ReportEmptyState
-              message={`No ${meta.label.toLowerCase()} found`}
-              hint="Adjust date filters or click New to create an invoice."
-            />
-          </div>
-        ) : (
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                    <th className={th}>Invoice no</th>
-                    <th className={th}>Date</th>
-                    <th className={th}>Party</th>
-                    <th className={`${th} text-right`}>Grand total</th>
-                    <th className={`${th} text-right`}>VAT</th>
-                    <th className={`${th} text-center`}>Payment</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayed.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => openEdit(row)}
-                    >
-                      <td className={`${td} font-mono font-medium text-gray-800`}>
-                        {row.invoiceNo}
-                      </td>
-                      <td className={td}>
-                        <DualDate
-                          date={row.date || row.adDate}
-                          dateNepali={row.dateNepali || row.bsDate}
-                        />
-                      </td>
-                      <td className={td}>{row.partyName || "—"}</td>
-                      <td className={`${td} font-mono text-right font-medium`}>
-                        {symbol} {formatNumber(row.grandTotal || 0)}
-                      </td>
-                      <td className={`${td} font-mono text-right text-gray-500`}>
-                        {symbol} {formatNumber(row.vatAmount || 0)}
-                      </td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${paymentBadge(row.paymentStatus)}`}
-                        >
-                          {(row.paymentStatus || "").toUpperCase() || "—"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${statusBadge(row.status)}`}
-                        >
-                          {(row.status || "").toUpperCase()}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {companySettings?.cbmsEnabled && !row.cbmsSubmitted && (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                useStore.getState().retryCBMS(row.id);
-                              }}
-                              className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-amber-600 hover:bg-amber-50"
-                              title="Retry CBMS sync"
-                            >
-                              <RefreshCw className="h-3.5 w-3.5" />
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEdit(row);
-                            }}
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            title="View / edit"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handlePrint(row);
-                            }}
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            title="Print"
-                          >
-                            <Printer className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
-              Showing {displayed.length} of {searched.length} {meta.label.toLowerCase()}
-            </div>
-          </div>
-        )}
+        <BillingInvoiceTable
+          tab={tab}
+          rows={searched}
+          displayed={displayed}
+          symbol={symbol}
+          cbmsEnabled={companySettings?.cbmsEnabled}
+          hasActiveFilters={Boolean(
+            searchTerm.trim() ||
+              fromDate ||
+              toDate ||
+              partyId ||
+              paymentFilter !== "ALL",
+          )}
+          onEdit={openEdit}
+          onPrint={handlePrint}
+          onNew={openNew}
+          onClearFilters={() => {
+            setSearchTerm("");
+            setFromDate("");
+            setToDate("");
+            setPartyId("");
+            setPaymentFilter("ALL");
+          }}
+        />
       </div>
     </div>
   );

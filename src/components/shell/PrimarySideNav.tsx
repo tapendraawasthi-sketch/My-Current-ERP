@@ -2,15 +2,21 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, Pin, Search } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { useEKhataStore } from "../../store/eKhataStore";
-import { type ShellNavGroup, type ShellNavItem } from "./navConfig";
-import { filterNavForRole } from "./shellNavVisibility";
+import {
+  DAILY_NAV_PIN_CAP,
+  resolveDailyFavouriteIds,
+  type ShellNavGroup,
+  type ShellNavItem,
+} from "./navConfig";
+import { filterNavForRole, navFilterOptsFromCompany } from "./shellNavVisibility";
 import { usePersistedToggle } from "@/hooks/usePersistedToggle";
+import { shortcutTitle } from "./shortcutHints";
 
 const PINNED_KEY = "orbix_nav_pinned_v1";
 const PINNED_INIT_KEY = "orbix_nav_pinned_initialized_v1";
 const RECENT_KEY = "orbix_nav_recent_v1";
 const EXPANDED_KEY = "orbix_nav_expanded_v1";
-const PIN_CAP = 12;
+const PIN_CAP = DAILY_NAV_PIN_CAP;
 
 interface PrimarySideNavProps {
   collapsed: boolean;
@@ -67,10 +73,7 @@ function markPinnedInitialized() {
 }
 
 function defaultFavouriteIds(items: ShellNavItem[]): string[] {
-  return items
-    .filter((i) => i.favouriteEligible && i.page && !i.orbix)
-    .map((i) => i.id)
-    .slice(0, PIN_CAP);
+  return resolveDailyFavouriteIds(items);
 }
 
 const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
@@ -83,6 +86,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
   const currentPage = useStore((s) => s.currentPage);
   const setCurrentPage = useStore((s) => s.setCurrentPage);
   const role = useStore((s) => s.currentUser?.role);
+  const companySettings = useStore((s) => s.companySettings);
   const openOrbix = useEKhataStore((s) => s.openPanel);
   const maximizeOrbix = useEKhataStore((s) => s.maximizePanel);
   const [expanded, setExpanded] = useState<Record<string, boolean>>(loadExpanded);
@@ -90,7 +94,8 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
   const [recent, setRecent] = useState<string[]>(loadRecent);
   const [recentOpen, setRecentOpen] = usePersistedToggle("orbix_nav_recent_open", false);
 
-  const nav = useMemo(() => filterNavForRole(role), [role]);
+  const navOpts = useMemo(() => navFilterOptsFromCompany(companySettings), [companySettings]);
+  const nav = useMemo(() => filterNavForRole(role, navOpts), [role, navOpts]);
 
   const allItems = useMemo(
     () =>
@@ -127,19 +132,14 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
     localStorage.setItem(EXPANDED_KEY, JSON.stringify(expanded));
   }, [expanded]);
 
+  // STEP 2.2 — keep module roots collapsed by default (no auto-expand on navigate).
+  // Active module still highlights via childActive; full leaves live in Ctrl+K / All menus.
   useEffect(() => {
-    const next: Record<string, boolean> = {};
-    for (const group of nav) {
-      if (group.items.some((i) => i.page === currentPage) || group.page === currentPage) {
-        next[group.id] = true;
-      }
-    }
-    setExpanded((prev) => ({ ...prev, ...next }));
     setRecent((prev) => {
       const nextR = [currentPage, ...prev.filter((p) => p !== currentPage)].slice(0, 8);
       return nextR;
     });
-  }, [currentPage, nav]);
+  }, [currentPage]);
 
   const pinnedItems = useMemo(
     () =>
@@ -218,24 +218,38 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
 
         <div className="flex-1 overflow-y-auto py-2">
           {!collapsedMode && pinnedItems.length > 0 && (
-            <div className="mb-2 px-2" data-testid="nav-favourites">
+            <div className="mb-2 px-2" data-testid="nav-favourites" data-nav-daily="true">
               <p className="mb-1 px-2 text-[12px] font-medium text-[var(--ds-text-inverse)]/60">
-                Favourites
+                Daily
+                <span className="ml-1 font-normal text-[var(--ds-text-inverse)]/40">
+                  ({pinnedItems.length}/{PIN_CAP})
+                </span>
               </p>
               {pinnedItems.map((item) => {
                 const Icon = item.icon;
                 const active = currentPage === item.page;
                 return (
-                  <button
-                    key={`pin-${item.id}`}
-                    type="button"
-                    onClick={() => navigate(item)}
-                    className={itemClass(active)}
-                    aria-current={active ? "page" : undefined}
-                  >
-                    <Icon className="h-4 w-4 flex-shrink-0 opacity-80" aria-hidden />
-                    <span className="truncate">{item.label}</span>
-                  </button>
+                  <div key={`pin-${item.id}`} className="group relative">
+                    <button
+                      type="button"
+                      onClick={() => navigate(item)}
+                      className={itemClass(active)}
+                      aria-current={active ? "page" : undefined}
+                      title={shortcutTitle(item.label, item.page)}
+                    >
+                      <Icon className="h-4 w-4 flex-shrink-0 opacity-80" aria-hidden />
+                      <span className="truncate pr-6">{item.label}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => togglePin(item.id)}
+                      className="absolute right-1 top-1 hidden h-8 w-8 items-center justify-center rounded text-[var(--ds-intelligence)] group-hover:inline-flex focus:inline-flex"
+                      title="Unpin from Daily"
+                      aria-label={`Unpin ${item.label}`}
+                    >
+                      <Pin className="h-3 w-3" aria-hidden />
+                    </button>
+                  </div>
                 );
               })}
             </div>
@@ -276,7 +290,9 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
           )}
 
           {!collapsedMode && (
-            <p className="mb-1 px-4 text-[12px] font-medium text-[var(--ds-text-inverse)]/60">Modules</p>
+            <p className="mb-1 px-4 text-[12px] font-medium text-[var(--ds-text-inverse)]/60">
+              Modules
+            </p>
           )}
 
           {nav.map((group: ShellNavGroup) => {
@@ -286,6 +302,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
             const active = isLeaf ? currentPage === group.page : childActive;
             const isOpen = expanded[group.id] ?? false;
 
+            // Home / Ask Orbix stay as always-visible roots
             if (isLeaf) {
               return (
                 <div key={group.id} className="px-2">
@@ -303,8 +320,18 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
               );
             }
 
+            // Accordion: favourites + active leaf first; long tail via “All in …”
+            const accordionItems = (() => {
+              const primary = group.items.filter(
+                (i) => i.favouriteEligible || i.page === currentPage || pinned.includes(i.id),
+              );
+              const rest = group.items.filter((i) => !primary.some((p) => p.id === i.id));
+              const shown = [...primary, ...rest].slice(0, 6);
+              return { shown, hiddenCount: Math.max(0, group.items.length - shown.length) };
+            })();
+
             return (
-              <div key={group.id} className="px-2">
+              <div key={group.id} className="px-2" data-nav-module={group.id}>
                 <button
                   type="button"
                   onClick={() => {
@@ -335,7 +362,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
 
                 {!collapsedMode && isOpen && (
                   <div className="mb-1 ml-2 border-l border-white/10 pl-2">
-                    {group.items.map((item) => {
+                    {accordionItems.shown.map((item) => {
                       const ItemIcon = item.icon;
                       const itemActive = currentPage === item.page;
                       const isPinned = pinned.includes(item.id);
@@ -344,6 +371,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                           <button
                             type="button"
                             onClick={() => navigate(item)}
+                            title={shortcutTitle(item.label, item.page)}
                             className={`mb-0.5 flex w-full items-center gap-2 rounded-[var(--ds-radius-md)] px-2 py-2 text-left text-[13px] ${
                               itemActive
                                 ? "bg-white/15 font-semibold text-white"
@@ -362,8 +390,10 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                                 ? "inline-flex text-[var(--ds-intelligence)]"
                                 : "hidden group-hover:inline-flex focus:inline-flex"
                             }`}
-                            title={isPinned ? "Unpin" : "Pin"}
-                            aria-label={isPinned ? `Unpin ${item.label}` : `Pin ${item.label}`}
+                            title={isPinned ? "Unpin from Daily" : "Pin to Daily"}
+                            aria-label={
+                              isPinned ? `Unpin ${item.label}` : `Pin ${item.label} to Daily`
+                            }
                           >
                             <Pin className="h-3 w-3" aria-hidden />
                           </button>
@@ -378,8 +408,11 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                           onMobileClose?.();
                         }}
                         className="mb-1 w-full px-2 py-1.5 text-left text-[12px] text-[var(--ds-text-inverse)]/55 hover:text-[var(--ds-text-inverse)]"
+                        data-testid={`nav-all-in-${group.id}`}
                       >
-                        All in {group.label}…
+                        {accordionItems.hiddenCount > 0
+                          ? `All in ${group.label}… (+${accordionItems.hiddenCount})`
+                          : `All in ${group.label}…`}
                       </button>
                     ) : null}
                   </div>

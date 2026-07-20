@@ -124,6 +124,18 @@ export async function niosOcrInvoice(text: string): Promise<Record<string, unkno
   return res.json();
 }
 
+/** Upload a document/bill photo for OCR → draft fields (never posts ledger). */
+export async function niosOcrInvoiceImage(file: File): Promise<Record<string, unknown>> {
+  const form = new FormData();
+  form.append("file", file, file.name || "document.jpg");
+  const res = await fetch(`${resolveNiosUrl()}/ocr/invoice/image`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) throw new Error(`NIOS OCR image failed: ${res.status}`);
+  return res.json();
+}
+
 export async function niosRunBenchmarks(): Promise<Record<string, unknown>> {
   const res = await fetch(`${resolveNiosUrl()}/benchmarks/nightly/run`, { method: "POST" });
   if (!res.ok) throw new Error(`NIOS benchmarks failed: ${res.status}`);

@@ -236,7 +236,7 @@ export default function RecurringVouchers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Recurring entries</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Recurring entries</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">Entries that repeat.</p>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Journal templates with auto-scheduling for rent, depreciation, salaries, subscriptions
@@ -248,7 +248,7 @@ export default function RecurringVouchers() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -330,7 +330,7 @@ export default function RecurringVouchers() {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === t.id
                 ? "bg-white text-blue-600 shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
+                : "text-gray-600 hover:text-gray-700"
             }`}
           >
             <t.icon className="w-4 h-4" /> {t.label}
@@ -380,7 +380,7 @@ export default function RecurringVouchers() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-gray-800">{t.name}</span>
+                          <span className="font-semibold text-gray-700">{t.name}</span>
                           <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs capitalize">
                             {t.voucherType}
                           </span>
@@ -541,7 +541,7 @@ export default function RecurringVouchers() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-gray-800">{t.name}</span>
+                      <span className="font-semibold text-gray-700">{t.name}</span>
                       <DueBadge nextDueDate={t.nextDueDate} />
                       <span className="text-xs text-gray-400">{frequencyLabel(t.frequency)}</span>
                     </div>
@@ -595,7 +595,7 @@ export default function RecurringVouchers() {
                 .sort((a, b) => b.postedDate.localeCompare(a.postedDate))
                 .map((p) => (
                   <tr key={p.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-800">{p.templateName}</td>
+                    <td className="px-4 py-3 font-medium text-gray-700">{p.templateName}</td>
                     <td className="px-4 py-3 font-mono text-xs">{p.postedDate}</td>
                     <td className="px-4 py-3">
                       <span

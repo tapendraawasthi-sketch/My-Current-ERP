@@ -8,7 +8,7 @@ import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 
-const BORDER = "1px solid #000";
+const BORDER = "1px solid #374151";
 const BG = "#E4F1D9";
 const BG_CARD = "var(--ds-surface-muted)";
 const BG_HEADER = "var(--ds-surface-hover)";
@@ -339,7 +339,7 @@ export default function Form25B() {
         </div>
         <div style={{ fontSize: "12px", fontWeight: "bold" }}>FORM 25B</div>
         <div style={{ fontSize: "11px" }}>भाग / Section 90 अन्तर्गत</div>
-        <hr style={{ marginTop: "10px", border: "0.5px solid #000" }} />
+        <hr style={{ marginTop: "10px", border: "0.5px solid #374151" }} />
       </div>
 
       {/* Section 1 - Employer Details */}
@@ -578,7 +578,7 @@ export default function Form25B() {
             style={{
               width: "80px",
               height: "60px",
-              border: "2px dashed #000",
+              border: "2px dashed #374151",
               margin: "0 auto",
               display: "flex",
               alignItems: "center",
@@ -607,7 +607,7 @@ export default function Form25B() {
           gap: "15px",
         }}
       >
-        <h2 style={{ fontSize: "13px", fontWeight: "bold", color: "#000000", margin: 0 }}>
+        <h2 style={{ fontSize: "13px", fontWeight: "bold", color: "#374151", margin: 0 }}>
           Form 25B — Tax Certificate
         </h2>
 
@@ -697,7 +697,7 @@ export default function Form25B() {
           onClick={handlePrintPDF}
           style={{
             backgroundColor: BG_HEADER,
-            color: "#000000",
+            color: "#374151",
             border: BORDER,
             padding: "10px",
             borderRadius: "4px",
@@ -712,7 +712,7 @@ export default function Form25B() {
           onClick={handleExportExcel}
           style={{
             backgroundColor: BG_HEADER,
-            color: "#000000",
+            color: "#374151",
             border: BORDER,
             padding: "10px",
             borderRadius: "4px",

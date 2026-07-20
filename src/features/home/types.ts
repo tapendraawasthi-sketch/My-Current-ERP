@@ -49,6 +49,21 @@ export interface DashboardMetric {
   unavailableReason?: string;
   favourability: FavourabilityHint;
   periodLabel?: string;
+  /** Real daily series only — omitted when fewer than 2 points exist. */
+  sparkline?: Array<{ date: string; value: number }>;
+}
+
+export interface SalesTrendPoint {
+  date: string;
+  label: string;
+  amount: number;
+}
+
+export interface HomeSalesTrendModel {
+  points: SalesTrendPoint[];
+  currency: string;
+  periodLabel: string;
+  drillDownRoute: string;
 }
 
 export interface AttentionItem {
@@ -143,6 +158,8 @@ export interface HomeViewModel {
   quickActions: QuickActionDef[];
   activity: ActivityItem[];
   charts: DashboardChartModel[];
+  /** Posted sales daily trend — null when role cannot view sales. */
+  salesTrend: HomeSalesTrendModel | null;
   orbixPrompts: Array<{ id: string; label: string; prompt: string }>;
   sectionOrder: string[];
   loadError?: string;

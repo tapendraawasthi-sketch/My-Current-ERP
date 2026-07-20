@@ -163,12 +163,12 @@ const InventoryReport: React.FC = () => {
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
       if (columnKey === "itemName") {
-        return <span className="font-bold text-gray-800">TOTAL</span>;
+        return <span className="font-bold text-gray-700">TOTAL</span>;
       }
       if (
         ["b0to30", "b31to60", "b61to90", "b90plus", "totalQty", "totalValue"].includes(columnKey)
       ) {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
+        return <span className="font-bold font-mono text-gray-700">{formatNumber(value)}</span>;
       }
       return "";
     }
@@ -226,7 +226,7 @@ const InventoryReport: React.FC = () => {
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -234,7 +234,7 @@ const InventoryReport: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -249,7 +249,7 @@ const InventoryReport: React.FC = () => {
           <select
             value={selectedGroupId}
             onChange={(e) => setSelectedGroupId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[160px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[160px]"
           >
             {itemGroupOptions.map((group) => (
               <option key={group.id} value={group.id}>
@@ -272,7 +272,7 @@ const InventoryReport: React.FC = () => {
     >
       {/* Summary stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 flex flex-col">
           <span className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Items with stock &gt;90 days old
           </span>
@@ -282,7 +282,7 @@ const InventoryReport: React.FC = () => {
             {reportData.summary.slowMovingCount}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 flex flex-col">
           <span className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Slow-Moving Stock Value
           </span>
@@ -294,7 +294,7 @@ const InventoryReport: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <ReportGrid
           columns={[
             { key: "itemName", label: "Item Name" },
@@ -330,7 +330,7 @@ const InventoryReport: React.FC = () => {
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -340,7 +340,7 @@ const InventoryReport: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -358,7 +358,7 @@ const InventoryReport: React.FC = () => {
             <select
               value={pendingSelectedGroupId}
               onChange={(e) => setPendingSelectedGroupId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {itemGroupOptions.map((group) => (
                 <option key={group.id} value={group.id}>

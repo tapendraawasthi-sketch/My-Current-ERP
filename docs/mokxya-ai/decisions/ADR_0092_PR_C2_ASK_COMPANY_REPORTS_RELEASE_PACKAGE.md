@@ -33,3 +33,8 @@ as the same shape of release package while the first-row arm waits.
 
 - ADR_0090 / ADR_0091 (sales/purchase package + arm attempt)
 - `docs/mokxya-ai/releases/LAUNCH_ASK_COMPANY_REPORTS_V1.md`
+- `docs/mokxya-ai/MAI_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_REGISTRY.json`
+- `erp_bot/src/oip/modules/conversation/application/launch_ask_company_reports_release_policy.py`
+- `src/platform/release/launchAskCompanyReportsReleasePolicy.ts`
+- `artifacts/prod-ready-pr-c2/`
+- `docs/mokxya-ai/baselines/PR_C2_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_PACKAGE.md`

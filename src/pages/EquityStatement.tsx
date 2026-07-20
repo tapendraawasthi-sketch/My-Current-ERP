@@ -221,7 +221,7 @@ export default function EquityStatement() {
       {/* Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
+          <h1 className="text-[15px] font-semibold text-gray-900">
             Equity statement
           </h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
@@ -233,7 +233,7 @@ export default function EquityStatement() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -246,7 +246,7 @@ export default function EquityStatement() {
           )}
           <button
             onClick={exportToExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" /> Export
           </button>
@@ -263,7 +263,7 @@ export default function EquityStatement() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
@@ -274,7 +274,7 @@ export default function EquityStatement() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
       </div>
@@ -363,7 +363,7 @@ export default function EquityStatement() {
 
               {finalRows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
-                  <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800 border-b border-gray-100">
+                  <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700 border-b border-gray-100">
                     {row.name}
                   </td>
                   <td className={amtCls}>
@@ -405,7 +405,7 @@ export default function EquityStatement() {
             {/* Totals row */}
             <tfoot>
               <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">TOTAL EQUITY</td>
+                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700">TOTAL EQUITY</td>
                 <td className={totalCls}>Rs. {fmt(totals.openingBalance)}</td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-green-700">
                   {totals.capitalContributed > 0.01 ? "Rs. " + fmt(totals.capitalContributed) : "—"}
@@ -442,7 +442,7 @@ export default function EquityStatement() {
 
       {/* Notes */}
       <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4 text-[12px] text-gray-600 space-y-2">
-        <p className="font-semibold text-gray-800 text-[12px]">
+        <p className="font-semibold text-gray-700 text-[12px]">
           Notes to Equity statement
         </p>
         <p>

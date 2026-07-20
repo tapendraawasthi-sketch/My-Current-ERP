@@ -76,10 +76,10 @@ export default function InventoryConfiguration() {
   );
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Settings className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Inventory setup
           </h1>

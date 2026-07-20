@@ -18,9 +18,21 @@ import {
   CheckCircle,
   HelpCircle,
   X,
+  Search,
 } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
+
+const inputCls =
+  "w-full h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -256,7 +268,10 @@ export default function UsersManagement() {
     updateUser,
     deleteUser,
   } = useStore();
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { branchFilter, matchBranch } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = route.pageId === "users-management" ? "users-management" : "users";
 
   const [activeTab, setActiveTab] = useState("Users");
 
@@ -425,10 +440,84 @@ export default function UsersManagement() {
     });
   }, [users, search, matchBranch, branchFilter]);
 
+  const userColumns = useMemo<EnterpriseColumnDef<any>[]>(
+    () => [
+      {
+        id: "username",
+        header: "Username",
+        cell: (u) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{u.username}</span>
+        ),
+      },
+      {
+        id: "name",
+        header: "Full Name",
+        cell: (u) => <span className="text-[12px] text-[var(--ds-text-default)]">{u.name}</span>,
+      },
+      {
+        id: "role",
+        header: "Role Badge",
+        cell: (u) => (
+          <span
+            className={`${roleBadgeClass(u.role)} rounded px-2 py-0.5 text-[10px] uppercase font-semibold tracking-wide border`}
+          >
+            {u.role || "custom"}
+          </span>
+        ),
+      },
+      {
+        id: "branch",
+        header: "Assigned Branch",
+        cell: (u) => {
+          const branch = costCenters.find((c) => c.id === u.costCenterId);
+          return (
+            <span className="text-[12px] text-[var(--ds-text-muted)]">
+              {branch?.name || "All Branches"}
+            </span>
+          );
+        },
+      },
+      {
+        id: "lastLogin",
+        header: "Last Login",
+        cell: (u) => {
+          const lastLogin = auditEvents.find(
+            (e) => e.username === u.username && e.action === "login",
+          );
+          return (
+            <span className="text-[12px] text-[var(--ds-text-muted)]">
+              {lastLogin ? new Date(lastLogin.timestamp).toLocaleString() : "Never"}
+            </span>
+          );
+        },
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: (u) => (
+          <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--ds-text-default)]">
+            <span
+              className={`w-2 h-2 rounded-full ${u.isActive !== false ? "bg-green-500" : "bg-gray-400"}`}
+            />
+            {u.isActive !== false ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [costCenters, auditEvents],
+  );
+
+  function closeUserModal() {
+    setUserModalOpen(false);
+    setEditingUser(null);
+    clearEntity(pageId);
+  }
+
   function openAddUser() {
     setEditingUser(null);
     setUserForm(defaultUserForm());
     setUserModalOpen(true);
+    openEntity(pageId, "new");
   }
 
   function openEditUser(user: any) {
@@ -450,7 +539,50 @@ export default function UsersManagement() {
       permissions: user.permissions || DEFAULT_ROLES[user.role] || [],
     });
     setUserModalOpen(true);
+    openEntity(pageId, user.id);
   }
+
+  // Deep link: /app/users/:id | /app/users-management/new
+  useEffect(() => {
+    if (route.pageId !== "users" && route.pageId !== "users-management") return;
+    if (route.entityId === "new") {
+      setEditingUser(null);
+      setUserForm(defaultUserForm());
+      setUserModalOpen(true);
+      setActiveTab("Users");
+      return;
+    }
+    if (route.entityId) {
+      const user = users.find((u) => u.id === route.entityId);
+      if (user) {
+        setEditingUser(user);
+        setUserForm({
+          id: user.id || "",
+          username: user.username || "",
+          name: user.name || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          role: user.role || "viewer",
+          costCenterId: user.costCenterId || "",
+          isActive: user.isActive !== false,
+          forcePasswordChange: Boolean(user.forcePasswordChange),
+          fromTime: user.loginRestrictions?.fromTime || "08:00",
+          toTime: user.loginRestrictions?.toTime || "18:00",
+          allowedIPsText: (user.loginRestrictions?.allowedIPs || []).join("\n"),
+          maxSessions: Number(user.loginRestrictions?.maxSessions || 1),
+          permissions: user.permissions || DEFAULT_ROLES[user.role] || [],
+        });
+        setUserModalOpen(true);
+        setActiveTab("Users");
+      }
+      return;
+    }
+    if (userModalOpen) {
+      setUserModalOpen(false);
+      setEditingUser(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, users]);
 
   function onRoleChange(role: string) {
     setUserForm((f) => ({
@@ -550,12 +682,13 @@ export default function UsersManagement() {
     }
 
     setUsers((rows) => rows.filter((u) => u.id !== id).concat(userData));
-    setUserModalOpen(false);
+    closeUserModal();
     toast.success("User saved");
   }
 
   async function removeUser(user: any) {
     if (!confirm(`Delete user ${user.username}?`)) return;
+    const snapshot = { ...user };
     const db = getDB();
     await db
       .table("users")
@@ -563,7 +696,14 @@ export default function UsersManagement() {
       .catch(() => {});
     if (deleteUser) await deleteUser(user.id).catch(() => {});
     setUsers((rows) => rows.filter((u) => u.id !== user.id));
-    toast.success("User deleted");
+    toast.undo(`"${user.username}" deleted`, async () => {
+      try {
+        await db.table("users").put(snapshot).catch(() => {});
+        setUsers((rows) => rows.filter((u) => u.id !== snapshot.id).concat(snapshot));
+      } catch {
+        toast.error("Failed to restore user.");
+      }
+    });
   }
 
   async function resetPassword(user: any) {
@@ -627,12 +767,20 @@ export default function UsersManagement() {
       return toast.error("Default roles cannot be deleted");
     if (!confirm(`Delete custom role ${roleName}?`)) return;
 
+    const snapshot = { ...role };
     await getDB()
       .table("roles")
       .delete(role.id)
       .catch(() => {});
     setRoles((rows) => rows.filter((r) => r.id !== role.id));
-    toast.success("Role deleted");
+    toast.undo(`"${roleName}" deleted`, async () => {
+      try {
+        await getDB().table("roles").put(snapshot).catch(() => {});
+        setRoles((rows) => rows.filter((r) => r.id !== snapshot.id).concat(snapshot));
+      } catch {
+        toast.error("Failed to restore role.");
+      }
+    });
   }
 
   async function saveSecuritySettings() {
@@ -691,32 +839,30 @@ export default function UsersManagement() {
   const tabs = ["Users", "Roles & Permissions Matrix", "Security Settings", "Login Audit"];
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Shield size={16} className="text-[var(--ds-action-primary)]" /> Users
-          </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Field-level permissions, branch isolation, login audit and security policies
-          </p>
-        </div>
-        {branchOptions.length > 0 && (
-          <select
-            value={branchFilter}
-            onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            aria-label="Branch"
-          >
-            <option value="all">All branches</option>
-            {branchOptions.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name || b.code || b.id}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
+      <PageHeader
+        title="Users"
+        description="Field-level permissions, branch isolation, login audit and security policies"
+        meta={
+          <PageMeta>
+            {activeTab === "Users"
+              ? `${filteredUsers.length} of ${users.length} user${users.length === 1 ? "" : "s"}`
+              : `${users.length} user${users.length === 1 ? "" : "s"}`}
+          </PageMeta>
+        }
+        primaryAction={
+          activeTab === "Users" ? (
+            <Button
+              variant="primary"
+              size="small"
+              onClick={openAddUser}
+              startIcon={<Plus className="h-3.5 w-3.5" />}
+            >
+              Add user
+            </Button>
+          ) : undefined
+        }
+      />
 
       <div className="flex border-b border-gray-200 mb-4 bg-white px-2 pt-2 rounded-t-md shadow-sm overflow-x-auto hide-scrollbar">
         {tabs.map((t) => (
@@ -726,7 +872,7 @@ export default function UsersManagement() {
             className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === t
                 ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-[var(--ds-border-default)]"
             }`}
           >
             {t}
@@ -735,153 +881,81 @@ export default function UsersManagement() {
       </div>
 
       {activeTab === "Users" && (
-        <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
-          <div className="flex flex-col md:flex-row gap-3 justify-between mb-4">
+        <div className="space-y-3">
+          <div className="relative max-w-sm">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full md:max-w-sm shadow-sm"
+              className={`${inputCls} pl-8`}
               placeholder="Search users by name, username, email, role..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button
-              className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5 shadow-sm whitespace-nowrap"
-              onClick={openAddUser}
-            >
-              <Plus size={14} /> Add User
-            </button>
           </div>
 
-          <div className="border border-gray-200 rounded-md overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-max border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    {[
-                      "Username",
-                      "Full Name",
-                      "Role Badge",
-                      "Assigned Branch",
-                      "Last Login",
-                      "Status",
-                      "Actions",
-                    ].map((h) => (
-                      <th
-                        key={h}
-                        className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
-                      >
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredUsers.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="text-center p-8 text-[12px] text-gray-500">
-                        No users found.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredUsers.map((u) => {
-                      const branch = costCenters.find((c) => c.id === u.costCenterId);
-                      const lastLogin = auditEvents.find(
-                        (e) => e.username === u.username && e.action === "login",
-                      );
-                      return (
-                        <tr
-                          key={u.id}
-                          className="bg-white hover:bg-gray-50 transition-colors text-[12px]"
-                        >
-                          <td className="px-3 py-2.5 font-medium text-gray-800">{u.username}</td>
-                          <td className="px-3 py-2.5 text-gray-600">{u.name}</td>
-                          <td className="px-3 py-2.5">
-                            <span
-                              className={`${roleBadgeClass(u.role)} rounded px-2 py-0.5 text-[10px] uppercase font-semibold tracking-wide border`}
-                            >
-                              {u.role || "custom"}
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5 text-gray-600">
-                            {branch?.name || "All Branches"}
-                          </td>
-                          <td className="px-3 py-2.5 text-gray-600">
-                            {lastLogin ? new Date(lastLogin.timestamp).toLocaleString() : "Never"}
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <span className="inline-flex items-center gap-1.5 font-medium">
-                              <span
-                                className={`w-2 h-2 rounded-full ${u.isActive !== false ? "bg-green-500" : "bg-gray-400"}`}
-                              />
-                              {u.isActive !== false ? "Active" : "Inactive"}
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex gap-2.5 items-center">
-                              <button
-                                onClick={() => openEditUser(u)}
-                                title="Edit"
-                                className="text-gray-500 hover:text-[var(--ds-action-primary)] transition-colors"
-                              >
-                                <Edit2 size={14} />
-                              </button>
-                              <button
-                                onClick={() => removeUser(u)}
-                                title="Delete"
-                                className="text-gray-500 hover:text-red-600 transition-colors"
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                              <button
-                                onClick={() => resetPassword(u)}
-                                title="Reset Password"
-                                className="text-gray-500 hover:text-[var(--ds-action-primary)] transition-colors"
-                              >
-                                <Lock size={14} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <EnterpriseDataTable
+            columns={userColumns}
+            rows={filteredUsers}
+            getRowId={(u) => u.id}
+            emptyTitle={search ? "No users match your search" : "No users found"}
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "Add user" to create your first user account.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAddUser}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add user
+                </Button>
+              ) : undefined
+            }
+            onRowClick={openEditUser}
+            rowActions={(u) => [
+              { label: "Edit", onSelect: () => openEditUser(u) },
+              { label: "Reset password", onSelect: () => resetPassword(u) },
+              { label: "Delete", destructive: true, onSelect: () => removeUser(u) },
+            ]}
+            caption="User accounts"
+          />
         </div>
       )}
 
       {activeTab === "Roles & Permissions Matrix" && (
-        <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-3 justify-between mb-4">
             <div className="flex gap-2">
               <input
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] max-w-xs shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] max-w-xs shadow-sm"
                 placeholder="New Role Name"
                 value={newRoleName}
                 onChange={(e) => setNewRoleName(e.target.value)}
               />
               <button
-                className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
+                className="h-8 px-3 bg-white text-gray-700 border border-[var(--ds-border-default)] text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
                 onClick={createCustomRole}
               >
                 Create Custom Role
               </button>
             </div>
             <button
-              className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5 shadow-sm"
+              className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-lg hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5 shadow-sm"
               onClick={saveRolePermissions}
             >
               <CheckCircle size={14} /> Save Permissions
             </button>
           </div>
 
-          <div className="border border-gray-200 rounded-md overflow-hidden relative">
+          <div className="border border-gray-200 rounded-lg overflow-hidden relative">
             <div className="overflow-x-auto">
               <table className="border-collapse min-w-[1000px] w-full">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-600 uppercase tracking-wide sticky left-0 z-10 bg-[#f5f6fa] border-r border-gray-200 shadow-[2px_0_4px_rgba(0,0,0,0.02)]">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-600 uppercase tracking-wide sticky left-0 z-10 bg-gray-50 border-r border-gray-200 shadow-[2px_0_4px_rgba(0,0,0,0.02)]">
                       Permission
                     </th>
                     {roles.map((r) => (
@@ -912,7 +986,7 @@ export default function UsersManagement() {
                       <tr>
                         <td
                           colSpan={roles.length + 1}
-                          className="bg-gray-50 border-y border-gray-200 px-4 py-2 text-[11px] font-bold text-gray-700 uppercase tracking-wide"
+                          className="bg-gray-50 border-y border-gray-200 px-4 py-2 text-[11px] font-medium text-gray-500"
                         >
                           {group}
                         </td>
@@ -932,7 +1006,7 @@ export default function UsersManagement() {
                               >
                                 <input
                                   type="checkbox"
-                                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                                   checked={checked}
                                   disabled={name === "admin"}
                                   onChange={() => toggleRolePermission(name, p)}
@@ -953,8 +1027,8 @@ export default function UsersManagement() {
 
       {activeTab === "Security Settings" && (
         <div className="space-y-4">
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5">
-            <h2 className="text-[14px] font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <h2 className="text-[14px] font-bold text-gray-700 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
               <Lock size={15} className="text-gray-500" /> Password Policy
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -963,7 +1037,7 @@ export default function UsersManagement() {
                   Min Password Length
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.minPasswordLength}
                   onChange={(e) =>
@@ -978,7 +1052,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.requireUppercase}
                     onChange={(e) =>
                       setSecuritySettings({
@@ -994,7 +1068,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.requireNumber}
                     onChange={(e) =>
                       setSecuritySettings({ ...securitySettings, requireNumber: e.target.checked })
@@ -1007,7 +1081,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.requireSpecial}
                     onChange={(e) =>
                       setSecuritySettings({ ...securitySettings, requireSpecial: e.target.checked })
@@ -1021,7 +1095,7 @@ export default function UsersManagement() {
                   Password Expires (Days)
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.passwordExpiryDays}
                   onChange={(e) =>
@@ -1035,8 +1109,8 @@ export default function UsersManagement() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5">
-            <h2 className="text-[14px] font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <h2 className="text-[14px] font-bold text-gray-700 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
               <Shield size={15} className="text-gray-500" /> Login Security
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -1045,7 +1119,7 @@ export default function UsersManagement() {
                   Lock After Failed Attempts
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.failedAttempts}
                   onChange={(e) =>
@@ -1061,7 +1135,7 @@ export default function UsersManagement() {
                   Lockout Duration (Mins)
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.lockoutMinutes}
                   onChange={(e) =>
@@ -1077,7 +1151,7 @@ export default function UsersManagement() {
                   Session Timeout (Mins)
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.sessionTimeoutMinutes}
                   onChange={(e) =>
@@ -1092,7 +1166,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer h-8">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.require2FAAdmin}
                     onChange={(e) =>
                       setSecuritySettings({
@@ -1110,12 +1184,12 @@ export default function UsersManagement() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5">
-            <h2 className="text-[14px] font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <h2 className="text-[14px] font-bold text-gray-700 mb-4 border-b border-gray-100 pb-2">
               Allowed IP Ranges
             </h2>
             <textarea
-              className="px-3 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[100px] shadow-sm font-mono"
+              className="px-3 py-2 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[100px] shadow-sm font-mono"
               placeholder="One CIDR per line, blank = no restriction"
               value={securitySettings.allowedIpRanges}
               onChange={(e) =>
@@ -1124,15 +1198,15 @@ export default function UsersManagement() {
             />
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5">
-            <h2 className="text-[14px] font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <h2 className="text-[14px] font-bold text-gray-700 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
               <EyeOff size={15} className="text-gray-500" /> Data Security
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                   checked={securitySettings.maskBankAccounts}
                   onChange={(e) =>
                     setSecuritySettings({ ...securitySettings, maskBankAccounts: e.target.checked })
@@ -1143,7 +1217,7 @@ export default function UsersManagement() {
               <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                   checked={securitySettings.maskPanReports}
                   onChange={(e) =>
                     setSecuritySettings({ ...securitySettings, maskPanReports: e.target.checked })
@@ -1154,7 +1228,7 @@ export default function UsersManagement() {
               <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                   checked={securitySettings.watermarkPrints}
                   onChange={(e) =>
                     setSecuritySettings({ ...securitySettings, watermarkPrints: e.target.checked })
@@ -1165,7 +1239,7 @@ export default function UsersManagement() {
             </div>
             <div className="flex justify-end pt-4 border-t border-gray-100">
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm flex items-center gap-1.5"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-lg hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm flex items-center gap-1.5"
                 onClick={saveSecuritySettings}
               >
                 <CheckCircle size={14} /> Save Security Settings
@@ -1178,11 +1252,11 @@ export default function UsersManagement() {
       {activeTab === "Login Audit" && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-center">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col justify-center">
               <div className="text-[11px] text-gray-500 uppercase font-semibold tracking-wide mb-1">
                 Total Logins Today
               </div>
-              <div className="text-[28px] font-bold text-gray-800">
+              <div className="text-[28px] font-bold text-gray-700">
                 {auditSummary.totalLoginsToday}
               </div>
             </div>
@@ -1196,12 +1270,12 @@ export default function UsersManagement() {
                 Failed Attempts Today
               </div>
               <div
-                className={`text-[28px] font-bold ${auditSummary.failedAttemptsToday > 5 ? "text-red-600" : "text-gray-800"}`}
+                className={`text-[28px] font-bold ${auditSummary.failedAttemptsToday > 5 ? "text-red-600" : "text-gray-700"}`}
               >
                 {auditSummary.failedAttemptsToday}
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-center">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col justify-center">
               <div className="text-[11px] text-gray-500 uppercase font-semibold tracking-wide mb-1">
                 Active Sessions
               </div>
@@ -1211,10 +1285,10 @@ export default function UsersManagement() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 value={auditUser}
                 onChange={(e) => setAuditUser(e.target.value)}
               >
@@ -1226,19 +1300,19 @@ export default function UsersManagement() {
                 ))}
               </select>
               <input
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 type="date"
                 value={auditFrom}
                 onChange={(e) => setAuditFrom(e.target.value)}
               />
               <input
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 type="date"
                 value={auditTo}
                 onChange={(e) => setAuditTo(e.target.value)}
               />
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 value={auditAction}
                 onChange={(e) => setAuditAction(e.target.value)}
               >
@@ -1249,18 +1323,18 @@ export default function UsersManagement() {
                 <option value="locked">Locked</option>
               </select>
               <button
-                className="h-8 px-3 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
+                className="h-8 px-3 bg-white text-gray-700 border border-[var(--ds-border-default)] text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
                 onClick={exportAuditLog}
               >
                 Export Audit Log
               </button>
             </div>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <tr className="bg-gray-50 border-b border-gray-200">
                       {[
                         "Timestamp",
                         "Username",
@@ -1287,7 +1361,7 @@ export default function UsersManagement() {
                         <td className="px-3 py-2 text-gray-600">
                           {new Date(e.timestamp).toLocaleString()}
                         </td>
-                        <td className="px-3 py-2 font-medium text-gray-800">{e.username}</td>
+                        <td className="px-3 py-2 font-medium text-gray-700">{e.username}</td>
                         <td className="px-3 py-2">
                           <span
                             className={`${actionBadgeClass(e.action)} rounded px-2 py-0.5 text-[10px] uppercase font-semibold tracking-wide border`}
@@ -1330,18 +1404,18 @@ export default function UsersManagement() {
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setUserModalOpen(false);
+            if (e.target === e.currentTarget) closeUserModal();
           }}
         >
-          <div className="bg-white border border-gray-200 rounded-md shadow-xl w-full max-w-5xl max-h-[92vh] flex flex-col">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-5xl max-h-[92vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <h2 className="text-[15px] font-bold text-gray-800 flex items-center gap-2">
+              <h2 className="text-[15px] font-bold text-gray-700 flex items-center gap-2">
                 <User size={16} className="text-[var(--ds-action-primary)]" />
                 {editingUser ? "Edit User Account" : "Create New User"}
               </h2>
               <button
                 className="text-gray-400 hover:text-gray-600 transition-colors"
-                onClick={() => setUserModalOpen(false)}
+                onClick={closeUserModal}
               >
                 <X size={20} />
               </button>
@@ -1349,7 +1423,7 @@ export default function UsersManagement() {
 
             <div className="p-4 overflow-y-auto space-y-6">
               <div className="space-y-4">
-                <h3 className="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-1 flex items-center gap-2">
+                <h3 className="text-[13px] font-bold text-gray-700 border-b border-gray-100 pb-1 flex items-center gap-2">
                   <span className="bg-[var(--ds-action-primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
                     1
                   </span>{" "}
@@ -1361,7 +1435,7 @@ export default function UsersManagement() {
                       Username <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.username}
                       onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
                       disabled={!!editingUser}
@@ -1372,7 +1446,7 @@ export default function UsersManagement() {
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.name}
                       onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
                     />
@@ -1382,7 +1456,7 @@ export default function UsersManagement() {
                       Email
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="email"
                       value={userForm.email}
                       onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
@@ -1393,7 +1467,7 @@ export default function UsersManagement() {
                       Phone
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.phone}
                       onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
                     />
@@ -1403,7 +1477,7 @@ export default function UsersManagement() {
                       Role Type
                     </label>
                     <select
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.role}
                       onChange={(e) => onRoleChange(e.target.value)}
                     >
@@ -1431,7 +1505,7 @@ export default function UsersManagement() {
                       Branch/Department Assignment
                     </label>
                     <select
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.costCenterId}
                       onChange={(e) => setUserForm({ ...userForm, costCenterId: e.target.value })}
                     >
@@ -1447,7 +1521,7 @@ export default function UsersManagement() {
                     <label className="text-[12px] flex items-center gap-2 cursor-pointer text-gray-700">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                        className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                         checked={userForm.isActive}
                         onChange={(e) => setUserForm({ ...userForm, isActive: e.target.checked })}
                       />
@@ -1458,7 +1532,7 @@ export default function UsersManagement() {
                     <label className="text-[12px] flex items-center gap-2 cursor-pointer text-gray-700">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                        className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                         checked={userForm.forcePasswordChange}
                         onChange={(e) =>
                           setUserForm({ ...userForm, forcePasswordChange: e.target.checked })
@@ -1471,7 +1545,7 @@ export default function UsersManagement() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-1 flex items-center gap-2">
+                <h3 className="text-[13px] font-bold text-gray-700 border-b border-gray-100 pb-1 flex items-center gap-2">
                   <span className="bg-[var(--ds-action-primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
                     2
                   </span>{" "}
@@ -1483,7 +1557,7 @@ export default function UsersManagement() {
                       Allowed Login From Time
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="time"
                       value={userForm.fromTime}
                       onChange={(e) => setUserForm({ ...userForm, fromTime: e.target.value })}
@@ -1494,7 +1568,7 @@ export default function UsersManagement() {
                       Allowed Login To Time
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="time"
                       value={userForm.toTime}
                       onChange={(e) => setUserForm({ ...userForm, toTime: e.target.value })}
@@ -1505,7 +1579,7 @@ export default function UsersManagement() {
                       Max Concurrent Sessions
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="number"
                       min={1}
                       max={5}
@@ -1534,7 +1608,7 @@ export default function UsersManagement() {
                       </div>
                     )}
                     <textarea
-                      className="px-3 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[80px] shadow-sm font-mono"
+                      className="px-3 py-2 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[80px] shadow-sm font-mono"
                       placeholder="One IP per line, blank = any IP allowed"
                       value={userForm.allowedIPsText}
                       onChange={(e) => setUserForm({ ...userForm, allowedIPsText: e.target.value })}
@@ -1546,7 +1620,7 @@ export default function UsersManagement() {
               <div
                 className={`space-y-4 ${userForm.role !== "custom" && userForm.role !== "admin" ? "opacity-75 pointer-events-none" : ""}`}
               >
-                <h3 className="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-1 flex items-center gap-2">
+                <h3 className="text-[13px] font-bold text-gray-700 border-b border-gray-100 pb-1 flex items-center gap-2">
                   <span className="bg-[var(--ds-action-primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
                     3
                   </span>{" "}
@@ -1559,9 +1633,9 @@ export default function UsersManagement() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {Object.entries(MODULE_ACCESS_GROUPS).map(([group, perms]) => (
-                    <div key={group} className="border border-gray-200 rounded-md bg-gray-50/50">
+                    <div key={group} className="border border-gray-200 rounded-lg bg-gray-50/50">
                       <div className="flex items-center justify-between p-2.5 border-b border-gray-200 bg-gray-50 rounded-t-md">
-                        <div className="text-[11px] font-bold text-gray-700 uppercase tracking-wide">
+                        <div className="text-[11px] font-medium text-gray-500">
                           {group}
                         </div>
                         <div className="flex gap-2">
@@ -1587,7 +1661,7 @@ export default function UsersManagement() {
                           >
                             <input
                               type="checkbox"
-                              className="w-3.5 h-3.5 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
+                              className="w-3.5 h-3.5 text-[var(--ds-action-primary)] border-gray-200 rounded focus:ring-[var(--ds-action-primary)]"
                               checked={
                                 userForm.role === "admin" ||
                                 (userForm.permissions || []).includes(p)
@@ -1607,13 +1681,13 @@ export default function UsersManagement() {
 
             <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-2 rounded-b-md">
               <button
-                className="h-8 px-4 bg-white text-gray-700 border border-gray-300 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
-                onClick={() => setUserModalOpen(false)}
+                className="h-8 px-4 bg-white text-gray-700 border border-[var(--ds-border-default)] text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+                onClick={closeUserModal}
               >
                 Cancel
               </button>
               <button
-                className="h-8 px-5 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm"
+                className="h-8 px-5 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-lg hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm"
                 onClick={saveUser}
               >
                 {editingUser ? "Save Changes" : "Create User"}

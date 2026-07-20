@@ -615,7 +615,7 @@ export default function BankReconciliation() {
           <div className="min-w-0">
             <div className="text-[12px] text-gray-500 font-mono">{entry.date}</div>
             <div
-              className="text-[12px] font-semibold text-gray-800 truncate"
+              className="text-[12px] font-semibold text-gray-700 truncate"
               title={entry.description}
             >
               {entry.description || "No narration"}
@@ -654,7 +654,7 @@ export default function BankReconciliation() {
           <div className="min-w-0">
             <div className="text-[12px] text-gray-500 font-mono">{entry.date}</div>
             <div
-              className="text-[12px] font-semibold text-gray-800 truncate"
+              className="text-[12px] font-semibold text-gray-700 truncate"
               title={entry.description}
             >
               {entry.description || "No narration"}

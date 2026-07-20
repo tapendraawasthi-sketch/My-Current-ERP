@@ -85,10 +85,20 @@ export const ScannerShell: React.FC = () => {
         </div>
       )}
 
-      {/* ── Camera placeholder (Phase 2) ─────────────────────────────────── */}
+      {/* ── Camera / document capture (uses Orbix document camera helper) ── */}
       {isScanning && config.source === "camera" && (
-        <div className="flex items-center justify-center mb-3 bg-gray-100 border border-gray-200 rounded-md h-48 text-[12px] text-gray-400">
-          📷 Camera view — Phase 2 implementation coming soon
+        <div className="mb-3 rounded-md border border-gray-200 bg-white p-4 text-[12px] text-gray-600">
+          <p className="font-medium text-gray-800 mb-1">Document camera</p>
+          <p className="text-[11px] text-gray-500 mb-3">
+            For AI accounting from bill photos, open Ask Orbix and use the camera button on the
+            composer (mobile rear camera / Capacitor). Barcode live-view remains a separate path.
+          </p>
+          <a
+            href="/app/orbix"
+            className="inline-flex h-8 items-center rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]"
+          >
+            Open Orbix camera scan
+          </a>
         </div>
       )}
 

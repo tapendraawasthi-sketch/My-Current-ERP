@@ -8,35 +8,15 @@
  * movements.
  */
 
-import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useStore } from "@/store/useStore";
-import {
-  Card,
-  Badge,
-  Button,
-  Input,
-  Select,
-  PartySelect,
-  NepaliDatePicker,
-  ConfirmDialog,
-} from "../ui";
-import {
-  ArrowLeft,
-  Plus,
-  Save,
-  CheckCircle2,
-  Printer,
-  Receipt,
-  Banknote,
-  Landmark,
-  CreditCard,
-  Trash2,
-} from "lucide-react";
+import { Button, ConfirmDialog } from "../ui";
+import { Printer, Link2 } from "lucide-react";
+import { SuccessAvatar } from "@/design-system";
 import { formatNumber, numberToWords } from "@/lib/utils";
 import { ADToBSString } from "@/lib/nepaliDate";
 import { generateSerialNumber } from "@/lib/accounting";
 import { computeInvoiceVAT } from "@/lib/taxUtils";
-import { INVOICE_FORM_TOTALS_DISCLAIMER } from "@/platform/calc/calcAuthorityPolicy";
 import { generateInvoicePDF } from "@/lib/printUtils";
 import { submitToCBMS } from "@/lib/cbmsApi";
 import {
@@ -48,9 +28,14 @@ import {
   TdsType,
 } from "@/lib/types";
 import toast from "@/lib/appToast";
+import { useNavigateApp } from "@/routing/useAppRoute";
+import { pageIdToPath } from "@/routing/pagePaths";
 import { consumeAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
-import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
-import AttachmentUploader from "../ui/AttachmentUploader";
+import { InvoiceLineState } from "./InvoiceLineItem";
+import InvoiceHeader from "./InvoiceHeader";
+import InvoiceLineGrid from "./InvoiceLineGrid";
+import InvoiceTotals from "./InvoiceTotals";
+import InvoiceActions from "./InvoiceActions";
 import { usePersistedToggle } from "@/hooks/usePersistedToggle";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
@@ -137,13 +122,16 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     warehouses,
     companySettings,
     currentFiscalYear,
+    currentPage,
     addInvoice,
     updateInvoice,
     items,
   } = useStore();
+  const { openEntity } = useNavigateApp();
 
   const meta = TYPE_MAP[type];
   const symbol = companySettings?.currencySymbol || "Rs.";
+  const billingPageId = currentPage || "billing";
 
   const existing = useMemo(() => invoices.find((i) => i.id === invoiceId), [invoices, invoiceId]);
   const isEdit = !!existing;
@@ -317,9 +305,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>
   >(existing?.billSundries || []);
 
-  /** Phase C — progressive disclosure (persisted). */
+  /** STEP 2.3 — progressive disclosure (persisted). Essential open; Optional/Rare collapsed. */
   const [moreColumns, setMoreColumns] = usePersistedToggle("orbix_txn_invoice_more_cols", false);
   const [rareColumns, setRareColumns] = usePersistedToggle("orbix_txn_invoice_rare_cols", false);
+  const [headerAdvanced, setHeaderAdvanced] = usePersistedToggle(
+    "orbix_txn_invoice_header_advanced",
+    !!(existing?.dueDate || existing?.billTo || existing?.referenceNo),
+  );
   const [optionalOpen, setOptionalOpen] = usePersistedToggle(
     "orbix_txn_invoice_optional",
     !!(existing?.billSundries?.length || existing?.tdsAmount),
@@ -328,6 +320,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     "orbix_txn_invoice_rare",
     !!(existing?.attachments?.length || existing?.narrationNe),
   );
+  const showAdvanced = moreColumns || rareColumns;
+  const setShowAdvanced = (open: boolean) => {
+    setMoreColumns(open);
+    if (!open) setRareColumns(false);
+  };
 
   useEffect(() => {
     if (party?.subjectToTds || tdsEnabled || billSundries.length > 0) {
@@ -863,9 +860,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             >
               <div className="flex-1 w-0 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-full bg-green-50 border border-green-200 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  </div>
+                  <SuccessAvatar
+                    name={party?.name || result.partyName || meta.label}
+                    seed={party?.id || result.partyId}
+                    size="sm"
+                  />
                   <div>
                     <p className="text-[12px] font-semibold text-[var(--ds-text-default)]">
                       Invoice posted successfully
@@ -916,7 +915,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         toast.success(isEdit ? "Draft updated." : "Draft saved.");
       }
 
-      setSavedInvoice(result);
+      // Prefer shareable /app/billing/:id over success-screen flash (STEP 4.4)
+      if (result?.id) {
+        openEntity(billingPageId, result.id, { replace: true });
+      } else {
+        setSavedInvoice(result);
+      }
     } catch (e: any) {
       toast.error(e?.message || "Failed to save invoice.");
     } finally {
@@ -924,9 +928,30 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     }
   };
 
+  const documentId = invoiceId || savedInvoice?.id || null;
+
+  const copyDocumentLink = async () => {
+    if (!documentId) return;
+    const url = `${window.location.origin}${pageIdToPath(billingPageId, documentId)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied");
+    } catch {
+      toast.error("Could not copy link.");
+    }
+  };
+
   const handlePrint = async (inv?: any) => {
-    const target = inv || savedInvoice;
+    // Prefer the URL entity (invoiceId) so print/PDF always matches the deep link
+    const byRouteId = invoiceId
+      ? invoices.find((i) => i.id === invoiceId) ||
+        (savedInvoice?.id === invoiceId ? savedInvoice : null)
+      : null;
+    const target = inv || byRouteId || savedInvoice;
     if (!target) return;
+    if (target.id) {
+      openEntity(billingPageId, target.id, { replace: true });
+    }
     try {
       const invoiceParty = parties.find((p) => p.id === target.partyId);
       if (!invoiceParty) {
@@ -983,9 +1008,11 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   if (savedInvoice) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 py-20 animate-fadeIn text-center">
-        <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
-          <CheckCircle2 className="h-8 w-8 text-green-600" />
-        </div>
+        <SuccessAvatar
+          name={party?.name || savedInvoice.partyName || meta.label}
+          seed={party?.id || savedInvoice.partyId}
+          size="xl"
+        />
         <div>
           <h2 className="text-lg font-bold text-[var(--ds-text-default)]">{meta.label} Saved</h2>
           <p className="text-xs text-[var(--ds-text-default)] mt-1">
@@ -1001,6 +1028,16 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           >
             Print Invoice
           </Button>
+          {documentId && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyDocumentLink}
+              icon={<Link2 className="h-4 w-4" />}
+            >
+              Copy link
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={onSave}>
             Done
           </Button>
@@ -1020,9 +1057,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     (rareColumns && showWarehouse ? 1 : 0);
 
   return (
-    <div className="bg-[var(--ds-canvas)] p-3">
-      <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
-        <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
+    <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
           {isCancelled && (
             <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 rotate-[-12deg] pointer-events-none">
               <span className="text-5xl font-bold text-red-500/30 border-4 border-red-500/30 rounded-xl px-8 py-3 tracking-widest">
@@ -1031,725 +1066,125 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             </div>
           )}
 
-          {/* Compact doc toolbar — title lives on TransactionWorkspace */}
-          <div className="flex items-center justify-between py-2 px-3 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleBack}
-                className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
-                aria-label="Back"
-                title="Back"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-              <span className="font-mono text-[12px] font-medium text-[var(--ds-text-default)]">
-                {invoiceNoPreview}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Badge
-                variant={
-                  existing?.status === VoucherStatus.POSTED
-                    ? "success"
-                    : existing?.status === VoucherStatus.CANCELLED
-                      ? "danger"
-                      : "default"
-                }
-                size="sm"
-              >
-                {existing?.status === VoucherStatus.POSTED
-                  ? "Posted"
-                  : existing?.status === VoucherStatus.CANCELLED
-                    ? "Cancelled"
-                    : existing?.status === VoucherStatus.DRAFT
-                      ? "Draft"
-                      : "New"}
-              </Badge>
-              {companySettings?.cbmsEnabled && (
-                <Badge
-                  variant={
-                    existing?.cbmsSubmitted === true
-                      ? "success"
-                      : existing?.cbmsSubmitted === false
-                        ? "danger"
-                        : "default"
-                  }
-                  size="sm"
-                >
-                  {existing?.cbmsSubmitted === true
-                    ? "CBMS synced"
-                    : existing?.cbmsSubmitted === false
-                      ? "CBMS failed"
-                      : "CBMS pending"}
-                </Badge>
-              )}
-            </div>
-          </div>
+          <InvoiceHeader
+            invoiceNoPreview={invoiceNoPreview}
+            documentId={documentId}
+            existing={existing}
+            companySettings={companySettings}
+            meta={meta}
+            type={type}
+            partyId={partyId}
+            party={party}
+            date={date}
+            dueDate={dueDate}
+            billTo={billTo}
+            referenceNo={referenceNo}
+            originalInvoiceId={originalInvoiceId}
+            originalSalesInvoiceOptions={originalSalesInvoiceOptions}
+            originalPurchaseInvoiceOptions={originalPurchaseInvoiceOptions}
+            headerAdvanced={headerAdvanced}
+            readOnly={readOnly}
+            onBack={handleBack}
+            onCopyLink={copyDocumentLink}
+            onPartyIdChange={(v) => {
+              setPartyId(v);
+              markDirty();
+            }}
+            onDateChange={(v) => {
+              setDate(v);
+              markDirty();
+            }}
+            onDueDateChange={(v) => {
+              setDueDate(v);
+              markDirty();
+            }}
+            onBillToChange={(v) => {
+              setBillTo(v);
+              markDirty();
+            }}
+            onReferenceNoChange={(v) => {
+              setReferenceNo(v);
+              markDirty();
+            }}
+            onOriginalInvoiceChange={(v) => {
+              setOriginalInvoiceId(v);
+              const orig = invoices.find((inv) => inv.id === v);
+              if (orig?.partyId && !partyId) setPartyId(orig.partyId);
+              markDirty();
+            }}
+            onHeaderAdvancedToggle={() => setHeaderAdvanced(!headerAdvanced)}
+          />
 
-          {/* Header & Party details */}
-          <div className="form-section mb-3">
-            <div className="form-section-title">Party Details</div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <PartySelect
-              label={meta.isSales ? "Customer" : "Supplier"}
-              partyType={meta.party}
-              value={partyId}
-              onChange={(v) => {
-                setPartyId(v);
-                markDirty();
-              }}
-              required
-              disabled={readOnly}
-            />
-            <Input
-              label="PAN"
-              value={party?.pan || ""}
-              onChange={() => {}}
-              disabled
-              placeholder="—"
-            />
-            <NepaliDatePicker
-              label="Invoice Date"
-              value={date}
-              onChange={(v) => {
-                setDate(v);
-                markDirty();
-              }}
-              required
-              disabled={readOnly}
-            />
-            <NepaliDatePicker
-              label="Due Date"
-              value={dueDate}
-              onChange={(v) => {
-                setDueDate(v);
-                markDirty();
-              }}
-              disabled={readOnly}
-            />
-            <div className="md:col-span-2">
-              <Input
-                label="Bill To Address"
-                value={billTo}
-                onChange={(v) => {
-                  setBillTo(v);
-                  markDirty();
-                }}
-                placeholder="Auto-filled from party"
-                disabled={readOnly}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[12px] font-medium text-[var(--ds-text-default)]">Invoice No</span>
-              <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-bold text-[var(--ds-text-default)] text-[12px]">
-                {invoiceNoPreview}
-              </span>
-            </div>
-            <Input
-              label="Reference No"
-              value={referenceNo}
-              onChange={(v) => {
-                setReferenceNo(v);
-                markDirty();
-              }}
-              placeholder="Optional"
-              disabled={readOnly}
-            />
-            {type === "sales-return" && (
-              <Select
-                label="Original Sales Invoice"
-                value={originalInvoiceId}
-                onChange={(v) => {
-                  setOriginalInvoiceId(v);
-                  const orig = invoices.find((inv) => inv.id === v);
-                  if (orig?.partyId && !partyId) setPartyId(orig.partyId);
-                  markDirty();
-                }}
-                options={originalSalesInvoiceOptions}
-                placeholder="Select original invoice"
-                disabled={readOnly}
-              />
-            )}
-            {type === "purchase-return" && (
-              <Select
-                label="Original Purchase Invoice"
-                value={originalInvoiceId}
-                onChange={(v) => {
-                  setOriginalInvoiceId(v);
-                  const orig = invoices.find((inv) => inv.id === v);
-                  if (orig?.partyId && !partyId) setPartyId(orig.partyId);
-                  markDirty();
-                }}
-                options={originalPurchaseInvoiceOptions}
-                placeholder="Select original invoice"
-                disabled={readOnly}
-              />
-            )}
-            </div>
-          </div>
+          <InvoiceLineGrid
+            lines={lines}
+            colspan={colspan}
+            showWarehouse={showWarehouse}
+            moreColumns={moreColumns}
+            rareColumns={rareColumns}
+            showAdvanced={showAdvanced}
+            readOnly={readOnly}
+            lineType={meta.isSales ? "sales" : "purchase"}
+            onUpdateLine={updateLine}
+            onRemoveLine={removeLine}
+            onAddLine={addLine}
+            onShowAdvancedToggle={() => setShowAdvanced(!showAdvanced)}
+            onRareColumnsToggle={() => setRareColumns(!rareColumns)}
+          />
 
-          {/* Line items */}
-          <div className="form-section mb-3">
-            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
-              <div className="form-section-title mb-0 pb-0 border-0">Line Items</div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="xs"
-                  onClick={() => setMoreColumns(!moreColumns)}
-                  aria-pressed={moreColumns}
-                >
-                  {moreColumns ? "Fewer columns" : "More columns"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="xs"
-                  onClick={() => setRareColumns(!rareColumns)}
-                  aria-pressed={rareColumns}
-                >
-                  {rareColumns ? "Hide details" : "Line details"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="xs"
-                  onClick={addLine}
-                  disabled={readOnly}
-                  icon={<Plus className="h-3 w-3" />}
-                >
-                  Add Line
-                </Button>
-              </div>
-            </div>
-            <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
-              <table className="line-table">
-                <thead className="bg-[var(--ds-surface-muted)] text-[10px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide border-b border-[var(--ds-border-default)]">
-                  <tr>
-                    <th className="px-2 py-2 text-center">#</th>
-                    <th className="px-2 py-2 text-left">Item</th>
-                    {rareColumns ? <th className="px-2 py-2 text-left">HSN</th> : null}
-                    {rareColumns ? <th className="px-2 py-2 text-left">Description</th> : null}
-                    <th className="px-2 py-2 text-right">Qty</th>
-                    <th className="px-2 py-2 text-left">Unit</th>
-                    <th className="px-2 py-2 text-right">Rate</th>
-                    {moreColumns ? <th className="px-2 py-2 text-right">Disc%</th> : null}
-                    {moreColumns ? <th className="px-2 py-2 text-right">Taxable</th> : null}
-                    {rareColumns ? <th className="px-2 py-2 text-center">Tax?</th> : null}
-                    {moreColumns ? <th className="px-2 py-2 text-right">VAT%</th> : null}
-                    {moreColumns ? <th className="px-2 py-2 text-right">VAT Amt</th> : null}
-                    <th className="px-2 py-2 text-right">Total</th>
-                    {rareColumns && showWarehouse ? (
-                      <th className="px-2 py-2 text-left">Warehouse</th>
-                    ) : null}
-                    <th className="px-2 py-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lines.map((l, idx) => (
-                    <InvoiceLineItem
-                      key={l.id}
-                      line={l}
-                      lineNo={idx + 1}
-                      onUpdate={(u) => updateLine(l.id, u)}
-                      onDelete={() => removeLine(l.id)}
-                      onTabNext={() => {
-                        if (idx === lines.length - 1) addLine();
-                      }}
-                      showWarehouse={showWarehouse}
-                      showOptionalCols={moreColumns}
-                      showRareCols={rareColumns}
-                      type={meta.isSales ? "sales" : "purchase"}
-                      readOnly={readOnly}
-                    />
-                  ))}
-                  {lines.length === 0 && (
-                    <tr>
-                      <td colSpan={colspan} className="text-center py-6 text-[var(--ds-text-default)]">
-                        No lines. Click “Add Line”.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <InvoiceTotals
+            billSundries={billSundries}
+            setBillSundries={setBillSundries}
+            optionalOpen={optionalOpen}
+            setOptionalOpen={setOptionalOpen}
+            onOptionalOpenToggle={() => setOptionalOpen(!optionalOpen)}
+            rareOpen={rareOpen}
+            onRareOpenToggle={() => setRareOpen(!rareOpen)}
+            readOnly={readOnly}
+            markDirty={markDirty}
+            payMode={payMode}
+            setPayMode={setPayMode}
+            bankAccounts={bankAccounts}
+            bankAccountId={bankAccountId}
+            setBankAccountId={setBankAccountId}
+            chequeNo={chequeNo}
+            setChequeNo={setChequeNo}
+            chequeDate={chequeDate}
+            setChequeDate={setChequeDate}
+            paidAmount={paidAmount}
+            setPaidAmount={setPaidAmount}
+            balance={balance}
+            symbol={symbol}
+            party={party}
+            tdsEnabled={tdsEnabled}
+            setTdsEnabled={setTdsEnabled}
+            tdsType={tdsType}
+            setTdsType={setTdsType}
+            tdsRate={tdsRate}
+            setTdsRate={setTdsRate}
+            tdsAmount={tdsAmount}
+            narration={narration}
+            setNarration={setNarration}
+            narrationNe={narrationNe}
+            setNarrationNe={setNarrationNe}
+            attachments={attachments}
+            setAttachments={setAttachments}
+            computation={computation}
+            discountAmount={discountAmount}
+            roundOff={roundOff}
+            grandTotal={grandTotal}
+          />
 
-          {/* Optional: Bill Sundries */}
-          <div
-            className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)]"
-            data-testid="invoice-optional-sundries"
-          >
-            <button
-              type="button"
-              className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-[var(--ds-surface-muted)]"
-              aria-expanded={optionalOpen}
-              onClick={() => setOptionalOpen(!optionalOpen)}
-            >
-              <span>
-                <span className="text-[13px] font-semibold text-[var(--ds-text-default)]">
-                  Bill sundries
-                </span>
-                <span className="mt-0.5 block text-[12px] text-[var(--ds-text-muted)]">
-                  {billSundries.length > 0
-                    ? `${billSundries.length} charge${billSundries.length === 1 ? "" : "s"}`
-                    : "Shipping, freight, bill-level discounts"}
-                </span>
-              </span>
-              <span className="text-[12px] font-medium text-[var(--ds-action-primary)]">
-                {optionalOpen ? "Hide" : "Show"}
-              </span>
-            </button>
-            {optionalOpen ? (
-              <div className="border-t border-[var(--ds-border-default)] p-4">
-                <div className="flex items-center justify-end mb-3">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    onClick={() => {
-                      setBillSundries((p) => [
-                        ...p,
-                        { id: uid(), name: "", type: "additive", amount: 0 },
-                      ]);
-                      markDirty();
-                    }}
-                    disabled={readOnly}
-                    icon={<Plus className="h-3 w-3" />}
-                  >
-                    Add Sundry
-                  </Button>
-                </div>
-                {billSundries.length > 0 ? (
-                  <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
-                    <table className="w-full text-xs">
-                      <thead className="bg-[var(--ds-surface-muted)] text-[10px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide border-b border-[var(--ds-border-default)]">
-                        <tr>
-                          <th className="px-2 py-2 text-left">Sundry Name</th>
-                          <th className="px-2 py-2 text-center w-32">Type</th>
-                          <th className="px-2 py-2 text-right w-32">Amount</th>
-                          <th className="px-2 py-2 w-10"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {billSundries.map((sundry, idx) => (
-                          <tr
-                            key={sundry.id}
-                            className="border-b border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]/50"
-                          >
-                            <td className="px-2 py-1">
-                              <input
-                                className="w-full h-8 px-2 text-[12px] font-mono bg-transparent border border-transparent focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] rounded-md outline-none"
-                                value={sundry.name}
-                                onChange={(e) => {
-                                  const n = [...billSundries];
-                                  n[idx].name = e.target.value;
-                                  setBillSundries(n);
-                                  markDirty();
-                                }}
-                                disabled={readOnly}
-                                placeholder="e.g. Shipping / Discount"
-                              />
-                            </td>
-                            <td className="px-2 py-1 text-center">
-                              <select
-                                aria-label="Bill sundry type"
-                                className="w-full h-8 px-2 text-[12px] font-mono bg-transparent border border-transparent focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] rounded-md outline-none"
-                                value={sundry.type}
-                                onChange={(e) => {
-                                  const n = [...billSundries];
-                                  n[idx].type = e.target.value as any;
-                                  setBillSundries(n);
-                                  markDirty();
-                                }}
-                                disabled={readOnly}
-                              >
-                                <option value="additive">Additive (+)</option>
-                                <option value="subtractive">Subtractive (-)</option>
-                              </select>
-                            </td>
-                            <td className="px-2 py-1 text-right">
-                              <input
-                                type="number"
-                                className="w-full h-7 px-2 text-[12px] border-0 border-b border-[var(--ds-border-default)] bg-transparent text-right focus:outline-none focus:border-[var(--ds-action-primary)]"
-                                value={sundry.amount || ""}
-                                onChange={(e) => {
-                                  const n = [...billSundries];
-                                  n[idx].amount = Number(e.target.value) || 0;
-                                  setBillSundries(n);
-                                  markDirty();
-                                }}
-                                disabled={readOnly}
-                                placeholder="0.00"
-                                min={0}
-                                step="0.01"
-                              />
-                            </td>
-                            <td className="px-2 py-1 text-center">
-                              {!readOnly && (
-                                <button
-                                  onClick={() => {
-                                    setBillSundries((p) => p.filter((s) => s.id !== sundry.id));
-                                    markDirty();
-                                  }}
-                                  className="p-1 text-[var(--ds-text-default)] hover:text-red-500 rounded"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-[12px] text-[var(--ds-text-muted)]">No bill sundries yet.</p>
-                )}
-              </div>
-            ) : null}
-          </div>
+          <InvoiceActions
+            dirty={dirty}
+            saving={saving}
+            readOnly={readOnly}
+            showPrint={!!savedInvoice}
+            onCancel={handleBack}
+            onSaveDraft={() => handleSave(VoucherStatus.DRAFT)}
+            onPost={() => handleSave(VoucherStatus.POSTED)}
+            onPrint={() => handlePrint()}
+          />
 
-          {/* Payment + Totals */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 items-start">
-            {/* Payment & TDS & Narration */}
-            <Card border padding="md">
-              <h3 className="text-[12px] font-bold text-[var(--ds-text-default)] uppercase tracking-wider mb-3">
-                Payment
-              </h3>
-              <div className="grid grid-cols-3 gap-2 mb-3">
-                {[
-                  { id: PaymentMode.CASH, label: "Cash", icon: Banknote },
-                  { id: PaymentMode.BANK_TRANSFER, label: "Bank", icon: Landmark },
-                  { id: PaymentMode.CREDIT, label: "Credit", icon: CreditCard },
-                ].map(({ id, label, icon: Icon }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    disabled={readOnly}
-                    onClick={() => {
-                      setPayMode(id as PaymentMode);
-                      markDirty();
-                    }}
-                    className={`inline-flex items-center justify-center gap-1.5 h-8 rounded-md border text-[12px] font-medium transition-colors ${payMode === id ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-[var(--ds-surface)] text-[var(--ds-text-default)] border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]"}`}
-                  >
-                    <Icon className="h-4 w-4" /> {label}
-                  </button>
-                ))}
-              </div>
-
-              {payMode === PaymentMode.BANK_TRANSFER && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[12px] text-[var(--ds-text-default)] font-medium">Bank Account</label>
-                    <select
-                      aria-label="Bank account"
-                      value={bankAccountId}
-                      onChange={(e) => {
-                        setBankAccountId(e.target.value);
-                        markDirty();
-                      }}
-                      disabled={readOnly}
-                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
-                    >
-                      <option value="" disabled>
-                        Select bank
-                      </option>
-                      {bankAccounts.map((b) => (
-                        <option key={b.id} value={b.id}>
-                          {b.code} · {b.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <Input
-                    label="Cheque No"
-                    value={chequeNo}
-                    onChange={(v) => {
-                      setChequeNo(v);
-                      markDirty();
-                    }}
-                    placeholder="Optional"
-                    disabled={readOnly}
-                  />
-                  <NepaliDatePicker
-                    label="Cheque Date"
-                    value={chequeDate}
-                    onChange={(v) => {
-                      setChequeDate(v);
-                      markDirty();
-                    }}
-                    disabled={readOnly}
-                  />
-                </div>
-              )}
-
-              {payMode === PaymentMode.CREDIT && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <Input
-                    type="number"
-                    label="Amount Paid Now"
-                    value={paidAmount || ""}
-                    onChange={(v) => {
-                      setPaidAmount(Number(v) || 0);
-                      markDirty();
-                    }}
-                    placeholder="0.00"
-                    hint="Leave 0 for fully credit sale"
-                    disabled={readOnly}
-                  />
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-[var(--ds-text-default)]">Balance Due</span>
-                    <span
-                      className={`font-mono font-bold text-base ${balance > 0 ? "text-red-600" : "text-green-600"}`}
-                    >
-                      {symbol} {formatNumber(balance)}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {party?.subjectToTds && optionalOpen ? (
-                <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
-                  <div className="flex items-center gap-2 mb-3">
-                    <input
-                      id="tds-enabled"
-                      type="checkbox"
-                      className="h-3.5 w-3.5 accent-[var(--ds-action-primary)]"
-                      checked={tdsEnabled}
-                      onChange={(e) => {
-                        setTdsEnabled(e.target.checked);
-                        markDirty();
-                      }}
-                      disabled={readOnly}
-                    />
-                    <label htmlFor="tds-enabled" className="text-xs font-bold text-[var(--ds-text-default)]">
-                      Deduct TDS
-                    </label>
-                  </div>
-                  {tdsEnabled && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <Select
-                        label="TDS Type"
-                        options={Object.values(TdsType)
-                          .filter((v) => v !== TdsType.NONE)
-                          .map((v) => ({ value: v, label: String(v).toUpperCase() }))}
-                        value={tdsType}
-                        onChange={(v) => {
-                          setTdsType(v as TdsType);
-                          markDirty();
-                        }}
-                        disabled={readOnly}
-                      />
-                      <Input
-                        type="number"
-                        label="TDS Rate %"
-                        value={tdsRate || ""}
-                        onChange={(v) => {
-                          setTdsRate(Number(v) || 0);
-                          markDirty();
-                        }}
-                        disabled={readOnly}
-                      />
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-semibold text-[var(--ds-text-default)]">TDS Amount</span>
-                        <span className="font-mono font-bold text-orange-600 text-base">
-                          {symbol} {formatNumber(tdsAmount)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : null}
-
-              {party?.subjectToTds && !optionalOpen ? (
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    className="text-[12px] font-medium text-[var(--ds-action-primary)]"
-                    onClick={() => setOptionalOpen(true)}
-                  >
-                    Show TDS options
-                  </button>
-                </div>
-              ) : null}
-
-              <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
-                <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
-                  Narration (English)
-                </label>
-                <textarea
-                  className="w-full h-16 p-2 text-[12px] border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
-                  value={narration}
-                  onChange={(e) => {
-                    setNarration(e.target.value.substring(0, 200));
-                    markDirty();
-                  }}
-                  placeholder="Optional notes / description"
-                  disabled={readOnly}
-                />
-                <div className="text-right text-[12px] text-[var(--ds-text-default)] mt-0.5">
-                  {narration.length}/200
-                </div>
-              </div>
-
-              <div
-                className="mt-3 rounded-md border border-[var(--ds-border-default)]"
-                data-testid="invoice-rare-fields"
-              >
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between px-3 py-2.5 text-left hover:bg-[var(--ds-surface-muted)]"
-                  aria-expanded={rareOpen}
-                  onClick={() => setRareOpen(!rareOpen)}
-                >
-                  <span className="text-[12px] font-semibold text-[var(--ds-text-default)]">
-                    More fields
-                    <span className="ml-1.5 font-normal text-[var(--ds-text-muted)]">
-                      Nepali narration · Attachments
-                      {attachments.length > 0 ? ` (${attachments.length})` : ""}
-                    </span>
-                  </span>
-                  <span className="text-[12px] font-medium text-[var(--ds-action-primary)]">
-                    {rareOpen ? "Hide" : "Show"}
-                  </span>
-                </button>
-                {rareOpen ? (
-                  <div className="space-y-3 border-t border-[var(--ds-border-default)] px-3 py-3">
-                    <div>
-                      <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
-                        Narration (Nepali)
-                      </label>
-                      <textarea
-                        className="w-full h-16 p-2 text-[12px] border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
-                        value={narrationNe}
-                        onChange={(e) => {
-                          setNarrationNe(e.target.value.substring(0, 200));
-                          markDirty();
-                        }}
-                        placeholder="नेपालीमा कैफियत..."
-                        disabled={readOnly}
-                      />
-                      <div className="text-right text-[12px] text-[var(--ds-text-default)] mt-0.5">
-                        {narrationNe.length}/200
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-[var(--ds-text-default)] mb-1 block">
-                        Attachments
-                      </label>
-                      <AttachmentUploader
-                        attachments={attachments}
-                        onAdd={(b64) => {
-                          setAttachments((p) => [...p, b64]);
-                          markDirty();
-                        }}
-                        onRemove={(idx) => {
-                          setAttachments((p) => p.filter((_, i) => i !== idx));
-                          markDirty();
-                        }}
-                      />
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </Card>
-
-            {/* Totals — NEXT-11 / ADR_0078: display estimate, not post authority */}
-            <div className="flex justify-end">
-              <div className="totals-panel">
-                <p className="text-[11px] text-gray-500 mb-2 text-right">
-                  {INVOICE_FORM_TOTALS_DISCLAIMER}
-                </p>
-                <div className="totals-row">
-                  <span className="font-medium">Subtotal</span>
-                  <span className="number-cell">
-                    {symbol} {formatNumber(computation.subtotal)}
-                  </span>
-                </div>
-                <div className="totals-row">
-                  <span className="font-medium">Discount</span>
-                  <span className="number-cell">
-                    - {symbol} {formatNumber(discountAmount)}
-                  </span>
-                </div>
-                <div className="totals-row">
-                  <span className="font-medium">Taxable Amount</span>
-                  <span className="number-cell">
-                    {symbol} {formatNumber(computation.taxableAmount)}
-                  </span>
-                </div>
-                <div className="totals-row">
-                  <span className="font-medium">VAT 13%</span>
-                  <span className="number-cell">
-                    {symbol} {formatNumber(computation.vatAmount)}
-                  </span>
-                </div>
-                {tdsEnabled && (
-                  <div className="totals-row">
-                    <span className="font-medium">TDS Deducted</span>
-                    <span className="number-cell">
-                      - {symbol} {formatNumber(tdsAmount)}
-                    </span>
-                  </div>
-                )}
-                {roundOff !== 0 && (
-                  <div className="totals-row">
-                    <span className="font-medium">Round Off</span>
-                    <span className="number-cell">
-                      {roundOff > 0 ? "+" : ""}
-                      {symbol} {formatNumber(roundOff)}
-                    </span>
-                  </div>
-                )}
-                <div className="totals-row total-final">
-                  <span>Grand Total</span>
-                  <span className="number-cell-bold">
-                    {symbol} {formatNumber(grandTotal)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer actions */}
-          <div className="form-footer">
-            <p className="text-[12px] text-gray-500">
-              Esc Cancel · Ctrl+S Save draft · F2 Save · F9 Remove last line
-            </p>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleBack}>
-                Cancel
-              </Button>
-              {savedInvoice && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handlePrint()}
-                  icon={<Printer className="h-4 w-4" />}
-                >
-                  Print Preview
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleSave(VoucherStatus.DRAFT)}
-                loading={saving}
-                disabled={readOnly}
-                icon={<Save className="h-4 w-4" />}
-              >
-                Save as Draft
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => handleSave(VoucherStatus.POSTED)}
-                loading={saving}
-                disabled={readOnly}
-                icon={<CheckCircle2 className="h-4 w-4" />}
-              >
-                Post Invoice
-              </Button>
-            </div>
-          </div>
 
           <ConfirmDialog
             isOpen={confirmCancel}
@@ -1764,8 +1199,6 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             }}
             onClose={() => setConfirmCancel(false)}
           />
-        </div>
-      </div>
     </div>
   );
 };

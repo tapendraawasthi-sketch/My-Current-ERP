@@ -140,10 +140,21 @@ export default function UnitConversionMaster() {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!deleteTargetId) return;
+    if (!deleteTargetId || !deleteTarget) return;
+    const snapshot = { ...deleteTarget };
     try {
       await deleteUnitConversion(deleteTargetId);
-      toast.success("Unit conversion deleted.");
+      if (editingId === deleteTargetId) resetForm();
+      toast.undo(
+        `"${deleteTarget.mainUnit} → ${deleteTarget.subUnit}" deleted`,
+        async () => {
+          try {
+            await addUnitConversion({ ...snapshot });
+          } catch {
+            toast.error("Failed to restore unit conversion.");
+          }
+        },
+      );
     } catch {
       toast.error("Failed to delete unit conversion.");
     } finally {
@@ -152,12 +163,12 @@ export default function UnitConversionMaster() {
   };
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
         <div className="p-4 pb-0">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Unit Conversions</h1>
+              <h1 className="text-[15px] font-semibold text-gray-900">Unit Conversions</h1>
               <p className="text-[11px] text-gray-500 mt-0.5">
                 Manage relationships and conversion factors between units
               </p>
@@ -167,7 +178,7 @@ export default function UnitConversionMaster() {
                 <select
                   value={branchFilter}
                   onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   aria-label="Branch"
                 >
                   <option value="all">All branches</option>
@@ -198,7 +209,7 @@ export default function UnitConversionMaster() {
 
         <div className="flex-1 overflow-y-auto px-4 pb-4">
           {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
+            <div className="bg-white border border-gray-200 rounded-lg">
               <ReportEmptyState
                 message={search ? "No conversions match your search" : "No unit conversions found"}
                 hint={
@@ -209,10 +220,10 @@ export default function UnitConversionMaster() {
               />
             </div>
           ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     <th className={th}>Main unit</th>
                     <th className={th}>Sub unit</th>
                     <th className={`${th} text-right`}>Conversion</th>
@@ -227,12 +238,12 @@ export default function UnitConversionMaster() {
                       className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => handleOpenEdit(uc)}
                     >
-                      <td className={`${td} font-medium text-gray-800`}>{uc.mainUnit}</td>
+                      <td className={`${td} font-medium text-gray-700`}>{uc.mainUnit}</td>
                       <td className={td}>{uc.subUnit}</td>
                       <td className={`${td} text-right font-mono`}>
                         <span className="text-gray-500">
                           1 {uc.mainUnit} ={" "}
-                          <span className="font-semibold text-gray-800">{uc.conversionFactor}</span>{" "}
+                          <span className="font-semibold text-gray-700">{uc.conversionFactor}</span>{" "}
                           {uc.subUnit}
                         </span>
                       </td>
@@ -249,7 +260,7 @@ export default function UnitConversionMaster() {
                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                            className="h-7 w-7 inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleOpenEdit(uc);
@@ -259,7 +270,7 @@ export default function UnitConversionMaster() {
                           </button>
                           <button
                             type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
+                            className="h-7 w-7 inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white text-red-600 hover:bg-red-50"
                             onClick={(e) => handleDeleteRequest(uc.id, e)}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -270,7 +281,7 @@ export default function UnitConversionMaster() {
                   ))}
                 </tbody>
               </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 text-[11px] text-gray-500">
                 {filtered.length} conversion{filtered.length === 1 ? "" : "s"}
               </div>
             </div>
@@ -281,7 +292,7 @@ export default function UnitConversionMaster() {
       {showForm && (
         <div className="w-[360px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editingId ? "Edit conversion" : "New conversion"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -343,7 +354,7 @@ export default function UnitConversionMaster() {
               />
             </div>
 
-            <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+            <label className="flex items-center gap-2 cursor-pointer border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 hover:bg-gray-100">
               <input
                 type="checkbox"
                 checked={form.isActive}
@@ -368,9 +379,9 @@ export default function UnitConversionMaster() {
 
       {deleteTargetId && deleteTarget && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-md border border-gray-200 w-full max-w-sm shadow-xl">
-            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
-              <h2 className="text-[13px] font-semibold text-gray-800">Delete conversion</h2>
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
+              <h2 className="text-[13px] font-semibold text-gray-700">Delete conversion</h2>
             </div>
             <div className="p-4">
               <p className="text-[12px] text-gray-700 mb-4">

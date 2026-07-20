@@ -58,18 +58,18 @@ function ProfitabilityTooltip({ active, payload, label }) {
   const point = payload[0]?.payload || {};
 
   return (
-    <div className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[11px]">
+    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-[11px]">
       <p className="font-medium text-gray-700">{label}</p>
       <div className="mt-1 space-y-1 text-gray-600">
         <div className="flex items-center justify-between gap-4">
           <span>Gross Margin</span>
-          <span className="font-semibold text-gray-800">
+          <span className="font-semibold text-gray-700">
             {Number(payload[0]?.value || 0).toFixed(2)}%
           </span>
         </div>
         <div className="flex items-center justify-between gap-4">
           <span>Revenue</span>
-          <span className="font-semibold text-gray-800">{money(point.revenue)}</span>
+          <span className="font-semibold text-gray-700">{money(point.revenue)}</span>
         </div>
       </div>
     </div>
@@ -239,12 +239,12 @@ export default function ItemProfitabilityReport() {
     {
       label: "TOTAL REVENUE",
       value: money(summary.totalRevenue),
-      valueClassName: "text-gray-800",
+      valueClassName: "text-gray-700",
     },
     {
       label: "TOTAL COGS",
       value: money(summary.totalCOGS),
-      valueClassName: "text-gray-800",
+      valueClassName: "text-gray-700",
     },
     {
       label: "TOTAL GROSS PROFIT",
@@ -259,10 +259,10 @@ export default function ItemProfitabilityReport() {
   ];
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-gray-50 p-4 md:p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Item Profitability Report</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Item Profitability Report</h1>
           <p className="mt-0.5 text-[11px] text-gray-500">
             Review item-wise sales performance, gross profit, and margins for the selected period.
           </p>
@@ -278,7 +278,7 @@ export default function ItemProfitabilityReport() {
         </div>
       </div>
 
-      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-4">
+      <div className="no-print mb-4 rounded-lg border border-gray-200 bg-white p-4">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-7">
           <div>
             <label className="mb-1 block text-[11px] font-medium text-gray-600">From Date</label>
@@ -286,7 +286,7 @@ export default function ItemProfitabilityReport() {
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 w-full rounded-lg border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
 
@@ -296,7 +296,7 @@ export default function ItemProfitabilityReport() {
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 w-full rounded-lg border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
 
@@ -306,7 +306,7 @@ export default function ItemProfitabilityReport() {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+                className="h-8 w-full rounded-lg border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -324,7 +324,7 @@ export default function ItemProfitabilityReport() {
             <select
               value={groupFilter}
               onChange={(e) => setGroupFilter(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 w-full rounded-lg border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             >
               <option value="">All Groups</option>
               {itemGroups.map((g) => (
@@ -340,7 +340,7 @@ export default function ItemProfitabilityReport() {
             <select
               value={salespersonFilter}
               onChange={(e) => setSalespersonFilter(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 w-full rounded-lg border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             >
               <option value="">All Salespersons</option>
               {salespersons.map((sp) => (
@@ -356,7 +356,7 @@ export default function ItemProfitabilityReport() {
             <select
               value={viewMode}
               onChange={(e) => setViewMode(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 w-full rounded-lg border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             >
               <option value="top20">Top 20 Profitable</option>
               <option value="bottom20">Bottom 20 Profitable</option>
@@ -367,7 +367,7 @@ export default function ItemProfitabilityReport() {
           <div className="flex items-end">
             <button
               onClick={() => {}}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
+              className="h-8 w-full rounded-lg border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
             >
               Run Analysis
             </button>
@@ -382,7 +382,7 @@ export default function ItemProfitabilityReport() {
                 placeholder="Search items by code or name"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-8 w-full rounded-md border border-gray-300 bg-white pl-8 pr-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+                className="h-8 w-full rounded-lg border border-gray-300 bg-white pl-8 pr-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
               />
             </div>
           </div>
@@ -391,7 +391,7 @@ export default function ItemProfitabilityReport() {
 
       <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
         {kpiCards.map((card) => (
-          <div key={card.label} className="rounded-md border border-gray-200 bg-white px-4 py-3">
+          <div key={card.label} className="rounded-lg border border-gray-200 bg-white px-4 py-3">
             <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
               {card.label}
             </p>
@@ -400,9 +400,9 @@ export default function ItemProfitabilityReport() {
         ))}
       </div>
 
-      <div className="mb-4 rounded-md border border-gray-200 bg-white">
+      <div className="mb-4 rounded-lg border border-gray-200 bg-white">
         <div className="border-b border-gray-200 px-4 py-3">
-          <h2 className="text-[13px] font-semibold text-gray-800">Gross Margin by Item</h2>
+          <h2 className="text-[13px] font-semibold text-gray-700">Gross Margin by Item</h2>
           <p className="mt-0.5 text-[11px] text-gray-500">
             Margin percentage across the currently filtered items.
           </p>
@@ -445,9 +445,9 @@ export default function ItemProfitabilityReport() {
         </div>
       </div>
 
-      <div className="mb-4 rounded-md border border-gray-200 bg-white">
+      <div className="mb-4 rounded-lg border border-gray-200 bg-white">
         <div className="border-b border-gray-200 px-4 py-3">
-          <h2 className="text-[13px] font-semibold text-gray-800">
+          <h2 className="text-[13px] font-semibold text-gray-700">
             {viewMode === "top20"
               ? "Top 20 Profitable Items"
               : viewMode === "bottom20"
@@ -463,41 +463,41 @@ export default function ItemProfitabilityReport() {
           <div className="overflow-x-auto">
             <table className="min-w-[1200px] w-full">
               <thead>
-                <tr className="border-b border-gray-200 bg-[#f5f6fa]">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Rank
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Item Code
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Item Name
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Item Group
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Units Sold
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Avg Selling Rate
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Total Revenue
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Avg Purchase Rate
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Total COGS
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Gross Profit
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Margin %
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                     Trend
                   </th>
                 </tr>
@@ -595,26 +595,26 @@ export default function ItemProfitabilityReport() {
               These items are being sold below cost. Consider repricing.
             </div>
 
-            <div className="overflow-x-auto rounded-md border border-red-200 bg-white">
+            <div className="overflow-x-auto rounded-lg border border-red-200 bg-white">
               <table className="min-w-[760px] w-full">
                 <thead>
-                  <tr className="border-b border-red-200 bg-[#f5f6fa]">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                  <tr className="border-b border-red-200 bg-gray-50">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                       Item Code
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                       Item Name
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                       Revenue
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                       COGS
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                       Gross Profit
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-400">
                       Margin %
                     </th>
                   </tr>

@@ -144,7 +144,7 @@ const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payab
     (n || 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
   return (
-    <div className="mb-3 rounded-md border border-gray-200 bg-white px-4 py-3">
+    <div className="mb-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
       <div className="mb-2.5 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
         {direction === "receivable" ? "Receivables" : "Payables"} Aging Overview — Total:{" "}
         {fmt(totals.total)}
@@ -406,8 +406,8 @@ const AgingReport: React.FC = () => {
       {filteredRows.length > 0 && <AgingBar totals={grandTotal} direction={direction} />}
 
       {/* Filters */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-gray-200 bg-white p-3">
-        <div className="flex items-center rounded-md border border-gray-300 overflow-hidden">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 bg-white p-3">
+        <div className="flex items-center rounded-lg border border-gray-200 overflow-hidden">
           <button
             type="button"
             onClick={() => setDirection("receivable")}
@@ -439,7 +439,7 @@ const AgingReport: React.FC = () => {
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
             aria-label="Branch"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             <option value="all">All branches</option>
             {branchOptions.map((b) => (
@@ -466,13 +466,13 @@ const AgingReport: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={formatAgingSearchPlaceholder(outputLanguage)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+            className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
         {isLoading ? (
           <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
             <RefreshCw className="h-5 w-5 animate-spin" />
@@ -488,34 +488,34 @@ const AgingReport: React.FC = () => {
             <table className="report-table w-full min-w-[900px]">
               <thead>
                 <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Party Name
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                     PAN
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     Current
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     1–30 Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     31–60 Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     61–90 Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     Over 90
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                     Total
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     Contact
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                  <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-20">
                     Action
                   </th>
                 </tr>
@@ -523,7 +523,7 @@ const AgingReport: React.FC = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredRows.map((row: AgingRow) => (
                   <tr key={row.partyId} className="hover:bg-gray-50">
-                    <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">
+                    <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-700">
                       {row.partyName}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] font-mono text-gray-600">
@@ -544,7 +544,7 @@ const AgingReport: React.FC = () => {
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-700">
                       {row.buckets.over90 > 0 ? money(row.buckets.over90) : "—"}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-700">
                       {money(row.buckets.total)}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">
@@ -655,7 +655,7 @@ const AgingReport: React.FC = () => {
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
-                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-700">
                       Grand Total ({filteredRows.length} parties)
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-green-700">
@@ -690,7 +690,7 @@ const AgingReport: React.FC = () => {
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg">
               <div>
-                <h2 className="text-[14px] font-semibold text-gray-800">
+                <h2 className="text-[14px] font-semibold text-gray-700">
                   {formatAgingReminderModalTitle(direction, outputLanguage)}
                 </h2>
                 <p className="text-[12px] text-gray-500 mt-0.5">{reminderParty.name}</p>
@@ -704,7 +704,7 @@ const AgingReport: React.FC = () => {
               </button>
             </div>
             <div className="p-4">
-              <p className="text-[12px] text-gray-600 whitespace-pre-wrap leading-relaxed border border-gray-200 rounded-md bg-gray-50 p-3">
+              <p className="text-[12px] text-gray-600 whitespace-pre-wrap leading-relaxed border border-gray-200 rounded-lg bg-gray-50 p-3">
                 {reminderShareText}
               </p>
               <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -722,7 +722,7 @@ const AgingReport: React.FC = () => {
                     if (ok) toast.success("Copied to clipboard");
                     else toast.error("Copy failed");
                   }}
-                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                  className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
                 >
                   {formatAgingRemindCopyButton(outputLanguage)}
                 </button>
@@ -761,7 +761,7 @@ const AgingReport: React.FC = () => {
                     }
                     setReminderParty(null);
                   }}
-                  className="h-8 px-3 bg-white border text-[12px] font-medium rounded-md border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-muted)]"
+                  className="h-8 px-3 bg-white border text-[12px] font-medium rounded-lg border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-muted)]"
                   title={
                     reminderParty.phone
                       ? "Open Orbix and send via WhatsApp"

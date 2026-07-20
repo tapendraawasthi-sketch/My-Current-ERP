@@ -11,24 +11,24 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { Select, NepaliDatePicker } from "../components/ui";
 import ReceiptVoucherForm from "../components/voucher/ReceiptVoucherForm";
-import { Plus, Eye, Search, Download } from "lucide-react";
+import { Plus, Eye, Search, Download, Banknote } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import { ReportEmptyState } from "../components/ReportEmptyState";
-import {
-  BRANCH_CHANGED_EVENT,
-  matchesBranchFilter,
-  readActiveBranchId,
-} from "../lib/activeBranch";
+import { matchesBranchFilter } from "../lib/activeBranch";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { Button, EmptyState } from "@/design-system";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+
+const PAGE_ID = "receipt";
 
 const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  "h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
 const statusBadge = (status: string) => {
   if (status === VoucherStatus.POSTED) return "bg-green-100 text-green-700";
@@ -37,32 +37,48 @@ const statusBadge = (status: string) => {
 };
 
 const ReceiptVoucher: React.FC = () => {
-  const { vouchers, companySettings, branches } = useStore();
+  const { vouchers, companySettings } = useStore();
+  const { branchFilter } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [branchFilter, setBranchFilter] = useState(() => readActiveBranchId() || "all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(50);
 
-  useEffect(() => {
-    const sync = () => {
-      const id = readActiveBranchId();
-      if (id) setBranchFilter(id);
-    };
-    window.addEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
-    return () => window.removeEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
-  }, []);
-
   const receipts = useMemo(
     () => vouchers.filter((v) => v.type === VoucherType.RECEIPT),
     [vouchers],
   );
+
+  // Deep link: /app/receipt/new | /app/receipt/:id
+  useEffect(() => {
+    if (route.pageId !== PAGE_ID) return;
+    if (route.entityId === "new") {
+      setActiveId(null);
+      setMode("new");
+      return;
+    }
+    if (route.entityId) {
+      const row = receipts.find((v) => v.id === route.entityId);
+      if (row) {
+        setActiveId(row.id);
+        setMode("edit");
+      }
+      return;
+    }
+    if (mode !== "list") {
+      setMode("list");
+      setActiveId(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync from URL entity only
+  }, [route.pageId, route.entityId, receipts]);
 
   const filtered = useMemo(() => {
     return receipts
@@ -72,11 +88,6 @@ const ReceiptVoucher: React.FC = () => {
       .filter((v) => !toDate || v.date <= toDate)
       .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   }, [receipts, statusFilter, branchFilter, fromDate, toDate]);
-
-  const branchOptions = useMemo(
-    () => ((branches || []) as any[]).filter((b) => b && b.isActive !== false),
-    [branches],
-  );
 
   const searched = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -95,14 +106,17 @@ const ReceiptVoucher: React.FC = () => {
   const openNew = () => {
     setActiveId(null);
     setMode("new");
+    openEntity(PAGE_ID, "new");
   };
   const openEdit = (row: any) => {
     setActiveId(row.id);
     setMode("edit");
+    openEntity(PAGE_ID, row.id);
   };
   const backToList = () => {
     setMode("list");
     setActiveId(null);
+    clearEntity(PAGE_ID);
   };
 
   const exportCsv = () => {
@@ -136,20 +150,15 @@ const ReceiptVoucher: React.FC = () => {
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--ds-surface-muted)]">
       <div className="p-4 pb-0 shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Receive money</h1>
-            <p className="text-[12px] text-gray-500 mt-0.5">
-              Cash and bank receipts — customer payments, income, and deposits
-            </p>
-          </div>
+        {/* Title owned by TransactionRouteShell — list chrome only */}
+        <div className="flex items-center justify-end mb-3">
           <button type="button" className={btnPrimary} onClick={openNew}>
             <Plus className="h-3.5 w-3.5" />
             New receipt
           </button>
         </div>
 
-        <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-md">
+        <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-lg">
           <span className="text-[12px] text-gray-500">From</span>
           <div className="w-32">
             <NepaliDatePicker value={fromDate} onChange={setFromDate} />
@@ -171,24 +180,6 @@ const ReceiptVoucher: React.FC = () => {
               onChange={setStatusFilter}
             />
           </div>
-          {branchOptions.length > 0 && (
-            <>
-              <span className="text-[12px] text-gray-500">Branch</span>
-              <div className="w-40">
-                <Select
-                  options={[
-                    { value: "all", label: "All branches" },
-                    ...branchOptions.map((b: any) => ({
-                      value: b.id,
-                      label: b.name || b.code || b.id,
-                    })),
-                  ]}
-                  value={branchFilter}
-                  onChange={setBranchFilter}
-                />
-              </div>
-            </>
-          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-3 no-print">
@@ -223,14 +214,54 @@ const ReceiptVoucher: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
         {searched.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-md">
-            <ReportEmptyState
-              message="No receipt vouchers found"
-              hint='Adjust filters or click "New receipt" to create your first entry.'
+          <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-2">
+            <EmptyState
+              icon={
+                searchTerm.trim() || fromDate || toDate || statusFilter !== "ALL" ? (
+                  <Search className="h-4 w-4" aria-hidden />
+                ) : (
+                  <Banknote className="h-4 w-4" aria-hidden />
+                )
+              }
+              title={
+                receipts.length === 0
+                  ? "No receipt vouchers yet"
+                  : "No receipt vouchers match your filters"
+              }
+              description={
+                receipts.length === 0
+                  ? "Record money received from a party to start this register."
+                  : "Clear search or adjust status and dates to see more vouchers."
+              }
+              primaryAction={
+                receipts.length === 0 ? (
+                  <Button
+                    variant="primary"
+                    size="small"
+                    onClick={openNew}
+                    startIcon={<Plus className="h-3.5 w-3.5" />}
+                  >
+                    New receipt
+                  </Button>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setFromDate("");
+                      setToDate("");
+                      setStatusFilter("ALL");
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                )
+              }
             />
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
@@ -251,7 +282,7 @@ const ReceiptVoucher: React.FC = () => {
                       className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => openEdit(row)}
                     >
-                      <td className={`${td} font-mono font-medium text-gray-800`}>
+                      <td className={`${td} font-mono font-medium text-gray-700`}>
                         {row.voucherNo}
                       </td>
                       <td className={td}>
@@ -281,7 +312,7 @@ const ReceiptVoucher: React.FC = () => {
                             e.stopPropagation();
                             openEdit(row);
                           }}
-                          className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="h-7 w-7 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
                           title="View / edit"
                         >
                           <Eye className="h-3.5 w-3.5" />

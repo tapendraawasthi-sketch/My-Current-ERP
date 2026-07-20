@@ -57,17 +57,17 @@ export default function MissingVoucherReport() {
   }, [vouchers, fromDate, toDate, search, matchBranch, branchFilter]);
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-gray-50 overflow-y-auto p-4 md:p-6">
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Missing voucher report</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Missing voucher report</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Gaps in posted voucher number sequences by type
           </p>
         </div>
       </div>
 
-      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
+      <div className="no-print bg-white border border-gray-200 rounded-lg p-3 mb-4">
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
           <div>
             <label className={labelCls}>From date</label>
@@ -124,7 +124,7 @@ export default function MissingVoucherReport() {
         </p>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex-1 min-h-0 flex flex-col">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex-1 min-h-0 flex flex-col">
         {gaps.length === 0 ? (
           <ReportEmptyState
             message="No missing voucher numbers found"
@@ -135,17 +135,17 @@ export default function MissingVoucherReport() {
             <div className="overflow-x-auto flex-1">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       #
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Voucher type
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Missing number
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       After voucher
                     </th>
                   </tr>
@@ -171,7 +171,7 @@ export default function MissingVoucherReport() {
                 </tbody>
               </table>
             </div>
-            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 text-[11px] text-gray-500">
               {gaps.length} gap{gaps.length === 1 ? "" : "s"} in sequence
             </div>
           </>

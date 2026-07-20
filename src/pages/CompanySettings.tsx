@@ -1,7 +1,13 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Save, Eye, EyeOff, X } from "lucide-react";
 import toast from "@/lib/appToast";
+import { useStore } from "../store/useStore";
+import {
+  BUSINESS_NATURES,
+  applyNatureToCompanySettings,
+  getNatureProfile,
+} from "@/lib/businessNature";
 
 const NEPAL_PROVINCES = [
   "Koshi Province (Province 1)",
@@ -115,6 +121,9 @@ const EMAIL_PRESETS: Record<string, { host: string; port: number }> = {
 };
 
 export default function CompanySettings() {
+  const companySettings = useStore((s) => s.companySettings);
+  const updateCompanySettings = useStore((s) => s.updateCompanySettings);
+
   const [activeTab, setActiveTab] = useState<"general" | "financial" | "tax" | "display" | "email">(
     "general",
   );
@@ -162,19 +171,64 @@ export default function CompanySettings() {
     ward_number: "",
     vat_registration_date: "",
     registration_type: "",
+    business_nature: "",
+    business_type: "",
   });
 
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [testEmailLoading, setTestEmailLoading] = useState(false);
   const [showSmtpPass, setShowSmtpPass] = useState(false);
   const [testEmailTarget, setTestEmailTarget] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
+  useEffect(() => {
+    if (!companySettings) {
+      setIsLoading(false);
+      return;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      company_name: companySettings.companyNameEn || companySettings.name || "",
+      company_name_nepali: companySettings.companyNameNe || companySettings.nameNepali || "",
+      address: companySettings.address || "",
+      city: companySettings.city || "",
+      district: companySettings.district || "",
+      province: companySettings.province || "",
+      phone: companySettings.phone || "",
+      email: companySettings.email || "",
+      website: companySettings.website || "",
+      pan_number: companySettings.panNumber || "",
+      vat_number: companySettings.vatNumber || "",
+      currency_symbol: companySettings.currencySymbol || prev.currency_symbol,
+      currency_code: companySettings.defaultCurrency || "NPR",
+      date_format: companySettings.dateFormat || companySettings.defaultDateFormat || "BS",
+      enable_vat: Boolean(companySettings.vatNumber) || prev.enable_vat,
+      enable_tds: Boolean(companySettings.tdsEnabled),
+      bank_name: companySettings.bankName || "",
+      bank_account: companySettings.bankAccount || "",
+      bank_branch: companySettings.bankBranch || "",
+      logo_url: companySettings.logo || "",
+      business_nature: companySettings.businessNature || "",
+      business_type: companySettings.businessType || companySettings.registration_type || "",
+      registration_type: companySettings.businessType || companySettings.registration_type || "",
+    }));
+    setIsLoading(false);
+  }, [companySettings]);
+
+  const natureHint = useMemo(() => {
+    if (!formData.business_nature) return "";
+    return getNatureProfile(formData.business_nature).hint;
+  }, [formData.business_nature]);
+
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
     if (!formData.company_name || formData.company_name.trim().length < 3) {
       errors.company_name = "Company name must be at least 3 characters";
+    }
+    if (!formData.business_nature) {
+      errors.business_nature = "Business nature is required — it controls which menus you see";
     }
     if (formData.pan_number && !/^\d{9}$/.test(formData.pan_number)) {
       errors.pan_number = "PAN must be exactly 9 digits (numbers only)";
@@ -197,9 +251,45 @@ export default function CompanySettings() {
       toast.error("Please fix the errors before saving");
       return;
     }
-    // Simulate save logic
-    toast.success("Company settings saved successfully!");
-    setIsDirty(false);
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      const patched = applyNatureToCompanySettings(
+        {
+          name: formData.company_name.trim(),
+          companyNameEn: formData.company_name.trim(),
+          companyNameNe: formData.company_name_nepali.trim(),
+          nameNepali: formData.company_name_nepali.trim(),
+          address: formData.address,
+          city: formData.city,
+          district: formData.district,
+          province: formData.province,
+          phone: formData.phone,
+          email: formData.email,
+          website: formData.website,
+          panNumber: formData.pan_number,
+          vatNumber: formData.vat_number || (formData.enable_vat ? formData.pan_number : ""),
+          currencySymbol: formData.currency_symbol,
+          defaultCurrency: formData.currency_code,
+          dateFormat: formData.date_format,
+          tdsEnabled: formData.enable_tds,
+          bankName: formData.bank_name,
+          bankAccount: formData.bank_account,
+          bankBranch: formData.bank_branch,
+          logo: formData.logo_url,
+          businessType: formData.business_type || formData.registration_type,
+          businessNature: formData.business_nature,
+        },
+        formData.business_nature,
+      );
+      await updateCompanySettings(patched);
+      toast.success("Company settings saved. Menus now match the selected business nature.");
+      setIsDirty(false);
+    } catch {
+      toast.error("Could not save company settings.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleChange = (field: string, value: any) => {
@@ -253,15 +343,15 @@ export default function CompanySettings() {
             <h2 className="text-lg font-bold text-[var(--ds-text-default)]">Company settings</h2>
             <button
               onClick={handleSave}
-              disabled={!isDirty}
+              disabled={!isDirty || isSaving || isLoading}
               className={`h-8 px-4 rounded-md text-[12px] font-medium flex items-center gap-2 ${
-                isDirty
+                isDirty && !isSaving
                   ? "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white"
                   : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)] cursor-not-allowed"
               }`}
             >
               <Save size={14} />
-              Save Changes
+              {isSaving ? "Saving…" : "Save Changes"}
             </button>
           </div>
 
@@ -328,9 +418,62 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.company_name_nepali}
                         onChange={(e) => handleChange("company_name_nepali", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="कम्पनी नाम"
                       />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
+                        Business nature <span className="text-red-600">*</span>
+                      </label>
+                      <select
+                        value={formData.business_nature}
+                        onChange={(e) => handleChange("business_nature", e.target.value)}
+                        data-testid="settings-business-nature"
+                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${
+                          fieldErrors.business_nature ? "border-red-500" : "border-[var(--ds-border-default)]"
+                        }`}
+                      >
+                        <option value="">— Select business nature —</option>
+                        {BUSINESS_NATURES.map((n) => (
+                          <option key={n.id} value={n.id}>
+                            {n.label}
+                          </option>
+                        ))}
+                      </select>
+                      {fieldErrors.business_nature ? (
+                        <p className="text-red-600 text-[12px] mt-0.5">{fieldErrors.business_nature}</p>
+                      ) : (
+                        <p className="text-[11px] text-gray-500 mt-1">
+                          {natureHint ||
+                            "Controls which menus and features appear (POS, inventory, production, funds, etc.)."}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
+                        Legal entity type
+                      </label>
+                      <select
+                        value={formData.business_type}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setFormData((prev) => ({
+                            ...prev,
+                            business_type: v,
+                            registration_type: v,
+                          }));
+                          setIsDirty(true);
+                        }}
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      >
+                        <option value="">— Select —</option>
+                        <option value="Sole Proprietorship">Sole Proprietorship</option>
+                        <option value="Partnership">Partnership</option>
+                        <option value="Pvt. Ltd.">Pvt. Ltd.</option>
+                        <option value="Public Ltd.">Public Ltd.</option>
+                        <option value="Other">Other</option>
+                      </select>
                     </div>
                     <div className="col-span-2">
                       <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
@@ -389,7 +532,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.address}
                         onChange={(e) => handleChange("address", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Full Address"
                       />
                     </div>
@@ -401,7 +544,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.city}
                         onChange={(e) => handleChange("city", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="City"
                       />
                     </div>
@@ -413,7 +556,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.ward_number}
                         onChange={(e) => handleChange("ward_number", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Ward/Tole"
                       />
                     </div>
@@ -424,7 +567,7 @@ export default function CompanySettings() {
                       <select
                         value={formData.province}
                         onChange={(e) => handleProvinceChange(e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="">— Select Province —</option>
                         {NEPAL_PROVINCES.map((p) => (
@@ -441,7 +584,7 @@ export default function CompanySettings() {
                       <select
                         value={formData.district}
                         onChange={(e) => handleChange("district", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         disabled={availableDistricts.length === 0}
                       >
                         <option value="">
@@ -464,7 +607,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.phone}
                         onChange={(e) => handleChange("phone", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="01-4XXXXXX or 98XXXXXXXX"
                       />
                     </div>
@@ -476,7 +619,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.mobile}
                         onChange={(e) => handleChange("mobile", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="98XXXXXXXX"
                       />
                     </div>
@@ -503,7 +646,7 @@ export default function CompanySettings() {
                         type="url"
                         value={formData.website}
                         onChange={(e) => handleChange("website", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="https://www.company.com.np"
                       />
                     </div>
@@ -566,7 +709,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.registration_number}
                         onChange={(e) => handleChange("registration_number", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Reg. No."
                       />
                     </div>
@@ -577,7 +720,7 @@ export default function CompanySettings() {
                       <select
                         value={formData.registration_type}
                         onChange={(e) => handleChange("registration_type", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="">— Select Type —</option>
                         <option value="Pvt. Ltd. Registration">Pvt. Ltd. Registration</option>
@@ -611,7 +754,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.currency_symbol}
                         onChange={(e) => handleChange("currency_symbol", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Rs."
                       />
                     </div>
@@ -640,7 +783,7 @@ export default function CompanySettings() {
                         onChange={(e) =>
                           handleChange("decimal_places", parseInt(e.target.value) || 0)
                         }
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       />
                     </div>
                   </div>
@@ -662,7 +805,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.bank_name}
                         onChange={(e) => handleChange("bank_name", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="e.g. Nepal Bank Ltd."
                       />
                     </div>
@@ -674,7 +817,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.bank_branch}
                         onChange={(e) => handleChange("bank_branch", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="e.g. Kathmandu Main"
                       />
                     </div>
@@ -686,7 +829,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.bank_account}
                         onChange={(e) => handleChange("bank_account", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Account number"
                       />
                     </div>
@@ -710,7 +853,7 @@ export default function CompanySettings() {
                         onChange={(e) =>
                           handleChange("financial_year_start_month", parseInt(e.target.value))
                         }
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="1">Baishakh</option>
                         <option value="2">Jestha</option>
@@ -733,7 +876,7 @@ export default function CompanySettings() {
                       <select
                         value={formData.fiscal_year_type}
                         onChange={(e) => handleChange("fiscal_year_type", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="BS">BS - Bikram Sambat (Nepal)</option>
                         <option value="AD">AD - Anno Domini</option>
@@ -766,7 +909,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.invoice_prefix}
                         onChange={(e) => handleChange("invoice_prefix", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="INV"
                       />
                       <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
@@ -781,7 +924,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.receipt_prefix}
                         onChange={(e) => handleChange("receipt_prefix", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="RCP"
                       />
                       <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
@@ -796,7 +939,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.voucher_prefix}
                         onChange={(e) => handleChange("voucher_prefix", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="VCH"
                       />
                       <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
@@ -889,7 +1032,7 @@ export default function CompanySettings() {
                         type="date"
                         value={formData.vat_registration_date}
                         onChange={(e) => handleChange("vat_registration_date", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       />
                     </div>
                   </div>
@@ -961,7 +1104,7 @@ export default function CompanySettings() {
                       <select
                         value={formData.date_format}
                         onChange={(e) => handleChange("date_format", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="BS">BS - Bikram Sambat</option>
                         <option value="AD">AD - Anno Domini</option>
@@ -975,7 +1118,7 @@ export default function CompanySettings() {
                       <select
                         value={formData.language}
                         onChange={(e) => handleChange("language", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="en">English</option>
                         <option value="ne">Nepali</option>
@@ -989,7 +1132,7 @@ export default function CompanySettings() {
                         type="color"
                         value={formData.theme_color}
                         onChange={(e) => handleChange("theme_color", e.target.value)}
-                        className="h-8 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       />
                     </div>
                   </div>
@@ -1019,7 +1162,7 @@ export default function CompanySettings() {
                             handleChange("smtp_port", preset.port);
                           }
                         }}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="">— Select to auto-fill —</option>
                         {Object.keys(EMAIL_PRESETS).map((k) => (
@@ -1037,7 +1180,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.smtp_host}
                         onChange={(e) => handleChange("smtp_host", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="smtp.example.com"
                       />
                     </div>
@@ -1064,7 +1207,7 @@ export default function CompanySettings() {
                       <select
                         value="STARTTLS"
                         onChange={() => {}}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="STARTTLS">STARTTLS (port 587)</option>
                         <option value="SSL">SSL (port 465)</option>
@@ -1079,7 +1222,7 @@ export default function CompanySettings() {
                         type="text"
                         value={formData.smtp_user}
                         onChange={(e) => handleChange("smtp_user", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="user@example.com"
                       />
                     </div>
@@ -1092,7 +1235,7 @@ export default function CompanySettings() {
                           type={showSmtpPass ? "text" : "password"}
                           value={formData.smtp_pass}
                           onChange={(e) => handleChange("smtp_pass", e.target.value)}
-                          className="h-8 px-2.5 pr-9 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                          className="h-8 px-2.5 pr-9 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                           placeholder="••••••••"
                         />
                         <button
@@ -1116,7 +1259,7 @@ export default function CompanySettings() {
                         type="email"
                         value={formData.smtp_from}
                         onChange={(e) => handleChange("smtp_from", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="from@example.com"
                       />
                     </div>
@@ -1129,7 +1272,7 @@ export default function CompanySettings() {
                           type="email"
                           value={testEmailTarget}
                           onChange={(e) => setTestEmailTarget(e.target.value)}
-                          className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                          className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                           placeholder="test@example.com"
                         />
                         <button

@@ -185,16 +185,16 @@ const DebitCreditNote: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMode("list")}
-              className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[#000000]"
+              className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[#374151]"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
             <div>
-              <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
+              <h2 className="text-lg font-bold text-[#374151] tracking-tight flex items-center gap-2">
                 <FileText className="h-5 w-5 text-[var(--ds-action-primary)]" />
                 NEW {kind === "debit" ? "DEBIT" : "CREDIT"} NOTE
               </h2>
-              <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
+              <p className="text-[11px] text-[#374151] mt-0.5 uppercase tracking-wider font-bold">
                 {kind === "debit" ? "Reduce supplier payable" : "Reduce customer receivable"}
               </p>
             </div>
@@ -251,13 +251,13 @@ const DebitCreditNote: React.FC = () => {
           {/* Journal preview */}
           {amount > 0 && partyAccountId && adjAccountId && (
             <div className="mt-4 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#000000] mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#374151] mb-2">
                 Journal preview
               </p>
               <div className="grid grid-cols-3 gap-2 text-[11px]">
-                <div className="font-bold text-[#000000]">Account</div>
-                <div className="font-bold text-right text-[#000000]">Debit</div>
-                <div className="font-bold text-right text-[#000000]">Credit</div>
+                <div className="font-bold text-[#374151]">Account</div>
+                <div className="font-bold text-right text-[#374151]">Debit</div>
+                <div className="font-bold text-right text-[#374151]">Credit</div>
                 {(kind === "debit"
                   ? [
                       { acc: party?.name, dr: amount, cr: 0 },
@@ -277,7 +277,7 @@ const DebitCreditNote: React.FC = () => {
                     ]
                 ).map((row, i) => (
                   <React.Fragment key={i}>
-                    <div className="text-[#000000]">{row.acc}</div>
+                    <div className="text-[#374151]">{row.acc}</div>
                     <div className="text-right font-mono">
                       {row.dr ? `${symbol} ${formatNumber(row.dr)}` : "—"}
                     </div>
@@ -314,7 +314,7 @@ const DebitCreditNote: React.FC = () => {
     {
       key: "voucherNo",
       header: "Note No",
-      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
+      render: (v: string) => <span className="font-mono font-bold text-[#374151]">{v}</span>,
     },
     {
       key: "date",
@@ -357,10 +357,10 @@ const DebitCreditNote: React.FC = () => {
     <div className="flex flex-col gap-5 animate-fadeIn text-xs">
       <div className="flex items-center justify-between border-b border-[var(--ds-border-default)] pb-4">
         <div>
-          <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
+          <h2 className="text-lg font-bold text-[#374151] tracking-tight flex items-center gap-2">
             <Receipt className="h-5 w-5 text-[var(--ds-action-primary)]" /> Debit / Credit Notes
           </h2>
-          <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
+          <p className="text-[11px] text-[#374151] mt-0.5 uppercase tracking-wider font-bold">
             Non-inventory price adjustments
           </p>
         </div>
@@ -369,7 +369,7 @@ const DebitCreditNote: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -380,12 +380,12 @@ const DebitCreditNote: React.FC = () => {
               ))}
             </select>
           )}
-          <div className="inline-flex rounded-md border border-[var(--ds-border-default)] overflow-hidden">
+          <div className="inline-flex rounded-lg border border-[var(--ds-border-default)] overflow-hidden">
             {(["credit", "debit"] as NoteKind[]).map((k) => (
               <button
                 key={k}
                 onClick={() => setKind(k)}
-                className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${kind === k ? "bg-[var(--ds-action-primary-hover)] text-white" : "bg-white text-[#000000] hover:bg-[var(--ds-surface-muted)]"}`}
+                className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${kind === k ? "bg-[var(--ds-action-primary-hover)] text-white" : "bg-white text-[#374151] hover:bg-[var(--ds-surface-muted)]"}`}
               >
                 {k === "credit" ? "Credit Notes" : "Debit Notes"}
               </button>

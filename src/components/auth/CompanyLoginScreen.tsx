@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { Button, ErrorSummary, Input, Alert } from "@/design-system";
+import { Button, ErrorSummary, Input, Alert, FormField } from "@/design-system";
 import { PreWorkspaceShell, CompanyMonogram } from "./PreWorkspaceShell";
 
 function formatLoginDate(isoString: string): string {
@@ -182,14 +182,15 @@ export default function CompanyLoginScreen() {
           </Alert>
         ) : null}
 
-        <form onSubmit={(e) => void handleSubmit(e)} noValidate>
-          <div className="mb-3">
-            <label htmlFor="orbix-login-username" className="mb-1 block text-[13px] font-medium text-[var(--ds-text-default)]">
-              Username
-            </label>
+        <form onSubmit={(e) => void handleSubmit(e)} noValidate className="space-y-4">
+          <FormField
+            id="orbix-login-username"
+            label="Username"
+            required
+            error={fieldErrors.username}
+          >
             <Input
               ref={usernameRef}
-              id="orbix-login-username"
               name="username"
               autoComplete="username"
               value={username}
@@ -197,24 +198,17 @@ export default function CompanyLoginScreen() {
                 setUsername(e.target.value);
                 if (fieldErrors.username) setFieldErrors((p) => ({ ...p, username: undefined }));
               }}
-              invalid={Boolean(fieldErrors.username)}
-              aria-invalid={Boolean(fieldErrors.username)}
-              aria-describedby={fieldErrors.username ? "orbix-login-username-error" : undefined}
             />
-            {fieldErrors.username ? (
-              <p id="orbix-login-username-error" className="mt-1 text-[13px] text-[var(--ds-status-danger)]">
-                {fieldErrors.username}
-              </p>
-            ) : null}
-          </div>
+          </FormField>
 
-          <div className="mb-5">
-            <label htmlFor="orbix-login-password" className="mb-1 block text-[13px] font-medium text-[var(--ds-text-default)]">
-              Password
-            </label>
-            <div className="relative">
+          <div className="relative">
+            <FormField
+              id="orbix-login-password"
+              label="Password"
+              required
+              error={fieldErrors.password}
+            >
               <Input
-                id="orbix-login-password"
                 name="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
@@ -223,25 +217,17 @@ export default function CompanyLoginScreen() {
                   setPassword(e.target.value);
                   if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: undefined }));
                 }}
-                invalid={Boolean(fieldErrors.password)}
-                aria-invalid={Boolean(fieldErrors.password)}
-                aria-describedby={fieldErrors.password ? "orbix-login-password-error" : undefined}
                 className="pr-11"
               />
-              <button
-                type="button"
-                className="ds-focus-ring absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-hover)]"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                onClick={() => setShowPassword((v) => !v)}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
-              </button>
-            </div>
-            {fieldErrors.password ? (
-              <p id="orbix-login-password-error" className="mt-1 text-[13px] text-[var(--ds-status-danger)]">
-                {fieldErrors.password}
-              </p>
-            ) : null}
+            </FormField>
+            <button
+              type="button"
+              className="ds-focus-ring absolute right-1 top-[28px] inline-flex h-8 w-8 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-hover)]"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
+            </button>
           </div>
 
           <Button

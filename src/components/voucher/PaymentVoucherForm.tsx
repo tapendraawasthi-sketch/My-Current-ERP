@@ -23,6 +23,7 @@ import {
   NepaliDatePicker,
   ConfirmDialog,
 } from "../ui";
+import { StickyActionBar, SuccessAvatar } from "@/design-system";
 import {
   Wallet,
   Plus,
@@ -113,7 +114,10 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
   const symbol = companySettings?.currencySymbol || "Rs.";
   const [showOptionalCols, setShowOptionalCols] = usePersistedToggle(
     "orbix_txn_payment_optional",
-    false,
+    !!(existing as { referenceNo?: string } | undefined)?.referenceNo ||
+      !!(existing as { lines?: Array<{ costCenterId?: string; billRefNo?: string }> } | undefined)?.lines?.some(
+        (l) => l.costCenterId || l.billRefNo,
+      ),
   );
   const showCostCenterCol = enableCostCenter && showOptionalCols;
   const showBillRefCol = enableBillWise && showOptionalCols;
@@ -669,9 +673,11 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
   if (savedVoucher) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 py-20 animate-fadeIn text-center">
-        <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
-          <CheckCircle2 className="h-8 w-8 text-[var(--ds-status-success)]" />
-        </div>
+        <SuccessAvatar
+          name={party?.name || savedVoucher.partyName || "Payment"}
+          seed={party?.id || savedVoucher.partyId}
+          size="xl"
+        />
         <div>
           <h2 className="text-lg font-bold text-[var(--ds-text-default)]">Pay money saved</h2>
           <p className="text-xs text-[var(--ds-text-default)] mt-1">
@@ -746,21 +752,11 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[var(--ds-text-default)] w-32 shrink-0">Voucher No</span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-bold text-[var(--ds-text-default)]">
+              <span className="text-[11px] font-medium text-gray-600 w-32 shrink-0">Voucher No</span>
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-medium text-[var(--ds-text-default)] text-[12px]">
                 {voucherNoPreview}
               </span>
             </div>
-            <Input
-              label="Reference No"
-              value={referenceNo}
-              onChange={(v) => {
-                setReferenceNo(v);
-                markDirty();
-              }}
-              placeholder="Optional reference / bill no"
-              disabled={readOnly}
-            />
             <div>
               <NepaliDatePicker
                 label="Payment Date (BS)"
@@ -772,13 +768,25 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
                 required
                 disabled={readOnly}
               />
-              <p className="text-[12px] text-[var(--ds-text-default)] mt-1 font-semibold">AD: {date}</p>
+              <p className="text-[12px] text-[var(--ds-text-default)] mt-1 font-medium">AD: {date}</p>
             </div>
+            {showOptionalCols ? (
+              <Input
+                label="Reference No"
+                value={referenceNo}
+                onChange={(v) => {
+                  setReferenceNo(v);
+                  markDirty();
+                }}
+                placeholder="Optional reference / bill no"
+                disabled={readOnly}
+              />
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-3">
             <div>
-              <label className="text-xs font-semibold text-[var(--ds-text-default)] mb-1.5 block">
+              <label className="text-[11px] font-medium text-gray-600 mb-1.5 block">
                 Payment Mode
               </label>
               <div className="flex gap-2">
@@ -867,7 +875,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
           />
           {party?.subjectToTds && (
             <div className="flex items-end gap-3">
-              <label className="inline-flex items-center gap-2 h-9 text-xs font-semibold text-[var(--ds-text-default)]">
+              <label className="inline-flex items-center gap-2 h-9 text-[11px] font-medium text-gray-600">
                 <input
                   type="checkbox"
                   checked={tdsEnabled}
@@ -902,7 +910,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         {/* Narration */}
         <div className="mt-4 flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-[var(--ds-text-default)]">Narration</label>
+            <label className="text-[11px] font-medium text-gray-600">Narration</label>
             {!readOnly && (
               <div className="w-56">
                 <Select
@@ -961,7 +969,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
             <>
               <div className="overflow-x-auto border-t border-amber-200">
                 <table className="w-full text-xs text-left border-collapse">
-                  <thead className="bg-amber-50 border-b border-amber-200 text-amber-700 uppercase tracking-wider font-bold">
+                  <thead className="bg-amber-50 border-b border-amber-200 text-[10px] font-semibold text-amber-700 uppercase tracking-wide">
                     <tr>
                       <th className="px-3 py-2.5 w-10 text-center">✓</th>
                       <th className="px-3 py-2.5">Invoice No</th>
@@ -1053,21 +1061,20 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
 
       {/* Payment lines */}
       <Card title="Payment For (Debit Accounts)" padding="none">
-        {(enableCostCenter || enableBillWise) && (
-          <div className="flex items-center justify-end gap-2 border-b border-[var(--ds-border-default)] px-3 py-2">
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={() => setShowOptionalCols(!showOptionalCols)}
-              aria-pressed={showOptionalCols}
-            >
-              {showOptionalCols ? "Hide optional columns" : "Optional columns"}
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center justify-end gap-2 border-b border-[var(--ds-border-default)] px-3 py-2">
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => setShowOptionalCols(!showOptionalCols)}
+            aria-pressed={showOptionalCols}
+            data-testid="payment-show-advanced"
+          >
+            {showOptionalCols ? "Hide advanced" : "Show advanced"}
+          </Button>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
-            <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[var(--ds-text-default)] uppercase tracking-wider font-bold">
+            <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[10px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide">
               <tr>
                 <th className="px-2 py-2.5 w-10 text-center">#</th>
                 <th className="px-2 py-2.5 min-w-[240px]">Account</th>
@@ -1165,7 +1172,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
       {/* Totals & auto-journal preview */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card border padding="md">
-          <h4 className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold mb-3">
+          <h4 className="text-[11px] font-medium text-[var(--ds-text-muted)] mb-3">
             Summary
           </h4>
           <div className="flex flex-col gap-2">
@@ -1218,7 +1225,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         </Card>
 
         <Card border padding="md">
-          <h4 className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold mb-3">
+          <h4 className="text-[11px] font-medium text-[var(--ds-text-muted)] mb-3">
             Auto Journal Entry
           </h4>
           <div className="flex flex-col gap-1.5 font-mono text-[12px]">
@@ -1249,34 +1256,38 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
         </Card>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center justify-end gap-2.5 pb-6">
-        <Button variant="outline" size="sm" onClick={handleCancel} icon={<X className="h-4 w-4" />}>
-          {readOnly ? "Close" : "Cancel"}
-        </Button>
-        {!readOnly && (
-          <>
-            <Button
-              variant="secondary"
-              size="sm"
-              loading={saving}
-              onClick={() => handleSave(VoucherStatus.DRAFT)}
-              icon={<Save className="h-4 w-4" />}
-            >
-              {isEdit ? "Update Draft" : "Save as Draft"}
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              loading={saving}
-              onClick={() => handleSave(VoucherStatus.POSTED)}
-              icon={<CheckCircle2 className="h-4 w-4" />}
-            >
-              Post Payment
-            </Button>
-          </>
-        )}
-      </div>
+      <StickyActionBar
+        unsaved={dirty && !readOnly}
+        secondary={
+          <Button variant="outline" size="sm" onClick={handleCancel} icon={<X className="h-4 w-4" />}>
+            {readOnly ? "Close" : "Cancel"}
+          </Button>
+        }
+        primary={
+          !readOnly ? (
+            <>
+              <Button
+                variant="secondary"
+                size="sm"
+                loading={saving}
+                onClick={() => handleSave(VoucherStatus.DRAFT)}
+                icon={<Save className="h-4 w-4" />}
+              >
+                {isEdit ? "Update Draft" : "Save as Draft"}
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                loading={saving}
+                onClick={() => handleSave(VoucherStatus.POSTED)}
+                icon={<CheckCircle2 className="h-4 w-4" />}
+              >
+                Post Payment
+              </Button>
+            </>
+          ) : null
+        }
+      />
 
       <ConfirmDialog
         isOpen={confirmCancel}

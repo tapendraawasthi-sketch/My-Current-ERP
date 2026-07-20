@@ -44,7 +44,8 @@
     "dual_sync_closed": false,
     "queued_labeled_synced": false,
     "conflict_auto_overwrite": false,
-    "staging_conflict_attested": false,
+    "staging_conflict_attested": true,
+    "staging_conflict_attestation_mode": "OWNER_RESIDUAL",
     "is_execution_authority": false
   },
   "forbidden_claims": [

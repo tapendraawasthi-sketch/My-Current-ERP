@@ -71,7 +71,7 @@ const inputCls =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
 const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
 const thCls =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-200 whitespace-nowrap";
 const tdCls = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
 
@@ -306,11 +306,11 @@ export default function FixedAssets() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Fixed Assets Register</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Fixed Assets Register</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             {companySettings?.name || "Company"} — Nepal IT Act Depreciation
           </p>
@@ -320,7 +320,7 @@ export default function FixedAssets() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -333,7 +333,7 @@ export default function FixedAssets() {
           )}
           <button
             onClick={exportSchedule}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" /> Export Schedule
           </button>
@@ -402,7 +402,7 @@ export default function FixedAssets() {
       {/* KPI summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         {[
-          { label: "Gross Block", value: totals.grossBlock, color: "text-gray-800" },
+          { label: "Gross Block", value: totals.grossBlock, color: "text-gray-700" },
           { label: "Accum. Depreciation", value: totals.accumDepr, color: "text-red-600" },
           { label: "Net Block (NBV)", value: totals.netBlock, color: "text-[var(--ds-action-primary)]" },
           { label: "Depr. This Year", value: totals.deprThisYear, color: "text-amber-700" },
@@ -451,7 +451,7 @@ export default function FixedAssets() {
                     className={`hover:bg-gray-50 ${!row.isActive ? "opacity-50" : ""}`}
                   >
                     <td className={tdCls}>
-                      <div className="font-medium text-gray-800">{row.name}</div>
+                      <div className="font-medium text-gray-700">{row.name}</div>
                       {row.code && <div className="text-[10px] text-gray-400">{row.code}</div>}
                       {row.serialNo && (
                         <div className="text-[10px] text-gray-400">S/N: {row.serialNo}</div>
@@ -535,7 +535,7 @@ export default function FixedAssets() {
       {/* ── DEPRECIATION SCHEDULE TAB ─────────────────────────────────────── */}
       {activeTab === "schedule" && (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 text-[11px] text-gray-600">
+          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 text-[11px] text-gray-600">
             Fixed Asset Schedule as per Nepal IT Act — FY ending {fyEnd}
           </div>
           <div className="overflow-x-auto">
@@ -556,7 +556,7 @@ export default function FixedAssets() {
               <tbody>
                 {scheduleRows.map((row) => (
                   <tr key={row.id} className="hover:bg-gray-50">
-                    <td className={`${tdCls} font-medium text-gray-800`}>{row.name}</td>
+                    <td className={`${tdCls} font-medium text-gray-700`}>{row.name}</td>
                     <td className={tdCls}>{row.category}</td>
                     <td className={tdCls}>
                       <span className="font-semibold uppercase text-[11px]">
@@ -594,7 +594,7 @@ export default function FixedAssets() {
               {scheduleRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
-                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-700">
                       TOTAL
                     </td>
                     <td className={amtCls}>{fmt(totals.grossBlock)}</td>
@@ -681,7 +681,7 @@ export default function FixedAssets() {
       {/* ── Depreciation History section ──────────────────────────────────── */}
       {depreciationLedger.length > 0 && (
         <div className="mt-4 bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
             Depreciation Ledger — Posted Entries
           </div>
           <div className="overflow-x-auto">
@@ -728,8 +728,8 @@ export default function FixedAssets() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
-              <h3 className="text-[14px] font-semibold text-gray-800">
+            <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-200">
+              <h3 className="text-[14px] font-semibold text-gray-700">
                 {editingId ? "Edit Fixed Asset" : "Add Fixed Asset"}
               </h3>
               <button
@@ -1003,7 +1003,7 @@ export default function FixedAssets() {
             <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50">
               <button
                 onClick={() => setShowModal(false)}
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               >
                 Cancel
               </button>

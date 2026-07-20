@@ -1,9 +1,17 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
-import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
-import { ReportEmptyState } from "../components/ReportEmptyState";
+import toast from "@/lib/appToast";
+import { Plus, Search, X, Save } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 const DEFAULT_FORM = {
   name: "",
@@ -17,20 +25,29 @@ const DEFAULT_FORM = {
   taxCategoryId: "",
 };
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 export default function ItemGroupMaster() {
-  const { itemGroups, taxCategories, accounts, addItemGroup, updateItemGroup, deleteItemGroup } =
-    useStore();
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const {
+    itemGroups,
+    taxCategories,
+    accounts,
+    addItemGroup,
+    updateItemGroup,
+    deleteItemGroup,
+    initLifecycle,
+  } = useStore();
+  const { branchFilter, matchBranch } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = route.pageId === "item-group-master" ? "item-group-master" : "item-groups";
+
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [search, setSearch] = useState("");
@@ -47,10 +64,73 @@ export default function ItemGroupMaster() {
 
   const ledgerAccounts = useMemo(() => (accounts || []).filter((a: any) => !a.isGroup), [accounts]);
 
+  const parentName = (underGroupId: string) => {
+    if (!underGroupId) return "—";
+    return (itemGroups || []).find((p: any) => p.id === underGroupId)?.name || underGroupId;
+  };
+
+  const columns = useMemo<EnterpriseColumnDef<any>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Group name",
+        cell: (g) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{g.name}</span>
+        ),
+      },
+      {
+        id: "alias",
+        header: "Alias",
+        cell: (g) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">{g.alias || "—"}</span>
+        ),
+      },
+      {
+        id: "primary",
+        header: "Primary",
+        align: "center",
+        cell: (g) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              g.isPrimary ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {g.isPrimary ? "Yes" : "No"}
+          </span>
+        ),
+      },
+      {
+        id: "parent",
+        header: "Parent group",
+        cell: (g) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {parentName(g.underGroupId)}
+          </span>
+        ),
+      },
+      {
+        id: "hsn",
+        header: "HSN code",
+        cell: (g) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">{g.hsnCode || "—"}</span>
+        ),
+      },
+    ],
+    [itemGroups],
+  );
+
   const resetForm = () => {
     setForm(DEFAULT_FORM);
     setSelected(null);
     setShowForm(false);
+    clearEntity(pageId);
+  };
+
+  const handleOpenCreate = () => {
+    setForm(DEFAULT_FORM);
+    setSelected(null);
+    setShowForm(true);
+    openEntity(pageId, "new");
   };
 
   const handleEdit = (g: any) => {
@@ -67,78 +147,107 @@ export default function ItemGroupMaster() {
       taxCategoryId: g.taxCategoryId || "",
     });
     setShowForm(true);
+    openEntity(pageId, g.id);
   };
 
+  // Deep link: /app/item-groups/:id | /app/item-groups/new
+  useEffect(() => {
+    if (route.pageId !== "item-groups" && route.pageId !== "item-group-master") return;
+    if (route.entityId === "new") {
+      setSelected(null);
+      setForm(DEFAULT_FORM);
+      setShowForm(true);
+      return;
+    }
+    if (route.entityId) {
+      const group = (itemGroups || []).find((g: any) => g.id === route.entityId);
+      if (group) {
+        setSelected(group);
+        setForm({
+          name: group.name || "",
+          alias: group.alias || "",
+          isPrimary: group.isPrimary || false,
+          underGroupId: group.underGroupId || "",
+          stockAccountId: group.stockAccountId || "",
+          salesAccountId: group.salesAccountId || "",
+          purchaseAccountId: group.purchaseAccountId || "",
+          hsnCode: group.hsnCode || "",
+          taxCategoryId: group.taxCategoryId || "",
+        });
+        setShowForm(true);
+      }
+      return;
+    }
+    if (showForm) setShowForm(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, itemGroups]);
+
   const handleSubmit = async () => {
-    if (!form.name.trim()) return alert("Group Name is required.");
+    if (!form.name.trim()) {
+      toast.error("Group name is required.");
+      return;
+    }
     const payload = {
       ...form,
       branchId: selected?.branchId || readActiveBranchId() || undefined,
     };
-    if (selected) {
-      await updateItemGroup(selected.id, payload);
-      alert("Item Group updated.");
-    } else {
-      await addItemGroup(payload);
-      alert("Item Group saved.");
+    try {
+      if (selected) {
+        await updateItemGroup(selected.id, payload);
+        toast.success("Item group updated.");
+      } else {
+        await addItemGroup(payload);
+        toast.success("Item group saved.");
+      }
+      resetForm();
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to save item group.");
     }
-    resetForm();
   };
 
-  const handleDelete = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this item group?")) return;
-    await deleteItemGroup(id);
-    if (selected?.id === id) resetForm();
-  };
-
-  const parentName = (underGroupId: string) => {
-    if (!underGroupId) return "—";
-    return (itemGroups || []).find((p: any) => p.id === underGroupId)?.name || underGroupId;
+  const handleDelete = async (g: any) => {
+    const snapshot = { ...g };
+    try {
+      await deleteItemGroup(g.id);
+      if (selected?.id === g.id) resetForm();
+      toast.undo(`"${g.name}" deleted`, async () => {
+        try {
+          const { id, ...rest } = snapshot;
+          await addItemGroup({ ...rest, id });
+        } catch (err: any) {
+          toast.error(err?.message || "Failed to restore item group.");
+        }
+      });
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete item group.");
+    }
   };
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Item Groups</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Group stock items for reporting, defaults, and tax mapping
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button
-                type="button"
-                className={btnPrimary}
-                onClick={() => {
-                  resetForm();
-                  setShowForm(true);
-                }}
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Item Groups"
+            description="Group stock items for reporting, defaults, and tax mapping"
+            meta={
+              <PageMeta>
+                {filtered.length} of {(itemGroups || []).length} groups
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={handleOpenCreate}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
               >
-                <Plus className="h-3.5 w-3.5" />
                 Add group
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+          />
 
-          <div className="relative mb-3 max-w-xs">
+          <div className="relative max-w-xs">
             <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
               placeholder="Search groups..."
@@ -149,88 +258,44 @@ export default function ItemGroupMaster() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message="No item groups found"
-                hint='Click "Add group" to create your first item group.'
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>#</th>
-                    <th className={th}>Group name</th>
-                    <th className={th}>Alias</th>
-                    <th className={th}>Primary</th>
-                    <th className={th}>Parent group</th>
-                    <th className={th}>HSN code</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((g: any, i: number) => (
-                    <tr
-                      key={g.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => handleEdit(g)}
-                    >
-                      <td className={td}>{i + 1}</td>
-                      <td className={`${td} font-medium text-gray-800`}>{g.name}</td>
-                      <td className={td}>{g.alias || "—"}</td>
-                      <td className={td}>
-                        {g.isPrimary ? (
-                          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-                            Yes
-                          </span>
-                        ) : (
-                          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
-                            No
-                          </span>
-                        )}
-                      </td>
-                      <td className={td}>{parentName(g.underGroupId)}</td>
-                      <td className={td}>{g.hsnCode || "—"}</td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEdit(g);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(g.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} group{filtered.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(g) => g.id}
+            loading={itemGroups == null || initLifecycle === "loading"}
+            emptyTitle={search ? "No item groups match your search" : "No item groups found"}
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "Add group" to create your first item group.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={handleOpenCreate}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add group
+                </Button>
+              ) : undefined
+            }
+            onRowClick={handleEdit}
+            rowActions={(g) => [
+              { label: "Edit", onSelect: () => handleEdit(g) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(g) },
+            ]}
+            caption="Item groups"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[360px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {selected ? "Edit item group" : "Add item group"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -264,7 +329,7 @@ export default function ItemGroupMaster() {
                 onChange={(e) =>
                   setForm({ ...form, isPrimary: e.target.checked, underGroupId: "" })
                 }
-                className="rounded border-gray-300"
+                className="rounded border-[var(--ds-border-default)]"
               />
               Primary group (top-level)
             </label>

@@ -1,8 +1,16 @@
-import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Building } from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { Plus, Search } from "lucide-react";
+import toast from "@/lib/appToast";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
-import { Button, PageHeader } from "@/design-system";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+  formatAmountCell,
+} from "@/design-system";
 
 interface BankAccount {
   id: string;
@@ -63,6 +71,72 @@ export default function BankAccountsPage() {
     "Standard Chartered Bank - Current A/C",
   ];
 
+  const filteredAccounts = useMemo(
+    () =>
+      bankAccounts.filter(
+        (acc) =>
+          matchBranch(acc.branchId) &&
+          (acc.bankName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            acc.accountNo.includes(searchTerm) ||
+            acc.branch.toLowerCase().includes(searchTerm.toLowerCase())),
+      ),
+    [bankAccounts, searchTerm, matchBranch, branchFilter],
+  );
+
+  const columns = useMemo<EnterpriseColumnDef<BankAccount>[]>(
+    () => [
+      {
+        id: "bankName",
+        header: "Bank name",
+        cell: (account) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{account.bankName}</span>
+        ),
+      },
+      {
+        id: "accountNo",
+        header: "Account no",
+        cell: (account) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{account.accountNo}</span>
+        ),
+      },
+      {
+        id: "branch",
+        header: "Branch",
+        cell: (account) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">{account.branch}</span>
+        ),
+      },
+      {
+        id: "accountLedger",
+        header: "Account ledger",
+        cell: (account) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">{account.accountLedger}</span>
+        ),
+      },
+      {
+        id: "openingBalance",
+        header: "Opening balance",
+        align: "right",
+        financial: true,
+        cell: (account) => formatAmountCell(account.openingBalance),
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: (account) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              account.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}
+          >
+            {account.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -79,7 +153,7 @@ export default function BankAccountsPage() {
             : acc,
         ),
       );
-      alert("Bank account updated successfully");
+      toast.success("Bank account updated successfully");
     } else {
       setBankAccounts([
         ...bankAccounts,
@@ -90,7 +164,7 @@ export default function BankAccountsPage() {
           branchId: readActiveBranchId() || undefined,
         },
       ]);
-      alert("Bank account added successfully");
+      toast.success("Bank account added successfully");
     }
 
     resetForm();
@@ -124,32 +198,36 @@ export default function BankAccountsPage() {
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this bank account?")) {
-      setBankAccounts(bankAccounts.filter((acc) => acc.id !== id));
-      alert("Bank account deleted successfully");
-    }
+  const handleDelete = (account: BankAccount) => {
+    const snapshot = { ...account };
+    const index = bankAccounts.findIndex((acc) => acc.id === account.id);
+    setBankAccounts((prev) => prev.filter((acc) => acc.id !== account.id));
+    toast.undo(`"${account.bankName}" deleted`, () => {
+      setBankAccounts((prev) => {
+        const next = [...prev];
+        const insertAt = Math.min(Math.max(index, 0), next.length);
+        next.splice(insertAt, 0, snapshot);
+        return next;
+      });
+    });
   };
 
-  const filteredAccounts = bankAccounts.filter(
-    (acc) =>
-      matchBranch(acc.branchId) &&
-      (acc.bankName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        acc.accountNo.includes(searchTerm) ||
-        acc.branch.toLowerCase().includes(searchTerm.toLowerCase())),
-  );
-
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-4 pb-8">
       <PageHeader
         title="Bank accounts"
         description="Manage bank and cash accounts"
+        meta={
+          <PageMeta>
+            {filteredAccounts.length} of {bankAccounts.length} accounts
+          </PageMeta>
+        }
         primaryAction={
           <Button
             variant="primary"
             size="small"
             onClick={() => setShowForm(true)}
-            startIcon={<Plus className="h-4 w-4" aria-hidden />}
+            startIcon={<Plus className="h-3.5 w-3.5" />}
           >
             Add bank account
           </Button>
@@ -176,100 +254,44 @@ export default function BankAccountsPage() {
         ]}
       />
 
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="relative w-fit">
+        <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search bank accounts..."
-          className="input"
+          className="h-8 pl-8 pr-3 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-72"
         />
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-[var(--ds-surface-muted)]">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                  Bank Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                  Account No
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                  Branch
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                  Account Ledger
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
-                  Opening Balance
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-[#000000] uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredAccounts.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[#000000]">
-                    <Building className="w-12 h-12 mx-auto mb-4 text-[#000000]" />
-                    <p>No bank accounts found</p>
-                  </td>
-                </tr>
-              ) : (
-                filteredAccounts.map((account) => (
-                  <tr key={account.id} className="hover:bg-[var(--ds-surface-muted)]">
-                    <td className="px-6 py-4 text-sm font-medium text-[#000000]">
-                      {account.bankName}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-[#000000] font-mono">
-                      {account.accountNo}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-[#000000]">{account.branch}</td>
-                    <td className="px-6 py-4 text-sm text-[#000000]">{account.accountLedger}</td>
-                    <td className="px-6 py-4 text-sm text-right text-[#000000]">
-                      Rs. {account.openingBalance.toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          account.isActive
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {account.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right text-sm font-medium">
-                      <div className="flex justify-end space-x-2">
-                        <button
-                          onClick={() => handleEdit(account)}
-                          className="text-[var(--ds-action-primary)] hover:text-[#000000]"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(account.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <EnterpriseDataTable
+        columns={columns}
+        rows={filteredAccounts}
+        getRowId={(account) => account.id}
+        emptyTitle={searchTerm ? "No bank accounts match your search" : "No bank accounts found"}
+        emptyDescription={
+          searchTerm ? "Try a different search term." : "Add your first bank account."
+        }
+        emptyAction={
+          !searchTerm ? (
+            <Button
+              variant="primary"
+              size="small"
+              onClick={() => setShowForm(true)}
+              startIcon={<Plus className="h-3.5 w-3.5" />}
+            >
+              Add bank account
+            </Button>
+          ) : undefined
+        }
+        onRowClick={handleEdit}
+        rowActions={(account) => [
+          { label: "Edit", onSelect: () => handleEdit(account) },
+          { label: "Delete", destructive: true, onSelect: () => handleDelete(account) },
+        ]}
+        caption="Bank accounts"
+      />
 
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -280,7 +302,7 @@ export default function BankAccountsPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#000000] mb-1">
+                  <label className="block text-sm font-medium text-[#374151] mb-1">
                     Bank Name *
                   </label>
                   <input
@@ -293,7 +315,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#000000] mb-1">
+                  <label className="block text-sm font-medium text-[#374151] mb-1">
                     Account No *
                   </label>
                   <input
@@ -306,7 +328,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#000000] mb-1">Branch *</label>
+                  <label className="block text-sm font-medium text-[#374151] mb-1">Branch *</label>
                   <input
                     type="text"
                     value={formData.branch}
@@ -317,7 +339,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#000000] mb-1">
+                  <label className="block text-sm font-medium text-[#374151] mb-1">
                     SWIFT / IFSC Code
                   </label>
                   <input
@@ -329,7 +351,7 @@ export default function BankAccountsPage() {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-[#000000] mb-1">
+                  <label className="block text-sm font-medium text-[#374151] mb-1">
                     Link to Account Ledger *
                   </label>
                   <select
@@ -347,7 +369,7 @@ export default function BankAccountsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#000000] mb-1">
+                  <label className="block text-sm font-medium text-[#374151] mb-1">
                     Opening Balance
                   </label>
                   <input
@@ -366,7 +388,7 @@ export default function BankAccountsPage() {
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                     className="rounded border-[var(--ds-border-default)]"
                   />
-                  <label className="text-sm font-medium text-[#000000]">Is Active</label>
+                  <label className="text-sm font-medium text-[#374151]">Is Active</label>
                 </div>
               </div>
               <div className="flex justify-end space-x-3 pt-4">

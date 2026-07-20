@@ -2104,11 +2104,11 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
 
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "40px" }}>
             <div>
-              <div style={{ marginBottom: "40px", borderBottom: "1px solid #000" }}>&nbsp;</div>
+              <div style={{ marginBottom: "40px", borderBottom: "1px solid #374151" }}>&nbsp;</div>
               <div>Receiver's Signature</div>
             </div>
             <div>
-              <div style={{ marginBottom: "40px", borderBottom: "1px solid #000" }}>&nbsp;</div>
+              <div style={{ marginBottom: "40px", borderBottom: "1px solid #374151" }}>&nbsp;</div>
               <div>Authorized Signatory</div>
             </div>
           </div>
@@ -2176,7 +2176,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
               onClick={() => setActiveTab(tab.id)}
               style={{
                 backgroundColor: activeTab === tab.id ? BG_HEADER : "transparent",
-                color: activeTab === tab.id ? "#000000" : "#666",
+                color: activeTab === tab.id ? "#374151" : "#666",
                 border: BORDER,
                 padding: "10px 16px",
                 borderRadius: "4px 4px 0 0",

@@ -259,23 +259,31 @@ const ReversingJournals: React.FC = () => {
     }
   };
 
-  // Cancel voucher
+  // Cancel voucher (status-only — safe to undo; does not use cancelVoucher reversal)
   const handleCancel = async (voucherId: string) => {
-    if (window.confirm("Are you sure you want to cancel this reversing journal?")) {
-      try {
-        const db = getDB();
-        await db.vouchers.update(voucherId, { status: "cancelled" });
-
-        // Update schedule
-        const schedule = reversingSchedules.find((s) => s.originalVoucherId === voucherId);
-        if (schedule) {
-          await db.table("reversingSchedules").update(schedule.id, { status: "cancelled" });
-        }
-
-        toast.success("Reversing journal cancelled successfully");
-      } catch (error) {
-        toast.error("Failed to cancel reversing journal");
+    if (!window.confirm("Are you sure you want to cancel this reversing journal?")) return;
+    try {
+      const db = getDB();
+      const original = await db.vouchers.get(voucherId);
+      const prevStatus = original?.status || "draft";
+      const schedule = reversingSchedules.find((s) => s.originalVoucherId === voucherId);
+      const prevScheduleStatus = schedule?.status;
+      await db.vouchers.update(voucherId, { status: "cancelled" });
+      if (schedule) {
+        await db.table("reversingSchedules").update(schedule.id, { status: "cancelled" });
       }
+      toast.undo("Reversing journal cancelled", async () => {
+        try {
+          await db.vouchers.update(voucherId, { status: prevStatus });
+          if (schedule && prevScheduleStatus != null) {
+            await db.table("reversingSchedules").update(schedule.id, { status: prevScheduleStatus });
+          }
+        } catch {
+          toast.error("Failed to restore reversing journal");
+        }
+      });
+    } catch {
+      toast.error("Failed to cancel reversing journal");
     }
   };
 
@@ -297,7 +305,7 @@ const ReversingJournals: React.FC = () => {
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Reversing journals</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Reversing journals</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">Journals that auto-reverse.</p>
             <p className="text-[12px] text-gray-500 mt-0.5">
               Manage and automate reversing journal entries
@@ -307,7 +315,7 @@ const ReversingJournals: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -322,13 +330,13 @@ const ReversingJournals: React.FC = () => {
 
         {/* List Section */}
         {!showForm && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-6 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-6 max-w-full overflow-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">
+              <h2 className="text-[14px] font-semibold text-gray-700">
                 Existing Reversing journals
               </h2>
               <button
-                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingVoucher(null);
                   setForm({
@@ -346,32 +354,32 @@ const ReversingJournals: React.FC = () => {
               </button>
             </div>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
                   <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Voucher No
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Original Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Reversal Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Narration
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Amount
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Reversed Voucher No
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -464,8 +472,8 @@ const ReversingJournals: React.FC = () => {
 
         {/* Form Section */}
         {showForm && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 max-w-4xl">
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-6 pb-2 border-b border-gray-100">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 max-w-4xl">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-6 pb-2 border-b border-gray-100">
               {editingVoucher ? "View/Edit Reversing Journal" : "Create Reversing Journal"}
             </h2>
 
@@ -514,10 +522,10 @@ const ReversingJournals: React.FC = () => {
 
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <label className="text-[12px] font-semibold text-gray-800">Journal Lines</label>
+                <label className="text-[12px] font-semibold text-gray-700">Journal Lines</label>
                 <button
                   type="button"
-                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm"
+                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
                   onClick={addLine}
                 >
                   Add Line
@@ -530,20 +538,20 @@ const ReversingJournals: React.FC = () => {
                 </div>
               )}
 
-              <div className="border border-gray-200 rounded-md overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
                     <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                         Account <span className="text-red-500">*</span>
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                         Dr Amount
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                         Cr Amount
                       </th>
-                      <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                      <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-12">
                         Actions
                       </th>
                     </tr>
@@ -593,7 +601,7 @@ const ReversingJournals: React.FC = () => {
                         <td className="px-3 py-2 align-top text-center">
                           <button
                             type="button"
-                            className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                            className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                             onClick={() => removeLine(index)}
                             disabled={form.lines.length <= 1}
                           >
@@ -606,8 +614,8 @@ const ReversingJournals: React.FC = () => {
                 </table>
               </div>
 
-              <div className="flex justify-end mt-3 p-3 bg-[var(--ds-canvas)] border border-gray-200 rounded-md">
-                <div className="flex items-center gap-6 text-[12px] font-semibold text-gray-800">
+              <div className="flex justify-end mt-3 p-3 bg-[var(--ds-canvas)] border border-gray-200 rounded-lg">
+                <div className="flex items-center gap-6 text-[12px] font-semibold text-gray-700">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">Total Debit:</span>
                     <span>{money(totals.debit)}</span>
@@ -628,7 +636,7 @@ const ReversingJournals: React.FC = () => {
 
             <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
               <button
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 onClick={() => {
                   setShowForm(false);
                   setEditingVoucher(null);
@@ -637,7 +645,7 @@ const ReversingJournals: React.FC = () => {
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm"
                 onClick={handleSave}
               >
                 Save Reversing Journal

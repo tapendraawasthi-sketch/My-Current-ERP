@@ -1510,11 +1510,11 @@ const AccountGroupMaster: React.FC = () => {
 
   if (showTemplateSelector) {
     return (
-      <div className="min-h-screen bg-[#f5f6fa] p-4">
+      <div className="min-h-screen bg-gray-50 p-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">
+              <h1 className="text-[15px] font-semibold text-gray-900">
                 Select Chart of Accounts Template
               </h1>
               <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1523,7 +1523,7 @@ const AccountGroupMaster: React.FC = () => {
             </div>
             {accounts.length > 0 && (
               <button
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
                 onClick={() => setShowTemplateSelector(false)}
               >
                 Cancel
@@ -1539,12 +1539,12 @@ const AccountGroupMaster: React.FC = () => {
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="p-2 bg-blue-50 rounded-md">{template.icon}</div>
-                  <h3 className="text-[14px] font-semibold text-gray-800">{template.name}</h3>
+                  <h3 className="text-[14px] font-semibold text-gray-700">{template.name}</h3>
                 </div>
                 <p className="text-[11px] text-gray-500 mb-4 flex-grow leading-relaxed">
                   {template.description}
                 </p>
-                <button className="h-8 w-full bg-[#f5f6fa] text-[var(--ds-action-primary)] text-[12px] font-medium rounded-md group-hover:bg-[var(--ds-action-primary)] group-hover:text-white transition-colors border border-gray-200 group-hover:border-[var(--ds-action-primary)]">
+                <button className="h-8 w-full bg-gray-50 text-[var(--ds-action-primary)] text-[12px] font-medium rounded-lg group-hover:bg-[var(--ds-action-primary)] group-hover:text-white transition-colors border border-gray-200 group-hover:border-[var(--ds-action-primary)]">
                   Load Template
                 </button>
               </div>
@@ -1556,11 +1556,11 @@ const AccountGroupMaster: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Chart of Accounts</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Chart of Accounts</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">Manage groups and ledgers</p>
           </div>
           <div className="flex items-center gap-2">
@@ -1568,7 +1568,7 @@ const AccountGroupMaster: React.FC = () => {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -1580,13 +1580,13 @@ const AccountGroupMaster: React.FC = () => {
               </select>
             )}
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               onClick={() => setShowTemplateSelector(true)}
             >
               Load Template
             </button>
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               onClick={exportToExcel}
             >
               Export
@@ -1603,7 +1603,7 @@ const AccountGroupMaster: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-3 mb-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-[11px] font-medium text-gray-600 mb-1">Search</label>
@@ -1611,7 +1611,7 @@ const AccountGroupMaster: React.FC = () => {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Search accounts..."
               />
             </div>
@@ -1620,7 +1620,7 @@ const AccountGroupMaster: React.FC = () => {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               >
                 <option value="">All Types</option>
                 <option value="asset">Asset</option>
@@ -1635,7 +1635,7 @@ const AccountGroupMaster: React.FC = () => {
               <select
                 value={filterLevel}
                 onChange={(e) => setFilterLevel(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               >
                 <option value="">All Levels</option>
                 <option value="group">Group</option>
@@ -1646,29 +1646,29 @@ const AccountGroupMaster: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-w-full">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden max-w-full">
           <table className="w-full min-w-max border-collapse">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Code
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Name
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Nepali Name
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Type
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Level
                 </th>
-                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Parent
                 </th>
-                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                   Actions
                 </th>
               </tr>
@@ -1736,7 +1736,7 @@ const AccountGroupMaster: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
             <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-[15px] font-semibold text-gray-800">
+              <h2 className="text-[15px] font-semibold text-gray-700">
                 {selectedAccount ? "Edit Account" : "Add New Account"}
               </h2>
               <button
@@ -1758,7 +1758,7 @@ const AccountGroupMaster: React.FC = () => {
                       type="text"
                       value={form.code}
                       onChange={(e) => setForm({ ...form, code: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       required
                     />
                   </div>
@@ -1770,7 +1770,7 @@ const AccountGroupMaster: React.FC = () => {
                       type="text"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       required
                     />
                   </div>
@@ -1782,7 +1782,7 @@ const AccountGroupMaster: React.FC = () => {
                       type="text"
                       value={form.nameNepali}
                       onChange={(e) => setForm({ ...form, nameNepali: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div>
@@ -1792,7 +1792,7 @@ const AccountGroupMaster: React.FC = () => {
                     <select
                       value={form.type}
                       onChange={(e) => setForm({ ...form, type: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       required
                     >
                       <option value="asset">Asset</option>
@@ -1809,7 +1809,7 @@ const AccountGroupMaster: React.FC = () => {
                     <select
                       value={form.level}
                       onChange={(e) => setForm({ ...form, level: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       required
                     >
                       <option value="group">Group</option>
@@ -1824,7 +1824,7 @@ const AccountGroupMaster: React.FC = () => {
                     <select
                       value={form.parentId}
                       onChange={(e) => setForm({ ...form, parentId: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     >
                       <option value="">None</option>
                       {accounts
@@ -1847,7 +1847,7 @@ const AccountGroupMaster: React.FC = () => {
                       onChange={(e) =>
                         setForm({ ...form, openingBalanceDr: parseFloat(e.target.value) || 0 })
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div>
@@ -1861,7 +1861,7 @@ const AccountGroupMaster: React.FC = () => {
                       onChange={(e) =>
                         setForm({ ...form, openingBalanceCr: parseFloat(e.target.value) || 0 })
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div>
@@ -1872,7 +1872,7 @@ const AccountGroupMaster: React.FC = () => {
                       type="text"
                       value={form.alias}
                       onChange={(e) => setForm({ ...form, alias: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div>
@@ -1886,7 +1886,7 @@ const AccountGroupMaster: React.FC = () => {
                       onChange={(e) =>
                         setForm({ ...form, creditLimit: parseFloat(e.target.value) || 0 })
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div>
@@ -1900,7 +1900,7 @@ const AccountGroupMaster: React.FC = () => {
                       onChange={(e) =>
                         setForm({ ...form, interestRate: parseFloat(e.target.value) || 0 })
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div>
@@ -1911,7 +1911,7 @@ const AccountGroupMaster: React.FC = () => {
                       type="text"
                       value={form.narrationTemplate}
                       onChange={(e) => setForm({ ...form, narrationTemplate: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -1922,7 +1922,7 @@ const AccountGroupMaster: React.FC = () => {
                       type="text"
                       value={form.tags}
                       onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                 </div>
@@ -1954,7 +1954,7 @@ const AccountGroupMaster: React.FC = () => {
             <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50 rounded-b-lg">
               <button
                 type="button"
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
                 onClick={() => setShowForm(false)}
               >
                 Cancel

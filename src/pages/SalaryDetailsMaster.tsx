@@ -168,17 +168,30 @@ const SalaryDetailsMaster: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Delete this salary detail record?")) {
-      try {
-        await deleteSalaryDetail(id);
-        toast.success("Deleted");
-        if (selected && selected.id === id) {
-          resetForm();
-        }
-      } catch (error) {
-        console.error("Delete error:", error);
-        toast.error("An error occurred while deleting.");
+    if (!window.confirm("Delete this salary detail record?")) return;
+    const row = (salaryDetails || []).find((d) => d.id === id);
+    if (!row) return;
+    const snapshot = { ...row };
+    const emp = (employees || []).find((e) => e.id === row.employeeId);
+    const grp = (employeeGroups || []).find((g) => g.id === row.employeeGroupId);
+    const label =
+      row.appliesTo === "Employee" ? emp?.name || "Salary detail" : grp?.name || "Salary detail";
+    try {
+      await deleteSalaryDetail(id);
+      if (selected && selected.id === id) {
+        resetForm();
       }
+      toast.undo(`"${label}" deleted`, async () => {
+        try {
+          await addSalaryDetail({ ...snapshot });
+        } catch (error) {
+          console.error("Restore error:", error);
+          toast.error("An error occurred while restoring.");
+        }
+      });
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("An error occurred while deleting.");
     }
   };
 
@@ -191,7 +204,7 @@ const SalaryDetailsMaster: React.FC = () => {
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">
+              <h1 className="text-[15px] font-semibold text-gray-900">
                 Salary Details / Structure Master
               </h1>
               <p className="text-[11px] text-gray-500 mt-0.5">
@@ -203,7 +216,7 @@ const SalaryDetailsMaster: React.FC = () => {
                 <select
                   value={branchFilter}
                   onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   aria-label="Branch"
                 >
                   <option value="all">All branches</option>
@@ -231,35 +244,35 @@ const SalaryDetailsMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search salary structures..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="flex-1 overflow-auto border border-gray-200 rounded-md">
+          <div className="flex-1 overflow-auto border border-gray-200 rounded-lg">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <tr className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     #
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Applies To
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Employee / Group Name
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Effective From
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Pay Heads
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Status
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                     Actions
                   </th>
                 </tr>
@@ -329,12 +342,12 @@ const SalaryDetailsMaster: React.FC = () => {
       {showForm && (
         <div className="w-full lg:w-[450px] bg-white flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-20">
           <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-            <h3 className="text-[13px] font-semibold text-gray-800">
+            <h3 className="text-[13px] font-semibold text-gray-700">
               {selected ? "Alter Salary Detail" : "Create Salary Detail"}
             </h3>
             <button
               onClick={resetForm}
-              className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+              className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
             </button>
@@ -387,7 +400,7 @@ const SalaryDetailsMaster: React.FC = () => {
                   Employee <span className="text-red-500">*</span>
                 </label>
                 <select
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.employeeId}
                   onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
                 >
@@ -407,7 +420,7 @@ const SalaryDetailsMaster: React.FC = () => {
                   Employee Group <span className="text-red-500">*</span>
                 </label>
                 <select
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.employeeGroupId}
                   onChange={(e) => setForm({ ...form, employeeGroupId: e.target.value })}
                 >
@@ -427,7 +440,7 @@ const SalaryDetailsMaster: React.FC = () => {
               </label>
               <input
                 type="date"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.effectiveFromDate}
                 onChange={(e) => setForm({ ...form, effectiveFromDate: e.target.value })}
               />
@@ -439,7 +452,7 @@ const SalaryDetailsMaster: React.FC = () => {
                   Pay Head Allocations <span className="text-red-500">*</span>
                 </label>
                 <button
-                  className="h-6 px-2 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded flex items-center gap-1"
+                  className="h-6 px-2 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded-lg flex items-center gap-1"
                   onClick={addPayHeadRow}
                 >
                   <Plus size={10} />
@@ -447,20 +460,20 @@ const SalaryDetailsMaster: React.FC = () => {
                 </button>
               </div>
 
-              <div className="border border-gray-200 rounded-md overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-500 uppercase w-[40%]">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase w-[40%]">
                         Pay Head
                       </th>
-                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-500 uppercase w-[25%]">
+                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase w-[25%]">
                         Calc Type
                       </th>
-                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-500 uppercase w-[20%] text-right">
+                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase w-[20%] text-right">
                         Amt / %
                       </th>
-                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-500 uppercase w-[15%] text-center">
+                      <th className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase w-[15%] text-center">
                         Act
                       </th>
                     </tr>
@@ -485,7 +498,7 @@ const SalaryDetailsMaster: React.FC = () => {
                           <tr key={idx}>
                             <td className="px-2 py-1">
                               <select
-                                className="w-full h-7 px-1.5 text-[11px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
+                                className="w-full h-7 px-1.5 text-[11px] border border-gray-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
                                 value={alloc.payHeadId}
                                 onChange={(e) => handlePayHeadSelection(idx, e.target.value)}
                               >
@@ -499,7 +512,7 @@ const SalaryDetailsMaster: React.FC = () => {
                             </td>
                             <td className="px-2 py-1">
                               <select
-                                className="w-full h-7 px-1.5 text-[11px] border border-gray-300 rounded bg-gray-50 text-gray-600 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
+                                className="w-full h-7 px-1.5 text-[11px] border border-gray-200 rounded bg-gray-50 text-gray-600 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
                                 value={alloc.calculationType}
                                 onChange={(e) =>
                                   updatePayHeadRow(idx, "calculationType", e.target.value)
@@ -519,7 +532,7 @@ const SalaryDetailsMaster: React.FC = () => {
                               {isFlatRate ? (
                                 <input
                                   type="number"
-                                  className="w-full h-7 px-1.5 text-[11px] text-right border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
+                                  className="w-full h-7 px-1.5 text-[11px] text-right border border-gray-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
                                   value={alloc.amount}
                                   onChange={(e) =>
                                     updatePayHeadRow(idx, "amount", parseFloat(e.target.value) || 0)
@@ -531,7 +544,7 @@ const SalaryDetailsMaster: React.FC = () => {
                                 <div className="relative">
                                   <input
                                     type="number"
-                                    className="w-full h-7 pl-1.5 pr-4 text-[11px] text-right border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
+                                    className="w-full h-7 pl-1.5 pr-4 text-[11px] text-right border border-gray-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50 focus:border-[var(--ds-action-primary)]"
                                     value={alloc.percentage}
                                     onChange={(e) =>
                                       updatePayHeadRow(
@@ -553,7 +566,7 @@ const SalaryDetailsMaster: React.FC = () => {
                             </td>
                             <td className="px-2 py-1 text-center">
                               <button
-                                className="w-6 h-6 inline-flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
+                                className="w-6 h-6 inline-flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
                                 onClick={() => removePayHeadRow(idx)}
                                 title="Remove"
                               >
@@ -583,7 +596,7 @@ const SalaryDetailsMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -599,7 +612,7 @@ const SalaryDetailsMaster: React.FC = () => {
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               onClick={resetForm}
             >
               Cancel

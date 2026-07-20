@@ -25,10 +25,10 @@ const AccountsConfiguration: React.FC = () => {
   };
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Accounts setup</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Accounts setup</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Features &amp; Options — Accounts Settings
           </p>
@@ -36,7 +36,7 @@ const AccountsConfiguration: React.FC = () => {
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden max-w-xl">
-        <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+        <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
           <h2 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Accounts Tab
           </h2>

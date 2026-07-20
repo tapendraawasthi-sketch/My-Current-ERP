@@ -1,3 +1,4 @@
+import { getNatureProfile } from "../../lib/businessNature";
 import { SHELL_NAV, type ShellNavGroup, type ShellNavItem, type ShellRoleHint } from "./navConfig";
 
 /** Map store role strings onto shell role hints (no new permission engine). */
@@ -21,15 +22,102 @@ function roleMatch(allowed: ShellRoleHint[] | undefined, role: ShellRoleHint): b
   return allowed.includes(role);
 }
 
-export function filterNavForRole(roleRaw: string | undefined | null): ShellNavGroup[] {
+export type NavFilterOptions = {
+  /** Company business nature id — filters modules/pages by industry pack. */
+  businessNature?: string | null;
+  /** When false, hide inventory group (overrides nature if set). */
+  enableInventory?: boolean | null;
+  /** When false, hide POS counter page. */
+  enablePOS?: boolean | null;
+  /** When false, hide job-work / production-ish pages. */
+  enableProduction?: boolean | null;
+  enableJobWork?: boolean | null;
+  /** When false, hide batch management. */
+  enableBatchTracking?: boolean | null;
+  /** When false, hide budget pages. */
+  enableBudget?: boolean | null;
+  /** When false, hide payroll admin entry. */
+  enablePayroll?: boolean | null;
+};
+
+function applyNatureAndFeatureFilters(
+  groups: ShellNavGroup[],
+  opts?: NavFilterOptions | null,
+): ShellNavGroup[] {
+  if (!opts) return groups;
+
+  const nature = getNatureProfile(opts.businessNature);
+  const hiddenGroups = new Set(nature.nav.hiddenGroups);
+  const hiddenPages = new Set(nature.nav.hiddenPages);
+
+  // Feature flags can further hide (never re-show what nature hid).
+  if (opts.enableInventory === false) hiddenGroups.add("inventory");
+  if (opts.enablePOS === false) hiddenPages.add("pos-billing");
+  if (opts.enableProduction === false && opts.enableJobWork === false) {
+    hiddenPages.add("job-work-register");
+  }
+  if (opts.enableJobWork === false) hiddenPages.add("job-work-register");
+  if (opts.enableBatchTracking === false) hiddenPages.add("batch-management");
+  if (opts.enableBudget === false) {
+    hiddenPages.add("budget");
+    hiddenPages.add("budget-vs-actual");
+  }
+  if (opts.enablePayroll === false) hiddenPages.add("payroll");
+
+  // Always keep administration + settings reachable so nature can be changed.
+  hiddenGroups.delete("administration");
+  hiddenPages.delete("settings");
+  hiddenPages.delete("company-features");
+
+  return groups
+    .map((g) => {
+      if (hiddenGroups.has(g.id)) return null;
+      if (!g.items.length) return g;
+      const items = g.items.filter((i) => !hiddenPages.has(i.page) && !hiddenPages.has(i.id));
+      if (!items.length && !g.page) return null;
+      return { ...g, items };
+    })
+    .filter(Boolean) as ShellNavGroup[];
+}
+
+export function filterNavForRole(
+  roleRaw: string | undefined | null,
+  opts?: NavFilterOptions | null,
+): ShellNavGroup[] {
   const role = normalizeShellRole(roleRaw);
-  return SHELL_NAV.map((g) => {
+  const byRole = SHELL_NAV.map((g) => {
     if (!roleMatch(g.roles, role)) return null;
     if (!g.items.length) return g;
     const items = g.items.filter((i) => roleMatch(i.roles ?? g.roles, role));
     if (!items.length && !g.page) return null;
     return { ...g, items };
   }).filter(Boolean) as ShellNavGroup[];
+
+  return applyNatureAndFeatureFilters(byRole, opts);
+}
+
+/** Build nav filter opts from companySettings-like object. */
+export function navFilterOptsFromCompany(company: {
+  businessNature?: string | null;
+  enableInventory?: boolean | null;
+  enablePOS?: boolean | null;
+  enableProduction?: boolean | null;
+  enableJobWork?: boolean | null;
+  enableBatchTracking?: boolean | null;
+  enableBudget?: boolean | null;
+  enablePayroll?: boolean | null;
+} | null | undefined): NavFilterOptions | null {
+  if (!company) return null;
+  return {
+    businessNature: company.businessNature ?? null,
+    enableInventory: company.enableInventory,
+    enablePOS: company.enablePOS,
+    enableProduction: company.enableProduction,
+    enableJobWork: company.enableJobWork,
+    enableBatchTracking: company.enableBatchTracking,
+    enableBudget: company.enableBudget,
+    enablePayroll: company.enablePayroll,
+  };
 }
 
 /** Soft deep-link gate for known admin surfaces — does not invent ACL. */
@@ -53,9 +141,11 @@ export function canNavigateToPage(page: string, roleRaw: string | undefined | nu
   return true;
 }
 
-export function mobileBottomDestinations(roleRaw: string | undefined | null): ShellNavItem[] {
-  const role = normalizeShellRole(roleRaw);
-  const all = filterNavForRole(roleRaw).flatMap((g) =>
+export function mobileBottomDestinations(
+  roleRaw: string | undefined | null,
+  opts?: NavFilterOptions | null,
+): ShellNavItem[] {
+  const all = filterNavForRole(roleRaw, opts).flatMap((g) =>
     g.items.length
       ? g.items
       : g.page

@@ -1,7 +1,10 @@
 export type WizardForm = {
   companyNameEn: string;
   companyNameNe: string;
+  /** Legal entity form (Sole Prop, Pvt. Ltd., …). */
   businessType: string;
+  /** Industry / business nature — drives module visibility. */
+  businessNature: string;
   address: string;
   city: string;
   district: string;

@@ -325,25 +325,25 @@ const MemorandumVoucher: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   #
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Ledger
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Debit
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Credit
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Narration
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Swap
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Del
                 </th>
               </tr>
@@ -388,7 +388,7 @@ const MemorandumVoucher: React.FC = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => swapDrCr(index)}
-                      className="text-gray-600 hover:text-gray-800"
+                      className="text-gray-600 hover:text-gray-700"
                     >
                       <X className="w-4 h-4 rotate-45" />
                     </Button>
@@ -455,7 +455,7 @@ const MemorandumVoucher: React.FC = () => {
               setDirty(true);
             }}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
             placeholder="Enter narration..."
           />
         </div>

@@ -42,10 +42,10 @@ function LangButton({
     <button
       type="button"
       onClick={onClick}
-      className={`h-6 px-2 text-[10px] font-medium rounded border transition-colors ${
+      className={`h-6 px-2.5 text-[10px] font-semibold rounded-md border transition-all ${
         active
-          ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
-          : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+          ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)] shadow-sm"
+          : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
       }`}
     >
       {label}
@@ -66,9 +66,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   onAutoSpeakChange,
 }) => {
   return (
-    <div className="flex gap-3 px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 text-[10px]">
+    <div className="flex gap-4 px-4 py-2.5 bg-gray-50 border-b border-gray-100 text-[10px]">
       <div className="flex-1">
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">
           Input
         </p>
         <div className="flex gap-1 flex-wrap">
@@ -81,7 +81,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             />
           ))}
         </div>
-        <label className="flex items-center gap-1 mt-1 text-gray-500 cursor-pointer">
+        <label className="flex items-center gap-1 mt-1 text-gray-400 hover:text-gray-500 transition-colors cursor-pointer">
           <input
             type="checkbox"
             checked={autoDetect}
@@ -92,7 +92,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </label>
       </div>
       <div className="flex-1">
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">
           Output
         </p>
         <div className="flex gap-1 flex-wrap">
@@ -105,7 +105,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             />
           ))}
         </div>
-        <label className="flex items-center gap-1 mt-1 text-gray-500 cursor-pointer">
+        <label className="flex items-center gap-1 mt-1 text-gray-400 hover:text-gray-500 transition-colors cursor-pointer">
           <input
             type="checkbox"
             checked={showTranslation}
@@ -115,7 +115,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           Show translation
         </label>
         {onAutoSpeakChange && (
-          <label className="flex items-center gap-1 mt-0.5 text-gray-500 cursor-pointer">
+          <label className="flex items-center gap-1 mt-0.5 text-gray-400 hover:text-gray-500 transition-colors cursor-pointer">
             <input
               type="checkbox"
               checked={autoSpeakResponses}

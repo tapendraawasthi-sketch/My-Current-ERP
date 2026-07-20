@@ -67,7 +67,7 @@ export default function MaterialIssuedPage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h2 className="text-[15px] font-semibold text-gray-800">Material issued</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">Material issued</h2>
           <p className="text-[12px] text-gray-500 mt-0.5">Materials sent out.</p>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Entries: {scopedIssued.length}
@@ -78,7 +78,7 @@ export default function MaterialIssuedPage() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -127,7 +127,7 @@ export default function MaterialIssuedPage() {
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">Date</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="date"
                 value={entry.date}
                 onChange={(e) => setEntry({ ...entry, date: e.target.value })}
@@ -136,7 +136,7 @@ export default function MaterialIssuedPage() {
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">Party Name</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Party Name"
                 value={entry.partyName}
                 onChange={(e) => setEntry({ ...entry, partyName: e.target.value })}
@@ -145,7 +145,7 @@ export default function MaterialIssuedPage() {
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">Ref No</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Ref No"
                 value={entry.refNo}
                 onChange={(e) => setEntry({ ...entry, refNo: e.target.value })}
@@ -154,7 +154,7 @@ export default function MaterialIssuedPage() {
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">Narration</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Narration"
                 value={entry.narration}
                 onChange={(e) => setEntry({ ...entry, narration: e.target.value })}
@@ -166,27 +166,27 @@ export default function MaterialIssuedPage() {
           {entry.items.map((row, i) => (
             <div key={row.id} className="form-row">
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Item"
                 value={row.itemName}
                 onChange={(e) => updateItem(i, "itemName", e.target.value)}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="number"
                 placeholder="Qty"
                 value={row.qty || ""}
                 onChange={(e) => updateItem(i, "qty", Number(e.target.value))}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="number"
                 placeholder="Rate"
                 value={row.rate || ""}
                 onChange={(e) => updateItem(i, "rate", Number(e.target.value))}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[var(--ds-canvas)] cursor-not-allowed"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-[var(--ds-canvas)] cursor-not-allowed"
                 type="number"
                 placeholder="Amount"
                 readOnly
@@ -195,7 +195,7 @@ export default function MaterialIssuedPage() {
             </div>
           ))}
           <button
-            className="mt-2 h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="mt-2 h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
             onClick={addRow}
           >
             + Add Row
@@ -209,7 +209,7 @@ export default function MaterialIssuedPage() {
               Save Entry
             </button>
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               onClick={() => setShowForm(false)}
             >
               Cancel

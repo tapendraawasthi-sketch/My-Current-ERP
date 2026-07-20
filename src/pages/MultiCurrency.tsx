@@ -255,7 +255,7 @@ export default function MultiCurrency() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Multi-Currency Accounting</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Multi-Currency Accounting</h1>
           <p className="text-sm text-gray-500 mt-1">
             Manage foreign currencies, exchange rates, and FX gain/loss (NRB-compliant)
           </p>
@@ -265,7 +265,7 @@ export default function MultiCurrency() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -359,7 +359,7 @@ export default function MultiCurrency() {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === t.id
                 ? "bg-white text-blue-600 shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
+                : "text-gray-600 hover:text-gray-700"
             }`}
           >
             <t.icon className="w-4 h-4" /> {t.label}
@@ -394,9 +394,9 @@ export default function MultiCurrency() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-gray-800">{c.symbol}</span>
+                    <span className="text-lg font-bold text-gray-700">{c.symbol}</span>
                     <div>
-                      <div className="font-semibold text-gray-800">{c.code}</div>
+                      <div className="font-semibold text-gray-700">{c.code}</div>
                       <div className="text-xs text-gray-500">{c.name}</div>
                     </div>
                   </div>
@@ -497,7 +497,7 @@ export default function MultiCurrency() {
                 {filteredRates.map((r) => (
                   <tr key={r.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">
-                      <span className="font-semibold text-gray-800">{r.currencyCode}</span>
+                      <span className="font-semibold text-gray-700">{r.currencyCode}</span>
                       <span className="ml-2 text-xs text-gray-500">
                         {currencies.find((c) => c.code === r.currencyCode)?.name}
                       </span>

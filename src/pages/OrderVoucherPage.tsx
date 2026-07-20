@@ -1,5 +1,5 @@
 // src/pages/OrderVoucherPage.tsx
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import toast from "@/lib/appToast";
 import { Plus, Search, X } from "lucide-react";
@@ -7,6 +7,7 @@ import { SaleType, PurchaseType } from "../lib/busyTypes";
 import { formatNumber } from "../lib/utils";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
 
 interface OrderLine {
   id: string;
@@ -46,9 +47,12 @@ const PURCHASE_TYPES = Object.values(PurchaseType);
 export default function OrderVoucherPage({ type }: Props) {
   const { accounts, items, parties } = useStore();
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
   const isSalesOrder = type === "sales_order";
   const title = isSalesOrder ? "Sales order" : "Purchase order";
   const prefix = isSalesOrder ? "SO-" : "PO-";
+  const pageId = isSalesOrder ? "sales-order" : "purchase-order";
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,7 +90,7 @@ export default function OrderVoucherPage({ type }: Props) {
     return p.type === "supplier" || p.type === "both";
   });
 
-  const openAdd = () => {
+  const resetBlankForm = () => {
     setEditOrder(null);
     setDate(new Date().toISOString().split("T")[0]);
     setPartyId("");
@@ -94,8 +98,65 @@ export default function OrderVoucherPage({ type }: Props) {
     setNarration("");
     setDueDate("");
     setLines([{ itemId: "", itemName: "", quantity: 1, unit: "Pcs", rate: 0, amount: 0 }]);
+  };
+
+  const loadOrderIntoForm = (order: Order) => {
+    setEditOrder(order);
+    setDate(order.date);
+    setPartyId(order.partyId);
+    setOrderType(order.orderType);
+    setNarration(order.narration || "");
+    setDueDate("");
+    setLines(
+      order.lines.map((l) => ({
+        itemId: l.itemId,
+        itemName: l.itemName,
+        quantity: l.quantity,
+        unit: l.unit,
+        rate: l.rate,
+        amount: l.amount,
+        deliveryDate: l.deliveryDate,
+      })),
+    );
     setShowForm(true);
   };
+
+  const openAdd = () => {
+    resetBlankForm();
+    setShowForm(true);
+    openEntity(pageId, "new");
+  };
+
+  const openEdit = (order: Order) => {
+    loadOrderIntoForm(order);
+    openEntity(pageId, order.id);
+  };
+
+  const closeForm = () => {
+    setShowForm(false);
+    setEditOrder(null);
+    clearEntity(pageId);
+  };
+
+  // Deep link: /app/sales-order|purchase-order/new | /:id
+  useEffect(() => {
+    if (route.pageId !== pageId) return;
+    if (route.entityId === "new") {
+      resetBlankForm();
+      setShowForm(true);
+      return;
+    }
+    if (route.entityId) {
+      const order = orders.find((o) => o.id === route.entityId);
+      if (order) loadOrderIntoForm(order);
+      return;
+    }
+    if (showForm) {
+      setShowForm(false);
+      setEditOrder(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, orders, pageId]);
 
   const handleLineChange = (idx: number, field: string, value: any) => {
     setLines((prev) =>
@@ -162,6 +223,7 @@ export default function OrderVoucherPage({ type }: Props) {
       createdAt: new Date().toISOString(),
       branchId: readActiveBranchId() || undefined,
     };
+    const savedNo = editOrder?.orderNo || newOrder.orderNo;
     setOrders((prev) =>
       editOrder
         ? prev.map((o) =>
@@ -171,13 +233,20 @@ export default function OrderVoucherPage({ type }: Props) {
           )
         : [...prev, newOrder],
     );
-    toast.success(`${title} ${editOrder ? "updated" : "saved"} — ${newOrder.orderNo}`);
+    toast.success(`${title} ${editOrder ? "updated" : "saved"} — ${savedNo}`);
     setShowForm(false);
+    setEditOrder(null);
+    clearEntity(pageId);
   };
 
   const cancelOrder = (id: string) => {
-    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: "cancelled" } : o)));
-    toast.success("Order cancelled");
+    const prev = orders.find((o) => o.id === id);
+    if (!prev || prev.status === "cancelled") return;
+    const prevStatus = prev.status;
+    setOrders((rows) => rows.map((o) => (o.id === id ? { ...o, status: "cancelled" } : o)));
+    toast.undo("Order cancelled", () => {
+      setOrders((rows) => rows.map((o) => (o.id === id ? { ...o, status: prevStatus } : o)));
+    });
   };
 
   const inputCls =
@@ -204,7 +273,7 @@ export default function OrderVoucherPage({ type }: Props) {
       <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">
+            <h1 className="text-[15px] font-semibold text-gray-900">
               {editOrder ? "Modify" : "Add"} {title}
             </h1>
             <p className="text-[12px] text-gray-500 mt-0.5">
@@ -217,8 +286,8 @@ export default function OrderVoucherPage({ type }: Props) {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={() => setShowForm(false)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50"
+              onClick={closeForm}
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg hover:bg-gray-50"
             >
               ← Back (Esc)
             </button>
@@ -292,7 +361,7 @@ export default function OrderVoucherPage({ type }: Props) {
             </span>
             <button
               onClick={addLine}
-              className="h-7 px-2 text-[12px] bg-[var(--ds-action-primary)] text-white rounded flex items-center gap-1"
+              className="h-7 px-2 text-[12px] bg-[var(--ds-action-primary)] text-white rounded-lg flex items-center gap-1"
             >
               <Plus className="h-3 w-3" /> Add Row (F5)
             </button>
@@ -386,7 +455,7 @@ export default function OrderVoucherPage({ type }: Props) {
           <div className="px-4 py-3 border-t border-gray-200 bg-[var(--ds-action-primary)] flex justify-end">
             <div className="text-right">
               <div className="text-[12px] text-gray-500 uppercase tracking-wide">Order Total</div>
-              <div className="text-[16px] font-bold text-gray-800 font-mono">
+              <div className="text-[16px] font-bold text-gray-700 font-mono">
                 Rs. {formatNumber(totalAmount)}
               </div>
             </div>
@@ -399,7 +468,7 @@ export default function OrderVoucherPage({ type }: Props) {
           <textarea
             value={narration}
             onChange={(e) => setNarration(e.target.value)}
-            className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none"
+            className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none"
             rows={2}
             placeholder={`e.g. Being ${title.toLowerCase()} raised for ${isSalesOrder ? "customer" : "supplier"}`}
           />
@@ -413,7 +482,7 @@ export default function OrderVoucherPage({ type }: Props) {
     <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">{title}</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Manage {title.toLowerCase()}s — pick into{" "}
             {isSalesOrder ? "sales/delivery challans" : "purchase/GRNs"} via F11
@@ -424,7 +493,7 @@ export default function OrderVoucherPage({ type }: Props) {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -452,7 +521,7 @@ export default function OrderVoucherPage({ type }: Props) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={`Search ${title.toLowerCase()}s...`}
-              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-lg w-52 focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
           <div className="flex gap-1">
@@ -496,7 +565,7 @@ export default function OrderVoucherPage({ type }: Props) {
                   {order.orderNo}
                 </td>
                 <td className="px-3 py-2.5 text-[12px] text-gray-600">{order.date}</td>
-                <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
+                <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">
                   {order.partyName}
                 </td>
                 <td className="px-3 py-2.5 text-[12px] text-gray-600">
@@ -509,17 +578,8 @@ export default function OrderVoucherPage({ type }: Props) {
                 <td className="px-3 py-2.5">
                   <div className="flex gap-1">
                     <button
-                      onClick={() => {
-                        setEditOrder(order);
-                        setLines(
-                          order.lines.map(({ id, pendingQty, deliveredQty, ...rest }) => rest),
-                        );
-                        setDate(order.date);
-                        setPartyId(order.partyId);
-                        setNarration(order.narration);
-                        setOrderType(order.orderType);
-                        setShowForm(true);
-                      }}
+                      type="button"
+                      onClick={() => openEdit(order)}
                       className="h-7 px-2 text-[12px] border border-gray-300 rounded hover:bg-gray-50"
                     >
                       Edit

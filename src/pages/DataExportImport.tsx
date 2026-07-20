@@ -5,7 +5,7 @@ import { Database, Upload, Download, FileSpreadsheet, CheckSquare } from "lucide
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
 
-const BORDER = "1px solid #000";
+const BORDER = "1px solid #374151";
 const BG_HEADER = "var(--ds-surface-hover)";
 const BTN = (bg: string): React.CSSProperties => ({
   padding: "6px 14px",
@@ -15,7 +15,7 @@ const BTN = (bg: string): React.CSSProperties => ({
   fontSize: 12,
   fontWeight: 600,
   cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
+  color: bg === "#fff" ? "#374151" : "#fff",
 });
 const INPUT_STYLE: React.CSSProperties = {
   width: "100%",
@@ -131,7 +131,7 @@ export default function DataExportImport() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch filter"
           >
             <option value="all">All branches</option>

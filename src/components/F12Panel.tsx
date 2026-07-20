@@ -1,10 +1,19 @@
 // src/components/F12Panel.tsx
-// F12 Configuration Panel — Modal overlay UI
+// F12 Configuration Panel — DS Dialog shell
 
 import React, { useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { useF12Config } from "../hooks/useF12Config";
 import { type F12FieldDef, type F12SectionDef, type F12ValueMap } from "../lib/f12Types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  Button,
+} from "@/design-system";
 
 // ─── Individual field renderers ───────────────────────────────────────────────
 
@@ -26,7 +35,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
             className={`px-3 py-1 text-[12px] font-semibold border ${
               boolVal
                 ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)] z-10"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                : "bg-white text-gray-700 border-[var(--ds-border-default)] hover:bg-gray-50"
             } rounded-l-md`}
           >
             Yes
@@ -37,7 +46,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
             className={`px-3 py-1 text-[12px] font-semibold border-y border-r ${
               !boolVal
                 ? "bg-[var(--ds-status-danger)] text-white border-[var(--ds-status-danger)] z-10"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                : "bg-white text-gray-700 border-[var(--ds-border-default)] hover:bg-gray-50"
             } rounded-r-md -ml-px`}
           >
             No
@@ -51,7 +60,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
         <select
           value={String(value)}
           onChange={(e) => onChange(field.key, e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] min-w-[180px]"
+          className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] min-w-[180px]"
         >
           {field.options.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -70,7 +79,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
           min={field.min ?? 0}
           max={field.max ?? 99}
           onChange={(e) => onChange(field.key, parseInt(e.target.value, 10) || 0)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[80px] text-center"
+          className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[80px] text-center"
         />
       );
     }
@@ -82,7 +91,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
           value={String(value)}
           maxLength={field.type === "char" ? 1 : undefined}
           onChange={(e) => onChange(field.key, e.target.value)}
-          className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${
+          className={`h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${
             field.type === "char" ? "w-[50px] text-center" : "w-[200px]"
           }`}
         />
@@ -93,12 +102,12 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
   };
 
   return (
-    <div className="flex items-start justify-between px-4 py-3 min-h-[48px] hover:bg-gray-50 transition-colors">
+    <div className="flex items-start justify-between px-5 py-3.5 min-h-[48px] hover:bg-gray-50 transition-colors">
       <div className="flex-1 min-w-0 pr-4">
-        <span className="text-[12px] font-medium text-gray-800 block leading-tight">
+        <span className="text-[12px] font-medium text-gray-700 block leading-tight">
           {field.label}
         </span>
-        <span className="text-[12px] text-gray-500 block mt-1 leading-snug">
+        <span className="text-[11px] text-gray-400 block mt-1 leading-snug">
           {field.description}
         </span>
       </div>
@@ -118,8 +127,8 @@ interface SectionProps {
 const F12Section: React.FC<SectionProps> = ({ section, values, onChange }) => {
   return (
     <div className="mb-2">
-      <div className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] px-4 py-2">
-        <h3 className="text-[12px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide">
+      <div className="bg-gray-50 border-y border-gray-100 px-5 py-2.5">
+        <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
           {section.sectionLabel}
         </h3>
       </div>
@@ -151,14 +160,11 @@ const F12Panel: React.FC = () => {
     activeScreenId,
   } = useF12Config();
 
-  // Handle keyboard shortcuts
+  // F12 toggles closed while open (Escape handled by Dialog)
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeF12();
-      }
       if (e.key === "F12") {
         e.preventDefault();
         closeF12();
@@ -190,43 +196,17 @@ const F12Panel: React.FC = () => {
     }
   }, [resetToDefaults]);
 
-  if (!isOpen) return null;
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && closeF12()}>
+      <DialogContent size="large" showClose className="no-print" data-modal-open="true">
+        <DialogHeader>
+          <DialogTitle>
+            {screenDef ? screenDef.screenLabel : `Screen: ${activeScreenId}`}
+          </DialogTitle>
+          <DialogDescription>F12 — Configuration settings</DialogDescription>
+        </DialogHeader>
 
-  return createPortal(
-    <div
-      className="erp-report-modal-overlay no-print"
-      data-modal-open="true"
-      role="dialog"
-      aria-modal="true"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) closeF12();
-      }}
-    >
-      <div
-        className="erp-report-modal"
-        style={{ maxWidth: "680px" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Title Bar */}
-        <div className="erp-report-modal-header flex items-center justify-between">
-          <div className="flex flex-col">
-            <h2>
-              {screenDef ? screenDef.screenLabel : `Screen: ${activeScreenId}`}
-            </h2>
-            <p className="uppercase tracking-wide">F12 — Configuration Settings</p>
-          </div>
-          <button
-            type="button"
-            onClick={closeF12}
-            className="text-gray-400 hover:text-white transition-colors text-lg leading-none p-1"
-            title="Close (Esc)"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto bg-white min-h-0 pb-4">
+        <DialogBody className="px-0 py-0">
           {screenDef ? (
             screenDef.sections.map((section) => (
               <F12Section
@@ -238,7 +218,7 @@ const F12Panel: React.FC = () => {
             ))
           ) : (
             <div className="p-12 text-center text-gray-500">
-              <p className="font-semibold mb-2 text-[13px] text-gray-700">
+              <p className="font-semibold mb-2 text-[14px] text-gray-600">
                 No F12 configuration available
               </p>
               <p className="text-[12px]">
@@ -246,46 +226,34 @@ const F12Panel: React.FC = () => {
               </p>
             </div>
           )}
-        </div>
+        </DialogBody>
 
-        {/* Footer */}
-        <div className="erp-report-modal-footer">
-          <span className="text-[12px] text-gray-500 flex items-center mr-auto">
+        <DialogFooter className="justify-between sm:justify-between">
+          <span className="text-[11px] text-gray-400 flex items-center mr-auto">
             Press{" "}
-            <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-gray-700 font-sans mx-1">
+            <kbd className="bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 font-mono text-[10px] mx-0.5">
               Esc
             </kbd>{" "}
             or{" "}
-            <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-gray-700 font-sans mx-1">
+            <kbd className="bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 font-mono text-[10px] mx-0.5">
               F12
             </kbd>{" "}
             to close
           </span>
-          <button
-            type="button"
-            onClick={handleReset}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[13px] font-medium rounded-md hover:bg-gray-50"
-          >
-            Reset to Defaults
-          </button>
-          <button
-            type="button"
-            onClick={closeF12}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[13px] font-medium rounded-md hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[13px] font-medium rounded-md"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>,
-    document.body,
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary" size="small" onClick={handleReset}>
+              Reset to Defaults
+            </Button>
+            <Button variant="secondary" size="small" onClick={closeF12}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="small" onClick={handleSave}>
+              Save
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

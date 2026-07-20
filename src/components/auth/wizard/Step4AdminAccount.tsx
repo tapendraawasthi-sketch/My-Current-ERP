@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Input, Label, FieldError, Alert } from "@/design-system";
+import { Input, FormField, Alert } from "@/design-system";
 import type { WizardStepProps } from "./wizardTypes";
 
 function passwordStrength(
@@ -58,59 +58,54 @@ export default function Step4AdminAccount({ data, onChange, errors = {} }: Wizar
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="md:col-span-2">
-          <Label htmlFor="wiz-fullname">
-            Full name <span className="text-[var(--ds-status-danger)]">*</span>
-          </Label>
+        <FormField
+          id="wiz-fullname"
+          label="Full name"
+          required
+          error={errors.fullName}
+          className="md:col-span-2"
+        >
           <Input
-            id="wiz-fullname"
             value={data.fullName}
             onChange={(e) => set("fullName", e.target.value)}
-            invalid={Boolean(errors.fullName)}
             autoComplete="name"
           />
-          <FieldError>{errors.fullName}</FieldError>
-        </div>
+        </FormField>
 
-        <div className="md:col-span-2">
-          <Label htmlFor="wiz-username">
-            Username <span className="text-[var(--ds-status-danger)]">*</span>
-          </Label>
+        <FormField
+          id="wiz-username"
+          label="Username"
+          required
+          description="Alphanumeric, minimum 4 characters."
+          error={errors.username}
+          className="md:col-span-2"
+        >
           <Input
-            id="wiz-username"
             value={data.username}
             onChange={(e) => set("username", e.target.value.replace(/[^a-zA-Z0-9]/g, ""))}
-            invalid={Boolean(errors.username)}
             autoComplete="username"
             minLength={4}
           />
-          <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">Alphanumeric, minimum 4 characters.</p>
-          <FieldError>{errors.username}</FieldError>
-        </div>
+        </FormField>
 
-        <div>
-          <Label htmlFor="wiz-password">
-            Password <span className="text-[var(--ds-status-danger)]">*</span>
-          </Label>
-          <div className="relative">
+        <div className="relative">
+          <FormField id="wiz-password" label="Password" required error={errors.password}>
             <Input
-              id="wiz-password"
               type={showPassword.password ? "text" : "password"}
               value={data.password}
               onChange={(e) => set("password", e.target.value)}
-              invalid={Boolean(errors.password)}
               autoComplete="new-password"
               className="pr-11"
             />
-            <button
-              type="button"
-              className="ds-focus-ring absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)]"
-              aria-label={showPassword.password ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword((s) => ({ ...s, password: !s.password }))}
-            >
-              {showPassword.password ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
-            </button>
-          </div>
+          </FormField>
+          <button
+            type="button"
+            className="ds-focus-ring absolute right-1 top-[28px] inline-flex h-8 w-8 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)]"
+            aria-label={showPassword.password ? "Hide password" : "Show password"}
+            onClick={() => setShowPassword((s) => ({ ...s, password: !s.password }))}
+          >
+            {showPassword.password ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
+          </button>
           {strength ? (
             <div className="mt-1.5">
               <div className="h-1 overflow-hidden rounded-full bg-[var(--ds-surface-muted)]">
@@ -123,36 +118,34 @@ export default function Step4AdminAccount({ data, onChange, errors = {} }: Wizar
               </p>
             </div>
           ) : null}
-          <FieldError>{errors.password}</FieldError>
         </div>
 
-        <div>
-          <Label htmlFor="wiz-confirm">
-            Confirm password <span className="text-[var(--ds-status-danger)]">*</span>
-          </Label>
-          <div className="relative">
+        <div className="relative">
+          <FormField
+            id="wiz-confirm"
+            label="Confirm password"
+            required
+            error={errors.confirmPassword}
+          >
             <Input
-              id="wiz-confirm"
               type={showPassword.confirm ? "text" : "password"}
               value={data.confirmPassword}
               onChange={(e) => set("confirmPassword", e.target.value)}
-              invalid={Boolean(errors.confirmPassword)}
               autoComplete="new-password"
               className="pr-11"
             />
-            <button
-              type="button"
-              className="ds-focus-ring absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)]"
-              aria-label={showPassword.confirm ? "Hide confirm password" : "Show confirm password"}
-              onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
-            >
-              {showPassword.confirm ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
-            </button>
-          </div>
+          </FormField>
+          <button
+            type="button"
+            className="ds-focus-ring absolute right-1 top-[28px] inline-flex h-8 w-8 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)]"
+            aria-label={showPassword.confirm ? "Hide confirm password" : "Show confirm password"}
+            onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
+          >
+            {showPassword.confirm ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
+          </button>
           {data.confirmPassword && data.password === data.confirmPassword && !errors.confirmPassword ? (
             <p className="mt-1 text-[13px] text-[var(--ds-status-success)]">Passwords match</p>
           ) : null}
-          <FieldError>{errors.confirmPassword}</FieldError>
         </div>
       </div>
 

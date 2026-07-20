@@ -217,12 +217,12 @@ const BatchVoucherEntry: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Batch Voucher Entry</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Batch Voucher Entry</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Rapid data entry for multiple journal vouchers
             </p>
@@ -231,7 +231,7 @@ const BatchVoucherEntry: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -244,11 +244,11 @@ const BatchVoucherEntry: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-6">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-6">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-2">
               <button
-                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
                 onClick={handlePostAll}
                 disabled={postingProgress !== null}
               >
@@ -265,21 +265,21 @@ const BatchVoucherEntry: React.FC = () => {
                 )}
               </button>
               <button
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={handleValidateAll}
               >
                 <CheckCircle size={14} className="text-gray-500" />
                 Validate All
               </button>
               <button
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={handleClearAll}
               >
                 Clear All
               </button>
             </div>
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5 transition-colors shadow-sm"
               onClick={handleAddRows}
             >
               <Plus size={14} className="text-gray-500" />
@@ -288,7 +288,7 @@ const BatchVoucherEntry: React.FC = () => {
           </div>
 
           {(validationResult.validCount > 0 || validationResult.errorCount > 0) && (
-            <div className="mb-4 flex gap-4 text-[12px] font-medium p-2 bg-[#f5f6fa] rounded-md border border-gray-200">
+            <div className="mb-4 flex gap-4 text-[12px] font-medium p-2 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-green-500"></span>
                 <span className="text-gray-700">Valid: {validationResult.validCount}</span>
@@ -300,29 +300,29 @@ const BatchVoucherEntry: React.FC = () => {
             </div>
           )}
 
-          <div className="border border-gray-200 rounded-md overflow-x-auto">
+          <div className="border border-gray-200 rounded-lg overflow-x-auto">
             <table className="w-full min-w-max border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-4">
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-4">
                     #
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-36">
                     Date
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Dr Account
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Cr Account
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                     Amount
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Narration
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-48">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-48">
                     Validation
                   </th>
                 </tr>

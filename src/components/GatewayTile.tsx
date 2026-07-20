@@ -12,51 +12,15 @@ const GatewayTile: React.FC<GatewayTileProps> = ({ label, value, subtitle, onCli
     <button
       type="button"
       onClick={onClick}
-      className="hover:bg-gray-50 transition-colors bg-white border border-gray-200 text-gray-800 rounded shadow-sm"
-      style={{
-        minWidth: 145,
-        flex: "1 1 145px",
-        padding: "10px 12px",
-        cursor: "pointer",
-        textAlign: "left",
-        fontFamily:
-          "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-      }}
+      className="min-w-[145px] flex-1 basis-[145px] p-3 text-left bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-gray-300 transition-all cursor-pointer group"
     >
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          textTransform: "uppercase",
-          lineHeight: 1.2,
-        }}
-      >
+      <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-gray-500 transition-colors leading-tight">
         {label}
       </div>
-
-      <div
-        style={{
-          fontSize: 14,
-          fontWeight: 700,
-          marginTop: 3,
-          lineHeight: 1.2,
-          whiteSpace: "nowrap",
-        }}
-      >
-        {value}
-      </div>
-
-      {subtitle ? (
-        <div
-          style={{
-            fontSize: 10,
-            marginTop: 2,
-            lineHeight: 1.2,
-          }}
-        >
-          {subtitle}
-        </div>
-      ) : null}
+      <div className="text-[14px] font-bold text-gray-800 mt-1 leading-tight">{value}</div>
+      {subtitle && (
+        <div className="text-[10px] text-gray-400 mt-0.5 leading-tight">{subtitle}</div>
+      )}
     </button>
   );
 };

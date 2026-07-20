@@ -1071,7 +1071,16 @@ export const useStore = create<AppState>()((...a) => {
         }
       }
 
-      await db.companySettings.put({ id: "main", ...company } as any);
+      // Persist nature-driven feature flags with company profile (CAP-NATURE).
+      await db.companySettings.put({
+        id: "main",
+        enableInventory: true,
+        enablePOS: false,
+        enableProduction: false,
+        enableJobWork: false,
+        enableBudget: false,
+        ...company,
+      } as any);
       const hash = await hashPassword((adminUser as any).password || "admin123");
       await db.users.put({
         id: adminUser.id || generateId(),

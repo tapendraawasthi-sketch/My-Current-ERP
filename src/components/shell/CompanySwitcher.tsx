@@ -10,13 +10,7 @@ import {
 } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import type { FiscalYear } from "../../store/store.types";
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "C";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
-}
+import { Avatar } from "@/design-system";
 
 export const CompanySwitcher: React.FC = () => {
   const {
@@ -67,9 +61,7 @@ export const CompanySwitcher: React.FC = () => {
         aria-expanded={open}
         title={companyName}
       >
-        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--ds-surface-muted)] text-[12px] font-semibold text-[var(--ds-action-primary)]">
-          {initials(companyName)}
-        </span>
+        <Avatar name={companyName} seed={companySettings?.id || companyName} size="sm" />
         <span className="hidden truncate text-[12px] font-medium text-[var(--ds-text-default)] sm:inline">
           {companyName}
         </span>

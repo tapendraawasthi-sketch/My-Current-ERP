@@ -1,4 +1,4 @@
-"""PR-C1 / ADR_0090 — launch sales/purchase release package (flag OFF)."""
+"""PR-C1 / ADR_0090 + ADR_0100 — launch sales/purchase release (armed when evidence complete)."""
 
 from __future__ import annotations
 
@@ -73,18 +73,16 @@ def env_flag_true() -> bool:
     return os.environ.get(ENV_FLAG, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
-def is_launch_sales_purchase_production_approved() -> bool:
-    """Runtime gate: all of registry armed, tickets clear, owner signed, env on.
+def arm_evidence_complete(reg: Mapping[str, Any] | None = None) -> bool:
+    return blocking_tickets_clear(reg) and owner_signed()
 
-    Defaults false. Never infers approval from dossier existence alone.
-    """
+
+def is_launch_sales_purchase_production_approved() -> bool:
+    """Runtime gate: registry armed + tickets + owner + env."""
     reg = load_launch_sales_purchase_release_registry()
-    run = load_run_status()
     if not reg.get("flag", {}).get("armed"):
         return False
     if reg.get("flag", {}).get("production_approved") is not True:
-        return False
-    if run.get("production_approved") is True and not reg.get("flag", {}).get("armed"):
         return False
     if not blocking_tickets_clear(reg):
         return False
@@ -98,17 +96,20 @@ def is_launch_sales_purchase_production_approved() -> bool:
 def launch_sales_purchase_release_observability() -> dict[str, Any]:
     reg = load_launch_sales_purchase_release_registry()
     run = load_run_status()
+    armed = bool(reg.get("flag", {}).get("armed"))
+    row_approved = reg.get("flag", {}).get("production_approved") is True
     return {
         "launch_release_step": STEP,
         "launch_release_adr": AUTHORITY,
         "launch_release_decision": reg["decision"],
         "capability_row": CAPABILITY_ROW,
-        "flag_armed": bool(reg.get("flag", {}).get("armed")),
-        "production_approved": False,
+        "flag_armed": armed,
+        "production_approved": row_approved,
         "runtime_production_approved": is_launch_sales_purchase_production_approved(),
-        "next_20_done": False,
+        "next_20_done": bool(run.get("next_20_done") or reg.get("honesty", {}).get("next_20_done")),
         "owner_signed": owner_signed(),
         "blocking_tickets_clear": blocking_tickets_clear(reg),
+        "arm_evidence_complete": arm_evidence_complete(reg),
         "engineering_pack_ready": bool(run.get("engineering_pack_ready")),
         "disclosures": list(DISCLOSURES),
         "is_execution_authority": False,
@@ -121,26 +122,36 @@ def assert_launch_sales_purchase_release_honesty(
     reg = load_launch_sales_purchase_release_registry()
     run = load_run_status()
     honesty = reg.get("honesty") or {}
-    if honesty.get("production_approved") is True or run.get("production_approved") is True:
-        raise RuntimeError("LAUNCH_RELEASE_PRODUCTION_APPROVED")
-    if honesty.get("flag_armed") is True or run.get("flag_armed") is True:
+    evidence = arm_evidence_complete(reg)
+    armed = reg.get("flag", {}).get("armed") is True
+
+    if armed and not evidence:
+        raise RuntimeError("FLAG_ARMED_WITHOUT_EVIDENCE")
+    if honesty.get("flag_armed") is True and not evidence:
         raise RuntimeError("LAUNCH_RELEASE_FLAG_ARMED_WITHOUT_EVIDENCE")
-    if honesty.get("next_20_done") is True or run.get("next_20_done") is True:
+    if run.get("flag_armed") is True and not evidence:
+        raise RuntimeError("LAUNCH_RELEASE_FLAG_ARMED_WITHOUT_EVIDENCE")
+
+    if honesty.get("production_approved") is True and not (armed and evidence):
+        raise RuntimeError("LAUNCH_RELEASE_PRODUCTION_APPROVED")
+    if run.get("production_approved") is True and not (armed and evidence):
+        raise RuntimeError("LAUNCH_RELEASE_PRODUCTION_APPROVED")
+
+    if honesty.get("next_20_done") is True and not (armed and evidence):
         raise RuntimeError("NEXT_20_FALSE_DONE")
+    if run.get("next_20_done") is True and not (armed and evidence):
+        raise RuntimeError("NEXT_20_FALSE_DONE")
+
     if honesty.get("owner_signed") is True and not owner_signed():
         raise RuntimeError("OWNER_FALSE_SIGNOFF")
-    if reg.get("flag", {}).get("armed") is True and not blocking_tickets_clear(reg):
-        raise RuntimeError("FLAG_ARMED_WITH_OPEN_TICKETS")
-    if is_launch_sales_purchase_production_approved():
-        # Current ship must keep this false
-        raise RuntimeError("RUNTIME_PRODUCTION_APPROVED_UNEXPECTED")
+
     if not claim:
         return
-    if claim.get("production_approved") is True:
+    if claim.get("production_approved") is True and not (armed and evidence):
         raise RuntimeError("LAUNCH_RELEASE_PRODUCTION_APPROVED")
-    if claim.get("flag_armed") is True:
+    if claim.get("flag_armed") is True and not evidence:
         raise RuntimeError("LAUNCH_RELEASE_FLAG_ARMED_WITHOUT_EVIDENCE")
-    if claim.get("next_20_done") is True:
+    if claim.get("next_20_done") is True and not (armed and evidence):
         raise RuntimeError("NEXT_20_FALSE_DONE")
     if claim.get("owner_signed") is True and not owner_signed():
         raise RuntimeError("OWNER_FALSE_SIGNOFF")

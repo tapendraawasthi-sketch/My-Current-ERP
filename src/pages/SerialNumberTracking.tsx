@@ -355,7 +355,7 @@ export default function SerialNumberTracking() {
       ) : (
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+            <tr className="bg-gray-50 border-b border-gray-200">
               {[
                 "Serial No",
                 "Item Name",
@@ -436,10 +436,10 @@ export default function SerialNumberTracking() {
   );
 
   return (
-    <div className="p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Package className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Serial Number Tracking
           </h1>
@@ -453,7 +453,7 @@ export default function SerialNumberTracking() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -478,7 +478,7 @@ export default function SerialNumberTracking() {
       <div className="grid grid-cols-4 gap-3 mb-4">
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <p className="text-[11px] text-gray-500">Total Serials Registered</p>
-          <p className="text-[22px] font-semibold text-gray-800 mt-1">{summary.total}</p>
+          <p className="text-[22px] font-semibold text-gray-700 mt-1">{summary.total}</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <p className="text-[11px] text-gray-500">In Stock</p>
@@ -526,14 +526,14 @@ export default function SerialNumberTracking() {
                 value={searchSerial}
                 onChange={(e) => setSearchSerial(e.target.value)}
                 placeholder="Search serial or item..."
-                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               />
             </div>
 
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
             >
               <option value="ALL">All Status</option>
               <option value="in_stock">In Stock</option>
@@ -546,7 +546,7 @@ export default function SerialNumberTracking() {
             <select
               value={filterItem}
               onChange={(e) => setFilterItem(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
             >
               <option value="ALL">All Items</option>
               {uniqueItems.map((item) => (
@@ -571,7 +571,7 @@ export default function SerialNumberTracking() {
           ) : (
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   {[
                     "Serial No",
                     "Item",
@@ -642,7 +642,7 @@ export default function SerialNumberTracking() {
               value={searchSerial}
               onChange={(e) => setSearchSerial(e.target.value)}
               placeholder="Enter exact serial number..."
-              className="h-10 px-3 text-[14px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full font-mono"
+              className="h-10 px-3 text-[14px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full font-mono"
             />
           </div>
 
@@ -660,7 +660,7 @@ export default function SerialNumberTracking() {
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h2 className="text-[15px] font-semibold text-gray-800 font-mono">
+                  <h2 className="text-[15px] font-semibold text-gray-700 font-mono">
                     {searchResult.serialNo}
                   </h2>
                   <p className="text-[12px] text-gray-500 mt-1">{searchResult.itemName}</p>
@@ -736,7 +736,7 @@ export default function SerialNumberTracking() {
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-[14px] font-semibold text-gray-800">
+              <h2 className="text-[14px] font-semibold text-gray-700">
                 {editMode ? "Edit Serial" : "Register Serial Number"}
               </h2>
               <button
@@ -756,7 +756,7 @@ export default function SerialNumberTracking() {
                 <input
                   value={form.serialNo}
                   onChange={(e) => updateForm("serialNo", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full font-mono"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full font-mono"
                 />
                 {errors.serialNo && (
                   <p className="text-[11px] text-red-600 mt-1">{errors.serialNo}</p>
@@ -770,7 +770,7 @@ export default function SerialNumberTracking() {
                 <input
                   value={form.itemName}
                   onChange={(e) => updateForm("itemName", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                 />
                 {errors.itemName && (
                   <p className="text-[11px] text-red-600 mt-1">{errors.itemName}</p>
@@ -798,7 +798,7 @@ export default function SerialNumberTracking() {
                         type === "number" ? Number(e.target.value) : e.target.value,
                       )
                     }
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                   />
                 </div>
               ))}
@@ -808,7 +808,7 @@ export default function SerialNumberTracking() {
                 <select
                   value={form.status}
                   onChange={(e) => updateForm("status", e.target.value as SerialRecord["status"])}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                 >
                   <option value="in_stock">In Stock</option>
                   <option value="sold">Sold</option>
@@ -828,7 +828,7 @@ export default function SerialNumberTracking() {
                       type="date"
                       value={form.saleDate}
                       onChange={(e) => updateForm("saleDate", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                     />
                     {errors.saleDate && (
                       <p className="text-[11px] text-red-600 mt-1">{errors.saleDate}</p>
@@ -842,7 +842,7 @@ export default function SerialNumberTracking() {
                     <input
                       value={form.saleInvoiceNo}
                       onChange={(e) => updateForm("saleInvoiceNo", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                     />
                   </div>
 
@@ -854,7 +854,7 @@ export default function SerialNumberTracking() {
                       type="number"
                       value={form.saleRate}
                       onChange={(e) => updateForm("saleRate", Number(e.target.value))}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                     />
                     {errors.saleRate && (
                       <p className="text-[11px] text-red-600 mt-1">{errors.saleRate}</p>
@@ -868,7 +868,7 @@ export default function SerialNumberTracking() {
                     <input
                       value={form.customerName}
                       onChange={(e) => updateForm("customerName", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-full"
                     />
                     {errors.customerName && (
                       <p className="text-[11px] text-red-600 mt-1">{errors.customerName}</p>
@@ -883,7 +883,7 @@ export default function SerialNumberTracking() {
                   value={form.notes}
                   onChange={(e) => updateForm("notes", e.target.value)}
                   rows={3}
-                  className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white"
+                  className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white"
                 />
               </div>
             </div>
@@ -892,7 +892,7 @@ export default function SerialNumberTracking() {
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg"
               >
                 Cancel
               </button>
@@ -912,7 +912,7 @@ export default function SerialNumberTracking() {
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-2xl shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 flex justify-between">
-              <h2 className="text-[14px] font-semibold text-gray-800">
+              <h2 className="text-[14px] font-semibold text-gray-700">
                 Serial Details: <span className="font-mono">{selectedSerial.serialNo}</span>
               </h2>
               <button onClick={() => setShowDetailModal(false)} className="text-gray-500">
@@ -923,7 +923,7 @@ export default function SerialNumberTracking() {
             <div className="p-4">
               <div className="flex justify-between mb-4">
                 <div>
-                  <p className="text-[15px] font-semibold text-gray-800">
+                  <p className="text-[15px] font-semibold text-gray-700">
                     {selectedSerial.itemName}
                   </p>
                   <p className="text-[12px] text-gray-500">
@@ -989,7 +989,7 @@ export default function SerialNumberTracking() {
             <div className="px-4 py-3 border-t flex justify-end gap-2">
               <button
                 onClick={() => window.print()}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md flex items-center gap-1"
+                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg flex items-center gap-1"
               >
                 <Printer className="h-3.5 w-3.5" />
                 Print Warranty Card

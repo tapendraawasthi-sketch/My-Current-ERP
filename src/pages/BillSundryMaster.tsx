@@ -2,12 +2,18 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import toast from "@/lib/appToast";
-import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
+import { Plus, Search, X, Save } from "lucide-react";
 import { BillSundryType, BillSundryNature } from "../lib/busyTypes";
 import { getDB } from "../lib/db";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 interface BillSundry {
   id: string;
@@ -98,8 +104,6 @@ const DEFAULT_BILL_SUNDRIES: Omit<BillSundry, "id">[] = [
   },
 ];
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -164,6 +168,89 @@ export default function BillSundryMaster() {
     [billSundries, searchTerm, matchBranch, branchFilter],
   );
 
+  const columns = useMemo<EnterpriseColumnDef<BillSundry>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Name",
+        cell: (item) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{item.name}</span>
+        ),
+      },
+      {
+        id: "type",
+        header: "Type",
+        cell: (item) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              item.type === BillSundryType.ADDITIVE
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)]"
+            }`}
+          >
+            {item.type === BillSundryType.ADDITIVE ? "Additive" : "Deductive"}
+          </span>
+        ),
+      },
+      {
+        id: "nature",
+        header: "Nature",
+        cell: (item) => (
+          <span className="capitalize text-[12px] text-[var(--ds-text-default)]">
+            {item.nature.replace(/_/g, " ")}
+          </span>
+        ),
+      },
+      {
+        id: "costSale",
+        header: "Cost (sale)",
+        align: "center",
+        cell: (item) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {item.affectCostInSale ? "✓" : "—"}
+          </span>
+        ),
+      },
+      {
+        id: "costPurchase",
+        header: "Cost (purchase)",
+        align: "center",
+        cell: (item) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {item.affectCostInPurchase ? "✓" : "—"}
+          </span>
+        ),
+      },
+      {
+        id: "gst",
+        header: "GST",
+        align: "center",
+        cell: (item) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {item.gstApplicable ? "✓" : "—"}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (item) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              item.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)]"
+            }`}
+          >
+            {item.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const resetForm = () => {
     setShowForm(false);
     setEditItem(null);
@@ -215,14 +302,20 @@ export default function BillSundryMaster() {
     }
   };
 
-  const handleDelete = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this bill sundry?")) return;
+  const handleDelete = async (item: BillSundry) => {
+    const snapshot = { ...item };
     try {
       const db = getDB();
-      if (db.billSundries) await db.billSundries.delete(id);
-      setBillSundries((prev) => prev.filter((b) => b.id !== id));
-      toast.success("Deleted");
+      if (db.billSundries) await db.billSundries.delete(item.id);
+      setBillSundries((prev) => prev.filter((b) => b.id !== item.id));
+      toast.undo(`"${item.name}" deleted`, async () => {
+        try {
+          if (db.billSundries) await db.billSundries.put(snapshot);
+          setBillSundries((prev) => [...prev, snapshot]);
+        } catch {
+          toast.error("Failed to restore bill sundry");
+        }
+      });
     } catch {
       toast.error("Failed to delete");
     }
@@ -232,41 +325,51 @@ export default function BillSundryMaster() {
   const setF = (k: keyof typeof form, v: any) => setForm((prev) => ({ ...prev, [k]: v }));
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Bill Sundry Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Freight, discount, round off, packing and other charges
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Bill Sundry Master"
+            description="Freight, discount, round off, packing and other charges"
+            meta={
+              <PageMeta>
+                {filtered.length} of {billSundries.length} bill sundries
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={openAdd}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 Add bill sundry
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+            secondaryActions={[
+              ...(branchOptions.length > 0
+                ? [
+                    <select
+                      key="branch"
+                      value={branchFilter}
+                      onChange={(e) => setBranchFilter(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      aria-label="Branch"
+                    >
+                      <option value="all">All branches</option>
+                      {branchOptions.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name || b.code || b.id}
+                        </option>
+                      ))}
+                    </select>,
+                  ]
+                : []),
+            ]}
+          />
 
-          <div className="relative mb-3 max-w-xs">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <div className="relative max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
             <input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -276,112 +379,44 @@ export default function BillSundryMaster() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {loading ? (
-            <div className="bg-white border border-gray-200 rounded-md px-4 py-8 text-center text-[12px] text-gray-500">
-              Loading bill sundries...
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={
-                  searchTerm ? "No bill sundries match your search" : "No bill sundries found"
-                }
-                hint={
-                  searchTerm
-                    ? "Try a different search term."
-                    : 'Click "Add bill sundry" to create a charge type.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Name</th>
-                    <th className={th}>Type</th>
-                    <th className={th}>Nature</th>
-                    <th className={`${th} text-center`}>Cost (sale)</th>
-                    <th className={`${th} text-center`}>Cost (purchase)</th>
-                    <th className={`${th} text-center`}>GST</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => openEdit(item)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{item.name}</td>
-                      <td className={td}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            item.type === BillSundryType.ADDITIVE
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {item.type === BillSundryType.ADDITIVE ? "Additive" : "Deductive"}
-                        </span>
-                      </td>
-                      <td className={`${td} capitalize`}>{item.nature.replace(/_/g, " ")}</td>
-                      <td className={`${td} text-center`}>{item.affectCostInSale ? "✓" : "—"}</td>
-                      <td className={`${td} text-center`}>
-                        {item.affectCostInPurchase ? "✓" : "—"}
-                      </td>
-                      <td className={`${td} text-center`}>{item.gstApplicable ? "✓" : "—"}</td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            item.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {item.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEdit(item);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(item.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} bill sundr{filtered.length === 1 ? "y" : "ies"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(item) => item.id}
+            loading={loading}
+            emptyTitle={searchTerm ? "No bill sundries match your search" : "No bill sundries found"}
+            emptyDescription={
+              searchTerm
+                ? "Try a different search term."
+                : 'Click "Add bill sundry" to create a charge type.'
+            }
+            emptyAction={
+              !searchTerm ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add bill sundry
+                </Button>
+              ) : undefined
+            }
+            onRowClick={openEdit}
+            rowActions={(item) => [
+              { label: "Edit", onSelect: () => openEdit(item) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(item) },
+            ]}
+            caption="Bill sundries"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[400px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editItem ? "Edit bill sundry" : "Add bill sundry"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -460,7 +495,7 @@ export default function BillSundryMaster() {
                   ))}
               </select>
             </div>
-            <div className="grid grid-cols-1 gap-2 border border-gray-200 rounded-md p-3 bg-gray-50">
+            <div className="grid grid-cols-1 gap-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
               {[
                 { key: "affectCostInSale", label: "Affect cost in sale" },
                 { key: "affectCostInPurchase", label: "Affect cost in purchase" },

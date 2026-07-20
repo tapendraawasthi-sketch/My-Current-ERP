@@ -47,10 +47,10 @@ const btn2 =
 const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
-const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-700";
 const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-200";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-200 align-top";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -328,7 +328,7 @@ const Modal = ({ open, title, children, onClose }: any) => {
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-          <h3 className="text-[15px] font-semibold text-gray-800">{title}</h3>
+          <h3 className="text-[15px] font-semibold text-gray-700">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-100 text-gray-500">
             <X className="h-4 w-4" />
           </button>
@@ -1006,7 +1006,7 @@ export default function BackupRestore() {
     <div className={card}>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+          <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
             <Database className="h-4 w-4 text-gray-500" />
             Database Tables
           </h3>
@@ -1045,7 +1045,7 @@ export default function BackupRestore() {
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
         <div className="overflow-auto max-h-[48vh]">
           <table className="w-full min-w-[800px] text-left border-collapse whitespace-nowrap">
-            <thead className="sticky top-0 z-10 bg-[#f5f6fa] shadow-sm">
+            <thead className="sticky top-0 z-10 bg-gray-50 shadow-sm">
               <tr>
                 <th className={`${th} w-10 text-center`}>
                   <input
@@ -1076,7 +1076,7 @@ export default function BackupRestore() {
                   </td>
 
                   <td className={td}>
-                    <div className="font-medium text-gray-800">{t.name}</div>
+                    <div className="font-medium text-gray-700">{t.name}</div>
                   </td>
 
                   <td className={`${td} text-right font-medium`}>{t.count}</td>
@@ -1123,7 +1123,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <HardDriveDownload className="h-4 w-4 text-gray-500" />
               Create Backup
             </h3>
@@ -1155,7 +1155,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex flex-wrap justify-between items-center gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <HardDriveUpload className="h-4 w-4 text-gray-500" />
               Restore Database
             </h3>
@@ -1209,7 +1209,7 @@ export default function BackupRestore() {
         <div className={card}>
           <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
             <div>
-              <h3 className="text-[14px] font-semibold text-gray-800">Loaded Backup Preview</h3>
+              <h3 className="text-[14px] font-semibold text-gray-700">Loaded Backup Preview</h3>
               <p className="text-[11px] text-gray-500 mt-0.5">
                 {previewBackup.companyName || "Company"} • {previewBackup.createdAt}
               </p>
@@ -1222,27 +1222,27 @@ export default function BackupRestore() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Backup ID
               </p>
-              <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.id}</p>
+              <p className="text-[12px] font-medium text-gray-700 truncate">{previewBackup.id}</p>
             </div>
 
-            <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Tables
               </p>
-              <p className="text-[14px] font-semibold text-gray-800">
+              <p className="text-[14px] font-semibold text-gray-700">
                 {Object.keys(previewBackup.tables || {}).length}
               </p>
             </div>
 
-            <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Rows
               </p>
-              <p className="text-[14px] font-semibold text-gray-800">
+              <p className="text-[14px] font-semibold text-gray-700">
                 {Object.values(previewBackup.tables || {}).reduce(
                   (sum: number, arr: any) => sum + (arr?.length || 0),
                   0,
@@ -1250,11 +1250,11 @@ export default function BackupRestore() {
               </p>
             </div>
 
-            <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Issues
               </p>
-              <p className="text-[14px] font-semibold text-gray-800">{restoreIssues.length}</p>
+              <p className="text-[14px] font-semibold text-gray-700">{restoreIssues.length}</p>
             </div>
           </div>
         </div>
@@ -1267,7 +1267,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <FileDown className="h-4 w-4 text-gray-500" />
               Export Tools
             </h3>
@@ -1299,7 +1299,7 @@ export default function BackupRestore() {
       <div className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <History className="h-4 w-4 text-gray-500" />
               Local Backup History
             </h3>
@@ -1331,7 +1331,7 @@ export default function BackupRestore() {
             {backupHistory.map((h) => (
               <tr key={h.id} className="hover:bg-gray-50/50">
                 <td className={td}>
-                  <div className="font-medium text-gray-800">
+                  <div className="font-medium text-gray-700">
                     {String(h.createdAt).slice(0, 10)}
                   </div>
                   <div className="text-[10px] text-gray-400">
@@ -1365,20 +1365,20 @@ export default function BackupRestore() {
   const renderSettings = () => (
     <div className="space-y-4">
       <div className={card}>
-        <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2 mb-4">
+        <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2 mb-4">
           <Settings className="h-4 w-4 text-gray-500" />
           Backup Preferences
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="flex items-center gap-2 border border-gray-200 rounded-md p-3 hover:bg-gray-50 cursor-pointer">
+          <label className="flex items-center gap-2 border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
             <input
               type="checkbox"
               checked={settings.autoReminder}
               onChange={(e) => setSettings((s) => ({ ...s, autoReminder: e.target.checked }))}
               className="h-4 w-4"
             />
-            <span className="text-[12px] font-medium text-gray-800">Show backup reminder</span>
+            <span className="text-[12px] font-medium text-gray-700">Show backup reminder</span>
           </label>
 
           <div>
@@ -1395,26 +1395,26 @@ export default function BackupRestore() {
             />
           </div>
 
-          <label className="flex items-center gap-2 border border-gray-200 rounded-md p-3 hover:bg-gray-50 cursor-pointer">
+          <label className="flex items-center gap-2 border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
             <input
               type="checkbox"
               checked={settings.includeAuditLogs}
               onChange={(e) => setSettings((s) => ({ ...s, includeAuditLogs: e.target.checked }))}
               className="h-4 w-4"
             />
-            <span className="text-[12px] font-medium text-gray-800">
+            <span className="text-[12px] font-medium text-gray-700">
               Include audit logs by default
             </span>
           </label>
 
-          <label className="flex items-center gap-2 border border-gray-200 rounded-md p-3 hover:bg-gray-50 cursor-pointer">
+          <label className="flex items-center gap-2 border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
             <input
               type="checkbox"
               checked={settings.encryptLabel}
               onChange={(e) => setSettings((s) => ({ ...s, encryptLabel: e.target.checked }))}
               className="h-4 w-4"
             />
-            <span className="text-[12px] font-medium text-gray-800">
+            <span className="text-[12px] font-medium text-gray-700">
               Mark backups as confidential
             </span>
           </label>
@@ -1468,10 +1468,10 @@ export default function BackupRestore() {
   }, [previewBackup]);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Archive className="h-4 w-4 text-[var(--ds-action-primary)]" /> Backup & restore
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1483,7 +1483,7 @@ export default function BackupRestore() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch filter"
             >
               <option value="all">All branches</option>
@@ -1547,36 +1547,36 @@ export default function BackupRestore() {
         {previewBackup && (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   Backup ID
                 </p>
-                <p className="text-[12px] font-medium text-gray-800 truncate">{previewBackup.id}</p>
+                <p className="text-[12px] font-medium text-gray-700 truncate">{previewBackup.id}</p>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   Created At
                 </p>
-                <p className="text-[12px] font-medium text-gray-800">
+                <p className="text-[12px] font-medium text-gray-700">
                   {String(previewBackup.createdAt).slice(0, 19)}
                 </p>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   Company
                 </p>
-                <p className="text-[12px] font-medium text-gray-800 truncate">
+                <p className="text-[12px] font-medium text-gray-700 truncate">
                   {previewBackup.companyName || "-"}
                 </p>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   Tables
                 </p>
-                <p className="text-[12px] font-medium text-gray-800">
+                <p className="text-[12px] font-medium text-gray-700">
                   {backupTablesPreview.length}
                 </p>
               </div>
@@ -1599,7 +1599,7 @@ export default function BackupRestore() {
             <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
               <div className="overflow-auto max-h-64">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
-                  <thead className="sticky top-0 bg-[#f5f6fa] shadow-sm">
+                  <thead className="sticky top-0 bg-gray-50 shadow-sm">
                     <tr>
                       <th className={th}>Table</th>
                       <th className={`${th} text-right`}>Rows</th>
@@ -1640,7 +1640,7 @@ export default function BackupRestore() {
 
                 <div className="overflow-auto max-h-52">
                   <table className="w-full text-left border-collapse whitespace-nowrap">
-                    <thead className="bg-[#f5f6fa]">
+                    <thead className="bg-gray-50">
                       <tr>
                         <th className={th}>Severity</th>
                         <th className={th}>Table</th>

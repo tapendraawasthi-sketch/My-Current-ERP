@@ -23,11 +23,11 @@ const ReasoningTrace: React.FC<ReasoningTraceProps> = ({ steps, confidence }) =>
   if (!steps.length) return null;
 
   return (
-    <div className="mx-3 mb-2 rounded-md border border-gray-200 bg-white overflow-hidden">
+    <div className="mb-2 rounded-lg border border-gray-100 bg-white overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-2.5 py-1.5 bg-[#f5f6fa] hover:bg-gray-100 text-left"
+        className="w-full flex items-center gap-2 px-3 py-2 bg-gray-50/80 hover:bg-gray-100 text-left transition-colors"
       >
         {open ? (
           <ChevronDown className="h-3 w-3 text-gray-500 flex-shrink-0" />
@@ -35,20 +35,20 @@ const ReasoningTrace: React.FC<ReasoningTraceProps> = ({ steps, confidence }) =>
           <ChevronRight className="h-3 w-3 text-gray-500 flex-shrink-0" />
         )}
         <Brain className="h-3 w-3 text-[var(--ds-action-primary)] flex-shrink-0" />
-        <span className="text-[10px] font-medium text-gray-600">
+        <span className="text-[10px] font-medium text-gray-500">
           Reasoning ({steps.length} steps
           {confidence !== undefined ? ` · ${Math.round(confidence * 100)}%` : ""})
         </span>
       </button>
 
       {open && (
-        <div className="px-2.5 py-2 space-y-1.5 max-h-48 overflow-y-auto">
+        <div className="px-3 py-2.5 space-y-2 max-h-48 overflow-y-auto">
           {steps.map((s) => (
             <div key={s.step} className="text-[10px]">
-              <p className={`font-semibold uppercase tracking-wide ${stepAccent(s.name)}`}>
+              <p className={`text-[9px] font-bold uppercase tracking-wider ${stepAccent(s.name)}`}>
                 {s.step}. {s.name}
               </p>
-              <p className="text-gray-700 mt-0.5 leading-snug">{s.detail}</p>
+              <p className="text-gray-500 mt-0.5 leading-snug">{s.detail}</p>
             </div>
           ))}
         </div>

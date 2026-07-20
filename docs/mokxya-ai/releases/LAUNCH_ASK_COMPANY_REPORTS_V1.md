@@ -82,9 +82,9 @@ Owner name + date required in `artifacts/prod-ready-pr-c2/OWNER_SIGNOFF.md` befo
 
 ## 9. Arm checklist (PR-C2-ARM)
 
-- [ ] TICKET-PR-B1-001 PASS  
-- [ ] TICKET-PR-B1-002 PASS  
-- [ ] TICKET-PR-B5-001 PASS (or accepted residual with owner note)  
+- [x] TICKET-PR-B1-001 PASS  
+- [x] TICKET-PR-B1-002 PASS (owner residual — next12 staging; browser/sync gaps accepted)  
+- [x] TICKET-PR-B5-001 PASS (owner `b5pass` 2026-07-20)  
 - [ ] Owner sign-off filed for Ask reports  
 - [ ] Staging golden path green within 48h of flip  
 - [ ] Zero-mutation proof still green  

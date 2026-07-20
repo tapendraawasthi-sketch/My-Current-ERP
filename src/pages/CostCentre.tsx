@@ -199,7 +199,7 @@ export default function CostCentre() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Cost / Profit Centre Accounting</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Cost / Profit Centre Accounting</h1>
           <p className="text-sm text-gray-500 mt-1">
             Multi-dimensional cost allocation, profitability by department, and budget tracking
           </p>
@@ -209,7 +209,7 @@ export default function CostCentre() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -288,7 +288,7 @@ export default function CostCentre() {
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 activeTab === t.id
                   ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-600 hover:text-gray-800"
+                  : "text-gray-600 hover:text-gray-700"
               }`}
             >
               <t.icon className="w-4 h-4" /> {t.label}
@@ -343,7 +343,7 @@ export default function CostCentre() {
                       </span>
                       <span className="font-mono text-xs text-gray-400">{cc.code}</span>
                     </div>
-                    <div className="font-semibold text-gray-800 mt-1">{cc.name}</div>
+                    <div className="font-semibold text-gray-700 mt-1">{cc.name}</div>
                     {parent && <div className="text-xs text-gray-400">{parent.name}</div>}
                   </div>
                   <div className="flex gap-1">
@@ -459,7 +459,7 @@ export default function CostCentre() {
                 return (
                   <tr key={cc.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-mono text-xs">{cc.code}</td>
-                    <td className="px-4 py-3 font-medium text-gray-800">{cc.name}</td>
+                    <td className="px-4 py-3 font-medium text-gray-700">{cc.name}</td>
                     <td className="px-4 py-3">
                       <span
                         className={`px-2 py-0.5 rounded-full text-xs bg-${color}-100 text-${color}-700`}
@@ -647,7 +647,7 @@ export default function CostCentre() {
           <table className="w-full text-xs whitespace-nowrap">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-gray-500 sticky left-0 bg-gray-50">
+                <th className="px-4 py-3 text-left font-semibold text-gray-400 sticky left-0 bg-gray-50">
                   Account
                 </th>
                 {matrixData.ccIds.map((ccId) => {
@@ -661,7 +661,7 @@ export default function CostCentre() {
                     </th>
                   );
                 })}
-                <th className="px-4 py-3 text-right font-semibold text-gray-500">Total</th>
+                <th className="px-4 py-3 text-right font-semibold text-gray-400">Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -673,7 +673,7 @@ export default function CostCentre() {
                 );
                 return (
                   <tr key={accId} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white">
+                    <td className="px-4 py-2 font-medium text-gray-700 sticky left-0 bg-white">
                       {acc?.name || accId}
                     </td>
                     {matrixData.ccIds.map((ccId) => {
@@ -684,7 +684,7 @@ export default function CostCentre() {
                         </td>
                       );
                     })}
-                    <td className="px-4 py-2 text-right font-semibold text-gray-800">
+                    <td className="px-4 py-2 text-right font-semibold text-gray-700">
                       {fmt(rowTotal)}
                     </td>
                   </tr>

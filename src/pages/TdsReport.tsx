@@ -221,7 +221,7 @@ export default function TdsReport() {
           </button>
         </div>
 
-      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
+      <div className="no-print bg-white border border-gray-200 rounded-lg p-3 mb-4">
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className={labelCls}>Fiscal year (BS)</label>
@@ -284,15 +284,15 @@ export default function TdsReport() {
 
       {filteredEntries.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total gross
             </p>
-            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+            <p className="text-[14px] font-semibold text-gray-700 mt-0.5 font-mono">
               Rs. {formatNumber(totalGross)}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total TDS deducted
             </p>
@@ -300,7 +300,7 @@ export default function TdsReport() {
               Rs. {formatNumber(totalTds)}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total net paid
             </p>
@@ -313,7 +313,7 @@ export default function TdsReport() {
 
       <div className="space-y-4">
         {Object.keys(groupedBySection).length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-md">
+          <div className="bg-white border border-gray-200 rounded-lg">
             <ReportEmptyState
               message="No TDS entries found"
               hint="Adjust fiscal year, section, or status filters."
@@ -327,9 +327,9 @@ export default function TdsReport() {
             const secNet = entries.reduce((acc, e) => acc + e.netAmount, 0);
 
             return (
-              <div key={sec} className="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <div key={sec} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex justify-between items-center">
-                  <h3 className="text-[12px] font-semibold text-gray-800">Section {sec}</h3>
+                  <h3 className="text-[12px] font-semibold text-gray-700">Section {sec}</h3>
                   <span className="text-[12px] text-gray-500">
                     {entries.length} entr{entries.length === 1 ? "y" : "ies"}
                   </span>
@@ -338,37 +338,37 @@ export default function TdsReport() {
                   <table className="w-full min-w-[900px] border-collapse">
                     <thead>
                       <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Date (BS)
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Party
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           PAN
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Payment nature
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Gross amount
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           TDS rate
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           TDS amount
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Net paid
                         </th>
-                        <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Status
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                           Challan no.
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                           Actions
                         </th>
                       </tr>
@@ -380,7 +380,7 @@ export default function TdsReport() {
                           className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
                         >
                           <td className="px-3 py-2.5 text-[12px] text-gray-700">{entry.dateBS}</td>
-                          <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
+                          <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">
                             {entry.partyName}
                           </td>
                           <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">
@@ -416,7 +416,7 @@ export default function TdsReport() {
                               <button
                                 type="button"
                                 onClick={() => openChallanModal(entry.id)}
-                                className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
                               >
                                 Generate challan
                               </button>
@@ -427,10 +427,10 @@ export default function TdsReport() {
                     </tbody>
                     <tfoot>
                       <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
-                        <td colSpan={4} className="px-3 py-2.5 text-right text-gray-800">
+                        <td colSpan={4} className="px-3 py-2.5 text-right text-gray-700">
                           Section {sec} total
                         </td>
-                        <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                        <td className="px-3 py-2.5 text-right font-mono text-gray-700">
                           Rs.{formatNumber(secGross)}
                         </td>
                         <td />
@@ -461,9 +461,9 @@ export default function TdsReport() {
             if (e.target === e.currentTarget) setShowChallanModal(false);
           }}
         >
-          <div className="w-full max-w-md bg-white rounded-md shadow-xl overflow-hidden">
+          <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
-              <h2 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
+              <h2 className="text-[13px] font-semibold text-gray-700 flex items-center gap-2">
                 <FileCheck className="h-4 w-4 text-[var(--ds-action-primary)]" />
                 Generate challan
               </h2>

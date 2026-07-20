@@ -10,7 +10,6 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { Input, Select, NepaliDatePicker, ConfirmDialog } from "../components/ui";
 import {
-  ArrowRightLeft,
   ArrowLeft,
   ArrowRight,
   Save,
@@ -19,6 +18,7 @@ import {
   Banknote,
   Landmark,
 } from "lucide-react";
+import { StickyActionBar, Button, SuccessAvatar } from "@/design-system";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { generateVoucherNo } from "../lib/accounting";
@@ -28,7 +28,6 @@ import toast from "@/lib/appToast";
 import { postContraTransaction } from "@/domains/settlement/postContraTransaction";
 import { generateId } from "@/lib/db";
 import type { ContraType } from "@/domains/settlement/types";
-import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
@@ -36,7 +35,7 @@ const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5 disabled:opacity-60";
+  "h-8 px-3 bg-white border border-[var(--ds-border-default)] text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5 disabled:opacity-60";
 const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
@@ -81,7 +80,6 @@ const KindBadge = ({ kind }: { kind: "Cash" | "Bank" | "" }) => {
 const ContraVoucher: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, currentUser, addVoucher } =
     useStore();
-  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   const symbol = companySettings?.currencySymbol || "Rs.";
 
@@ -306,11 +304,13 @@ const ContraVoucher: React.FC = () => {
     const amt = round2(amount);
     return (
       <div className="flex h-full min-h-0 flex-col items-center justify-center gap-5 py-16 bg-[var(--ds-surface-muted)] text-center px-4">
-        <div className="h-14 w-14 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
-          <CheckCircle2 className="h-7 w-7 text-green-600" />
-        </div>
+        <SuccessAvatar
+          name={fromAcct?.name || toAcct?.name || "Contra"}
+          seed={fromAcct?.id || toAcct?.id || savedVoucher.id}
+          size="xl"
+        />
         <div>
-          <h2 className="text-[15px] font-semibold text-gray-800">Contra voucher saved</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">Contra voucher saved</h2>
           <p className="text-[12px] text-gray-600 mt-1">
             {savedVoucher.voucherNo} · {symbol} {formatNumber(amt)} transferred
           </p>
@@ -353,58 +353,34 @@ const ContraVoucher: React.FC = () => {
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--ds-surface-muted)] overflow-y-auto">
       <div className="p-4 space-y-4 max-w-5xl mx-auto w-full">
+        {/* Title owned by TransactionRouteShell — doc toolbar only */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="h-8 w-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-              title="Back"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </button>
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-                <ArrowRightLeft className="h-4 w-4 text-[var(--ds-action-primary)]" />
-                Transfer between accounts
-              </h1>
-              <p className="text-[12px] text-gray-500 mt-0.5">
-                Transfer between cash and bank accounts only
-              </p>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={handleBack}
+            className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+            title="Back"
+            aria-label="Back"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
           <div className="flex items-center gap-2">
-            {branchOptions.length > 0 && (
-              <select
-                value={branchFilter}
-                onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                aria-label="Branch"
-              >
-                <option value="all">All branches</option>
-                {branchOptions.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name || b.code || b.id}
-                  </option>
-                ))}
-              </select>
-            )}
-            <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-blue-100 text-blue-700">
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
               Contra
             </span>
-            <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-gray-100 text-gray-700">
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
               New
             </span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-medium text-gray-600 w-28 shrink-0">
                 Voucher no
               </span>
-              <span className="inline-flex items-center px-2.5 h-8 rounded-md bg-gray-50 border border-gray-200 font-mono text-[12px] font-medium text-gray-800">
+              <span className="inline-flex items-center px-2.5 h-8 rounded-lg bg-gray-50 border border-gray-200 font-mono text-[12px] font-medium text-gray-700">
                 {voucherNoPreview}
               </span>
             </div>
@@ -424,9 +400,9 @@ const ContraVoucher: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-stretch">
-          <div className="bg-white border border-gray-200 rounded-md p-4 border-l-[3px] border-l-red-400">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 border-l-[3px] border-l-red-400">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <h3 className="text-[11px] font-medium text-gray-500">
                 From (credit)
               </h3>
               <KindBadge kind={fromKind} />
@@ -457,17 +433,17 @@ const ContraVoucher: React.FC = () => {
                 error={insufficient ? "Insufficient balance" : undefined}
               />
               {fromAcct && (
-                <div className="rounded-md bg-gray-50 border border-gray-200 p-2.5 text-[12px] flex flex-col gap-1">
+                <div className="rounded-lg bg-gray-50 border border-gray-200 p-2.5 text-[12px] flex flex-col gap-1">
                   <div className="flex justify-between text-gray-600">
                     <span>Available now</span>
-                    <span className="font-mono text-gray-800">
+                    <span className="font-mono text-gray-700">
                       {symbol} {formatNumber(fromAvailable)}
                     </span>
                   </div>
                   <div className="flex justify-between border-t border-gray-200 pt-1">
                     <span className="text-gray-600">After transfer</span>
                     <span
-                      className={`font-mono ${fromAfter < 0 ? "text-red-600" : "text-gray-800"}`}
+                      className={`font-mono ${fromAfter < 0 ? "text-red-600" : "text-gray-700"}`}
                     >
                       {symbol} {formatNumber(fromAfter)}
                     </span>
@@ -483,9 +459,9 @@ const ContraVoucher: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md p-4 border-l-[3px] border-l-green-500">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 border-l-[3px] border-l-green-500">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <h3 className="text-[11px] font-medium text-gray-500">
                 To (debit)
               </h3>
               <KindBadge kind={toKind} />
@@ -514,10 +490,10 @@ const ContraVoucher: React.FC = () => {
                 hint="Auto-matches FROM amount"
               />
               {toAcct && (
-                <div className="rounded-md bg-gray-50 border border-gray-200 p-2.5 text-[12px] flex flex-col gap-1">
+                <div className="rounded-lg bg-gray-50 border border-gray-200 p-2.5 text-[12px] flex flex-col gap-1">
                   <div className="flex justify-between text-gray-600">
                     <span>Available now</span>
-                    <span className="font-mono text-gray-800">
+                    <span className="font-mono text-gray-700">
                       {symbol} {formatNumber(toAvailable)}
                     </span>
                   </div>
@@ -533,7 +509,7 @@ const ContraVoucher: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
           <Input
             label="Narration"
             value={narration}
@@ -546,16 +522,16 @@ const ContraVoucher: React.FC = () => {
         </div>
 
         {fromAcct && toAcct && Number(amount) > 0 && (
-          <div className="bg-white border border-gray-200 rounded-md p-4">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <h3 className="text-[11px] font-medium text-gray-500">
                 Journal preview
               </h3>
               <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-green-100 text-green-700 border border-green-200">
                 Balanced
               </span>
             </div>
-            <div className="rounded-md border border-gray-200 overflow-hidden">
+            <div className="rounded-lg border border-gray-200 overflow-hidden">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
@@ -566,7 +542,7 @@ const ContraVoucher: React.FC = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className={`${td} font-medium text-gray-800`}>
+                    <td className={`${td} font-medium text-gray-700`}>
                       {toAcct.name} <span className="text-[12px] text-gray-500">Dr</span>
                     </td>
                     <td className={`${td} text-right font-mono text-green-700 font-medium`}>
@@ -589,33 +565,41 @@ const ContraVoucher: React.FC = () => {
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t border-gray-200 pt-4 pb-2">
-          <p className="text-[12px] text-gray-500">Esc to cancel · F12 to post</p>
-          <div className="flex items-center gap-2">
-            <button type="button" className={btnOutline} onClick={handleBack}>
+      </div>
+
+      <StickyActionBar
+        unsaved={dirty}
+        secondary={
+          <>
+            <span className="mr-auto text-[12px] text-gray-500 self-center">
+              Esc to cancel · F12 to post
+            </span>
+            <Button variant="secondary" size="small" onClick={handleBack}>
               Cancel
-            </button>
-            <button
-              type="button"
-              className={btnOutline}
+            </Button>
+            <Button
+              variant="secondary"
+              size="small"
               disabled={saving}
               onClick={() => handleSave(VoucherStatus.DRAFT)}
+              startIcon={<Save className="h-3.5 w-3.5" />}
             >
-              <Save className="h-3.5 w-3.5" />
               Save draft
-            </button>
-            <button
-              type="button"
-              className={btnPrimary}
-              disabled={saving}
-              onClick={() => handleSave(VoucherStatus.POSTED)}
-            >
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              Post contra
-            </button>
-          </div>
-        </div>
-      </div>
+            </Button>
+          </>
+        }
+        primary={
+          <Button
+            variant="primary"
+            size="small"
+            disabled={saving}
+            onClick={() => handleSave(VoucherStatus.POSTED)}
+            startIcon={<CheckCircle2 className="h-3.5 w-3.5" />}
+          >
+            Post contra
+          </Button>
+        }
+      />
 
       <ConfirmDialog
         isOpen={confirmCancel}

@@ -2,10 +2,9 @@
 
 ## TICKET-PR-B3-001 — Staging conflict → reconfirm exercise
 
-- **Status:** OPEN
-- **Blocks:** PR-C staging hard-proof completeness (with PR-B1 tickets)
-- **Does not block:** PR-B4…PR-B6 residual engineering
-- **Clear when:** Operator completes checklist in `CONFLICT_RECONFIRM_NARRATIVE.md` and `RUN_STATUS.json` `staging_conflict_attested=true`
+- **Status:** PASS (owner residual 2026-07-20 — chat: `approved b3`)
+- **Evidence:** `artifacts/prod-ready-pr-c1-arm/OWNER_RESIDUAL_ACCEPTANCE_B3_001.md`; `RUN_STATUS.json` `staging_conflict_attested=true` (OWNER_RESIDUAL)
+- **Clear when:** Operator checklist **or** owner residual. **Met via residual.**
 
 ## Related open (from PR-B1)
 

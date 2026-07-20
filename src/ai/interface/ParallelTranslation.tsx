@@ -26,7 +26,7 @@ const ParallelTranslationView: React.FC<ParallelTranslationViewProps> = ({
     (l) => l !== primaryLanguage,
   );
 
-  const borderColor = inverted ? "border-white/20" : "border-gray-200";
+  const borderColor = inverted ? "border-white/20" : "border-gray-100";
   const labelColor = inverted ? "text-white/60" : "text-gray-400";
   const textColor = inverted ? "text-white/80" : "text-gray-600";
 
@@ -50,9 +50,9 @@ const ParallelTranslationView: React.FC<ParallelTranslationViewProps> = ({
   }
 
   return (
-    <div className={`mt-2 rounded-md border ${borderColor} overflow-hidden`}>
-      <div className={`px-2 py-1 ${inverted ? "bg-white/10" : "bg-[#f5f6fa]"} border-b ${borderColor}`}>
-        <span className={`text-[9px] font-semibold uppercase tracking-wide ${labelColor}`}>
+    <div className={`mt-2 rounded-lg border ${borderColor} overflow-hidden`}>
+      <div className={`px-2 py-1 ${inverted ? "bg-white/10" : "bg-gray-50"} border-b ${borderColor}`}>
+        <span className={`text-[8px] font-bold uppercase tracking-widest ${labelColor}`}>
           Parallel translation
         </span>
       </div>
@@ -61,9 +61,9 @@ const ParallelTranslationView: React.FC<ParallelTranslationViewProps> = ({
           const text = parallel[lang];
           if (!text) return null;
           return (
-            <div key={lang} className="px-2 py-1.5 flex gap-2">
+            <div key={lang} className="px-2.5 py-1.5 flex gap-2">
               <span
-                className={`flex-shrink-0 w-10 text-[9px] font-semibold uppercase ${labelColor} pt-0.5`}
+                className={`flex-shrink-0 w-10 text-[8px] font-bold uppercase ${labelColor} pt-0.5`}
               >
                 {LANG_LABELS[lang]}
               </span>

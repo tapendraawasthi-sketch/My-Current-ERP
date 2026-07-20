@@ -189,7 +189,7 @@ const ReceiptsAndPayments: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -199,7 +199,7 @@ const ReceiptsAndPayments: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -207,7 +207,7 @@ const ReceiptsAndPayments: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -222,20 +222,20 @@ const ReceiptsAndPayments: React.FC = () => {
       }
     >
       {/* T-Format Receipts and Payments Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded-md bg-white mb-6">
+      <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white mb-6">
         <table className="w-full text-left whitespace-nowrap">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-1/2">
                 RECEIPTS
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
                 Amount (Rs.)
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-1/2">
                 PAYMENTS
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[120px]">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide text-right w-[120px]">
                 Amount (Rs.)
               </th>
             </tr>
@@ -273,16 +273,16 @@ const ReceiptsAndPayments: React.FC = () => {
 
             {/* Totals */}
             <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 border-r border-[#c7d2fe]">
                 TOTAL RECEIPTS
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-[#c7d2fe]">
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right border-r border-[#c7d2fe]">
                 {formatNumber(reportData.totalReceipts)}
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 border-r border-[#c7d2fe]">
                 TOTAL PAYMENTS
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right">
                 {formatNumber(reportData.totalPayments)}
               </td>
             </tr>
@@ -317,7 +317,7 @@ const ReceiptsAndPayments: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -327,7 +327,7 @@ const ReceiptsAndPayments: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -337,7 +337,7 @@ const ReceiptsAndPayments: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>

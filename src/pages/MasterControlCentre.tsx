@@ -236,7 +236,7 @@ const MasterControlCentre: React.FC = () => {
       <div
         key={index}
         onClick={() => setCurrentPage(card.page)}
-        className="bg-white border border-gray-200 rounded-md p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[var(--ds-action-primary)] hover:shadow-md transition-all group"
+        className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[var(--ds-action-primary)] hover:shadow-md transition-all group"
       >
         <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-[var(--ds-action-primary)] group-hover:bg-[var(--ds-action-primary)] group-hover:text-white transition-colors">
           <IconComponent size={24} />
@@ -280,25 +280,25 @@ const MasterControlCentre: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-4 lg:p-6">
         {/* Stats Summary Bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white border-l-4 border-blue-500 rounded-md p-4 shadow-sm">
+          <div className="bg-white border-l-4 border-blue-500 rounded-lg p-4 shadow-sm">
             <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
               Total ledgers
             </div>
             <div className="text-[20px] font-semibold mt-1 text-[var(--ds-text-default)]">{totalLedgers}</div>
           </div>
-          <div className="bg-white border-l-4 border-green-500 rounded-md p-4 shadow-sm">
+          <div className="bg-white border-l-4 border-green-500 rounded-lg p-4 shadow-sm">
             <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
               Stock items
             </div>
             <div className="text-[20px] font-semibold mt-1 text-[var(--ds-text-default)]">{(items || []).length}</div>
           </div>
-          <div className="bg-white border-l-4 border-amber-500 rounded-md p-4 shadow-sm">
+          <div className="bg-white border-l-4 border-amber-500 rounded-lg p-4 shadow-sm">
             <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
               Total employees
             </div>
             <div className="text-[20px] font-semibold mt-1 text-[var(--ds-text-default)]">{(employees || []).length}</div>
           </div>
-          <div className="bg-white border-l-4 border-[var(--ds-status-info)] rounded-md p-4 shadow-sm">
+          <div className="bg-white border-l-4 border-[var(--ds-status-info)] rounded-lg p-4 shadow-sm">
             <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
               Pay heads
             </div>

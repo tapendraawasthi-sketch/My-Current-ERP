@@ -51,7 +51,7 @@ function tabCls(active) {
     "inline-flex items-center border-b-2 px-1 py-2 text-[12px] font-medium transition-colors",
     active
       ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
-      : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800",
+      : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-700",
   ].join(" ");
 }
 
@@ -334,10 +334,10 @@ export default function BranchReports() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-gray-50 p-4 md:p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Branch-wise reports</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Branch-wise reports</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Sales, profitability, stock position, and consolidated branch performance
           </p>
@@ -350,7 +350,7 @@ export default function BranchReports() {
         </div>
       </div>
 
-      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
+      <div className="no-print mb-4 rounded-lg border border-gray-200 bg-white p-3">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           <div>
             <label className={labelCls}>Fiscal year</label>
@@ -424,25 +424,25 @@ export default function BranchReports() {
       </div>
 
       <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Branches in scope
               </p>
-              <p className="mt-2 text-[18px] font-semibold text-gray-800">{branchScopeCount}</p>
+              <p className="mt-2 text-[18px] font-semibold text-gray-700">{branchScopeCount}</p>
               <p className="mt-1 text-[11px] text-gray-500">Includes unallocated totals</p>
             </div>
             <Building2 className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Total sales
               </p>
-              <p className="mt-2 text-[18px] font-semibold text-gray-800">
+              <p className="mt-2 text-[18px] font-semibold text-gray-700">
                 {money(salesTotals.sales)}
               </p>
               <p className="mt-1 text-[11px] text-gray-500">Revenue in the selected period</p>
@@ -450,16 +450,16 @@ export default function BranchReports() {
             <BarChart2 className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Collections
           </p>
-          <p className="mt-2 text-[18px] font-semibold text-gray-800">
+          <p className="mt-2 text-[18px] font-semibold text-gray-700">
             {money(salesTotals.collection)}
           </p>
           <p className="mt-1 text-[11px] text-gray-500">Receipts tagged to branch activity</p>
         </div>
-        <div className="rounded-md border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Net profit
           </p>
@@ -490,7 +490,7 @@ export default function BranchReports() {
       {activeTab === "sales" && (
         <div className={sectionCls}>
           <div className="border-b border-gray-200 px-4 py-3">
-            <h2 className="text-[13px] font-semibold text-gray-800">Sales summary by branch</h2>
+            <h2 className="text-[13px] font-semibold text-gray-700">Sales summary by branch</h2>
             <p className="mt-0.5 text-[11px] text-gray-500">
               Compare sales, purchases, collections, and outstanding balances per branch.
             </p>
@@ -504,7 +504,7 @@ export default function BranchReports() {
           ) : (
             <>
               <div className="p-4">
-                <div className="h-72 rounded-md border border-gray-200 bg-[#fcfcfd] p-3">
+                <div className="h-72 rounded-lg border border-gray-200 bg-[#fcfcfd] p-3">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
                       <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
@@ -524,23 +524,23 @@ export default function BranchReports() {
               <div className="overflow-x-auto border-t border-gray-200">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Branch
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Total Sales
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Total Purchase
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Gross Profit
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Collection
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Outstanding
                       </th>
                     </tr>
@@ -552,7 +552,7 @@ export default function BranchReports() {
                         className="border-b border-gray-100 hover:border-l-[var(--ds-action-primary)] hover:bg-gray-50"
                       >
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                          <div className="font-medium text-gray-800">{row.branch.name}</div>
+                          <div className="font-medium text-gray-700">{row.branch.name}</div>
                           <div className="text-[11px] text-gray-500">{row.branch.code || "—"}</div>
                         </td>
                         <td className={amountCellCls}>{money(row.sales)}</td>
@@ -569,7 +569,7 @@ export default function BranchReports() {
                       </tr>
                     ))}
                     <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
-                      <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                      <td className="px-3 py-2.5 text-gray-700">TOTAL</td>
                       <td className={`${amountCellCls} font-bold`}>{money(salesTotals.sales)}</td>
                       <td className={`${amountCellCls} font-bold`}>
                         {money(salesTotals.purchases)}
@@ -599,7 +599,7 @@ export default function BranchReports() {
       {activeTab === "pl" && (
         <div className={sectionCls}>
           <div className="border-b border-gray-200 px-4 py-3">
-            <h2 className="text-[13px] font-semibold text-gray-800">P&amp;L by branch</h2>
+            <h2 className="text-[13px] font-semibold text-gray-700">P&amp;L by branch</h2>
             <p className="mt-0.5 text-[11px] text-gray-500">
               Review revenue, cost, expenses, and net contribution for each branch.
             </p>
@@ -614,29 +614,29 @@ export default function BranchReports() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Branch
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Sales Revenue
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Sales Returns
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Net Sales
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       COGS
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Direct Expenses
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Gross Profit
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Net Profit
                     </th>
                   </tr>
@@ -645,7 +645,7 @@ export default function BranchReports() {
                   {plRows.map((row) => (
                     <tr key={row.branch.id} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                        <div className="font-medium text-gray-800">{row.branch.name}</div>
+                        <div className="font-medium text-gray-700">{row.branch.name}</div>
                         <div className="text-[11px] text-gray-500">{row.branch.code || "—"}</div>
                       </td>
                       <td className={amountCellCls}>{money(row.salesRevenue)}</td>
@@ -670,7 +670,7 @@ export default function BranchReports() {
                     </tr>
                   ))}
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
-                    <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                    <td className="px-3 py-2.5 text-gray-700">TOTAL</td>
                     <td className={`${amountCellCls} font-bold`}>{money(plTotals.salesRevenue)}</td>
                     <td className={`${amountCellCls} font-bold`}>{money(plTotals.salesReturns)}</td>
                     <td className={`${amountCellCls} font-bold`}>{money(plTotals.netSales)}</td>
@@ -703,7 +703,7 @@ export default function BranchReports() {
       {activeTab === "stock" && (
         <div className={sectionCls}>
           <div className="border-b border-gray-200 px-4 py-3">
-            <h2 className="text-[13px] font-semibold text-gray-800">Stock by branch</h2>
+            <h2 className="text-[13px] font-semibold text-gray-700">Stock by branch</h2>
             <p className="mt-0.5 text-[11px] text-gray-500">
               Expand a branch to inspect current quantity, average rate, and total stock value.
             </p>
@@ -727,7 +727,7 @@ export default function BranchReports() {
                       className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
                     >
                       <div>
-                        <div className="text-[12px] font-medium text-gray-800">{branch.name}</div>
+                        <div className="text-[12px] font-medium text-gray-700">{branch.name}</div>
                         <div className="text-[11px] text-gray-500">
                           {rows.length} item{rows.length === 1 ? "" : "s"} · Value{" "}
                           {money(totalValue)}
@@ -744,20 +744,20 @@ export default function BranchReports() {
                       <div className="overflow-x-auto border-t border-gray-200">
                         <table className="w-full border-collapse">
                           <thead>
-                            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                            <tr className="bg-gray-50 border-b border-gray-200">
+                              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                 Item Name
                               </th>
-                              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                 Code
                               </th>
-                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                 Qty
                               </th>
-                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                 Avg Rate
                               </th>
-                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                 Total Value
                               </th>
                             </tr>
@@ -794,7 +794,7 @@ export default function BranchReports() {
       {activeTab === "consolidated" && (
         <div className={sectionCls}>
           <div className="border-b border-gray-200 px-4 py-3">
-            <h2 className="text-[13px] font-semibold text-gray-800">Consolidated view</h2>
+            <h2 className="text-[13px] font-semibold text-gray-700">Consolidated view</h2>
             <p className="mt-0.5 text-[11px] text-gray-500">
               A branch-neutral snapshot of total revenue, costs, and profitability.
             </p>
@@ -812,23 +812,23 @@ export default function BranchReports() {
               </div>
 
               <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                <div className="rounded-lg border border-gray-200 bg-[#fcfcfd] p-4">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total Revenue
                   </p>
-                  <p className="mt-2 text-[18px] font-semibold text-gray-800">
+                  <p className="mt-2 text-[18px] font-semibold text-gray-700">
                     {money(consolidatedData.totalRevenue)}
                   </p>
                 </div>
-                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                <div className="rounded-lg border border-gray-200 bg-[#fcfcfd] p-4">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total COGS
                   </p>
-                  <p className="mt-2 text-[18px] font-semibold text-gray-800">
+                  <p className="mt-2 text-[18px] font-semibold text-gray-700">
                     {money(consolidatedData.totalCogs)}
                   </p>
                 </div>
-                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                <div className="rounded-lg border border-gray-200 bg-[#fcfcfd] p-4">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Gross Profit
                   </p>
@@ -840,7 +840,7 @@ export default function BranchReports() {
                     {money(consolidatedData.grossProfit)}
                   </p>
                 </div>
-                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                <div className="rounded-lg border border-gray-200 bg-[#fcfcfd] p-4">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Net Profit
                   </p>
@@ -854,14 +854,14 @@ export default function BranchReports() {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-md border border-gray-200">
+              <div className="overflow-x-auto rounded-lg border border-gray-200">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Metric
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Amount
                       </th>
                     </tr>

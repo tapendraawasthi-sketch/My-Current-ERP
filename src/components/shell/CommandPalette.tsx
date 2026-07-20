@@ -16,7 +16,7 @@ import { useStore } from "../../store/useStore";
 import { useGlobalSearch } from "../../hooks/useGlobalSearch";
 import { useTheme } from "../../context/ThemeContext";
 import { useEKhataStore } from "../../store/eKhataStore";
-import { filterNavForRole, canNavigateToPage } from "./shellNavVisibility";
+import { filterNavForRole, canNavigateToPage, navFilterOptsFromCompany } from "./shellNavVisibility";
 
 export interface CommandPaletteProps {
   isOpen: boolean;
@@ -40,8 +40,9 @@ type PaletteRow =
 const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, moduleId }) => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
-  const { setCurrentPage, currentUser } = useStore();
+  const { setCurrentPage, currentUser, companySettings } = useStore();
   const role = currentUser?.role;
+  const navOpts = useMemo(() => navFilterOptsFromCompany(companySettings), [companySettings]);
   const { theme, setThemePreference } = useTheme();
   const openOrbix = useEKhataStore((s) => s.openPanel);
   const maximizeOrbix = useEKhataStore((s) => s.maximizePanel);
@@ -160,7 +161,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, module
       },
     ];
 
-    const navGroups = filterNavForRole(role).filter((g) =>
+    const navGroups = filterNavForRole(role, navOpts).filter((g) =>
       moduleId ? g.id === moduleId : true,
     );
 
@@ -194,6 +195,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, module
   }, [
     maximizeOrbix,
     moduleId,
+    navOpts,
     onClose,
     openOrbix,
     query,

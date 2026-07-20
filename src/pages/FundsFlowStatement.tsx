@@ -340,7 +340,7 @@ const FundsFlowStatement: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -350,7 +350,7 @@ const FundsFlowStatement: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
           {branchOptions.length > 0 && (
@@ -359,7 +359,7 @@ const FundsFlowStatement: React.FC = () => {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               >
                 <option value="all">All branches</option>
                 {branchOptions.map((b) => (
@@ -374,20 +374,20 @@ const FundsFlowStatement: React.FC = () => {
       }
     >
       {/* T-Format Funds Flow Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded-md bg-white mb-8">
+      <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white mb-8">
         <table className="w-full text-left whitespace-nowrap">
           <thead>
             <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-1/2">
                 SOURCES OF FUNDS
               </th>
-              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
                 Amount (Rs.)
               </th>
-              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200 w-1/2">
                 APPLICATIONS OF FUNDS
               </th>
-              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[120px]">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-right w-[120px]">
                 Amount (Rs.)
               </th>
             </tr>
@@ -430,16 +430,16 @@ const FundsFlowStatement: React.FC = () => {
 
             {/* Totals */}
             <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[var(--ds-border-strong)]">
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 border-r border-[var(--ds-border-strong)]">
                 TOTAL SOURCES
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-[var(--ds-border-strong)]">
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right border-r border-[var(--ds-border-strong)]">
                 {formatNumber(fundsFlowData.totalSources)}
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[var(--ds-border-strong)]">
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 border-r border-[var(--ds-border-strong)]">
                 TOTAL APPLICATIONS
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right">
                 {formatNumber(fundsFlowData.totalApplications)}
               </td>
             </tr>
@@ -463,26 +463,26 @@ const FundsFlowStatement: React.FC = () => {
 
       {/* Schedule of Changes in Working Capital */}
       <div className="mb-6">
-        <h3 className="text-[13px] font-semibold text-gray-800 mb-3 px-1">
+        <h3 className="text-[13px] font-semibold text-gray-700 mb-3 px-1">
           Schedule of Changes in Working Capital
         </h3>
-        <div className="overflow-x-auto border border-gray-200 rounded-md bg-white">
+        <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
           <table className="w-full text-left whitespace-nowrap">
             <thead>
               <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide border-r border-gray-200">
                   Item
                 </th>
-                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
                   Opening (Rs.)
                 </th>
-                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
                   Closing (Rs.)
                 </th>
-                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
                   Increase (Rs.)
                 </th>
-                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wide text-right w-[140px]">
                   Decrease (Rs.)
                 </th>
               </tr>
@@ -510,10 +510,10 @@ const FundsFlowStatement: React.FC = () => {
 
               {/* Totals row */}
               <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-gray-200">
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-gray-200">
+                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 border-r border-gray-200">
                   TOTAL
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right border-r border-gray-200">
                   {formatNumber(
                     fundsFlowData.scheduleOfWorkingCapital.reduce(
                       (sum, item) => sum + item.opening,
@@ -521,7 +521,7 @@ const FundsFlowStatement: React.FC = () => {
                     ),
                   )}
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right border-r border-gray-200">
                   {formatNumber(
                     fundsFlowData.scheduleOfWorkingCapital.reduce(
                       (sum, item) => sum + item.closing,
@@ -529,7 +529,7 @@ const FundsFlowStatement: React.FC = () => {
                     ),
                   )}
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-gray-200">
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right border-r border-gray-200">
                   {formatNumber(
                     fundsFlowData.scheduleOfWorkingCapital.reduce(
                       (sum, item) => sum + item.increase,
@@ -537,7 +537,7 @@ const FundsFlowStatement: React.FC = () => {
                     ),
                   )}
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right">
                   {formatNumber(
                     fundsFlowData.scheduleOfWorkingCapital.reduce(
                       (sum, item) => sum + item.decrease,
@@ -551,13 +551,13 @@ const FundsFlowStatement: React.FC = () => {
               <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
                 <td
                   colSpan={2}
-                  className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[var(--ds-border-strong)]"
+                  className="px-3 py-2.5 text-[12px] font-bold text-gray-700 border-r border-[var(--ds-border-strong)]"
                 >
                   NET CHANGE IN WORKING CAPITAL
                 </td>
                 <td
                   colSpan={3}
-                  className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right"
+                  className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right"
                 >
                   {formatNumber(
                     fundsFlowData.scheduleOfWorkingCapital.reduce(
@@ -585,7 +585,7 @@ const FundsFlowStatement: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -595,7 +595,7 @@ const FundsFlowStatement: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
         </div>

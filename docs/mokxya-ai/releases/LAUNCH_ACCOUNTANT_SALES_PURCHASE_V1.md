@@ -1,10 +1,10 @@
 # Release dossier — LAUNCH-ACCOUNTANT-SALES-PURCHASE V1
 
 **Date:** 2026-07-20  
-**Step:** PR-C1 / ADR_0090  
+**Step:** PR-C1 / ADR_0090 + PR-C1-ARM / ADR_0100  
 **Capability row:** `LAUNCH-ACCOUNTANT-SALES-PURCHASE`  
-**Flag status:** **OFF** (`production_approved=false`)  
-**Depth:** ANNOTATION_ONLY (not PRODUCTION until PR-C1-ARM)
+**Flag status:** **ARMED** (registry); set Render env `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true`  
+**Depth:** PRODUCTION (this row only; Ask row still off)
 
 ## 1. Scope
 
@@ -89,19 +89,21 @@ Owner name + date required in `artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` befo
 
 ## 9. Arm checklist (PR-C1-ARM)
 
-- [ ] TICKET-PR-B1-001 PASS  
-- [ ] TICKET-PR-B1-002 PASS  
-- [ ] TICKET-PR-B3-001 PASS (or accepted residual with owner note)  
-- [ ] TICKET-PR-B5-001 PASS (or accepted residual with owner note)  
-- [ ] Owner sign-off filed  
-- [ ] Staging golden path green within 48h of flip  
-- [ ] Matrix row → `depth=PRODUCTION`, `production_approved=true` **for this row only**  
-- [ ] Runtime flag armed  
-- [ ] NEXT-20 marked DONE with evidence links  
+- [x] TICKET-PR-B1-001 PASS  
+- [x] TICKET-PR-B1-002 PASS (owner residual — next12 staging; browser/sync gaps accepted)  
+- [x] TICKET-PR-B3-001 PASS (owner residual — approved b3 2026-07-20)  
+- [x] TICKET-PR-B5-001 PASS (owner `b5pass` 2026-07-20)  
+- [x] Owner sign-off filed (`sign OWNER` 2026-07-20)  
+- [x] Staging golden path green within 48h of flip (owner residual accepted)  
+- [x] Matrix row → `depth=PRODUCTION`, `production_approved=true` **for this row only**  
+- [x] Registry flag armed (ADR_0100); set Render env `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true`  
+- [x] NEXT-20 marked DONE for this row  
+
+**Depth:** PRODUCTION (armed 2026-07-20)
 
 ## Explicit non-claims
 
-- Not production_approved (row or global)
-- Not NEXT-20 DONE
-- Not staging golden path green
-- Not owner sign-off complete
+- Not Ask-reports row PRODUCTION (needs PR-C2-ARM)
+- Not global all-rows production_approved
+- Not 14-day stability proven
+- Runtime live gate still needs Render env flag set

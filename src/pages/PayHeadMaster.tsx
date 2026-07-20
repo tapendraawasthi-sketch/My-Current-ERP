@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store";
-import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
+import { Plus, X, Save, Search } from "lucide-react";
 import toast from "@/lib/appToast";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
-const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -36,7 +40,7 @@ const emptyForm = () => ({
 });
 
 const PayHeadMaster: React.FC = () => {
-  const { payHeads, addPayHead, updatePayHead, deletePayHead, accounts } = useStore();
+  const { payHeads, addPayHead, updatePayHead, deletePayHead, accounts, initLifecycle } = useStore();
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
@@ -299,13 +303,19 @@ const PayHeadMaster: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!window.confirm("Delete this pay head?")) return;
+  const handleDelete = async (head: { id: string; name: string; [key: string]: unknown }) => {
+    const snapshot = { ...head };
     try {
-      await deletePayHead(id);
-      toast.success("Deleted");
-      if (selected && selected.id === id) {
+      await deletePayHead(head.id);
+      toast.undo(`"${head.name}" deleted`, async () => {
+        try {
+          await addPayHead(snapshot as any);
+        } catch (error) {
+          console.error("Restore error:", error);
+          toast.error("Failed to restore pay head");
+        }
+      });
+      if (selected && selected.id === head.id) {
         resetForm();
       }
     } catch (error) {
@@ -362,45 +372,126 @@ const PayHeadMaster: React.FC = () => {
     return "—";
   };
 
+  const columns = useMemo<EnterpriseColumnDef<any>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Name",
+        cell: (head) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{head.name}</span>
+        ),
+      },
+      {
+        id: "payHeadType",
+        header: "Type",
+        cell: (head) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {getPayHeadTypeLabel(head.payHeadType)}
+          </span>
+        ),
+      },
+      {
+        id: "calculationType",
+        header: "Calc type",
+        cell: (head) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {getCalculationTypeLabel(head.calculationType)}
+          </span>
+        ),
+      },
+      {
+        id: "rate",
+        header: "Rate/%",
+        align: "right",
+        financial: true,
+        cell: (head) => (
+          <span className="ds-financial-value">{rateDisplay(head)}</span>
+        ),
+      },
+      {
+        id: "affectsNetSalary",
+        header: "Affects net",
+        align: "center",
+        cell: (head) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              head.affectsNetSalary
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]"
+            }`}
+          >
+            {head.affectsNetSalary ? "Yes" : "No"}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (head) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              head.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]"
+            }`}
+          >
+            {head.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const ledgerOptions = (accounts || []).filter((acc) => !acc.isGroup);
 
   return (
     <div className="flex h-full min-h-0 bg-[var(--ds-canvas)]">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Pay heads</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">Salary components.</p>
-              <p className="text-[12px] text-gray-500 mt-0.5">
-                Manage earnings, deductions, and statutory pay components
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Pay heads"
+            description="Manage earnings, deductions, and statutory pay components"
+            meta={
+              <PageMeta>
+                {filteredHeads.length} of {(payHeads || []).length} pay heads
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={openAdd}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 Add pay head
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+            secondaryActions={[
+              ...(branchOptions.length > 0
+                ? [
+                    <select
+                      key="branch"
+                      value={branchFilter}
+                      onChange={(e) => setBranchFilter(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      aria-label="Branch"
+                    >
+                      <option value="all">All branches</option>
+                      {branchOptions.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name || b.code || b.id}
+                        </option>
+                      ))}
+                    </select>,
+                  ]
+                : []),
+            ]}
+          />
 
-          <div className="relative mb-3 max-w-xs">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <div className="relative max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
             <input
               type="text"
               placeholder="Search pay heads..."
@@ -411,102 +502,44 @@ const PayHeadMaster: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filteredHeads.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={searchTerm ? "No pay heads match your search" : "No pay heads found"}
-                hint={
-                  searchTerm
-                    ? "Try a different search term."
-                    : 'Click "Add pay head" to create your first pay head.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                    <th className={th}>Name</th>
-                    <th className={th}>Type</th>
-                    <th className={th}>Calc type</th>
-                    <th className={`${th} text-right`}>Rate/%</th>
-                    <th className={`${th} text-center`}>Affects net</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredHeads.map((head) => (
-                    <tr
-                      key={head.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => loadFormForEdit(head)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{head.name}</td>
-                      <td className={td}>{getPayHeadTypeLabel(head.payHeadType)}</td>
-                      <td className={td}>{getCalculationTypeLabel(head.calculationType)}</td>
-                      <td className={`${td} text-right font-mono`}>{rateDisplay(head)}</td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${
-                            head.affectsNetSalary
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {head.affectsNetSalary ? "Yes" : "No"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${
-                            head.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {head.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              loadFormForEdit(head);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(head.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-canvas)] text-[12px] text-gray-500">
-                {filteredHeads.length} pay head{filteredHeads.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filteredHeads}
+            getRowId={(head) => head.id}
+            loading={initLifecycle === "loading"}
+            emptyTitle={searchTerm ? "No pay heads match your search" : "No pay heads found"}
+            emptyDescription={
+              searchTerm
+                ? "Try a different search term."
+                : 'Click "Add pay head" to create your first pay head.'
+            }
+            emptyAction={
+              !searchTerm ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add pay head
+                </Button>
+              ) : undefined
+            }
+            onRowClick={loadFormForEdit}
+            rowActions={(head) => [
+              { label: "Edit", onSelect: () => loadFormForEdit(head) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(head) },
+            ]}
+            caption="Pay heads"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[min(560px,100%)] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {selected ? "Edit pay head" : "Add pay head"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" aria-label="Close form" onClick={resetForm}>
@@ -564,12 +597,12 @@ const PayHeadMaster: React.FC = () => {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-md border border-gray-200">
+            <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
               <div className="flex flex-col gap-2.5">
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.affectsNetSalary}
                     onChange={(e) => setForm({ ...form, affectsNetSalary: e.target.checked })}
                   />
@@ -580,7 +613,7 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.ssfApplicable}
                     onChange={(e) => setForm({ ...form, ssfApplicable: e.target.checked })}
                   />
@@ -594,7 +627,7 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.citApplicable}
                     onChange={(e) => setForm({ ...form, citApplicable: e.target.checked })}
                   />
@@ -610,7 +643,7 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.incomeTaxApplicable}
                     onChange={(e) => setForm({ ...form, incomeTaxApplicable: e.target.checked })}
                   />
@@ -621,7 +654,7 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.pfApplicable}
                     onChange={(e) => setForm({ ...form, pfApplicable: e.target.checked })}
                   />
@@ -635,7 +668,7 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
+                    className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.isActive}
                     onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                   />
@@ -734,7 +767,7 @@ const PayHeadMaster: React.FC = () => {
               <div>
                 <label className={labelCls}>Formula</label>
                 <textarea
-                  className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none h-16"
+                  className="w-full px-2.5 py-1.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none h-16"
                   value={form.formula}
                   onChange={(e) => setForm({ ...form, formula: e.target.value })}
                   placeholder="Enter formula..."

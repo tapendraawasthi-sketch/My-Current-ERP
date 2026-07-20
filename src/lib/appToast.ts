@@ -40,6 +40,32 @@ export const toast = {
   dismiss(id?: string): void {
     getToastBridge()?.dismiss(id);
   },
+  /**
+   * Success toast with an Undo action (5s window via ToastProvider).
+   * Prefer for soft-delete / reversible post flows.
+   */
+  undo(
+    message: unknown,
+    onUndo: () => void,
+    opts?: { actionLabel?: string; description?: string },
+  ): string {
+    const api = getToastBridge();
+    if (!api) {
+      if (typeof console !== "undefined") console.warn("[toast] undo", asMessage(message));
+      return "";
+    }
+    const id = api.push({
+      title: asMessage(message),
+      description: opts?.description,
+      tone: "success",
+      actionLabel: opts?.actionLabel ?? "Undo",
+      onAction: () => {
+        onUndo();
+        api.dismiss(id);
+      },
+    });
+    return id;
+  },
   custom(
     renderer: (t: CustomToastArg) => ReactNode,
     _opts?: { duration?: number },

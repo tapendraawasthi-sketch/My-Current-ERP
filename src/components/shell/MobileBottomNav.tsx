@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Bell, MoreHorizontal, Plus } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { useEKhataStore } from "../../store/eKhataStore";
-import { mobileBottomDestinations } from "./shellNavVisibility";
+import { mobileBottomDestinations, navFilterOptsFromCompany } from "./shellNavVisibility";
 
 export const MobileBottomNav: React.FC<{ onOpenNotifications: () => void }> = ({
   onOpenNotifications,
 }) => {
   const role = useStore((s) => s.currentUser?.role);
+  const companySettings = useStore((s) => s.companySettings);
   const currentPage = useStore((s) => s.currentPage);
   const setCurrentPage = useStore((s) => s.setCurrentPage);
   const openOrbix = useEKhataStore((s) => s.openPanel);
   const maximizeOrbix = useEKhataStore((s) => s.maximizePanel);
-  const items = mobileBottomDestinations(role);
+  const navOpts = useMemo(() => navFilterOptsFromCompany(companySettings), [companySettings]);
+  const items = mobileBottomDestinations(role, navOpts);
   const create = items[2];
 
   const go = (page: string, orbix?: boolean) => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, Moon, Search, Settings, Sun, User } from "lucide-react";
+import { Menu, Moon, Search, Settings, Sun } from "lucide-react";
 import { useStore } from "../../store/useStore";
 import { useTheme } from "../../context/ThemeContext";
 import { findNavLabel } from "./navConfig";
@@ -7,7 +7,7 @@ import ContextSwitcher from "./ContextSwitcher";
 import SyncStatusControl from "./SyncStatusControl";
 import { NotificationBellButton } from "./NotificationCentre";
 import { DisplayLanguageModal } from "../ui/LanguageModal";
-import type { Density } from "@/design-system";
+import { Avatar, type Density } from "@/design-system";
 
 interface TopCommandBarProps {
   onOpenPalette: () => void;
@@ -139,9 +139,11 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
             aria-expanded={userOpen}
             data-testid="shell-user-menu"
           >
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]">
-              <User className="h-3.5 w-3.5" aria-hidden />
-            </span>
+            <Avatar
+              name={currentUser?.name || currentUser?.username || "User"}
+              seed={currentUser?.id || currentUser?.username}
+              size="sm"
+            />
             <span className="hidden max-w-[100px] truncate text-[13px] font-medium text-[var(--ds-text-default)] md:inline">
               {currentUser?.username || currentUser?.name || "User"}
             </span>

@@ -180,12 +180,12 @@ export default function BudgetMaster() {
   };
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa] overflow-hidden">
+    <div className="flex h-full min-h-0 bg-gray-50 overflow-hidden">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
         <div className="p-4 pb-0 shrink-0">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Budget Master</h1>
+              <h1 className="text-[15px] font-semibold text-gray-900">Budget Master</h1>
               <p className="text-[11px] text-gray-500 mt-0.5">
                 Set monthly or annual limits for income and expense accounts
               </p>
@@ -195,7 +195,7 @@ export default function BudgetMaster() {
                 <select
                   value={branchFilter}
                   onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   aria-label="Branch"
                 >
                   <option value="all">All branches</option>
@@ -233,7 +233,7 @@ export default function BudgetMaster() {
 
         <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
           {budgetList.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
+            <div className="bg-white border border-gray-200 rounded-lg">
               <ReportEmptyState
                 message={searchTerm ? "No budgets match your search" : "No budgets configured"}
                 hint={
@@ -244,10 +244,10 @@ export default function BudgetMaster() {
               />
             </div>
           ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     <th className={th}>Account name</th>
                     <th className={th}>Cost center</th>
                     <th className={`${th} text-center`}>Period</th>
@@ -257,21 +257,21 @@ export default function BudgetMaster() {
                 <tbody>
                   {budgetList.map((b, i) => (
                     <tr key={i} className="hover:bg-gray-50">
-                      <td className={`${td} font-medium text-gray-800`}>{b.accountName}</td>
+                      <td className={`${td} font-medium text-gray-700`}>{b.accountName}</td>
                       <td className={td}>{b.costCenterName}</td>
                       <td className={`${td} text-center`}>
                         <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
                           {b.months === 12 ? "Annual" : `${b.months} months`}
                         </span>
                       </td>
-                      <td className={`${td} text-right font-mono font-medium text-gray-800`}>
+                      <td className={`${td} text-right font-mono font-medium text-gray-700`}>
                         {b.total.toLocaleString()}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 text-[11px] text-gray-500">
                 {budgetList.length} budget{budgetList.length === 1 ? "" : "s"}
               </div>
             </div>
@@ -282,7 +282,7 @@ export default function BudgetMaster() {
       {showForm && (
         <div className="w-full lg:w-[560px] xl:w-[600px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               Set budget — FY {currentFiscalYear?.name}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -377,7 +377,7 @@ export default function BudgetMaster() {
               )}
 
               {budgetMode === "MONTHLY" && (
-                <div className="bg-[#f5f6fa] border border-gray-200 rounded-md p-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-3">
                     {BS_MONTHS.map((month, idx) => {
                       const mStr = String(idx + 1).padStart(2, "0");
@@ -401,7 +401,7 @@ export default function BudgetMaster() {
                     <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                       Total calculated annual
                     </span>
-                    <span className="text-[12px] font-mono font-bold text-gray-800">
+                    <span className="text-[12px] font-mono font-bold text-gray-700">
                       Rs. {calculateTotalMonthly().toLocaleString()}
                     </span>
                   </div>

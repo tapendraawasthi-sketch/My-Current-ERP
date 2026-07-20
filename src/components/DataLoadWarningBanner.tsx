@@ -17,7 +17,7 @@ export default function DataLoadWarningBanner() {
         action={
           <button
             type="button"
-            className="text-[13px] font-medium text-[var(--ds-status-warning)] underline-offset-2 hover:underline"
+            className="text-[12px] font-semibold text-[var(--ds-status-warning)] underline-offset-2 hover:underline transition-colors"
             onClick={() => dismissDataLoadWarning()}
           >
             Dismiss

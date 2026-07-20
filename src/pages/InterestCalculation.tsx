@@ -1,14 +1,20 @@
 // @ts-nocheck
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import { Calculator, FileSpreadsheet, RefreshCw, Download, TrendingUp } from "lucide-react";
+import { RefreshCw, TrendingUp } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
+import { formatCurrency } from "../lib/utils";
 import { mergeSystemConfiguration, getInterestRateForDays } from "../lib/systemConfiguration";
 import { computeInvoiceOutstanding } from "../lib/accounting";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import {
+  ReportWorkspace,
+  useReportQueryParams,
+  applyBranchQueryParam,
+} from "@/features/reports";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,18 +62,33 @@ function generateLocalSerial(prefix: string, count: number): string {
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 const InterestCalculation: React.FC = () => {
-  const { parties, companySettings } = useStore();
+  const { parties, companySettings, currentFiscalYear } = useStore();
   const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const interestSlabs = mergeSystemConfiguration(
     companySettings?.systemConfiguration,
   ).interestSlabs;
+  const { params, writeParams } = useReportQueryParams({ to: todayISO() });
 
-  const [asOfDate, setAsOfDate] = useState(todayISO());
+  const [asOfDate, setAsOfDate] = useState(() => params.to || todayISO());
   const [interestRate, setInterestRate] = useState(18); // fallback % per annum when no slab matches
   const [minDaysOverdue, setMinDaysOverdue] = useState(30);
   const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
   const [generatingVoucher, setGeneratingVoucher] = useState(false);
+
+  useEffect(() => {
+    if (params.to) setAsOfDate(params.to);
+    if (params.branch) applyBranchQueryParam(params.branch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const syncQuery = () => {
+    writeParams({
+      fy: currentFiscalYear?.id || currentFiscalYear?.name,
+      to: asOfDate,
+      branch: branchFilter,
+    });
+  };
 
   // Fix: use getDB() default import — not named { db }
   const db = getDB();
@@ -284,29 +305,123 @@ const InterestCalculation: React.FC = () => {
 
   const isLoading = !invoices || !payments;
 
+  const inputCls =
+    "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="erp-report p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
-      {/* Header */}
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Interest</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">Interest on outstanding.</p>
-          <p className="text-[12px] text-gray-500 mt-0.5">
-            Calculate overdue interest on outstanding{" "}
-            {direction === "receivable" ? "receivables" : "payables"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={filteredRows.length === 0}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          >
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            Export
-          </button>
+    <ReportWorkspace
+      title="Interest"
+      description={`Calculate overdue interest on outstanding ${direction === "receivable" ? "receivables" : "payables"}`}
+      periodLabel={`As of ${asOfDate} · ${interestRate}% p.a. · min ${minDaysOverdue} days overdue`}
+      loading={isLoading}
+      onPrint={() => window.print()}
+      onExportExcel={handleExport}
+      onShowReport={syncQuery}
+      showReportLabel="Apply filters"
+      kpiSlot={
+        !isLoading && filteredRows.length > 0 ? (
+          <>
+            <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3">
+              <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+                Outstanding Amount
+              </div>
+              <div className="text-[16px] font-bold text-[var(--ds-action-primary)] mt-1 font-mono">
+                {formatCurrency(totals.outstanding)}
+              </div>
+            </div>
+            <div className="rounded-lg border border-red-200 bg-[var(--ds-surface)] p-3">
+              <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+                Interest @ {interestRate}% p.a.
+              </div>
+              <div className="text-[16px] font-bold text-red-600 mt-1 font-mono">
+                {formatCurrency(totals.interest)}
+              </div>
+            </div>
+            <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-3">
+              <div className="text-[11px] text-[var(--ds-text-muted)] font-medium">
+                Total with Interest
+              </div>
+              <div className="text-[16px] font-bold text-gray-700 mt-1 font-mono">
+                {formatCurrency(totals.total)}
+              </div>
+            </div>
+          </>
+        ) : undefined
+      }
+      filterSlot={
+        <div className="flex flex-wrap items-end gap-3">
+          {branchOptions.length > 0 && (
+            <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+              Branch
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={inputCls}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Direction
+            <select
+              value={direction}
+              onChange={(e) => setDirection(e.target.value as "receivable" | "payable")}
+              className={inputCls}
+            >
+              <option value="receivable">Receivables (Sales)</option>
+              <option value="payable">Payables (Purchase)</option>
+            </select>
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            As of date
+            <input
+              type="date"
+              value={asOfDate}
+              onChange={(e) => setAsOfDate(e.target.value)}
+              className={inputCls}
+            />
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Annual interest rate (%)
+            <input
+              type="number"
+              min={0}
+              max={100}
+              step={0.1}
+              value={interestRate}
+              onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
+              className={`${inputCls} text-right w-24`}
+            />
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Min. days overdue
+            <input
+              type="number"
+              min={0}
+              step={1}
+              value={minDaysOverdue}
+              onChange={(e) => setMinDaysOverdue(parseInt(e.target.value) || 0)}
+              className={`${inputCls} text-right w-24`}
+            />
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            Search
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search party, invoice…"
+              className={`${inputCls} w-44`}
+            />
+          </label>
           <button
             type="button"
             onClick={handleGenerateVouchers}
@@ -318,130 +433,12 @@ const InterestCalculation: React.FC = () => {
             ) : (
               <TrendingUp className="h-3.5 w-3.5" />
             )}
-            Post Vouchers
+            Post vouchers
           </button>
         </div>
-      </div>
-
-      {/* Config */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
-        <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
-          Interest Parameters
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {branchOptions.length > 0 && (
-            <div>
-              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Branch</label>
-              <select
-                value={branchFilter}
-                onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
-                aria-label="Branch"
-              >
-                <option value="all">All branches</option>
-                {branchOptions.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name || b.code || b.id}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          <div>
-            <label className="text-[12px] font-medium text-gray-600 mb-1 block">Direction</label>
-            <select
-              value={direction}
-              onChange={(e) => setDirection(e.target.value as "receivable" | "payable")}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
-            >
-              <option value="receivable">Receivables (Sales)</option>
-              <option value="payable">Payables (Purchase)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-[12px] font-medium text-gray-600 mb-1 block">As of Date</label>
-            <input
-              type="date"
-              value={asOfDate}
-              onChange={(e) => setAsOfDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
-            />
-          </div>
-
-          <div>
-            <label className="text-[12px] font-medium text-gray-600 mb-1 block">
-              Annual Interest Rate (%)
-            </label>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              step={0.1}
-              value={interestRate}
-              onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
-            />
-          </div>
-
-          <div>
-            <label className="text-[12px] font-medium text-gray-600 mb-1 block">
-              Min. Days Overdue
-            </label>
-            <input
-              type="number"
-              min={0}
-              step={1}
-              value={minDaysOverdue}
-              onChange={(e) => setMinDaysOverdue(parseInt(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
-            />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search party, invoice…"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
-          />
-        </div>
-      </div>
-
-      {/* Summary */}
-      {!isLoading && filteredRows.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
-              Outstanding Amount
-            </p>
-            <p className="text-[18px] font-bold text-[var(--ds-action-primary)] mt-0.5 font-mono">
-              {money(totals.outstanding)}
-            </p>
-          </div>
-          <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
-              Interest @ {interestRate}% p.a.
-            </p>
-            <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
-              {money(totals.interest)}
-            </p>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
-              Total with Interest
-            </p>
-            <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
-              {money(totals.total)}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      }
+    >
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
         {isLoading ? (
           <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
             <RefreshCw className="h-5 w-5 animate-spin" />
@@ -452,25 +449,25 @@ const InterestCalculation: React.FC = () => {
             <table className="w-full min-w-[900px]">
               <thead>
                 <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Party
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     Invoice No.
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                     Due Date
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     Outstanding
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-20">
                     Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-28">
                     Interest
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                     Total
                   </th>
                 </tr>
@@ -486,7 +483,7 @@ const InterestCalculation: React.FC = () => {
                   filteredRows.map((row: InterestRow, idx: number) => (
                     <tr key={`${row.invoiceNo}-${idx}`} className="hover:bg-gray-50">
                       <td className="px-3 py-2.5">
-                        <div className="text-[12px] font-semibold text-gray-800">
+                        <div className="text-[12px] font-semibold text-gray-700">
                           {row.partyName}
                         </div>
                         {row.partyPan && (
@@ -502,7 +499,7 @@ const InterestCalculation: React.FC = () => {
                         {row.dueDate || "—"}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
-                        {money(row.outstandingAmount)}
+                        {formatCurrency(row.outstandingAmount)}
                       </td>
                       <td className="px-3 py-2.5 text-right text-[12px]">
                         <span
@@ -520,10 +517,10 @@ const InterestCalculation: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-600">
-                        {money(row.interestAmount)}
+                        {formatCurrency(row.interestAmount)}
                       </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                        {money(row.totalWithInterest)}
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-700">
+                        {formatCurrency(row.totalWithInterest)}
                       </td>
                     </tr>
                   ))
@@ -533,18 +530,18 @@ const InterestCalculation: React.FC = () => {
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
-                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-700">
                       Total ({filteredRows.length} invoices)
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
-                      {money(totals.outstanding)}
+                      {formatCurrency(totals.outstanding)}
                     </td>
                     <td className="px-3 py-2.5" />
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-red-600">
-                      {money(totals.interest)}
+                      {formatCurrency(totals.interest)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
-                      {money(totals.total)}
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-700">
+                      {formatCurrency(totals.total)}
                     </td>
                   </tr>
                 </tfoot>
@@ -553,7 +550,7 @@ const InterestCalculation: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </ReportWorkspace>
   );
 };
 

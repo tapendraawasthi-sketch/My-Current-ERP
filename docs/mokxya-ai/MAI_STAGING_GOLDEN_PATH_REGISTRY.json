@@ -10,10 +10,13 @@
     "is_execution_authority": false,
     "oec_sole_mutation_authority": false,
     "staging_attestation_complete": false,
-    "connected_run_status": "FAIL",
-    "manual_run_status": "PENDING",
+    "connected_run_status": "PARTIAL",
+    "manual_run_status": "PASS",
     "engineering_pack_ready": true,
-    "local_connected_attempt_recorded": true
+    "local_connected_attempt_recorded": true,
+    "manual_attested_at": "2026-07-20",
+    "b1_002_owner_residual_accepted": true,
+    "staging_url": "https://my-current-erp.onrender.com"
   },
   "acceptance": {
     "mode": "PASS_OR_BLOCKING_TICKET",

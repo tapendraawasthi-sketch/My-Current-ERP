@@ -39,9 +39,9 @@
     "effect": "ASK_REPORT_ANSWERS_DISABLED_ERP_REPORT_SCREENS_REMAIN"
   },
   "blocking_tickets": {
-    "TICKET-PR-B1-001": "OPEN",
-    "TICKET-PR-B1-002": "OPEN",
-    "TICKET-PR-B5-001": "OPEN"
+    "TICKET-PR-B1-001": "PASS",
+    "TICKET-PR-B1-002": "PASS",
+    "TICKET-PR-B5-001": "PASS"
   },
   "honesty": {
     "production_approved": false,

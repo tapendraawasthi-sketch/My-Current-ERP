@@ -8,7 +8,7 @@ import { Clock, Mail, Calendar, Plus, Edit2, Trash2, Play, CheckCircle, Send } f
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
 
-const BORDER = "1px solid #000";
+const BORDER = "1px solid #374151";
 const BG = "#E4F1D9";
 const BG_CARD = "var(--ds-surface-muted)";
 const BG_HEADER = "var(--ds-surface-hover)";
@@ -351,7 +351,7 @@ export default function ReportScheduler() {
             style={{
               fontSize: "14px",
               fontWeight: "bold",
-              color: "#000000",
+              color: "#374151",
               margin: 0,
               display: "flex",
               alignItems: "center",
@@ -367,7 +367,7 @@ export default function ReportScheduler() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full mb-3"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full mb-3"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -499,7 +499,7 @@ export default function ReportScheduler() {
             marginBottom: "20px",
           }}
         >
-          <h2 style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", margin: 0 }}>
+          <h2 style={{ fontSize: "16px", fontWeight: "bold", color: "#374151", margin: 0 }}>
             {selectedSchedule ? "Edit Schedule" : "New Schedule Configuration"}
           </h2>
         </div>
@@ -1028,7 +1028,7 @@ export default function ReportScheduler() {
             style={{
               fontSize: "14px",
               fontWeight: "bold",
-              color: "#000000",
+              color: "#374151",
               margin: 0,
               display: "flex",
               alignItems: "center",

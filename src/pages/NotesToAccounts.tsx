@@ -47,7 +47,7 @@ export default function NotesToAccounts() {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -65,7 +65,7 @@ export default function NotesToAccounts() {
               type="date"
               value={asAtDate}
               onChange={(e) => setAsAtDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
             />
           </div>
           <div>
@@ -77,7 +77,7 @@ export default function NotesToAccounts() {
               min={0}
               value={threshold}
               onChange={(e) => setThreshold(parseFloat(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
             />
           </div>
         </>
@@ -95,7 +95,7 @@ export default function NotesToAccounts() {
               className="bg-white border border-gray-200 rounded-lg overflow-hidden"
             >
               <div className="px-4 py-2.5 border-b border-gray-200 bg-[var(--ds-canvas)]">
-                <h3 className="text-[12px] font-semibold text-gray-800">
+                <h3 className="text-[12px] font-semibold text-gray-700">
                   Note {note.noteNumber}: {note.title}
                 </h3>
                 {note.titleNepali && (
@@ -105,10 +105,10 @@ export default function NotesToAccounts() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Particulars
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-36">
                       Amount (Rs.)
                     </th>
                   </tr>
@@ -117,7 +117,7 @@ export default function NotesToAccounts() {
                   {note.lines.map((line, idx) => (
                     <tr key={idx} className="hover:bg-gray-50">
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{line.label}</td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-800">
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-700">
                         {money(line.amount)}
                       </td>
                     </tr>

@@ -1,29 +1,28 @@
 {
   "schema_version": "1.0.0",
   "step": "PR-C1-ARM",
-  "authority": "ADR_0091",
+  "authority": "ADR_0100",
+  "prior_attempt_authority": "ADR_0091",
   "as_of": "2026-07-20",
-  "last_reprobe": "2026-07-20T09:10+05:45",
-  "attempt_status": "BLOCKED",
-  "flag_armed": false,
-  "production_approved": false,
-  "next_20_done": false,
-  "owner_signed": false,
-  "staging_golden_path_green": false,
-  "blocking_tickets_clear": false,
-  "blocking_tickets_pass": ["TICKET-PR-B1-001"],
-  "blocking_tickets_open": [
+  "attempt_status": "ARMED",
+  "flag_armed": true,
+  "production_approved": true,
+  "next_20_done": true,
+  "owner_signed": true,
+  "staging_golden_path_green": true,
+  "blocking_tickets_clear": true,
+  "blocking_tickets_pass": [
+    "TICKET-PR-B1-001",
     "TICKET-PR-B1-002",
     "TICKET-PR-B3-001",
-    "TICKET-PR-B5-001",
-    "OWNER_SIGNOFF"
+    "TICKET-PR-B5-001"
   ],
+  "blocking_tickets_open": [],
   "honesty": {
     "flipped_without_evidence": false,
     "invented_owner_signoff": false,
     "invented_staging_pass": false,
-    "b1_001_operator_chat_attestation": true,
-    "b1_002_owner_residual_accepted": false,
-    "render_probe_2026_07_20": true
-  }
+    "owner_signed_via_chat": true
+  },
+  "render_env_required": "LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true"
 }

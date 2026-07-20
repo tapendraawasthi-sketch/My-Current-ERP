@@ -1,12 +1,18 @@
 // src/pages/TaxCategoryMaster.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import toast from "@/lib/appToast";
-import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
+import { Plus, Search, X, Save } from "lucide-react";
 import { ITCEligibility } from "../lib/busyTypes";
 import { getDB } from "../lib/db";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 interface TaxCategory {
   id: string;
@@ -79,8 +85,6 @@ const DEFAULTS: Omit<TaxCategory, "id">[] = [
   },
 ];
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -102,6 +106,7 @@ const emptyForm = (): Omit<TaxCategory, "id"> => ({
 export default function TaxCategoryMaster() {
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [items, setItems] = useState<TaxCategory[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState<TaxCategory | null>(null);
@@ -126,6 +131,8 @@ export default function TaxCategoryMaster() {
       }
     } catch {
       setItems(DEFAULTS.map((d, i) => ({ ...d, id: `tc-${i}` })));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -193,55 +200,134 @@ export default function TaxCategoryMaster() {
     }
   };
 
-  const handleDelete = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this tax category?")) return;
+  const handleDelete = async (item: TaxCategory) => {
+    const snapshot = { ...item };
     try {
       const db = getDB();
-      if (db.taxCategories) await db.taxCategories.delete(id);
-      setItems((prev) => prev.filter((i) => i.id !== id));
-      toast.success("Deleted");
+      if (db.taxCategories) await db.taxCategories.delete(item.id);
+      setItems((prev) => prev.filter((i) => i.id !== item.id));
+      toast.undo(`"${item.name}" deleted`, async () => {
+        try {
+          if (db.taxCategories) await db.taxCategories.put(snapshot);
+          setItems((prev) => [...prev, snapshot]);
+        } catch {
+          toast.error("Failed to restore tax category");
+        }
+      });
     } catch {
       toast.error("Failed to delete");
     }
   };
 
-  return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
-      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Tax Category Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                GST 5%, 12%, 18%, 28%, VAT 13%, NIL, exempt tax categories
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
-                Add tax category
-              </button>
-            </div>
-          </div>
+  const columns = useMemo<EnterpriseColumnDef<TaxCategory>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Name",
+        cell: (item) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{item.name}</span>
+        ),
+      },
+      {
+        id: "taxRate",
+        header: "Rate %",
+        align: "right",
+        financial: true,
+        cell: (item) => <span className="ds-financial-value">{item.taxRate}%</span>,
+      },
+      {
+        id: "type",
+        header: "Type",
+        cell: (item) => (
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)] capitalize">
+            {item.type}
+          </span>
+        ),
+      },
+      {
+        id: "hsnSacCode",
+        header: "HSN/SAC",
+        cell: (item) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-muted)]">
+            {item.hsnSacCode || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "itcEligibility",
+        header: "ITC eligibility",
+        cell: (item) => (
+          <span className="capitalize text-[12px] text-[var(--ds-text-default)]">
+            {item.itcEligibility.replace(/_/g, " ")}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (item) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              item.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)]"
+            }`}
+          >
+            {item.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
 
-          <div className="relative mb-3 max-w-xs">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+  return (
+    <div className="flex h-full min-h-0 bg-gray-50">
+      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Tax Category Master"
+            description="GST 5%, 12%, 18%, 28%, VAT 13%, NIL, exempt tax categories"
+            meta={
+              <PageMeta>
+                {filtered.length} of {items.length} tax categories
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={openAdd}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
+                Add tax category
+              </Button>
+            }
+            secondaryActions={[
+              ...(branchOptions.length > 0
+                ? [
+                    <select
+                      key="branch"
+                      value={branchFilter}
+                      onChange={(e) => setBranchFilter(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      aria-label="Branch"
+                    >
+                      <option value="all">All branches</option>
+                      {branchOptions.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name || b.code || b.id}
+                        </option>
+                      ))}
+                    </select>,
+                  ]
+                : []),
+            ]}
+          />
+
+          <div className="relative max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
             <input
               placeholder="Search tax categories..."
               value={search}
@@ -251,98 +337,44 @@ export default function TaxCategoryMaster() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={search ? "No tax categories match your search" : "No tax categories found"}
-                hint={
-                  search
-                    ? "Try a different search term."
-                    : 'Click "Add tax category" to create your first tax category.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Name</th>
-                    <th className={`${th} text-right`}>Rate %</th>
-                    <th className={th}>Type</th>
-                    <th className={th}>HSN/SAC</th>
-                    <th className={th}>ITC eligibility</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => openEdit(item)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{item.name}</td>
-                      <td className={`${td} text-right font-mono font-medium`}>{item.taxRate}%</td>
-                      <td className={`${td} capitalize`}>
-                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
-                          {item.type}
-                        </span>
-                      </td>
-                      <td className={`${td} font-mono text-gray-500`}>{item.hsnSacCode || "—"}</td>
-                      <td className={`${td} capitalize`}>
-                        {item.itcEligibility.replace(/_/g, " ")}
-                      </td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            item.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {item.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEdit(item);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(item.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} tax categor{filtered.length === 1 ? "y" : "ies"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(item) => item.id}
+            loading={loading}
+            emptyTitle={search ? "No tax categories match your search" : "No tax categories found"}
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "Add tax category" to create your first tax category.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add tax category
+                </Button>
+              ) : undefined
+            }
+            onRowClick={openEdit}
+            rowActions={(item) => [
+              { label: "Edit", onSelect: () => openEdit(item) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(item) },
+            ]}
+            caption="Tax categories"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[400px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editItem ? "Edit tax category" : "Add tax category"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -411,7 +443,7 @@ export default function TaxCategoryMaster() {
                 <option value={ITCEligibility.INELIGIBLE}>Ineligible</option>
               </select>
             </div>
-            <div className="flex flex-col gap-2 border border-gray-200 rounded-md p-3 bg-gray-50">
+            <div className="flex flex-col gap-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
               <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
                 <input
                   type="checkbox"

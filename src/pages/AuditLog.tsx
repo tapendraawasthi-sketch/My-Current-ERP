@@ -455,11 +455,11 @@ const AuditLog = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className={statCard}>
           <div className="text-gray-500 text-[12px] font-medium uppercase">Total Entries</div>
-          <div className="text-[24px] font-bold text-gray-800">{stats.total}</div>
+          <div className="text-[24px] font-bold text-gray-700">{stats.total}</div>
         </div>
         <div className={statCard}>
           <div className="text-gray-500 text-[12px] font-medium uppercase">Today</div>
-          <div className="text-[24px] font-bold text-gray-800">{stats.today}</div>
+          <div className="text-[24px] font-bold text-gray-700">{stats.today}</div>
         </div>
         <div className={statCard}>
           <div className="text-gray-500 text-[12px] font-medium uppercase">High Risk</div>
@@ -511,7 +511,7 @@ const AuditLog = () => {
                     {(auditPage - 1) * auditPageSize + i + 1}
                   </td>
                   <td className={td}>
-                    <div className="font-medium text-gray-800 text-[12px]">
+                    <div className="font-medium text-gray-700 text-[12px]">
                       {(() => {
                         try {
                           return formatBsDate(r.timestamp);
@@ -683,7 +683,7 @@ const AuditLog = () => {
         .slice(0, 5);
       const max = Math.max(...entries.map((e) => e[1]), 1);
       return (
-        <div className="bg-white border border-gray-200 rounded-md p-4 flex-1 min-w-[250px]">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 flex-1 min-w-[250px]">
           <h4 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
             {title}
           </h4>
@@ -788,7 +788,7 @@ const AuditLog = () => {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
+          <h3 className="text-[13px] font-semibold text-gray-700 flex items-center gap-2">
             <User className="h-4 w-4 text-gray-500" /> Security Events & User Activity
           </h3>
           <button
@@ -825,7 +825,7 @@ const AuditLog = () => {
                       className={`hover:bg-gray-50/50 ${isSuspicious ? "bg-amber-50/30" : ""}`}
                     >
                       <td className={td}>
-                        <span className="font-semibold text-gray-800">{u.name}</span>
+                        <span className="font-semibold text-gray-700">{u.name}</span>
                       </td>
                       <td className={td}>
                         <span className="font-bold text-blue-600">{u.totalEvents}</span>
@@ -935,7 +935,7 @@ const AuditLog = () => {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
+          <h3 className="text-[13px] font-semibold text-gray-700 flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-gray-500" /> Period Lock Register
           </h3>
           <span className="text-[12px] text-gray-500">
@@ -955,7 +955,7 @@ const AuditLog = () => {
                 className={`${card} border-l-4 ${info.locked ? "border-l-[var(--ds-status-info)]" : "border-l-[var(--ds-status-success)]"}`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[12px] font-semibold text-gray-800">{key}</span>
+                  <span className="text-[12px] font-semibold text-gray-700">{key}</span>
                   <span
                     className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[12px] font-medium ${info.locked ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)] border-[var(--ds-status-info)]/30" : "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)] border-[var(--ds-status-success)]/30"}`}
                   >
@@ -1066,7 +1066,7 @@ const AuditLog = () => {
         {/* TDS Register */}
         <div className={card}>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[13px] font-semibold text-gray-800">TDS Transaction Register</h3>
+            <h3 className="text-[13px] font-semibold text-gray-700">TDS Transaction Register</h3>
             <span className="text-[12px] text-gray-500">
               {tdsRows.length} TDS events in selected period
             </span>
@@ -1131,7 +1131,7 @@ const AuditLog = () => {
         {/* VAT Monthly Summary */}
         <div className={card}>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[13px] font-semibold text-gray-800">VAT Activity by Month</h3>
+            <h3 className="text-[13px] font-semibold text-gray-700">VAT Activity by Month</h3>
             <button
               className={btn2}
               onClick={() => exportToExcel(vatRows, "VAT_Audit_Register.xlsx")}
@@ -1206,7 +1206,7 @@ const AuditLog = () => {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
+          <h3 className="text-[13px] font-semibold text-gray-700 flex items-center gap-2">
             <Printer className="h-4 w-4 text-gray-500" /> Print & Export Register
           </h3>
           <div className="flex items-center gap-2">
@@ -1312,11 +1312,11 @@ const AuditLog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--ds-canvas)] p-4 text-gray-800">
+    <div className="min-h-screen bg-[var(--ds-canvas)] p-4 text-gray-700">
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+            <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
               <Shield className="h-4 w-4 text-[var(--ds-action-primary)]" /> Audit log
             </h1>
             <p className="text-[12px] text-gray-500 mt-0.5">
@@ -1328,7 +1328,7 @@ const AuditLog = () => {
               <select
                 value={branchFilter}
                 onChange={(e) => setBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -1340,7 +1340,7 @@ const AuditLog = () => {
               </select>
             )}
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
               onClick={loadAuditData}
               disabled={loading}
             >
@@ -1363,7 +1363,7 @@ const AuditLog = () => {
               className={`px-4 py-2 text-[12px] font-medium transition-colors ${
                 activeTab === tab.id
                   ? "bg-white text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)]"
-                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
+                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
               }`}
               onClick={() => setActiveTab(tab.id)}
             >
@@ -1373,7 +1373,7 @@ const AuditLog = () => {
         </div>
 
         {loading && (
-          <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 flex items-center gap-2 text-[12px] text-gray-600">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 flex items-center gap-2 text-[12px] text-gray-600">
             <RefreshCw className="h-4 w-4 animate-spin text-[var(--ds-action-primary)]" /> Loading audit data...
           </div>
         )}
@@ -1392,7 +1392,7 @@ const AuditLog = () => {
         {activeTab === "Data Changes" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-[14px] font-semibold text-gray-800">Data Changes</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Data Changes</h2>
               <button className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md">
                 Export Changes
               </button>
@@ -1430,7 +1430,7 @@ const AuditLog = () => {
           <div className="w-full max-w-2xl">
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <h3 className="text-[15px] font-semibold text-gray-800">Audit log Details</h3>
+                <h3 className="text-[15px] font-semibold text-gray-700">Audit log Details</h3>
                 <button
                   onClick={() => setSelectedLog(null)}
                   className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
@@ -1442,7 +1442,7 @@ const AuditLog = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-gray-500">Timestamp</div>
-                    <p className="text-[12px] font-medium text-gray-800">
+                    <p className="text-[12px] font-medium text-gray-700">
                       {(() => {
                         try {
                           return formatBsDate(selectedLog.timestamp);
@@ -1523,11 +1523,11 @@ const AuditLog = () => {
                           Data Changes
                         </p>
                         {diffs.length > 0 ? (
-                          <div className="bg-gray-50 rounded-md border border-gray-200 overflow-hidden">
+                          <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
                             <table className="w-full text-[12px]">
                               <thead>
                                 <tr className="bg-gray-100">
-                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-gray-500 uppercase w-1/4">
+                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-gray-400 uppercase w-1/4">
                                     Field
                                   </th>
                                   <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-red-500 uppercase w-[37.5%]">
@@ -1570,7 +1570,7 @@ const AuditLog = () => {
                         ) : (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {selectedLog.before && (
-                              <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+                              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                                 <p className="text-[12px] font-semibold text-gray-500 uppercase mb-1">
                                   Before (raw)
                                 </p>
@@ -1580,7 +1580,7 @@ const AuditLog = () => {
                               </div>
                             )}
                             {selectedLog.after && (
-                              <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
+                              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                                 <p className="text-[12px] font-semibold text-gray-500 uppercase mb-1">
                                   After (raw)
                                 </p>
@@ -1633,7 +1633,7 @@ const AuditLog = () => {
                 />
                 <div className="flex justify-end gap-2 pt-2">
                   <button
-                    className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                    className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
                     onClick={() => setPurgeModal(false)}
                   >
                     Cancel

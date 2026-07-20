@@ -28,6 +28,7 @@ import {
 } from "./roleWorkspace";
 import { selectQuickActions } from "./quickActions";
 import { formatHomeAmount, formatHomeCount, resolveCurrencySymbol } from "./format";
+import { buildDailySalesTrend, sparklineFromTrend } from "./salesTrend";
 import type {
   ActivityItem,
   AttentionItem,
@@ -35,6 +36,7 @@ import type {
   DashboardFreshness,
   DashboardMetric,
   DataTrustContext,
+  HomeSalesTrendModel,
   HomeViewModel,
   HomeWorkspaceId,
 } from "./types";
@@ -799,6 +801,30 @@ export async function buildHomeViewModel(input: HomeAdapterInput): Promise<HomeV
     if (metrics.length >= 4) break;
   }
 
+  const salesTrendPoints = buildDailySalesTrend(input.invoices, fy?.startDate, fy?.endDate);
+  const salesSparkline =
+    salesTrendPoints.length >= 2 ? sparklineFromTrend(salesTrendPoints) : undefined;
+  if (salesSparkline) {
+    for (const m of metrics) {
+      if (m.id === "todays_sales" || m.id === "sales_period") {
+        m.sparkline = salesSparkline;
+      }
+    }
+  }
+
+  let salesTrend: HomeSalesTrendModel | null = null;
+  if (canViewScreen(profile, "salesVoucher", isAdmin)) {
+    salesTrend = {
+      points: salesTrendPoints,
+      currency,
+      periodLabel:
+        fy?.startDate && fy?.endDate
+          ? `FY ${fy.startDate} → ${fy.endDate}`
+          : "Current fiscal year",
+      drillDownRoute: "billing",
+    };
+  }
+
   let attention = buildAttention(input, sync, freshness, currency);
   // Filter attention by permission when declared
   attention = attention.filter((a) => {
@@ -809,8 +835,8 @@ export async function buildHomeViewModel(input: HomeAdapterInput): Promise<HomeV
     if (a.permission === "partyMaster") return canViewScreen(profile, "partyMaster", isAdmin);
     return true;
   });
-  // Home Today: first viewport attention cap (full list still built above; UI may show more in More)
-  attention = attention.slice(0, 5);
+  // Home Today: first-viewport attention cap (STEP 2.1 — calm first paint)
+  attention = attention.slice(0, 4);
 
   // Auditor: no mutation quick actions. Ask Orbix lives on PageHeader — omit from Do next.
   const actions = selectQuickActions(workspace.all, profile, isAdmin, { limit: 5 }).filter((a) => {
@@ -871,6 +897,7 @@ export async function buildHomeViewModel(input: HomeAdapterInput): Promise<HomeV
     quickActions: actions,
     activity,
     charts,
+    salesTrend,
     orbixPrompts,
     sectionOrder: WORKSPACE_SECTION_ORDER[workspace.primary] ?? WORKSPACE_SECTION_ORDER.restricted,
     partialErrors,

@@ -133,7 +133,7 @@ const CbmsDashboard: React.FC = () => {
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">CBMS Dashboard</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">CBMS Dashboard</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Nepal IRD e-Invoicing submission monitor
           </p>
@@ -144,7 +144,7 @@ const CbmsDashboard: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch filter"
             >
               <option value="all">All branches</option>
@@ -159,7 +159,7 @@ const CbmsDashboard: React.FC = () => {
           <button
             type="button"
             onClick={handleExportIrnList}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg"
           >
             Export IRN List
           </button>
@@ -176,24 +176,24 @@ const CbmsDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <div className="bg-white border border-gray-200 rounded-md p-3">
+        <div className="bg-white border border-gray-200 rounded-lg p-3">
           <div className="text-[10px] uppercase font-semibold text-gray-500">Today Submitted</div>
           <div className="text-[22px] font-bold">{summary.todaySubmitted}</div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-3">
+        <div className="bg-white border border-gray-200 rounded-lg p-3">
           <div className="text-[10px] uppercase font-semibold text-gray-500">Today Pending</div>
           <div className="text-[22px] font-bold">{summary.todayPending}</div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-3">
+        <div className="bg-white border border-gray-200 rounded-lg p-3">
           <div className="text-[10px] uppercase font-semibold text-gray-500">
             This Month Submitted
           </div>
           <div className="text-[22px] font-bold">{summary.monthSubmitted}</div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-3">
+        <div className="bg-white border border-gray-200 rounded-lg p-3">
           <div className="text-[10px] uppercase font-semibold text-gray-500">Failed Count</div>
           <div className="text-[22px] font-bold text-red-600">{summary.failedCount}</div>
         </div>
@@ -215,14 +215,14 @@ const CbmsDashboard: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-wrap gap-3">
+      <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-wrap gap-3">
         <div>
           <label className="text-[11px] font-medium text-gray-600 block mb-1">From Date</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg"
           />
         </div>
 
@@ -232,7 +232,7 @@ const CbmsDashboard: React.FC = () => {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg"
           />
         </div>
 
@@ -241,7 +241,7 @@ const CbmsDashboard: React.FC = () => {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as any)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg"
           >
             <option value="all">All</option>
             <option value="submitted">Submitted</option>
@@ -251,26 +251,26 @@ const CbmsDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full text-[12px]">
-          <thead className="bg-[#f5f6fa] border-b border-gray-200">
+          <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-500">
+              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-400">
                 Invoice No
               </th>
-              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-500">
+              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-400">
                 Date
               </th>
-              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-500">
+              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-400">
                 Party
               </th>
-              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-500">
+              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-400">
                 PAN
               </th>
-              <th className="px-3 py-2 text-right text-[10px] uppercase font-semibold text-gray-500">
+              <th className="px-3 py-2 text-right text-[10px] uppercase font-semibold text-gray-400">
                 Total
               </th>
-              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-500">
+              <th className="px-3 py-2 text-left text-[10px] uppercase font-semibold text-gray-400">
                 CBMS Status
               </th>
             </tr>

@@ -2,20 +2,37 @@
  * Item Master — create / edit stock items (Wave D / Function 8).
  * Canonical for nav `items` / `item-master`. Stock ledger stays on `stock-book` / `stock-ledger`.
  */
-import React, { useMemo, useState } from "react";
-import { Edit2, Package, Plus, Search } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Package, Plus, Search } from "lucide-react";
 import { useStore } from "../store/useStore";
 import type { Item } from "../lib/types";
 import ItemForm from "../components/item/ItemForm";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import { formatCurrency } from "../lib/utils";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 export default function ItemMaster() {
-  const { items, addItem, updateItem } = useStore();
+  const { items, addItem, updateItem, initLifecycle } = useStore();
   const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
+  const pageId = route.pageId === "items" ? "items" : "item-master";
 
   const filtered = useMemo(() => {
     const list = items ?? [];
@@ -36,12 +53,40 @@ export default function ItemMaster() {
   const openCreate = () => {
     setEditingItem(null);
     setShowForm(true);
+    openEntity(pageId, "new");
   };
 
   const openEdit = (item: Item) => {
     setEditingItem(item);
     setShowForm(true);
+    openEntity(pageId, item.id);
   };
+
+  const closeForm = () => {
+    setShowForm(false);
+    setEditingItem(null);
+    clearEntity(pageId);
+  };
+
+  // Deep link: /app/items/:id | /app/item-master/new
+  useEffect(() => {
+    if (route.pageId !== "items" && route.pageId !== "item-master") return;
+    if (route.entityId === "new") {
+      setEditingItem(null);
+      setShowForm(true);
+      return;
+    }
+    if (route.entityId) {
+      const item = (items ?? []).find((i) => i.id === route.entityId);
+      if (item) {
+        setEditingItem(item);
+        setShowForm(true);
+      }
+      return;
+    }
+    if (showForm) setShowForm(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, items]);
 
   const handleSave = async (itemData: Item) => {
     try {
@@ -58,188 +103,188 @@ export default function ItemMaster() {
       } else {
         await addItem(payload);
       }
-      setShowForm(false);
-      setEditingItem(null);
+      closeForm();
     } catch (err) {
       console.error(err);
     }
   };
 
-  return (
-    <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[var(--ds-text-default)]">Item Master</h1>
-          <p className="text-[11px] text-[var(--ds-text-muted)] mt-0.5">
-            Products and services you buy or sell.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {branchOptions.length > 0 && (
-            <select
-              value={branchFilter}
-              onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
-              aria-label="Branch"
-            >
-              <option value="all">All branches</option>
-              {branchOptions.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name || b.code || b.id}
-                </option>
-              ))}
-            </select>
-          )}
-          <button
-            type="button"
-            onClick={openCreate}
-            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+  const columns = useMemo<EnterpriseColumnDef<Item>[]>(
+    () => [
+      {
+        id: "code",
+        header: "Code",
+        cell: (item) => (
+          <span className="text-[12px] font-mono text-[var(--ds-text-default)]">{item.code || "—"}</span>
+        ),
+      },
+      {
+        id: "name",
+        header: "Name",
+        cell: (item) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">
+            {item.name}
+            {item.nameNepali ? (
+              <span className="block text-[11px] font-normal text-[var(--ds-text-muted)]">
+                {item.nameNepali}
+              </span>
+            ) : null}
+          </span>
+        ),
+      },
+      {
+        id: "type",
+        header: "Type",
+        cell: (item) => (
+          <span
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+              item.type === "service"
+                ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]"
+                : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]"
+            }`}
           >
-            <Plus className="h-3.5 w-3.5" />
+            {item.type === "service" ? "Service" : "Product"}
+          </span>
+        ),
+      },
+      {
+        id: "hsn",
+        header: "HSN / Barcode",
+        cell: (item) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {item.hsnCode || item.barcode || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "rate",
+        header: "Sale rate",
+        align: "right",
+        financial: true,
+        cell: (item) => (
+          <span className="ds-financial-value">{formatCurrency(item.salesRate ?? 0)}</span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (item) => (
+          <span
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+              item.isActive !== false
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-neutral-surface)] text-[var(--ds-status-neutral)]"
+            }`}
+          >
+            {item.isActive !== false ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
+  return (
+    <div className="flex flex-col gap-4 select-none pb-8">
+      <PageHeader
+        title="Item Master"
+        description="Products and services you buy or sell."
+        meta={
+          <PageMeta>
+            {filtered.length} of {(items ?? []).length} items
+          </PageMeta>
+        }
+        primaryAction={
+          <Button
+            variant="primary"
+            size="small"
+            onClick={openCreate}
+            startIcon={<Plus className="h-3.5 w-3.5" />}
+          >
             New Item
-          </button>
-        </div>
+          </Button>
+        }
+        secondaryActions={[
+          ...(branchOptions.length > 0
+            ? [
+                <select
+                  key="branch"
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>,
+              ]
+            : []),
+        ]}
+      />
+
+      <div className="relative w-fit">
+        <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by name, code, barcode, HSN…"
+          className="h-8 pl-8 pr-3 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-72"
+        />
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="relative">
-          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by name, code, barcode, HSN…"
-            className="h-8 pl-8 pr-3 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-72"
-          />
-        </div>
-        <span className="text-[12px] text-[var(--ds-text-muted)] font-medium">
-          {filtered.length} of {(items ?? []).length} items
-        </span>
-      </div>
+      <EnterpriseDataTable
+        columns={columns}
+        rows={filtered}
+        getRowId={(item) => item.id}
+        loading={items == null || initLifecycle === "loading"}
+        emptyIcon={<Package className="h-4 w-4" aria-hidden />}
+        emptyTitle={searchTerm ? "No items match your search" : "No stock items yet"}
+        emptyDescription={
+          searchTerm
+            ? "Nothing matches that search. Clear it or try a different name or code."
+            : "Create items so billing and stock reports have products to track."
+        }
+        emptyAction={
+          searchTerm ? (
+            <Button variant="secondary" size="small" onClick={() => setSearchTerm("")}>
+              Clear search
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              size="small"
+              onClick={openCreate}
+              startIcon={<Plus className="h-3.5 w-3.5" />}
+            >
+              New item
+            </Button>
+          )
+        }
+        onRowClick={openEdit}
+        rowActions={(item) => [{ label: "Edit", onSelect: () => openEdit(item) }]}
+        caption="Stock items"
+      />
 
-      <div className="rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] overflow-hidden">
-        <table className="data-table w-full">
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>HSN / Barcode</th>
-              <th className="th-right">Sale rate</th>
-              <th className="th-center">Status</th>
-              <th className="th-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={7}>
-                  <div className="empty-state">
-                    <Package className="empty-state-icon h-8 w-8 mx-auto opacity-30" />
-                    <p className="empty-state-title">
-                      {searchTerm ? "No items match your search" : "No items found"}
-                    </p>
-                    <p className="empty-state-sub">
-                      {searchTerm ? "Try a different search term." : "Create your first item."}
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              filtered.map((item) => (
-                <tr key={item.id}>
-                  <td className="text-[12px] font-mono text-[var(--ds-text-default)]">
-                    {item.code || "—"}
-                  </td>
-                  <td className="font-medium text-[12px] text-[var(--ds-text-default)]">
-                    {item.name}
-                    {item.nameNepali ? (
-                      <span className="block text-[11px] font-normal text-[var(--ds-text-muted)]">
-                        {item.nameNepali}
-                      </span>
-                    ) : null}
-                  </td>
-                  <td>
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        item.type === "service"
-                          ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]"
-                          : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]"
-                      }`}
-                    >
-                      {item.type === "service" ? "Service" : "Product"}
-                    </span>
-                  </td>
-                  <td className="text-[12px] text-[var(--ds-text-default)]">
-                    {item.hsnCode || item.barcode || "—"}
-                  </td>
-                  <td className="number-cell">
-                    {Number(item.salesRate ?? 0).toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </td>
-                  <td className="text-center">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        item.isActive !== false
-                          ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
-                          : "bg-[var(--ds-status-neutral-surface)] text-[var(--ds-status-neutral)]"
-                      }`}
-                    >
-                      {item.isActive !== false ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(item)}
-                        title="Edit"
-                        className="text-[var(--ds-text-subtle)] hover:text-[var(--ds-action-primary)] transition-colors"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {showForm && (
-        <div className="fixed inset-0 z-[var(--ds-z-modal)] bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-[var(--ds-surface)] rounded-lg border border-[var(--ds-border-default)] w-full max-w-4xl shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="px-4 py-3 border-b border-[var(--ds-border-default)] flex items-center justify-between bg-[var(--ds-surface-muted)] rounded-t-lg sticky top-0 z-10">
-              <h2 className="text-[14px] font-semibold text-[var(--ds-text-default)]">
-                {editingItem ? "Edit Item" : "New Item"}
-              </h2>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowForm(false);
-                  setEditingItem(null);
-                }}
-                className="text-[var(--ds-text-subtle)] hover:text-[var(--ds-text-default)] font-bold text-[16px] leading-none"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="p-0">
-              <ItemForm
-                item={editingItem ?? undefined}
-                onSave={handleSave}
-                onCancel={() => {
-                  setShowForm(false);
-                  setEditingItem(null);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog open={showForm} onOpenChange={(open) => !open && closeForm()}>
+        <DialogContent size="extra-large" showClose>
+          <DialogHeader>
+            <DialogTitle>{editingItem ? "Edit Item" : "New Item"}</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="p-0 px-0">
+            <ItemForm
+              item={editingItem ?? undefined}
+              onSave={handleSave}
+              onCancel={closeForm}
+            />
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

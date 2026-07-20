@@ -259,7 +259,7 @@ export default function ApprovalWorkflow() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Maker-Checker Approval Workflow</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Maker-Checker Approval Workflow</h1>
           <p className="text-sm text-gray-500 mt-1">
             Multi-level voucher approval with configurable policies and tamper-evident audit trail
           </p>
@@ -269,7 +269,7 @@ export default function ApprovalWorkflow() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -332,7 +332,7 @@ export default function ApprovalWorkflow() {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all relative ${
               activeTab === t.id
                 ? "bg-white text-blue-600 shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
+                : "text-gray-600 hover:text-gray-700"
             }`}
           >
             <t.icon className="w-4 h-4" /> {t.label}
@@ -390,7 +390,7 @@ export default function ApprovalWorkflow() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-800 capitalize">
+                          <span className="font-semibold text-gray-700 capitalize">
                             {req.voucherType} Voucher
                           </span>
                           <span
@@ -549,7 +549,7 @@ export default function ApprovalWorkflow() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-800 capitalize">
+                      <span className="font-semibold text-gray-700 capitalize">
                         {policy.voucherType === "*" ? "All Voucher Types" : policy.voucherType}
                       </span>
                       <span

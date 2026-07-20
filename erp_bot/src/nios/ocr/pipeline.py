@@ -121,11 +121,29 @@ class OcrPipeline:
             },
             "draft": draft,
             "governance": gate,
+            # Rich fields for LLM meaning-pass (frontend Orbix document camera).
             "fields": {
                 "invoice_number": fields.invoice_number,
+                "invoice_date": fields.invoice_date,
+                "party_name": fields.party_name,
+                "seller_pan": fields.seller_pan,
+                "buyer_pan": fields.buyer_pan,
+                "subtotal": fields.subtotal,
+                "vat_amount": fields.vat_amount,
                 "grand_total": fields.grand_total,
                 "line_count": len(fields.lines),
+                "lines": [
+                    {
+                        "description": ln.description,
+                        "qty": ln.qty,
+                        "rate": ln.rate,
+                        "amount": ln.amount,
+                    }
+                    for ln in fields.lines
+                ],
+                "raw_text": (fields.raw_text or "")[:8000],
             },
+            "raw_text": (fields.raw_text or "")[:8000],
         }
 
 

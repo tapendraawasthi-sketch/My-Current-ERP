@@ -8,10 +8,11 @@ import {
   EmptyState,
   LoadingState,
   RecoveryPanel,
-  Skeleton,
   StatusChip,
   Banner,
   SyncStatusChip,
+  KpiSkeleton,
+  TableSkeleton,
 } from "@/design-system";
 import type { SyncVisualState } from "@/design-system";
 import {
@@ -33,6 +34,8 @@ import {
 import { useEKhataStore } from "@/store/eKhataStore";
 import { useHomeDashboard } from "./useHomeDashboard";
 import { freshnessLabel, metricTone } from "./format";
+import { HomeSalesTrend } from "./HomeSalesTrend";
+import { MetricSparkline } from "./MetricSparkline";
 import type {
   ActivityItem,
   AttentionItem,
@@ -41,7 +44,6 @@ import type {
   HomeViewModel,
   QuickActionDef,
 } from "./types";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   TrendingUp,
@@ -102,6 +104,7 @@ function MetricCard({
           <span className="text-[var(--ds-danger)]">{metric.unavailableReason}</span>
         ) : null}
       </div>
+      {metric.sparkline ? <MetricSparkline points={metric.sparkline} /> : null}
     </>
   );
 
@@ -125,7 +128,7 @@ function MetricCard({
 function AttentionList({
   items,
   onNavigate,
-  limit = 5,
+  limit = 4,
 }: {
   items: AttentionItem[];
   onNavigate: (page: string) => void;
@@ -189,7 +192,7 @@ function QuickActionList({
   onOrbix: () => void;
 }) {
   return (
-    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-2 sm:grid-cols-2">
       {actions.map((action) => {
         const Icon = ICONS[action.icon] || FileText;
         return (
@@ -320,11 +323,8 @@ function HomeSkeleton() {
   return (
     <div className="space-y-4" aria-busy="true" aria-live="polite">
       <LoadingState label="Loading home workspace…" />
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 w-full rounded-[var(--ds-radius-md)]" />
-        ))}
-      </div>
+      <KpiSkeleton count={4} />
+      <TableSkeleton rows={4} columns={3} />
     </div>
   );
 }
@@ -374,6 +374,9 @@ function renderSections(
                 ))}
               </div>
             )}
+            {model.salesTrend ? (
+              <HomeSalesTrend trend={model.salesTrend} onNavigate={nav} />
+            ) : null}
           </section>
         );
       case "quickActions":
@@ -450,13 +453,9 @@ export function HomePage() {
     refresh,
     retry,
     setCurrentPage,
-    branchFilter,
-    setBranchFilter,
-    branchOptions,
   } = useHomeDashboard();
   const openPanel = useEKhataStore((s) => s.openPanel);
   const maximizePanel = useEKhataStore((s) => s.maximizePanel);
-  const isMobile = useIsMobile();
 
   const [moreOpen, setMoreOpen] = useState(() => {
     try {
@@ -536,6 +535,7 @@ export function HomePage() {
             }
           : null;
 
+  // C4 / STEP 2.1 — single calm stack above fold (not a dashboard of dashboards)
   const todayOrder = ["attention", "financial", "quickActions"];
   const moreOrder = ["activity", "trends", "orbix"];
 
@@ -546,7 +546,7 @@ export function HomePage() {
       data-home-freshness={model.trust.freshness}
       data-home-company={model.trust.companyId}
       data-home-layout="today"
-      className="min-h-full space-y-5"
+      className="min-h-full space-y-5 max-w-5xl"
     >
       <PageHeader
         title="Today"
@@ -575,24 +575,6 @@ export function HomePage() {
           </Button>
         }
         secondaryActions={[
-          ...(branchOptions.length > 0
-            ? [
-                <select
-                  key="branch"
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
-                  aria-label="Branch filter — All branches for Home metrics"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>,
-              ]
-            : []),
           <Button
             key="refresh"
             variant="secondary"
@@ -614,20 +596,8 @@ export function HomePage() {
         />
       ) : null}
 
-      <div className={isMobile ? "space-y-5" : "grid gap-5 lg:grid-cols-12"}>
-        <div className={isMobile ? "space-y-5" : "space-y-5 lg:col-span-8"}>
-          {renderSections(
-            model,
-            todayOrder.filter((s) => s !== "attention" || isMobile),
-            nav,
-            openOrbix,
-          )}
-        </div>
-        {!isMobile ? (
-          <aside className="space-y-5 lg:col-span-4">
-            {renderSections(model, ["attention"], nav, openOrbix)}
-          </aside>
-        ) : null}
+      <div className="space-y-5" data-testid="home-today">
+        {renderSections(model, todayOrder, nav, openOrbix)}
       </div>
 
       <div

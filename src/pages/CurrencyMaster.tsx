@@ -154,7 +154,7 @@ const CurrencyMaster: React.FC = () => {
       header: "Code",
       render: (currency: any) => (
         <div className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4 text-[#000000]" />
+          <DollarSign className="h-4 w-4 text-[#374151]" />
           <span className="font-mono font-bold">{currency.code}</span>
           {currency.isBase && (
             <Badge variant="success" size="sm">
@@ -177,14 +177,14 @@ const CurrencyMaster: React.FC = () => {
       key: "rate",
       header: "Current Rate",
       render: (currency: any) => {
-        if (currency.isBase) return <span className="text-[#000000]">1.00</span>;
+        if (currency.isBase) return <span className="text-[#374151]">1.00</span>;
         const latest = getLatestRate(currency.code);
         return latest ? (
           <span className="font-mono font-semibold">
             {formatNumber(latest.rateToBase)} {baseCurrency?.code}
           </span>
         ) : (
-          <span className="text-[#000000]">Not set</span>
+          <span className="text-[#374151]">Not set</span>
         );
       },
     },
@@ -230,15 +230,15 @@ const CurrencyMaster: React.FC = () => {
       <ActionToolbar title="Currency Master" subtitle="Multi-currency setup and exchange rates" />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#000000]">Currency Master</h1>
-          <p className="text-sm text-[#000000] mt-1">Manage currencies and exchange rates</p>
+          <h1 className="text-2xl font-bold text-[#374151]">Currency Master</h1>
+          <p className="text-sm text-[#374151] mt-1">Manage currencies and exchange rates</p>
         </div>
         <div className="flex items-center gap-2">
           {branchOptions.length > 0 && (
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -285,11 +285,11 @@ const CurrencyMaster: React.FC = () => {
             <Card key={currency.id} className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-[#000000]">
+                  <h3 className="text-lg font-bold text-[#374151]">
                     {currency.code} - {currency.name}
                   </h3>
                   {latest && (
-                    <p className="text-sm text-[#000000] mt-1">
+                    <p className="text-sm text-[#374151] mt-1">
                       Current Rate:{" "}
                       <span className="font-mono font-semibold">
                         {formatNumber(latest.rateToBase)} {baseCurrency?.code}
@@ -312,7 +312,7 @@ const CurrencyMaster: React.FC = () => {
               {/* Chart */}
               {history.length > 0 ? (
                 <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-[#000000] mb-3">
+                  <h4 className="text-sm font-semibold text-[#374151] mb-3">
                     30-Day Exchange Rate Trend
                   </h4>
                   <ResponsiveContainer width="100%" height={200}>
@@ -340,7 +340,7 @@ const CurrencyMaster: React.FC = () => {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="text-center py-8 text-[#000000]">
+                <div className="text-center py-8 text-[#374151]">
                   <TrendingUp className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No exchange rate history available</p>
                 </div>
@@ -349,7 +349,7 @@ const CurrencyMaster: React.FC = () => {
               {/* Rate History Table */}
               {history.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-[#000000] mb-2">Recent Rate History</h4>
+                  <h4 className="text-sm font-semibold text-[#374151] mb-2">Recent Rate History</h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
                       <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)]">
@@ -433,7 +433,7 @@ const CurrencyMaster: React.FC = () => {
                 className="h-4 w-4 accent-blue-600"
                 disabled={!!editingCurrency && editingCurrency.isBase}
               />
-              <span className="text-sm font-medium text-[#000000]">Set as Base Currency</span>
+              <span className="text-sm font-medium text-[#374151]">Set as Base Currency</span>
             </label>
             <label className="inline-flex items-center gap-2">
               <input
@@ -444,7 +444,7 @@ const CurrencyMaster: React.FC = () => {
                 }
                 className="h-4 w-4 accent-blue-600"
               />
-              <span className="text-sm font-medium text-[#000000]">Active</span>
+              <span className="text-sm font-medium text-[#374151]">Active</span>
             </label>
           </div>
           <div className="flex items-center justify-end gap-2 pt-4">

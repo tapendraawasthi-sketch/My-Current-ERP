@@ -15,6 +15,7 @@ import { PageContentFrame } from "./PageContentFrame";
 import { RouteAccessGate } from "./RouteAccessGate";
 import { NotificationCentre } from "./NotificationCentre";
 import { MobileBottomNav } from "./MobileBottomNav";
+import { ShortcutHelpModal } from "./ShortcutHelpModal";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -182,6 +183,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <MobileBottomNav onOpenNotifications={() => setNotificationsOpen(true)} />
       ) : null}
       <CommandPalette isOpen={paletteOpen} onClose={closePalette} moduleId={paletteModuleId} />
+      <ShortcutHelpModal />
       <NotificationCentre open={notificationsOpen} onOpenChange={setNotificationsOpen} />
       {/* Orbix is the sole user-facing assistant; FalconProvider only remaps shortcuts */}
       {!isOrbixPage && !isPosPage ? <FalconProvider /> : null}

@@ -42,11 +42,11 @@ const btn2 =
 const btnDanger =
   "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]";
-const card = "bg-white border border-gray-200 rounded-lg p-4 text-gray-800 shadow-sm";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]";
+const card = "bg-white border border-gray-200 rounded-lg p-4 text-gray-700 shadow-sm";
 const th =
   "px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide bg-[var(--ds-surface-muted)] border-b border-gray-200 text-gray-500";
-const td = "px-3 py-2.5 text-[12px] border-b border-gray-100 align-top text-gray-800";
+const td = "px-3 py-2.5 text-[12px] border-b border-gray-100 align-top text-gray-700";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const nowISO = () => new Date().toISOString();
@@ -331,7 +331,7 @@ const Modal = ({ open, title, children, onClose, max = "max-w-4xl" }: any) => {
         className={`bg-white rounded-lg border border-gray-300 shadow-xl w-full ${max} max-h-[90vh] flex flex-col`}
       >
         <div className="flex items-center justify-between px-4 py-3 bg-[var(--ds-surface-muted)] border-b border-gray-200">
-          <h3 className="text-[14px] font-semibold text-gray-800">{title}</h3>
+          <h3 className="text-[14px] font-semibold text-gray-700">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
             <XCircle className="h-4 w-4" />
           </button>
@@ -888,7 +888,7 @@ export default function BankStatementImport() {
     <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-3">
       <div className={card}>
         <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Rows</p>
-        <p className="text-[15px] font-bold text-gray-800">{stats.count}</p>
+        <p className="text-[15px] font-bold text-gray-700">{stats.count}</p>
       </div>
 
       <div className={card}>
@@ -1029,7 +1029,7 @@ export default function BankStatementImport() {
       <div className={card}>
         <div className="flex flex-wrap justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <Upload className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Import bank statement
             </h3>
@@ -1108,7 +1108,7 @@ export default function BankStatementImport() {
                   <td className={td}>
                     {r.matchedVoucherId ? (
                       <div>
-                        <div className="font-semibold text-gray-800">
+                        <div className="font-semibold text-gray-700">
                           {r.matchedVoucherNo || r.matchedVoucherId}
                         </div>
                         <div className="text-[12px] text-gray-500">
@@ -1196,7 +1196,7 @@ export default function BankStatementImport() {
       <div className={card}>
         <div className="flex justify-between gap-3">
           <div>
-            <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2">
               <WalletCards className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Import Batches
             </h3>
@@ -1305,7 +1305,7 @@ export default function BankStatementImport() {
                     <td className={td}>
                       {r.matchedVoucherId ? (
                         <div>
-                          <div className="font-semibold text-gray-800">{r.matchedVoucherNo}</div>
+                          <div className="font-semibold text-gray-700">{r.matchedVoucherNo}</div>
                           <div className="text-[12px] text-gray-500">
                             Score {r.matchScore} • {r.matchReason}
                           </div>
@@ -1372,7 +1372,7 @@ export default function BankStatementImport() {
               <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Date
               </p>
-              <p className="font-semibold text-gray-800">{selectedRow.date}</p>
+              <p className="font-semibold text-gray-700">{selectedRow.date}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
               <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -1404,12 +1404,12 @@ export default function BankStatementImport() {
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Narration
             </p>
-            <p className="font-medium text-[12px] text-gray-800">{selectedRow.narration || "-"}</p>
+            <p className="font-medium text-[12px] text-gray-700">{selectedRow.narration || "-"}</p>
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Match</p>
-            <p className="font-semibold text-gray-800">
+            <p className="font-semibold text-gray-700">
               {selectedRow.matchedVoucherNo || selectedRow.matchedVoucherId || "No match"}
             </p>
             <p className="text-[12px] font-medium text-gray-500">
@@ -1523,10 +1523,10 @@ export default function BankStatementImport() {
   );
 
   return (
-    <div className="p-4 md:p-6 bg-[var(--ds-surface-muted)] min-h-screen text-gray-800">
+    <div className="p-4 md:p-6 bg-[var(--ds-surface-muted)] min-h-screen text-gray-700">
       <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Banknote className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Import bank statement
           </h1>
@@ -1540,7 +1540,7 @@ export default function BankStatementImport() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>

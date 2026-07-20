@@ -426,11 +426,11 @@ const PurchaseManagement: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Purchase Management</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Purchase Management</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Manage RFQs, Requisitions, Three-Way Matching, and Vendor Scoring
             </p>
@@ -439,7 +439,7 @@ const PurchaseManagement: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -473,13 +473,13 @@ const PurchaseManagement: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">
+              <h2 className="text-[14px] font-semibold text-gray-700">
                 Request for Quotation (RFQ)
               </h2>
               <button
-                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingRfq(null);
                   setRfqForm({
@@ -507,8 +507,8 @@ const PurchaseManagement: React.FC = () => {
             </div>
 
             {showRfqForm && (
-              <div className="mb-6 bg-white border border-gray-200 shadow-sm rounded-md p-4">
-                <h3 className="text-[14px] font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+              <div className="mb-6 bg-white border border-gray-200 shadow-sm rounded-lg p-4">
+                <h3 className="text-[14px] font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">
                   {editingRfq ? "Edit RFQ" : "Create New RFQ"}
                 </h3>
 
@@ -521,7 +521,7 @@ const PurchaseManagement: React.FC = () => {
                       type="text"
                       value={rfqForm.rfqNo}
                       readOnly
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 focus:outline-none w-full text-gray-500 cursor-not-allowed"
+                      className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-gray-50 focus:outline-none w-full text-gray-500 cursor-not-allowed"
                     />
                   </div>
                   <div>
@@ -530,7 +530,7 @@ const PurchaseManagement: React.FC = () => {
                       type="date"
                       value={rfqForm.date}
                       onChange={(e) => handleRfqFormChange("date", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                   <div>
@@ -541,7 +541,7 @@ const PurchaseManagement: React.FC = () => {
                       type="date"
                       value={rfqForm.requiredByDate}
                       onChange={(e) => handleRfqFormChange("requiredByDate", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 </div>
@@ -550,7 +550,7 @@ const PurchaseManagement: React.FC = () => {
                   <label className="block text-[11px] font-medium text-gray-600 mb-2">
                     Select Suppliers
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-3 bg-gray-50 border border-gray-200 rounded-md max-h-40 overflow-y-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg max-h-40 overflow-y-auto">
                     {suppliers.map((supplier) => (
                       <label
                         key={supplier.id}
@@ -582,36 +582,36 @@ const PurchaseManagement: React.FC = () => {
 
                 <div className="mb-6">
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-[12px] font-semibold text-gray-800">Items</label>
+                    <label className="text-[12px] font-semibold text-gray-700">Items</label>
                     <button
                       type="button"
-                      className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm"
+                      className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
                       onClick={addRfqItemRow}
                     >
                       Add Item
                     </button>
                   </div>
 
-                  <div className="border border-gray-200 rounded-md overflow-hidden">
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
                     <table className="w-full min-w-max border-collapse">
                       <thead>
-                        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <tr className="bg-gray-50 border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                             Item
                           </th>
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                             Description
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                             Quantity
                           </th>
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                             Unit
                           </th>
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                             Remarks
                           </th>
-                          <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                          <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-12">
                             Actions
                           </th>
                         </tr>
@@ -625,7 +625,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleRfqItemChange(index, "itemId", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               >
                                 <option value="">Select Item</option>
                                 {itemOptions.map((opt) => (
@@ -642,7 +642,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleRfqItemChange(index, "description", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -656,7 +656,7 @@ const PurchaseManagement: React.FC = () => {
                                     Number(e.target.value) || 0,
                                   )
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -664,7 +664,7 @@ const PurchaseManagement: React.FC = () => {
                                 type="text"
                                 value={item.unit}
                                 readOnly
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-gray-50 text-gray-500 focus:outline-none w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-gray-50 text-gray-500 focus:outline-none w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -674,13 +674,13 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleRfqItemChange(index, "remarks", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top text-center">
                               <button
                                 type="button"
-                                className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                                className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                                 onClick={() => removeRfqItemRow(index)}
                                 disabled={rfqForm.items.length <= 1}
                               >
@@ -696,13 +696,13 @@ const PurchaseManagement: React.FC = () => {
 
                 <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
                   <button
-                    className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                    className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => setShowRfqForm(false)}
                   >
                     Cancel
                   </button>
                   <button
-                    className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                    className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm"
                     onClick={saveRfq}
                   >
                     Save RFQ
@@ -711,29 +711,29 @@ const PurchaseManagement: React.FC = () => {
               </div>
             )}
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       RFQ No
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Date
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Items
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Suppliers Invited
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Responses
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -745,7 +745,7 @@ const PurchaseManagement: React.FC = () => {
                         className="bg-white hover:bg-gray-50 border-b border-gray-100 text-[12px] cursor-pointer transition-colors"
                         onClick={() => setExpandedRfq(expandedRfq === rfq.id ? null : rfq.id)}
                       >
-                        <td className="px-3 py-2.5 text-gray-800 font-medium">{rfq.rfqNo}</td>
+                        <td className="px-3 py-2.5 text-gray-700 font-medium">{rfq.rfqNo}</td>
                         <td className="px-3 py-2.5 text-gray-700">{rfq.date}</td>
                         <td className="px-3 py-2.5 text-gray-700 text-right">{rfq.items.length}</td>
                         <td className="px-3 py-2.5 text-gray-700 text-right">
@@ -794,17 +794,17 @@ const PurchaseManagement: React.FC = () => {
                       {expandedRfq === rfq.id && (
                         <tr className="bg-gray-50 border-b border-gray-200">
                           <td colSpan={7} className="p-4">
-                            <h4 className="text-[12px] font-semibold text-gray-800 mb-3">
+                            <h4 className="text-[12px] font-semibold text-gray-700 mb-3">
                               Comparative Statement
                             </h4>
-                            <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
+                            <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
                               <table className="w-full min-w-max border-collapse">
                                 <thead>
-                                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                  <tr className="bg-gray-50 border-b border-gray-200">
+                                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                       Item
                                     </th>
-                                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                       Qty
                                     </th>
                                     {rfq.suppliers.map((supplierId: string) => {
@@ -818,10 +818,10 @@ const PurchaseManagement: React.FC = () => {
                                         </th>
                                       );
                                     })}
-                                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                                       Lowest Rate
                                     </th>
-                                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-48">
+                                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-48">
                                       Selected Supplier
                                     </th>
                                   </tr>
@@ -842,7 +842,7 @@ const PurchaseManagement: React.FC = () => {
                                               type="number"
                                               step="0.01"
                                               placeholder="Quote"
-                                              className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white text-right focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] w-full"
+                                              className="h-7 px-2 text-[11px] border border-gray-200 rounded bg-white text-right focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] w-full"
                                             />
                                           </td>
                                         );
@@ -851,7 +851,7 @@ const PurchaseManagement: React.FC = () => {
                                         —
                                       </td>
                                       <td className="px-3 py-2 align-top">
-                                        <select className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] w-full">
+                                        <select className="h-7 px-2 text-[11px] border border-gray-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] w-full">
                                           <option value="">Select</option>
                                           {rfq.suppliers.map((supplierId: string) => {
                                             const supplier = suppliers.find(
@@ -889,11 +889,11 @@ const PurchaseManagement: React.FC = () => {
         )}
 
         {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Purchase Requisitions</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Purchase Requisitions</h2>
               <button
-                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingReq(null);
                   setReqForm({
@@ -912,8 +912,8 @@ const PurchaseManagement: React.FC = () => {
             </div>
 
             {showReqForm && (
-              <div className="mb-6 bg-white border border-gray-200 shadow-sm rounded-md p-4">
-                <h3 className="text-[14px] font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+              <div className="mb-6 bg-white border border-gray-200 shadow-sm rounded-lg p-4">
+                <h3 className="text-[14px] font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">
                   {editingReq ? "Edit Requisition" : "Create New Requisition"}
                 </h3>
 
@@ -926,7 +926,7 @@ const PurchaseManagement: React.FC = () => {
                       type="text"
                       value={reqForm.requesterName}
                       onChange={(e) => handleReqFormChange("requesterName", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                   <div>
@@ -937,7 +937,7 @@ const PurchaseManagement: React.FC = () => {
                       type="text"
                       value={reqForm.department}
                       onChange={(e) => handleReqFormChange("department", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                   <div>
@@ -948,37 +948,37 @@ const PurchaseManagement: React.FC = () => {
                       type="date"
                       value={reqForm.dateRequired}
                       onChange={(e) => handleReqFormChange("dateRequired", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 </div>
 
                 <div className="mb-6">
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-[12px] font-semibold text-gray-800">Items</label>
+                    <label className="text-[12px] font-semibold text-gray-700">Items</label>
                     <button
                       type="button"
-                      className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm"
+                      className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
                       onClick={addReqItemRow}
                     >
                       Add Item
                     </button>
                   </div>
 
-                  <div className="border border-gray-200 rounded-md overflow-hidden">
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
                     <table className="w-full min-w-max border-collapse">
                       <thead>
-                        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <tr className="bg-gray-50 border-b border-gray-200">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                             Item
                           </th>
-                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                             Quantity
                           </th>
-                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                             Purpose
                           </th>
-                          <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                          <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-12">
                             Actions
                           </th>
                         </tr>
@@ -992,7 +992,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleReqItemChange(index, "itemId", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               >
                                 <option value="">Select Item</option>
                                 {itemOptions.map((opt) => (
@@ -1013,7 +1013,7 @@ const PurchaseManagement: React.FC = () => {
                                     Number(e.target.value) || 0,
                                   )
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -1023,13 +1023,13 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleReqItemChange(index, "purpose", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top text-center">
                               <button
                                 type="button"
-                                className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                                className="h-8 w-8 inline-flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                                 onClick={() => removeReqItemRow(index)}
                                 disabled={reqForm.items.length <= 1}
                               >
@@ -1045,13 +1045,13 @@ const PurchaseManagement: React.FC = () => {
 
                 <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
                   <button
-                    className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                    className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => setShowReqForm(false)}
                   >
                     Cancel
                   </button>
                   <button
-                    className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                    className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-lg transition-colors shadow-sm"
                     onClick={saveRequisition}
                   >
                     Save Requisition
@@ -1060,29 +1060,29 @@ const PurchaseManagement: React.FC = () => {
               </div>
             )}
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Req No
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Department
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Requester
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Items
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -1093,7 +1093,7 @@ const PurchaseManagement: React.FC = () => {
                       key={req.id}
                       className="bg-white hover:bg-gray-50 border-b border-gray-100 text-[12px] transition-colors"
                     >
-                      <td className="px-3 py-2.5 text-gray-800 font-medium">
+                      <td className="px-3 py-2.5 text-gray-700 font-medium">
                         {req.id.substring(0, 8)}
                       </td>
                       <td className="px-3 py-2.5 text-gray-700">
@@ -1149,35 +1149,35 @@ const PurchaseManagement: React.FC = () => {
         )}
 
         {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4">Three-Way Matching</h2>
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4">Three-Way Matching</h2>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Invoice No
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Supplier
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Date
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Invoice Amt
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       PO No
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       PO Amt
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       GRN No
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
                   </tr>
@@ -1195,7 +1195,7 @@ const PurchaseManagement: React.FC = () => {
                             )
                           }
                         >
-                          <td className="px-3 py-2.5 text-gray-800 font-medium">
+                          <td className="px-3 py-2.5 text-gray-700 font-medium">
                             {match.invoice.voucherNo}
                           </td>
                           <td className="px-3 py-2.5 text-gray-700">
@@ -1221,21 +1221,21 @@ const PurchaseManagement: React.FC = () => {
                           <tr className="bg-gray-50 border-b border-gray-200">
                             <td colSpan={8} className="p-4">
                               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                <div className="border border-gray-200 rounded-md bg-white p-3">
-                                  <h4 className="text-[12px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2">
+                                <div className="border border-gray-200 rounded-lg bg-white p-3">
+                                  <h4 className="text-[12px] font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2">
                                     Purchase Order (PO)
                                   </h4>
                                   {match.po ? (
                                     <table className="w-full min-w-max border-collapse">
                                       <thead>
-                                        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                                          <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                                        <tr className="bg-gray-50 border-b border-gray-200">
+                                          <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-400 uppercase">
                                             Item
                                           </th>
-                                          <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                                          <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-400 uppercase">
                                             Qty
                                           </th>
-                                          <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                                          <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-400 uppercase">
                                             Rate
                                           </th>
                                         </tr>
@@ -1263,18 +1263,18 @@ const PurchaseManagement: React.FC = () => {
                                   )}
                                 </div>
 
-                                <div className="border border-gray-200 rounded-md bg-white p-3">
-                                  <h4 className="text-[12px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2">
+                                <div className="border border-gray-200 rounded-lg bg-white p-3">
+                                  <h4 className="text-[12px] font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2">
                                     Goods Receipt (GRN)
                                   </h4>
                                   {match.grn ? (
                                     <table className="w-full min-w-max border-collapse">
                                       <thead>
-                                        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                                          <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                                        <tr className="bg-gray-50 border-b border-gray-200">
+                                          <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-400 uppercase">
                                             Item
                                           </th>
-                                          <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                                          <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-400 uppercase">
                                             Qty Received
                                           </th>
                                         </tr>
@@ -1301,20 +1301,20 @@ const PurchaseManagement: React.FC = () => {
                                   )}
                                 </div>
 
-                                <div className="border border-gray-200 rounded-md bg-white p-3">
-                                  <h4 className="text-[12px] font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2">
+                                <div className="border border-gray-200 rounded-lg bg-white p-3">
+                                  <h4 className="text-[12px] font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2">
                                     Purchase Invoice
                                   </h4>
                                   <table className="w-full min-w-max border-collapse">
                                     <thead>
-                                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                                        <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                                      <tr className="bg-gray-50 border-b border-gray-200">
+                                        <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-400 uppercase">
                                           Item
                                         </th>
-                                        <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                                        <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-400 uppercase">
                                           Qty Billed
                                         </th>
-                                        <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                                        <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-400 uppercase">
                                           Rate Billed
                                         </th>
                                       </tr>
@@ -1359,31 +1359,31 @@ const PurchaseManagement: React.FC = () => {
         )}
 
         {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4">Vendor Scorecard</h2>
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 max-w-full overflow-auto">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4">Vendor Scorecard</h2>
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Vendor Name
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Total Orders
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       On-Time Delivery (%)
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Quality Score
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Price Competitiveness
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Overall Score
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                       Rating
                     </th>
                   </tr>
@@ -1394,7 +1394,7 @@ const PurchaseManagement: React.FC = () => {
                       key={score.supplier.id}
                       className="bg-white hover:bg-gray-50 border-b border-gray-100 text-[12px]"
                     >
-                      <td className="px-3 py-2.5 text-gray-800 font-medium">
+                      <td className="px-3 py-2.5 text-gray-700 font-medium">
                         {score.supplier.name}
                       </td>
                       <td className="px-3 py-2.5 text-gray-700 text-right">{score.totalOrders}</td>

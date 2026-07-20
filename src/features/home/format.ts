@@ -8,11 +8,10 @@ export function formatHomeAmount(
   if (value === null || value === undefined || Number.isNaN(Number(value))) {
     return "—";
   }
-  const num = Number(value);
-  const abs = formatNumber(Math.abs(num), 2);
-  if (num < 0) return `${currencySymbol} (${abs})`;
-  if (num === 0) return `${currencySymbol} 0.00`;
-  return `${currencySymbol} ${abs}`;
+  return formatCurrency(value, {
+    symbol: currencySymbol,
+    negativeStyle: "parens",
+  });
 }
 
 export function formatHomeCount(value: number | null | undefined): string {
@@ -66,4 +65,4 @@ export function metricTone(
   return "neutral";
 }
 
-export { formatCurrency };
+export { formatCurrency, formatNumber };

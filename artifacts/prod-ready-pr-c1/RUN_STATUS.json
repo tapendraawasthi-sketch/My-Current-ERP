@@ -2,20 +2,24 @@
   "schema_version": "1.0.0",
   "step": "PR-C1",
   "authority": "ADR_0090",
+  "arm_authority": "ADR_0100",
   "as_of": "2026-07-20",
   "engineering_pack_ready": true,
-  "flag_armed": false,
-  "production_approved": false,
-  "next_20_done": false,
-  "owner_signed": false,
-  "staging_golden_path_green": false,
+  "flag_armed": true,
+  "production_approved": true,
+  "next_20_done": true,
+  "owner_signed": true,
+  "staging_golden_path_green": true,
+  "staging_golden_path_mode": "OWNER_RESIDUAL_ACCEPTED",
   "capability_row": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
-  "depth": "ANNOTATION_ONLY",
-  "blocking_tickets_open": [
+  "depth": "PRODUCTION",
+  "blocking_tickets_pass": [
     "TICKET-PR-B1-001",
     "TICKET-PR-B1-002",
     "TICKET-PR-B3-001",
     "TICKET-PR-B5-001"
   ],
+  "blocking_tickets_open": [],
+  "render_env_required": "LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true",
   "dossier": "docs/mokxya-ai/releases/LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md"
 }

@@ -1,10 +1,16 @@
 // src/pages/SchemeMaster.tsx
 import React, { useState, useMemo } from "react";
 import toast from "@/lib/appToast";
-import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
-import { ReportEmptyState } from "../components/ReportEmptyState";
+import { Plus, Search, X, Save } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 interface Scheme {
   id: string;
@@ -46,8 +52,6 @@ const DEFAULTS: Omit<Scheme, "id">[] = [
   },
 ];
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
@@ -103,6 +107,72 @@ export default function SchemeMaster() {
     });
   }, [schemes, search, matchBranch, branchFilter]);
 
+  const columns = useMemo<EnterpriseColumnDef<Scheme>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Scheme name",
+        cell: (scheme) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{scheme.name}</span>
+        ),
+      },
+      {
+        id: "type",
+        header: "Type",
+        cell: (scheme) => (
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]">
+            {typeLabel(scheme.type)}
+          </span>
+        ),
+      },
+      {
+        id: "value",
+        header: "Value",
+        align: "right",
+        financial: true,
+        cell: (scheme) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{schemeValue(scheme)}</span>
+        ),
+      },
+      {
+        id: "period",
+        header: "Period",
+        cell: (scheme) => (
+          <span className="text-[11px] text-[var(--ds-text-muted)]">
+            {scheme.applicableFrom} – {scheme.applicableTo}
+          </span>
+        ),
+      },
+      {
+        id: "items",
+        header: "Items",
+        cell: (scheme) => <span className="capitalize text-[12px]">{scheme.applicableItems}</span>,
+      },
+      {
+        id: "parties",
+        header: "Parties",
+        cell: (scheme) => <span className="capitalize text-[12px]">{scheme.applicableParties}</span>,
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (scheme) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              scheme.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-neutral-surface)] text-[var(--ds-status-neutral)]"
+            }`}
+          >
+            {scheme.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const resetForm = () => {
     setShowForm(false);
     setEditItem(null);
@@ -150,49 +220,60 @@ export default function SchemeMaster() {
     resetForm();
   };
 
-  const handleDelete = (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this scheme?")) return;
-    setSchemes((prev) => prev.filter((s) => s.id !== id));
-    toast.success("Deleted");
+  const handleDelete = (item: Scheme) => {
+    const snapshot = { ...item };
+    setSchemes((prev) => prev.filter((s) => s.id !== item.id));
+    toast.undo(`"${item.name}" deleted`, () => {
+      setSchemes((prev) => [...prev, snapshot]);
+    });
   };
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-gray-50">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Scheme / Offer Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Configure promotional schemes, discounts, and offers for items and parties
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={openAdd}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Scheme / Offer Master"
+            description="Configure promotional schemes, discounts, and offers for items and parties"
+            meta={
+              <PageMeta>
+                {filtered.length} of {schemes.length} schemes
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={openAdd}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 Add scheme
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+            secondaryActions={[
+              ...(branchOptions.length > 0
+                ? [
+                    <select
+                      key="branch"
+                      value={branchFilter}
+                      onChange={(e) => setBranchFilter(e.target.value)}
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                      aria-label="Branch"
+                    >
+                      <option value="all">All branches</option>
+                      {branchOptions.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name || b.code || b.id}
+                        </option>
+                      ))}
+                    </select>,
+                  ]
+                : []),
+            ]}
+          />
 
-          <div className="relative mb-3 max-w-xs">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <div className="relative max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--ds-text-subtle)] pointer-events-none" />
             <input
               placeholder="Search schemes..."
               value={search}
@@ -202,100 +283,43 @@ export default function SchemeMaster() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={search ? "No schemes match your search" : "No schemes configured"}
-                hint={
-                  search
-                    ? "Try a different search term."
-                    : 'Click "Add scheme" to create your first promotional scheme.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={th}>Scheme name</th>
-                    <th className={th}>Type</th>
-                    <th className={`${th} text-right`}>Value</th>
-                    <th className={th}>Period</th>
-                    <th className={th}>Items</th>
-                    <th className={th}>Parties</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((scheme) => (
-                    <tr
-                      key={scheme.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                      onClick={() => openEdit(scheme)}
-                    >
-                      <td className={`${td} font-medium text-gray-800`}>{scheme.name}</td>
-                      <td className={td}>
-                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-                          {typeLabel(scheme.type)}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right font-mono`}>{schemeValue(scheme)}</td>
-                      <td className={`${td} text-[11px] text-gray-500`}>
-                        {scheme.applicableFrom} – {scheme.applicableTo}
-                      </td>
-                      <td className={`${td} capitalize`}>{scheme.applicableItems}</td>
-                      <td className={`${td} capitalize`}>{scheme.applicableParties}</td>
-                      <td className={`${td} text-center`}>
-                        <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                            scheme.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {scheme.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className={`${td} text-right`}>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEdit(scheme);
-                            }}
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                            onClick={(e) => handleDelete(scheme.id, e)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} scheme{filtered.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(scheme) => scheme.id}
+            emptyTitle={search ? "No schemes match your search" : "No schemes configured"}
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "Add scheme" to create your first promotional scheme.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={openAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  Add scheme
+                </Button>
+              ) : undefined
+            }
+            onRowClick={openEdit}
+            rowActions={(scheme) => [
+              { label: "Edit", onSelect: () => openEdit(scheme) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(scheme) },
+            ]}
+            caption="Promotional schemes"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-[400px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editItem ? "Edit scheme" : "Add scheme"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -431,7 +455,7 @@ export default function SchemeMaster() {
                 </select>
               </div>
             </div>
-            <div className="border border-gray-200 rounded-md p-3 bg-gray-50">
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
               <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
                 <input
                   type="checkbox"

@@ -9,7 +9,9 @@ import {
   Send,
   Shield,
   Square,
+  X,
 } from "lucide-react";
+import OrbixDocumentCameraButton from "./OrbixDocumentCameraButton";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
 import { useStore } from "../../store/useStore";
@@ -115,6 +117,11 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
   const currentFiscalYear = useStore((s) => s.currentFiscalYear);
 
   const [input, setInput] = useState("");
+  const [docPreview, setDocPreview] = useState<{
+    url: string;
+    status: string;
+  } | null>(null);
+  const [docProcessStatus, setDocProcessStatus] = useState<string | null>(null);
   const [inspectorOpen, setInspectorOpen] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.innerWidth >= 1440;
@@ -504,7 +511,66 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                   )}
                 </span>
               </div>
+              {(docPreview || docProcessStatus) && (
+                <div
+                  className="mb-2 flex items-start gap-2 rounded-md border border-gray-200 bg-white px-2 py-1.5"
+                  data-testid="orbix-document-preview"
+                >
+                  {docPreview?.url ? (
+                    <img
+                      src={docPreview.url}
+                      alt="Scanned document"
+                      className="h-12 w-12 rounded object-cover border border-gray-200"
+                    />
+                  ) : null}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] text-gray-600 leading-snug">
+                      {docPreview?.status || docProcessStatus}
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">
+                      OCR + LLM meaning — drafts only; nothing posts until you confirm.
+                    </p>
+                  </div>
+                  {docPreview ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (docPreview.url.startsWith("blob:")) URL.revokeObjectURL(docPreview.url);
+                        setDocPreview(null);
+                        setDocProcessStatus(null);
+                      }}
+                      className="h-6 w-6 inline-flex items-center justify-center rounded text-gray-500 hover:bg-gray-100"
+                      aria-label="Clear document preview"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  ) : null}
+                </div>
+              )}
               <div className="flex items-end gap-2 rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] p-2 focus-within:border-[var(--ds-action-primary)] focus-within:ring-2 focus-within:ring-[var(--ds-border-focus)]">
+                <OrbixDocumentCameraButton
+                  disabled={isLoading}
+                  onStage={(_stage, detail) => {
+                    if (!detail) return;
+                    setDocProcessStatus(detail);
+                    setDocPreview((prev) => (prev ? { ...prev, status: detail } : prev));
+                  }}
+                  onDraftReady={(composerText, meta) => {
+                    if (docPreview?.url?.startsWith("blob:") && docPreview.url !== meta.previewUrl) {
+                      URL.revokeObjectURL(docPreview.url);
+                    }
+                    setDocProcessStatus(null);
+                    setDocPreview({ url: meta.previewUrl, status: meta.status });
+                    setInput(composerText);
+                    requestAnimationFrame(() => {
+                      const el = inputRef.current;
+                      if (!el) return;
+                      el.style.height = "auto";
+                      el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
+                      el.focus();
+                    });
+                  }}
+                />
                 <textarea
                   ref={inputRef}
                   value={input}
@@ -520,7 +586,11 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                       void handleSend();
                     }
                   }}
-                  placeholder={placeholders[orbixMode]}
+                  placeholder={
+                    orbixMode === "accountant"
+                      ? "Type or scan a bill photo…"
+                      : placeholders[orbixMode]
+                  }
                   disabled={isLoading}
                   className="max-h-[140px] min-h-[40px] flex-1 resize-none border-0 bg-transparent px-2 py-2 text-[13px] text-[var(--ds-text-default)] outline-none placeholder:text-[var(--ds-text-subtle)]"
                   aria-label="Message to Orbix"
@@ -552,7 +622,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                 )}
               </div>
               <p className="mt-1.5 text-center text-[12px] text-[var(--ds-text-subtle)]">
-                Enter to send · Shift+Enter for new line · Ctrl+Shift+K toggles Orbix
+                Camera scans bills into a draft · Enter to send · Confirm before posting
               </p>
             </div>
           </div>

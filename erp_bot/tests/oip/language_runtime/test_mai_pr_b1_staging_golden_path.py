@@ -43,7 +43,13 @@ def test_run_status_and_artifacts() -> None:
     assert run["engineering_pack_ready"] is True
     assert run["staging_attestation_complete"] is False
     assert run["blocks_pr_c"] is True
-    assert run["connected_run"]["status"] in {"FAIL", "PASS", "PENDING", "PARTIAL"}
+    assert run["connected_run"]["status"] in {
+        "FAIL",
+        "PASS",
+        "PENDING",
+        "PARTIAL",
+        "NOT_RUN",
+    }
     assert run["manual_run"]["status"] in {"PENDING", "PASS", "FAIL"}
     tickets = (
         ROOT / "artifacts" / "prod-ready-pr-b1" / "BLOCKING_TICKETS.md"

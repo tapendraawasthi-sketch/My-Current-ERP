@@ -100,11 +100,11 @@ const VoiceInput: React.FC<VoiceInputProps> = ({
       onClick={toggle}
       disabled={disabled}
       title={listening ? "Stop listening" : "Voice input"}
-      className={`h-8 w-8 flex items-center justify-center rounded-md border text-[12px] transition-colors ${
+      className={`h-9 w-9 flex items-center justify-center rounded-lg border text-[12px] transition-all ${
         listening
-          ? "border-red-300 bg-red-50 text-red-600 animate-pulse"
-          : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-      } disabled:opacity-40`}
+          ? "border-red-200 bg-red-50 text-red-500 animate-pulse shadow-sm shadow-red-100"
+          : "border-gray-200 bg-white text-gray-400 hover:text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+      } disabled:opacity-30`}
     >
       {listening ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
     </button>

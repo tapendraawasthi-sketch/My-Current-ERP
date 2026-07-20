@@ -17,7 +17,7 @@ const InputAutocomplete: React.FC<InputAutocompleteProps> = ({
   if (!suggestions.length) return null;
 
   return (
-    <ul className="absolute left-0 right-0 bottom-full mb-1 z-10 bg-white border border-gray-200 rounded-md shadow-lg max-h-36 overflow-y-auto">
+    <ul className="absolute left-0 right-0 bottom-full mb-1.5 z-10 bg-white border border-gray-100 rounded-lg shadow-xl max-h-40 overflow-y-auto">
       {suggestions.map((s, i) => (
         <li key={s.text}>
           <button
@@ -26,12 +26,12 @@ const InputAutocomplete: React.FC<InputAutocompleteProps> = ({
               e.preventDefault();
               onSelect(s.text);
             }}
-            className={`w-full text-left px-2.5 py-1.5 text-[11px] flex items-center justify-between gap-2 ${
-              i === activeIndex ? "bg-[#eef2ff] text-[var(--ds-action-primary)]" : "text-gray-700 hover:bg-gray-50"
+            className={`w-full text-left px-3 py-2 text-[11px] flex items-center justify-between gap-2 transition-colors ${
+              i === activeIndex ? "bg-blue-50 text-[var(--ds-action-primary)] font-medium" : "text-gray-600 hover:bg-gray-50"
             }`}
           >
             <span className="truncate">{s.text}</span>
-            <span className="text-[9px] uppercase text-gray-400 flex-shrink-0">{s.category}</span>
+            <span className="text-[8px] uppercase text-gray-300 flex-shrink-0 font-semibold tracking-wider">{s.category}</span>
           </button>
         </li>
       ))}

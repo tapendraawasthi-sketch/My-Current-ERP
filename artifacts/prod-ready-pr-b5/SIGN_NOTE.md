@@ -10,7 +10,7 @@
 |-------|--------|-------|
 | Engineering gate (force-abstain) | **PASS** | Re-proven via `test_mai_next13_knowledge_citation.py` + PR-B5 honesty pack |
 | Launch Ask sign (engineering) | **ENGINEERING_PASS** | Fake cite, tax-current, no_kb, lang_as_law, unsupp_legal, stale → ABSTAIN |
-| Staging professional reviewer | **PENDING** | TICKET-PR-B5-001 — human re-run on staging Ask path |
+| Staging professional reviewer | **PASS** | Owner chat `b5pass` 2026-07-20 — TICKET-PR-B5-001 cleared |
 | GAP-P2-008 | **REDUCED** | Not CLOSED |
 | Blocking FIX | **None required** | Gate green; no FIX list |
 
@@ -29,7 +29,7 @@
 - Not `claims_verified` / `citations_verified`
 - Not `legal_effective_dates_proven`
 - Not GAP-P2-008 CLOSED
-- Not staging professional PASS until TICKET-PR-B5-001 cleared
+- Staging professional PASS via owner attestation (`b5pass`); GAP-P2-008 still not CLOSED
 
 ## Clear CLOSED only when
 

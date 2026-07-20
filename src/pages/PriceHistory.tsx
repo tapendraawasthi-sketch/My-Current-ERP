@@ -248,9 +248,9 @@ const PriceHistory: React.FC = () => {
 
   if (allInvoices.length === 0) {
     return (
-      <div className="flex flex-col h-full bg-[#f5f6fa]">
+      <div className="flex flex-col h-full bg-gray-50">
         <div className="p-4 bg-white border-b border-gray-200">
-          <h1 className="text-xl font-bold text-gray-800">Price History & Rate Lookup</h1>
+          <h1 className="text-xl font-bold text-gray-900">Price History & Rate Lookup</h1>
           <p className="text-sm text-gray-600">
             View item-wise and party-wise sale/purchase rate history
           </p>
@@ -267,10 +267,10 @@ const PriceHistory: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#f5f6fa] pb-20">
+    <div className="flex flex-col h-full bg-gray-50 pb-20">
       <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Price History & Rate Lookup</h1>
+          <h1 className="text-xl font-bold text-gray-900">Price History & Rate Lookup</h1>
           <p className="text-sm text-gray-600">
             View item-wise and party-wise sale/purchase rate history
           </p>
@@ -279,7 +279,7 @@ const PriceHistory: React.FC = () => {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -327,7 +327,7 @@ const PriceHistory: React.FC = () => {
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   placeholder="Search item name..."
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 />
               </div>
             </div>
@@ -337,24 +337,24 @@ const PriceHistory: React.FC = () => {
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-[#f5f6fa]">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Item Name
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Last Sale
                         </th>
-                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Date
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Last Purchase
                         </th>
-                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Date
                         </th>
-                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                           Margin %
                         </th>
                       </tr>
@@ -475,23 +475,23 @@ const PriceHistory: React.FC = () => {
                   <div className="grid grid-cols-1 gap-4 mt-4">
                     {/* Sales History */}
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                      <div className="px-4 py-2 bg-[#f5f6fa] border-b border-gray-200">
+                      <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
                         <h4 className="text-sm font-semibold">Sales Price History</h4>
                       </div>
                       <div className="overflow-y-auto max-h-60">
                         <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-[#f5f6fa] sticky top-0">
+                          <thead className="bg-gray-50 sticky top-0">
                             <tr>
-                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Date
                               </th>
-                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Party
                               </th>
-                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Rate
                               </th>
-                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Net
                               </th>
                             </tr>
@@ -522,23 +522,23 @@ const PriceHistory: React.FC = () => {
 
                     {/* Purchase History */}
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                      <div className="px-4 py-2 bg-[#f5f6fa] border-b border-gray-200">
+                      <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
                         <h4 className="text-sm font-semibold">Purchase Price History</h4>
                       </div>
                       <div className="overflow-y-auto max-h-60">
                         <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-[#f5f6fa] sticky top-0">
+                          <thead className="bg-gray-50 sticky top-0">
                             <tr>
-                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Date
                               </th>
-                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Party
                               </th>
-                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Rate
                               </th>
-                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                                 Net
                               </th>
                             </tr>
@@ -579,7 +579,7 @@ const PriceHistory: React.FC = () => {
                 <select
                   value={selectedParty}
                   onChange={(e) => setSelectedParty(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="">Select a party...</option>
                   {uniqueParties.map((party) => (
@@ -599,21 +599,21 @@ const PriceHistory: React.FC = () => {
                   </h3>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-[#f5f6fa]">
+                      <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Date
                           </th>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Item
                           </th>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Type
                           </th>
-                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Rate
                           </th>
-                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Net Rate
                           </th>
                         </tr>
@@ -675,32 +675,32 @@ const PriceHistory: React.FC = () => {
                 </div>
 
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                  <div className="px-4 py-2 bg-[#f5f6fa] border-b border-gray-200">
+                  <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
                     <h4 className="text-sm font-semibold">All Transactions with {selectedParty}</h4>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-[#f5f6fa]">
+                      <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Date
                           </th>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Item
                           </th>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Invoice
                           </th>
-                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Type
                           </th>
-                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Qty
                           </th>
-                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Rate
                           </th>
-                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                             Net Rate
                           </th>
                         </tr>

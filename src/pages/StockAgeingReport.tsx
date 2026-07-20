@@ -272,10 +272,10 @@ export default function StockAgeingReport() {
   ];
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-gray-50 p-4 md:p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Ageing Report</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Stock Ageing Report</h1>
           <p className="mt-0.5 text-[11px] text-gray-500">
             FIFO-based bucket ageing analysis for current stock holdings by date, group, and
             warehouse
@@ -293,7 +293,7 @@ export default function StockAgeingReport() {
           <button
             type="button"
             onClick={handleExportExcel}
-            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
           >
             <Download className="h-3.5 w-3.5" />
             Export Excel
@@ -301,9 +301,9 @@ export default function StockAgeingReport() {
         </div>
       </div>
 
-      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
+      <div className="no-print mb-4 rounded-lg border border-gray-200 bg-white p-3">
         <div className="mb-3 flex items-start gap-2">
-          <div className="rounded-md border border-gray-200 bg-[#f5f6fa] p-1.5">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-1.5">
             <Filter className="h-3.5 w-3.5 text-[var(--ds-action-primary)]" />
           </div>
           <div>
@@ -417,7 +417,7 @@ export default function StockAgeingReport() {
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                     {card.title}
                   </p>
-                  <p className="mt-1 font-mono text-[18px] font-semibold text-gray-800">
+                  <p className="mt-1 font-mono text-[18px] font-semibold text-gray-700">
                     {card.value}
                   </p>
                 </div>
@@ -431,13 +431,13 @@ export default function StockAgeingReport() {
         })}
       </div>
 
-      <div className="mb-4 overflow-hidden rounded-md border border-gray-200 bg-white">
-        <div className="flex items-center justify-between gap-3 border-b border-gray-200 bg-[#f5f6fa] px-3 py-2">
+      <div className="mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-200 bg-gray-50 px-3 py-2">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
               Stock ageing analysis
             </p>
-            <p className="mt-0.5 text-[12px] font-semibold text-gray-800">
+            <p className="mt-0.5 text-[12px] font-semibold text-gray-700">
               FIFO bucket view as of {referenceDate}
             </p>
           </div>
@@ -456,7 +456,7 @@ export default function StockAgeingReport() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[1500px] border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-[#f5f6fa]">
+                  <tr className="border-b border-gray-200 bg-gray-50">
                     <th className={tableHeaderCls}>
                       <button
                         type="button"
@@ -532,13 +532,13 @@ export default function StockAgeingReport() {
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.name}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.groupId}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.unit}</td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-800">
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-700">
                         {row.totalQty}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-700">
                         {money(row.avgRate)}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-700">
                         {money(row.totalValue)}
                       </td>
                       {bucketColumns.map((bucket) => (
@@ -571,7 +571,7 @@ export default function StockAgeingReport() {
               </table>
             </div>
 
-            <div className="border-t border-gray-200 bg-[#f5f6fa] px-3 py-2 text-[11px] text-gray-500">
+            <div className="border-t border-gray-200 bg-gray-50 px-3 py-2 text-[11px] text-gray-500">
               {ageingData.length} stock item{ageingData.length === 1 ? "" : "s"} in report
             </div>
           </>
@@ -579,13 +579,13 @@ export default function StockAgeingReport() {
       </div>
 
       {deadStockItems.length > 0 && (
-        <div className="overflow-hidden rounded-md border border-red-200 bg-white">
+        <div className="overflow-hidden rounded-lg border border-red-200 bg-white">
           <div className="flex items-center justify-between gap-3 border-b border-red-200 bg-red-50 px-3 py-2">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-red-600">
                 Dead stock summary
               </p>
-              <p className="mt-0.5 text-[12px] font-semibold text-gray-800">
+              <p className="mt-0.5 text-[12px] font-semibold text-gray-700">
                 Items concentrated in the 180+ day bucket
               </p>
             </div>
@@ -625,7 +625,7 @@ export default function StockAgeingReport() {
                       {row.item.code}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.name}</td>
-                    <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-800">
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-700">
                       {row.buckets.b180plus}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-red-700">
@@ -635,7 +635,7 @@ export default function StockAgeingReport() {
                       <button
                         type="button"
                         onClick={() => {}}
-                        className="inline-flex h-7 items-center rounded-md border border-red-300 bg-white px-3 text-[12px] font-medium text-red-700 hover:bg-red-50"
+                        className="inline-flex h-7 items-center rounded-lg border border-red-300 bg-white px-3 text-[12px] font-medium text-red-700 hover:bg-red-50"
                       >
                         Write Off
                       </button>

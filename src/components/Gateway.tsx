@@ -6,6 +6,7 @@ import { getBSTodayLong } from "../lib/nepaliDate";
 import { computeAllStockPositions } from "../lib/stockUtils";
 import { computeOutstandingReceivables, computeOutstandingPayables } from "../lib/accounting";
 import { isAdminOrOwner, isAccountantOrAdmin } from "../lib/permissions";
+import { formatCompactCurrency, formatCurrency } from "@/lib/utils";
 import {
   Search,
   BookOpen,
@@ -70,22 +71,10 @@ interface MenuSection {
   items: GatewayMenuItem[];
 }
 
-// ─── Formatting ──────────────────────────────────────────────────────────────
+// ─── Formatting (STEP 6.1 — shared money helpers) ─────────────────────────────
 
-const fmtShort = (n: number) => {
-  const abs = Math.abs(Number(n) || 0);
-  if (abs >= 10_000_000) return `Rs. ${(abs / 10_000_000).toFixed(2)}Cr`;
-  if (abs >= 100_000) return `Rs. ${(abs / 100_000).toFixed(2)}L`;
-  if (abs >= 1_000) return `Rs. ${(abs / 1_000).toFixed(1)}K`;
-  return `Rs. ${abs.toFixed(2)}`;
-};
-
-const fmt = (n: number) =>
-  "Rs. " +
-  Math.abs(Number(n) || 0).toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+const fmtShort = (n: number) => formatCompactCurrency(n);
+const fmt = (n: number) => formatCurrency(Math.abs(Number(n) || 0));
 
 // ─── Menu structure with icons + shortcuts ───────────────────────────────────
 
@@ -129,7 +118,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: "Transactions",
     icon: Receipt,
-    color: "#059669",
+    color: "var(--ox-success)",
     items: [
       {
         label: "Sales Invoice",
@@ -213,7 +202,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: "Reports",
     icon: BarChart2,
-    color: "#7c3aed",
+    color: "var(--ds-action-primary)",
     items: [
       {
         label: "Balance Sheet",
@@ -280,7 +269,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: "Banking",
     icon: Landmark,
-    color: "#0284c7",
+    color: "var(--ox-info)",
     items: [
       { label: "PDC Summary", page: "pdc-management", icon: CreditCard, permission: "accounting" },
       {
@@ -308,7 +297,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: "Utilities",
     icon: Settings,
-    color: "#374151",
+    color: "var(--ox-text-muted)",
     items: [
       { label: "Fiscal Year", page: "fiscal-year", icon: Calendar, permission: "admin" },
       {
@@ -355,27 +344,27 @@ const QUICK_ACTIONS: Array<{
     page: "billing",
     icon: TrendingUp,
     shortcut: "F9",
-    color: "#059669",
+    color: "var(--ox-success)",
   },
   {
     label: "New Purchase Invoice",
     page: "purchase",
     icon: TrendingDown,
     shortcut: "F10",
-    color: "#d97706",
+    color: "var(--ox-warning)",
   },
   { label: "New Journal Entry", page: "journal", icon: FileText, shortcut: "F5", color: "var(--ds-action-primary)" },
-  { label: "New Payment", page: "payment", icon: Banknote, shortcut: "F6", color: "#7c3aed" },
-  { label: "New Receipt", page: "receipt", icon: Receipt, shortcut: "F7", color: "#0284c7" },
-  { label: "New Contra", page: "contra", icon: ArrowLeftRight, shortcut: "F8", color: "#374151" },
+  { label: "New Payment", page: "payment", icon: Banknote, shortcut: "F6", color: "var(--ds-action-primary)" },
+  { label: "New Receipt", page: "receipt", icon: Receipt, shortcut: "F7", color: "var(--ox-info)" },
+  { label: "New Contra", page: "contra", icon: ArrowLeftRight, shortcut: "F8", color: "var(--ox-text-muted)" },
   {
     label: "VAT Reports",
     page: "vat-reports",
     icon: BarChart2,
     shortcut: "Ctrl+G",
-    color: "#059669",
+    color: "var(--ox-success)",
   },
-  { label: "Day Book", page: "day-book", icon: BookMarked, shortcut: "D", color: "#6b7280" },
+  { label: "Day Book", page: "day-book", icon: BookMarked, shortcut: "D", color: "var(--ox-text-muted)" },
 ];
 
 // ─── Pulse Cell ──────────────────────────────────────────────────────────────
@@ -385,31 +374,14 @@ const PulseCell: React.FC<{ label: string; value: number; note: string }> = ({
   value,
   note,
 }) => (
-  <div style={{ flex: 1, padding: "10px 14px", borderRight: "1px solid #e5e7eb" }}>
+  <div className="flex-1 border-r border-gray-200 px-3.5 py-2.5">
+    <div className="text-[9px] font-bold uppercase tracking-[0.07em] text-gray-500">{label}</div>
     <div
-      style={{
-        fontSize: 9,
-        fontWeight: 700,
-        textTransform: "uppercase",
-        letterSpacing: "0.07em",
-        color: "#6b7280",
-      }}
-    >
-      {label}
-    </div>
-    <div
-      style={{
-        fontSize: 16,
-        fontWeight: 700,
-        fontFamily: "'Courier New', monospace",
-        color: value >= 0 ? "#059669" : "#dc2626",
-        marginTop: 3,
-        lineHeight: 1.2,
-      }}
+      className={`mt-0.5 font-mono text-[16px] font-bold leading-tight ${value >= 0 ? "text-[var(--ox-success)]" : "text-[var(--ox-danger)]"}`}
     >
       {fmt(value)}
     </div>
-    <div style={{ fontSize: 9, color: "#9ca3af", marginTop: 2 }}>{note}</div>
+    <div className="mt-0.5 text-[9px] text-gray-400">{note}</div>
   </div>
 );
 
@@ -422,47 +394,16 @@ const MetricCell: React.FC<{
   color?: string;
   onClick?: () => void;
   isLast?: boolean;
-}> = ({ label, value, sub, color = "#111827", onClick, isLast }) => (
+}> = ({ label, value, sub, color = "var(--ox-text)", onClick, isLast }) => (
   <div
     onClick={onClick}
-    style={{
-      flex: 1,
-      padding: "12px 14px",
-      borderRight: isLast ? "none" : "1px solid #e5e7eb",
-      cursor: onClick ? "pointer" : "default",
-      transition: "background 120ms ease",
-    }}
-    onMouseEnter={(e) => {
-      if (onClick) (e.currentTarget as HTMLDivElement).style.background = "#f9fafb";
-    }}
-    onMouseLeave={(e) => {
-      (e.currentTarget as HTMLDivElement).style.background = "transparent";
-    }}
+    className={`flex-1 px-3.5 py-3 transition-colors ${isLast ? "" : "border-r border-gray-200"} ${onClick ? "cursor-pointer hover:bg-[var(--ds-surface-muted)]" : "cursor-default"}`}
   >
-    <div
-      style={{
-        fontSize: 9,
-        fontWeight: 700,
-        textTransform: "uppercase",
-        letterSpacing: "0.07em",
-        color: "#6b7280",
-      }}
-    >
-      {label}
-    </div>
-    <div
-      style={{
-        fontSize: 15,
-        fontWeight: 700,
-        fontFamily: "'Courier New', monospace",
-        color,
-        marginTop: 3,
-        lineHeight: 1.2,
-      }}
-    >
+    <div className="text-[9px] font-bold uppercase tracking-[0.07em] text-gray-500">{label}</div>
+    <div className="mt-0.5 font-mono text-[15px] font-bold leading-tight" style={{ color }}>
       {value}
     </div>
-    {sub && <div style={{ fontSize: 9, color: "#9ca3af", marginTop: 2 }}>{sub}</div>}
+    {sub && <div className="mt-0.5 text-[9px] text-gray-400">{sub}</div>}
   </div>
 );
 
@@ -477,69 +418,23 @@ const SectionPanel: React.FC<{
   const Icon = section.icon;
 
   return (
-    <div
-      style={{
-        background: "#ffffff",
-        border: "1px solid #e5e7eb",
-        borderRadius: 6,
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Section header */}
-      <div
-        style={{
-          padding: "8px 14px",
-          background: "#f5f6fa",
-          borderBottom: "1px solid #e5e7eb",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
+    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="flex items-center gap-2 border-b border-gray-200 bg-[var(--ds-surface-muted)] px-3.5 py-2">
         <div
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: 4,
-            background: section.color + "18",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
+          className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded bg-[color:color-mix(in_srgb,var(--gw-accent)_9%,transparent)]"
+          style={{ ["--gw-accent" as string]: section.color } as React.CSSProperties}
         >
-          <Icon size={13} style={{ color: section.color }} />
+          <Icon size={13} className="text-[color:var(--gw-accent)]" />
         </div>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: "#374151",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-          }}
-        >
+        <span className="text-[11px] font-bold uppercase tracking-[0.06em] text-gray-700">
           {section.title}
         </span>
-        <span
-          style={{
-            marginLeft: "auto",
-            fontSize: 9,
-            fontWeight: 700,
-            color: "#9ca3af",
-            background: "#e5e7eb",
-            borderRadius: 10,
-            padding: "1px 6px",
-          }}
-        >
+        <span className="ml-auto rounded-[10px] bg-gray-200 px-1.5 py-px text-[9px] font-bold text-gray-400">
           {visibleItems.length}
         </span>
       </div>
 
-      {/* Items */}
-      <div style={{ flex: 1 }}>
+      <div className="flex-1">
         {visibleItems.map((item) => {
           const ItemIcon = item.icon;
           return (
@@ -566,81 +461,33 @@ const NavRow: React.FC<{
   icon?: React.ComponentType<any>;
   accentColor: string;
   onClick: () => void;
-}> = ({ label, shortcut, icon: Icon, accentColor, onClick }) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "7px 14px",
-        background: "transparent",
-        border: "none",
-        borderLeft: hovered ? `3px solid ${accentColor}` : "3px solid transparent",
-        borderBottom: "1px solid #f3f4f6",
-        textAlign: "left",
-        cursor: "pointer",
-        transition: "border-color 100ms ease",
-        paddingLeft: hovered ? 11 : 11,
-      }}
-    >
-      {Icon && (
-        <Icon
-          size={12}
-          style={{
-            color: hovered ? accentColor : "#9ca3af",
-            flexShrink: 0,
-            transition: "color 100ms ease",
-          }}
-        />
-      )}
-      <span
-        style={{
-          flex: 1,
-          fontSize: 12,
-          color: hovered ? "#111827" : "#374151",
-          fontWeight: hovered ? 600 : 400,
-          transition: "color 100ms ease, font-weight 100ms ease",
-        }}
-      >
-        {label}
-      </span>
-      {shortcut && (
-        <span
-          style={{
-            fontSize: 9,
-            fontWeight: 700,
-            color: hovered ? accentColor : "#9ca3af",
-            background: hovered ? accentColor + "12" : "#f3f4f6",
-            border: `1px solid ${hovered ? accentColor + "40" : "#e5e7eb"}`,
-            borderRadius: 3,
-            padding: "1px 5px",
-            fontFamily: "monospace",
-            flexShrink: 0,
-            transition: "all 100ms ease",
-          }}
-        >
-          {shortcut}
-        </span>
-      )}
-      <ChevronRight
-        size={10}
-        style={{
-          color: hovered ? accentColor : "#d1d5db",
-          flexShrink: 0,
-          transition: "color 100ms ease",
-        }}
+}> = ({ label, shortcut, icon: Icon, accentColor, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="group flex w-full items-center gap-2 border-b border-gray-100 border-l-[3px] border-l-transparent py-[7px] pl-[11px] pr-3.5 text-left transition-[border-color] duration-100 hover:border-l-[color:var(--gw-accent)]"
+    style={{ ["--gw-accent" as string]: accentColor } as React.CSSProperties}
+  >
+    {Icon && (
+      <Icon
+        size={12}
+        className="shrink-0 text-gray-400 transition-colors duration-100 group-hover:text-[color:var(--gw-accent)]"
       />
-    </button>
-  );
-};
+    )}
+    <span className="flex-1 text-[12px] font-medium text-gray-700 transition-[color,font-weight] duration-100 group-hover:font-semibold group-hover:text-gray-900">
+      {label}
+    </span>
+    {shortcut && (
+      <span className="shrink-0 rounded-[3px] border border-gray-200 bg-gray-100 px-[5px] py-px font-mono text-[9px] font-bold text-gray-400 transition-all duration-100 group-hover:border-[color:color-mix(in_srgb,var(--gw-accent)_25%,transparent)] group-hover:bg-[color:color-mix(in_srgb,var(--gw-accent)_7%,transparent)] group-hover:text-[color:var(--gw-accent)]">
+        {shortcut}
+      </span>
+    )}
+    <ChevronRight
+      size={10}
+      className="shrink-0 text-gray-300 transition-colors duration-100 group-hover:text-[color:var(--gw-accent)]"
+    />
+  </button>
+);
 
 // ─── Quick Action Tile ────────────────────────────────────────────────────────
 
@@ -651,63 +498,22 @@ const ActionTile: React.FC<{
   shortcut: string;
   color: string;
   onClick: () => void;
-}> = ({ label, icon: Icon, shortcut, color, onClick }) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "9px 12px",
-        background: hovered ? color + "08" : "#ffffff",
-        border: `1px solid ${hovered ? color + "40" : "#e5e7eb"}`,
-        borderLeft: `3px solid ${color}`,
-        borderRadius: 6,
-        cursor: "pointer",
-        textAlign: "left",
-        width: "100%",
-        transition: "background 120ms ease, border-color 120ms ease",
-      }}
-    >
-      <div
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 6,
-          background: color,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <Icon size={14} style={{ color: "#ffffff" }} />
-      </div>
-      <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "#111827" }}>{label}</span>
-      <span
-        style={{
-          fontSize: 9,
-          fontWeight: 700,
-          color: color,
-          background: color + "12",
-          border: `1px solid ${color}30`,
-          borderRadius: 3,
-          padding: "2px 6px",
-          fontFamily: "monospace",
-          flexShrink: 0,
-        }}
-      >
-        {shortcut}
-      </span>
-    </button>
-  );
-};
+}> = ({ label, icon: Icon, shortcut, color, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="group flex w-full items-center gap-2.5 rounded-lg border border-gray-200 border-l-[3px] border-l-[color:var(--gw-accent)] bg-white px-3 py-2.5 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-[background,border-color] duration-[120ms] hover:border-[color:color-mix(in_srgb,var(--gw-accent)_25%,transparent)] hover:bg-[color:color-mix(in_srgb,var(--gw-accent)_5%,transparent)]"
+    style={{ ["--gw-accent" as string]: color } as React.CSSProperties}
+  >
+    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[color:var(--gw-accent)]">
+      <Icon size={14} className="text-white" />
+    </div>
+    <span className="flex-1 text-[12px] font-semibold text-gray-900">{label}</span>
+    <span className="shrink-0 rounded-[3px] border border-[color:color-mix(in_srgb,var(--gw-accent)_19%,transparent)] bg-[color:color-mix(in_srgb,var(--gw-accent)_7%,transparent)] px-1.5 py-0.5 font-mono text-[9px] font-bold text-[color:var(--gw-accent)]">
+      {shortcut}
+    </span>
+  </button>
+);
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
@@ -934,46 +740,19 @@ const Gateway: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#f5f6fa",
-        overflow: "hidden",
-      }}
-    >
-      {/* ── Top command bar ─────────────────────────────────────────────── */}
-      <div
-        style={{
-          background: "#1e2433",
-          borderBottom: "1px solid #2d3748",
-          padding: "10px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>{companyName}</div>
-          <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
+    <div className="flex h-full flex-col overflow-hidden bg-[var(--ds-surface-muted)]">
+      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--ox-border-sidebar)] bg-[var(--ox-surface-sidebar)] px-5 py-2.5">
+        <div className="min-w-0 flex-1">
+          <div className="text-[14px] font-bold text-white">{companyName}</div>
+          <div className="mt-px text-[10px] text-slate-400">
             FY {fyLabel} &nbsp;·&nbsp; {bsToday}
           </div>
         </div>
 
-        {/* Search */}
-        <div style={{ position: "relative", width: 320 }}>
+        <div className="relative w-80">
           <Search
             size={13}
-            style={{
-              position: "absolute",
-              left: 10,
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#94a3b8",
-              pointerEvents: "none",
-            }}
+            className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
           />
           <input
             ref={searchRef}
@@ -981,62 +760,19 @@ const Gateway: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder='Search features… (press "/" to focus)'
-            style={{
-              width: "100%",
-              height: 32,
-              paddingLeft: 30,
-              paddingRight: 10,
-              fontSize: 12,
-              background: "#273148",
-              border: "1px solid #2d3748",
-              borderRadius: 5,
-              color: "#e2e8f0",
-              outline: "none",
-            }}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLInputElement).style.borderColor = "var(--ds-action-primary)";
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLInputElement).style.borderColor = "#2d3748";
-            }}
+            className="h-8 w-full rounded-[5px] border border-[var(--ox-border-sidebar)] bg-[var(--ox-surface-sidebar-hover)] pl-[30px] pr-2.5 text-[12px] text-slate-200 outline-none focus:border-[var(--ds-action-primary)]"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              style={{
-                position: "absolute",
-                right: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "none",
-                border: "none",
-                color: "#94a3b8",
-                cursor: "pointer",
-                fontSize: 14,
-                lineHeight: 1,
-              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 border-none bg-transparent text-[14px] leading-none text-slate-400"
             >
               ×
             </button>
           )}
 
-          {/* Search results dropdown */}
           {filteredItems.length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
-                left: 0,
-                right: 0,
-                background: "#ffffff",
-                border: "1px solid #e5e7eb",
-                borderRadius: 6,
-                boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                zIndex: 100,
-                maxHeight: 320,
-                overflowY: "auto",
-              }}
-            >
+            <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] max-h-80 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.06)]">
               {filteredItems.slice(0, 12).map(({ section, item, sectionColor }) => (
                 <button
                   key={item.page}
@@ -1045,99 +781,42 @@ const Gateway: React.FC = () => {
                     navigate(item.label, item.page);
                     setSearchQuery("");
                   }}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "9px 14px",
-                    background: "transparent",
-                    border: "none",
-                    borderBottom: "1px solid #f3f4f6",
-                    textAlign: "left",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background = "#f5f6fa";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                  }}
+                  className="flex w-full items-center gap-2.5 border-b border-gray-100 px-3.5 py-2 text-left hover:bg-[var(--ds-surface-muted)]"
                 >
                   <div
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: sectionColor,
-                      flexShrink: 0,
-                    }}
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--gw-accent)]"
+                    style={{ ["--gw-accent" as string]: sectionColor } as React.CSSProperties}
                   />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>
-                      {item.label}
-                    </div>
-                    <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>{section}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[12px] font-semibold text-gray-900">{item.label}</div>
+                    <div className="mt-px text-[10px] text-gray-400">{section}</div>
                     {item.shortcut && (
                       <div
-                        style={{
-                          fontSize: 9,
-                          color: sectionColor,
-                          marginTop: 1,
-                          fontFamily: "monospace",
-                          fontWeight: 700,
-                        }}
+                        className="mt-px font-mono text-[9px] font-bold text-[color:var(--gw-accent)]"
+                        style={{ ["--gw-accent" as string]: sectionColor } as React.CSSProperties}
                       >
                         Shortcut: {item.shortcut}
                       </div>
                     )}
                   </div>
-                  <ChevronRight size={12} style={{ color: "#d1d5db", flexShrink: 0 }} />
+                  <ChevronRight size={12} className="shrink-0 text-gray-300" />
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        <div style={{ fontSize: 10, color: "#64748b" }}>
+        <div className="text-[10px] text-slate-500">
           {currentUser?.name || "User"} &nbsp;·&nbsp;{" "}
-          <span style={{ textTransform: "capitalize" }}>{currentUser?.role || "user"}</span>
+          <span className="capitalize">{currentUser?.role || "user"}</span>
         </div>
       </div>
 
-      {/* ── Main body (two-column: left panel + right content) ───────────── */}
-      <div style={{ flex: 1, overflow: "hidden", display: "flex", gap: 0 }}>
-        {/* ── LEFT COLUMN: Financial Position + Quick Actions ──────────── */}
-        <div
-          style={{
-            width: 300,
-            flexShrink: 0,
-            borderRight: "1px solid #e5e7eb",
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: 0,
-            background: "#ffffff",
-          }}
-        >
-          {/* Profit Pulse */}
-          <div style={{ borderBottom: "1px solid #e5e7eb" }}>
-            <div
-              style={{
-                padding: "8px 14px",
-                background: "#f5f6fa",
-                borderBottom: "1px solid #e5e7eb",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  color: "#6b7280",
-                }}
-              >
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex w-[300px] shrink-0 flex-col gap-0 overflow-y-auto border-r border-gray-200 bg-white">
+          <div className="border-b border-gray-200">
+            <div className="border-b border-gray-200 bg-[var(--ds-surface-muted)] px-3.5 py-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-gray-500">
                 Profit Pulse
               </span>
             </div>
@@ -1146,28 +825,13 @@ const Gateway: React.FC = () => {
             <PulseCell label="Year-to-Date" value={ytdMargin} note="Gross Margin · YTD" />
           </div>
 
-          {/* Quick Actions */}
-          <div style={{ borderBottom: "1px solid #e5e7eb" }}>
-            <div
-              style={{
-                padding: "8px 14px",
-                background: "#f5f6fa",
-                borderBottom: "1px solid #e5e7eb",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  color: "#6b7280",
-                }}
-              >
+          <div className="border-b border-gray-200">
+            <div className="border-b border-gray-200 bg-[var(--ds-surface-muted)] px-3.5 py-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-gray-500">
                 Quick Actions
               </span>
             </div>
-            <div style={{ padding: "10px 10px", display: "flex", flexDirection: "column", gap: 6 }}>
+            <div className="flex flex-col gap-1.5 p-2.5">
               {QUICK_ACTIONS.map((action) => (
                 <ActionTile
                   key={action.page}
@@ -1179,22 +843,13 @@ const Gateway: React.FC = () => {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: Metrics strip + All sections ────────────────── */}
-        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
-          {/* Metrics strip (borderless, separator-only) */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderBottom: "2px solid #e5e7eb",
-              display: "flex",
-              flexWrap: "wrap",
-            }}
-          >
+        <div className="flex flex-1 flex-col overflow-y-auto">
+          <div className="flex flex-wrap border-b-2 border-gray-200 bg-white">
             <MetricCell
               label="Cash & Bank"
               value={fmtShort(cashBankBalance)}
               sub={fmt(cashBankBalance)}
-              color="#059669"
+              color="var(--ox-success)"
               onClick={() => navigate("General Ledger", "ledger")}
             />
             <MetricCell
@@ -1208,57 +863,48 @@ const Gateway: React.FC = () => {
               label="Payables"
               value={fmtShort(apOutstanding)}
               sub="Outstanding AP"
-              color="#d97706"
+              color="var(--ox-warning)"
               onClick={() => navigate("Outstanding Payables", "outstanding-payables")}
             />
             <MetricCell
               label="VAT Payable"
               value={fmtShort(vatPayable)}
               sub="Due to IRD"
-              color="#7c3aed"
+              color="var(--ds-action-primary)"
               onClick={() => navigate("VAT Reports", "vat-reports")}
             />
             <MetricCell
               label="Today's Sales"
               value={fmtShort(todaySales)}
               sub={fmt(todaySales)}
-              color="#059669"
+              color="var(--ox-success)"
               onClick={() => navigate("Day Book", "day-book")}
             />
             <MetricCell
               label="Today's Purchases"
               value={fmtShort(todayPurchases)}
               sub={fmt(todayPurchases)}
-              color="#d97706"
+              color="var(--ox-warning)"
               onClick={() => navigate("Day Book", "day-book")}
             />
             <MetricCell
               label="Stock Value"
               value={fmtShort(stockValue)}
               sub="Inventory"
-              color="#0284c7"
+              color="var(--ox-info)"
               onClick={() => navigate("Stock Summary", "stock-summary")}
             />
             <MetricCell
               label="Active Parties"
               value={String(parties.filter((p) => p.isActive !== false).length)}
               sub="Customers & Suppliers"
-              color="#374151"
+              color="var(--ox-text-muted)"
               onClick={() => navigate("Parties", "parties")}
               isLast
             />
           </div>
 
-          {/* All sections — persistent multi-column grid, never hidden/toggled */}
-          <div
-            style={{
-              padding: 16,
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 12,
-              alignItems: "start",
-            }}
-          >
+          <div className="grid grid-cols-3 items-start gap-4 p-5">
             {MENU_SECTIONS.map((section) => (
               <SectionPanel
                 key={section.title}

@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Input, Label, FieldError, Alert } from "@/design-system";
+import {
+  BUSINESS_NATURES,
+  getNatureProfile,
+  type BusinessNatureId,
+} from "@/lib/businessNature";
 import type { WizardStepProps } from "./wizardTypes";
 
 const NEPAL_PROVINCES = [
@@ -16,12 +21,29 @@ export default function Step1CompanyProfile({ data, onChange, errors = {} }: Wiz
   const set = <K extends keyof typeof data>(key: K, val: (typeof data)[K]) =>
     onChange({ ...data, [key]: val });
 
+  const natureHint = useMemo(() => {
+    if (!data.businessNature) return null;
+    return getNatureProfile(data.businessNature).hint;
+  }, [data.businessNature]);
+
+  const applyNature = (natureId: string) => {
+    const profile = getNatureProfile(natureId);
+    onChange({
+      ...data,
+      businessNature: natureId,
+      enableStock: profile.features.enableInventory,
+      enableCostCenter: profile.features.enableCostCenter,
+      enableBillWise: profile.features.enableBillWiseTracking,
+    });
+  };
+
   return (
     <div className="space-y-5">
       <div>
         <h2 className="text-[18px] font-semibold text-[var(--ds-text-strong)]">Company identity</h2>
         <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">
-          Legal and display details for Nepal business registration.
+          Legal and display details for Nepal business registration. Business nature controls which
+          ERP modules you see after setup.
         </p>
       </div>
 
@@ -51,9 +73,46 @@ export default function Step1CompanyProfile({ data, onChange, errors = {} }: Wiz
           />
         </div>
 
+        <div className="md:col-span-2">
+          <Label htmlFor="wiz-business-nature">
+            Business nature <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <select
+            id="wiz-business-nature"
+            value={data.businessNature}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (!v) {
+                onChange({ ...data, businessNature: "" });
+                return;
+              }
+              applyNature(v as BusinessNatureId);
+            }}
+            aria-invalid={Boolean(errors.businessNature) || undefined}
+            className="ds-focus-ring h-[var(--ds-control-height)] w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-[var(--ds-control-inset-x)] text-[14px]"
+            data-testid="wiz-business-nature"
+          >
+            <option value="">— Select business nature —</option>
+            {BUSINESS_NATURES.map((n) => (
+              <option key={n.id} value={n.id}>
+                {n.label}
+              </option>
+            ))}
+          </select>
+          <FieldError>{errors.businessNature}</FieldError>
+          {natureHint ? (
+            <p className="mt-1 text-[11px] text-[var(--ds-text-muted)]">{natureHint}</p>
+          ) : (
+            <p className="mt-1 text-[11px] text-[var(--ds-text-muted)]">
+              Menus and features (POS, inventory, production, funds, etc.) follow this choice. You
+              can change it later in Company settings.
+            </p>
+          )}
+        </div>
+
         <div>
           <Label htmlFor="wiz-business-type">
-            Business type <span className="text-[var(--ds-status-danger)]">*</span>
+            Legal entity type <span className="text-[var(--ds-status-danger)]">*</span>
           </Label>
           <select
             id="wiz-business-type"

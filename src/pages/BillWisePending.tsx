@@ -219,7 +219,7 @@ const BillWisePending: React.FC = () => {
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[130px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[130px]"
             />
           </label>
 
@@ -229,7 +229,7 @@ const BillWisePending: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -246,7 +246,7 @@ const BillWisePending: React.FC = () => {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as any)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="both">Both</option>
               <option value="receivables">Receivables (Sales)</option>
@@ -275,7 +275,7 @@ const BillWisePending: React.FC = () => {
               placeholder="Search party..."
               value={partySearch}
               onChange={(e) => setPartySearch(e.target.value)}
-              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[160px]"
+              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[160px]"
             />
           </div>
 
@@ -293,7 +293,7 @@ const BillWisePending: React.FC = () => {
     >
       {/* Summary stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Receivable
           </span>
@@ -301,7 +301,7 @@ const BillWisePending: React.FC = () => {
             Rs. {formatNumber(reportData.summary.receivable)}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Payable
           </span>
@@ -309,7 +309,7 @@ const BillWisePending: React.FC = () => {
             Rs. {formatNumber(reportData.summary.payable)}
           </span>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Net Position
           </span>
@@ -321,32 +321,32 @@ const BillWisePending: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm">
         <table className="w-full text-[12px] border-collapse">
-          <thead className="bg-[#f5f6fa] border-b border-gray-200">
+          <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Party / Invoice
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Date
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Due Date
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Bill Amount
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Paid Amount
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Pending Amount
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Overdue Days
               </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Type
               </th>
             </tr>
@@ -357,7 +357,7 @@ const BillWisePending: React.FC = () => {
                 return (
                   <tr
                     key={row.id}
-                    className="bg-[#f8fafc] font-semibold text-gray-800 border-y border-gray-200"
+                    className="bg-[#f8fafc] font-semibold text-gray-700 border-y border-gray-200"
                   >
                     <td colSpan={8} className="px-3 py-2.5">
                       <div className="flex justify-between items-center">
@@ -492,7 +492,7 @@ const BillWisePending: React.FC = () => {
             <select
               value={pendingTypeFilter}
               onChange={(e) => setPendingTypeFilter(e.target.value as any)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="both">Both</option>
               <option value="receivables">Receivables (Sales)</option>
@@ -506,7 +506,7 @@ const BillWisePending: React.FC = () => {
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -516,7 +516,7 @@ const BillWisePending: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>

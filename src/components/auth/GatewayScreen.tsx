@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { Button, EmptyState, LoadingState } from "@/design-system";
+import { Button, EmptyState, Input, LoadingState } from "@/design-system";
 import { PreWorkspaceShell, CompanyMonogram, environmentLabel } from "./PreWorkspaceShell";
 import { CompanyOpeningPanel, TrustSyncHint } from "./AuthAccessSurfaces";
 
@@ -67,11 +67,12 @@ export default function GatewayScreen() {
                 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ds-text-subtle)]"
                 aria-hidden
               />
-              <input
+              <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search companies"
-                className="ds-focus-ring h-9 w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] pl-9 pr-3 text-[14px]"
+                className="h-9 pl-9 text-[14px]"
+                aria-label="Search companies"
               />
             </div>
           </label>

@@ -305,7 +305,7 @@ export default function FundsFlow() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Funds flow</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Funds flow</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
             {companySettings?.name || "Company"} — Changes in Working Capital
           </p>
@@ -315,7 +315,7 @@ export default function FundsFlow() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -328,7 +328,7 @@ export default function FundsFlow() {
           )}
           <button
             onClick={exportToExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" /> Export
           </button>
@@ -345,7 +345,7 @@ export default function FundsFlow() {
             type="date"
             value={openingDate}
             onChange={(e) => setOpeningDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
@@ -356,7 +356,7 @@ export default function FundsFlow() {
             type="date"
             value={closingDate}
             onChange={(e) => setClosingDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
       </div>
@@ -441,7 +441,7 @@ export default function FundsFlow() {
             </tbody>
             <tfoot>
               <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
-                <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800">Total Sources</td>
+                <td className="px-4 py-2.5 text-[12px] font-bold text-gray-700">Total Sources</td>
                 <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[var(--ds-action-primary)]">
                   {fmt(totalSources)}
                 </td>
@@ -481,7 +481,7 @@ export default function FundsFlow() {
             </tbody>
             <tfoot>
               <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
-                <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800">
+                <td className="px-4 py-2.5 text-[12px] font-bold text-gray-700">
                   Total Application
                 </td>
                 <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[var(--ds-action-primary)]">
@@ -578,7 +578,7 @@ export default function FundsFlow() {
             </tbody>
             <tfoot>
               <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)] font-bold">
-                <td colSpan={5} className="px-4 py-2.5 text-[12px] font-bold text-gray-800">
+                <td colSpan={5} className="px-4 py-2.5 text-[12px] font-bold text-gray-700">
                   Net Change in Working Capital
                 </td>
                 <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-green-700">

@@ -20,7 +20,7 @@ export function useHomeDashboard() {
   const vouchers = useStore((s) => s.vouchers) ?? [];
   const setCurrentPage = useStore((s) => s.setCurrentPage);
   const permissions = usePermissionsStore((s) => s.permissions);
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { branchFilter, matchBranch } = useBranchFilter();
 
   const [model, setModel] = useState<HomeViewModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -104,7 +104,5 @@ export function useHomeDashboard() {
     retry: () => load(),
     setCurrentPage,
     branchFilter,
-    setBranchFilter,
-    branchOptions,
   };
 }

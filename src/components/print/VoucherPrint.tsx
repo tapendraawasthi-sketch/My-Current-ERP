@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Printer, Download } from "lucide-react";
+import { PrintDocumentHeader, PrintDocumentSignatures } from "@/features/reports";
 
 interface Voucher {
   id: string;
@@ -125,34 +126,16 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
 
         {/* Printable content */}
         <div className="p-8 print:p-12">
-          {/* Header Section */}
-          <div className="flex items-start justify-between mb-6">
-            <div className="w-20">
-              {company.logo && (
-                <img src={company.logo} alt="Company Logo" className="w-full h-auto" />
-              )}
-            </div>
-            <div className="text-center flex-1 mx-8">
-              <h1 className="text-2xl font-bold text-[#000000]">{company.companyNameEn}</h1>
-              {company.companyNameNe && (
-                <h2 className="text-lg text-[#000000] mb-2">{company.companyNameNe}</h2>
-              )}
-              <p className="text-sm text-[#000000]">
-                {company.address}, {company.city}
-              </p>
-              <p className="text-sm text-[#000000]">
-                Phone: {company.phone} | PAN: {company.panNumber}
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="border-2 border-[var(--ds-border-default)] px-4 py-2">
-                <h3 className="text-lg font-bold">{voucher.voucherType.toUpperCase()}</h3>
-                <p className="text-xs">VOUCHER</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t-2 border-[var(--ds-border-default)] mb-4"></div>
+          <PrintDocumentHeader
+            companyName={company.companyNameEn}
+            nameNepali={company.companyNameNe}
+            address={[company.address, company.city].filter(Boolean).join(", ")}
+            pan={company.panNumber}
+            phone={company.phone}
+            logoUrl={company.logo}
+            title={`${voucher.voucherType} voucher`}
+            periodLabel={`No. ${voucher.voucherNo}`}
+          />
 
           {/* Voucher Details */}
           <div className="flex justify-between mb-6">
@@ -245,32 +228,12 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
             </div>
           </div>
 
-          {/* Signature Boxes */}
-          <div className="grid grid-cols-4 gap-6 mt-16">
-            <div className="text-center">
-              <div className="border-t border-[var(--ds-border-default)] pt-2">
-                <p className="text-sm font-semibold">Prepared By</p>
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="border-t border-[var(--ds-border-default)] pt-2">
-                <p className="text-sm font-semibold">Checked By</p>
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="border-t border-[var(--ds-border-default)] pt-2">
-                <p className="text-sm font-semibold">Approved By</p>
-                {company.signatoryName && (
-                  <p className="text-xs text-[#000000]">{company.signatoryName}</p>
-                )}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="border-t border-[var(--ds-border-default)] pt-2">
-                <p className="text-sm font-semibold">Received By</p>
-              </div>
-            </div>
-          </div>
+          <PrintDocumentSignatures />
+          {company.signatoryName ? (
+            <p className="mt-2 text-right text-[11px] text-gray-600">
+              Authorised signatory: {company.signatoryName}
+            </p>
+          ) : null}
 
           {/* Footer */}
           <div className="border-t-2 border-[var(--ds-border-default)] pt-4 text-center mt-8">

@@ -26,6 +26,7 @@ import {
   shiftDateByYears,
 } from "../lib/nepalFinancialStatements";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { pushDrillCrumb, useNavCrumbStore } from "../routing/navCrumbStore";
 
 const DEFAULT_OPTIONS: PLReportOptions = {
   fromDate: new Date(new Date().getFullYear(), 3, 1).toISOString().split("T")[0], // April 1
@@ -198,6 +199,19 @@ export default function ProfitLoss() {
 
   const handleDrillDown = useCallback((newState: PLDrillState) => {
     setDrillState(newState);
+    const label =
+      newState.selectedVoucherId
+        ? "Voucher"
+        : newState.selectedAccountName ||
+          newState.selectedGroupLabel ||
+          "Detail";
+    const entityId =
+      newState.selectedVoucherId ||
+      newState.selectedAccountId ||
+      newState.selectedGroupId;
+    if (entityId) {
+      pushDrillCrumb({ page: "profit-loss", label, entityId });
+    }
   }, []);
 
   const handleDrillBack = useCallback(() => {
@@ -205,6 +219,8 @@ export default function ProfitLoss() {
       ...prev,
       level: Math.max(0, prev.level - 1) as PLDrillState["level"],
     }));
+    const crumbs = useNavCrumbStore.getState().stack;
+    if (crumbs.length > 1) useNavCrumbStore.getState().popTo(crumbs.length - 2);
   }, []);
 
   const handleExportExcel = useCallback(() => {
@@ -274,7 +290,10 @@ export default function ProfitLoss() {
       description="Income and expenses for the period."
       companyName={companyName}
       nameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
-      pan={companySettings?.panNumber || companySettings?.vatNumber}
+      pan={companySettings?.panNumber || companySettings?.vatNumber || companySettings?.pan}
+      address={companySettings?.address || companySettings?.companyAddress}
+      phone={companySettings?.phone || companySettings?.mobile}
+      logoUrl={companySettings?.logo || companySettings?.logoUrl}
       periodLabel={periodLabel}
       status={
         plData
@@ -320,7 +339,7 @@ export default function ProfitLoss() {
               <select
                 value={options.branchId || branchFilter || "all"}
                 onChange={(e) => handleBranchChange(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                 aria-label="Branch filter"
               >
                 <option value="all">All branches</option>

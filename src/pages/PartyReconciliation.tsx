@@ -522,10 +522,10 @@ export default function PartyReconciliation() {
   }, [selectedPartyRow, scopedVouchers, statementFrom, statementTo]);
 
   return (
-    <div className="p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
+          <h1 className="text-[15px] font-semibold text-gray-900">
             Party Reconciliation & Outstanding
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -538,7 +538,7 @@ export default function PartyReconciliation() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -560,7 +560,7 @@ export default function PartyReconciliation() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Printer className="h-3.5 w-3.5" />
             Print
@@ -598,7 +598,7 @@ export default function PartyReconciliation() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="Search party / PAN..."
-                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               />
             </div>
 
@@ -656,7 +656,7 @@ export default function PartyReconciliation() {
             ) : (
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     {[
                       "Party Name",
                       "PAN",
@@ -739,7 +739,7 @@ export default function PartyReconciliation() {
                           <td colSpan={9} className="p-3 bg-gray-50">
                             <table className="w-full border-collapse bg-white border border-gray-200">
                               <thead>
-                                <tr className="bg-[#f5f6fa]">
+                                <tr className="bg-gray-50">
                                   {[
                                     "Invoice No",
                                     "Date",
@@ -826,7 +826,7 @@ export default function PartyReconciliation() {
         <div className="space-y-4">
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[13px] font-semibold text-gray-800">Reconciliation Entries</h2>
+              <h2 className="text-[13px] font-semibold text-gray-700">Reconciliation Entries</h2>
               <button
                 type="button"
                 onClick={() => setShowAddEntry(!showAddEntry)}
@@ -837,11 +837,11 @@ export default function PartyReconciliation() {
             </div>
 
             {showAddEntry && (
-              <div className="grid grid-cols-3 gap-3 mb-4 border border-gray-200 rounded-lg p-3 bg-[#f5f6fa]">
+              <div className="grid grid-cols-3 gap-3 mb-4 border border-gray-200 rounded-lg p-3 bg-gray-50">
                 <select
                   value={newEntry.partyId || ""}
                   onChange={(e) => setNewEntry({ ...newEntry, partyId: e.target.value })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
                 >
                   <option value="">Select Party</option>
                   {outstanding.map((p) => (
@@ -855,14 +855,14 @@ export default function PartyReconciliation() {
                   type="date"
                   value={newEntry.date || ""}
                   onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
                 />
 
                 <input
                   placeholder="Description"
                   value={newEntry.description || ""}
                   onChange={(e) => setNewEntry({ ...newEntry, description: e.target.value })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
                 />
 
                 <input
@@ -870,7 +870,7 @@ export default function PartyReconciliation() {
                   placeholder="Our Balance"
                   value={newEntry.ourBalance ?? ""}
                   onChange={(e) => setNewEntry({ ...newEntry, ourBalance: Number(e.target.value) })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white text-right"
                 />
 
                 <input
@@ -880,13 +880,13 @@ export default function PartyReconciliation() {
                   onChange={(e) =>
                     setNewEntry({ ...newEntry, partyBalance: Number(e.target.value) })
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white text-right"
                 />
 
                 <select
                   value={newEntry.status || "unmatched"}
                   onChange={(e) => setNewEntry({ ...newEntry, status: e.target.value as any })}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
                 >
                   <option value="matched">matched</option>
                   <option value="unmatched">unmatched</option>
@@ -897,7 +897,7 @@ export default function PartyReconciliation() {
                   placeholder="Notes"
                   value={newEntry.notes || ""}
                   onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
-                  className="col-span-3 px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white"
+                  className="col-span-3 px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white"
                   rows={2}
                 />
 
@@ -905,7 +905,7 @@ export default function PartyReconciliation() {
                   <button
                     type="button"
                     onClick={() => setShowAddEntry(false)}
-                    className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md"
+                    className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg"
                   >
                     Cancel
                   </button>
@@ -922,7 +922,7 @@ export default function PartyReconciliation() {
 
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   {[
                     "Date",
                     "Party",
@@ -990,7 +990,7 @@ export default function PartyReconciliation() {
             <select
               value={selectedParty}
               onChange={(e) => setSelectedParty(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white w-64"
             >
               <option value="">Select Party</option>
               {outstanding.map((p) => (
@@ -1004,20 +1004,20 @@ export default function PartyReconciliation() {
               type="date"
               value={statementFrom}
               onChange={(e) => setStatementFrom(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
             />
 
             <input
               type="date"
               value={statementTo}
               onChange={(e) => setStatementTo(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white"
             />
 
             <button
               type="button"
               onClick={() => window.print()}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg flex items-center gap-1.5"
             >
               <Printer className="h-3.5 w-3.5" />
               Print Statement
@@ -1032,7 +1032,7 @@ export default function PartyReconciliation() {
           ) : (
             <>
               <div className="mb-4 border-b border-gray-200 pb-3">
-                <h2 className="text-[15px] font-semibold text-gray-800">
+                <h2 className="text-[15px] font-semibold text-gray-700">
                   Party Statement: {selectedPartyRow.partyName}
                 </h2>
                 <p className="text-[11px] text-gray-500 mt-0.5">
@@ -1046,7 +1046,7 @@ export default function PartyReconciliation() {
 
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     {["Date", "Type", "No", "Description", "Debit", "Credit", "Balance"].map(
                       (h) => (
                         <th
@@ -1090,7 +1090,7 @@ export default function PartyReconciliation() {
                 </tbody>
               </table>
 
-              <div className="mt-4 text-right text-[13px] font-semibold text-gray-800">
+              <div className="mt-4 text-right text-[13px] font-semibold text-gray-700">
                 Closing Balance:{" "}
                 <span className="font-mono">
                   {money(

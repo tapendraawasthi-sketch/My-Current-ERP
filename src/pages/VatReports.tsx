@@ -466,7 +466,7 @@ const VatReports: React.FC = () => {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
         <ReportWorkspace title="VAT reports" description="VAT returns and annexes." onPrint={handlePrint}>
-      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
+      <div className="no-print bg-white border border-gray-200 rounded-lg p-3 mb-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="" compact />
           {branchOptions.length > 0 && (
@@ -474,7 +474,7 @@ const VatReports: React.FC = () => {
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
               aria-label="Branch"
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="all">All branches</option>
               {branchOptions.map((b) => (
@@ -488,7 +488,7 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={handlePrint}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Printer className="h-3.5 w-3.5" />
               Print
@@ -526,7 +526,7 @@ const VatReports: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
           <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Output VAT (sales)
           </p>
@@ -537,7 +537,7 @@ const VatReports: React.FC = () => {
             Taxable {fmtVat(vatSummary.outputTaxable)} · {vatSummary.outputCount} invoices
           </p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
           <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Input VAT (purchases)
           </p>
@@ -603,7 +603,7 @@ const VatReports: React.FC = () => {
         <div className="space-y-4">
           <div className="bg-white border border-gray-200 rounded-b-md rounded-t-none overflow-hidden">
             <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
-              <h3 className="text-[12px] font-semibold text-gray-800">
+              <h3 className="text-[12px] font-semibold text-gray-700">
                 VAT return statement — {companySettings?.name ?? "Company"}
               </h3>
               <p className="text-[12px] text-gray-500 mt-0.5">
@@ -615,13 +615,13 @@ const VatReports: React.FC = () => {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                       Particulars
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-40">
                       Taxable amount
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide w-40">
                       VAT amount
                     </th>
                   </tr>
@@ -658,7 +658,7 @@ const VatReports: React.FC = () => {
                     </td>
                   </tr>
                   <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
-                    <td className="px-3 py-2.5 text-gray-800 pl-8">Total output VAT</td>
+                    <td className="px-3 py-2.5 text-gray-700 pl-8">Total output VAT</td>
                     <td className="number-cell-bold">
                       {money(vatSummary.outputTaxable)}
                     </td>
@@ -687,7 +687,7 @@ const VatReports: React.FC = () => {
                     </td>
                   </tr>
                   <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
-                    <td className="px-3 py-2.5 text-gray-800 pl-8">Total input VAT</td>
+                    <td className="px-3 py-2.5 text-gray-700 pl-8">Total input VAT</td>
                     <td className="number-cell-bold">
                       {money(vatSummary.inputTaxable)}
                     </td>
@@ -735,7 +735,7 @@ const VatReports: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[12px] font-semibold text-gray-800">
+              <h3 className="text-[12px] font-semibold text-gray-700">
                 Annex A — Sales to VAT registered parties
               </h3>
               <p className="text-[12px] text-gray-500 mt-0.5">
@@ -746,21 +746,21 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_A", annexAData, annexAColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <DataTable
               columns={annexAColumns}
               data={annexAData}
               emptyMessage="No sales to VAT-registered parties in this period."
               footerRow={
                 <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
-                  <td colSpan={5} className="px-3 py-2.5 text-gray-800">
+                  <td colSpan={5} className="px-3 py-2.5 text-gray-700">
                     Total
                   </td>
                   <td className="number-cell-bold">
@@ -791,7 +791,7 @@ const VatReports: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[12px] font-semibold text-gray-800">
+              <h3 className="text-[12px] font-semibold text-gray-700">
                 Annex B — Retail sales (non-VAT registered)
               </h3>
               <p className="text-[12px] text-gray-500 mt-0.5">
@@ -802,21 +802,21 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_B", annexBData, annexBColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <DataTable
               columns={annexBColumns}
               data={annexBData}
               emptyMessage="No retail sales in this period."
               footerRow={
                 <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
-                  <td colSpan={4} className="px-3 py-2.5 text-gray-800">
+                  <td colSpan={4} className="px-3 py-2.5 text-gray-700">
                     Total
                   </td>
                   <td className="number-cell-bold">
@@ -847,7 +847,7 @@ const VatReports: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[12px] font-semibold text-gray-800">
+              <h3 className="text-[12px] font-semibold text-gray-700">
                 Annex C — Purchase invoices
               </h3>
               <p className="text-[12px] text-gray-500 mt-0.5">
@@ -858,21 +858,21 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_C", annexCData, annexCColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <DataTable
               columns={annexCColumns}
               data={annexCData}
               emptyMessage="No purchase invoices in this period."
               footerRow={
                 <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
-                  <td colSpan={5} className="px-3 py-2.5 text-gray-800">
+                  <td colSpan={5} className="px-3 py-2.5 text-gray-700">
                     Total
                   </td>
                   <td className="number-cell-bold">
@@ -900,7 +900,7 @@ const VatReports: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[12px] font-semibold text-gray-800">
+              <h3 className="text-[12px] font-semibold text-gray-700">
                 Annex D — Import purchases
               </h3>
               <p className="text-[12px] text-gray-500 mt-0.5">{annexDData.length} records</p>
@@ -908,14 +908,14 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_D", annexDData, annexCColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <DataTable
               columns={annexCColumns}
               data={annexDData}

@@ -1,8 +1,12 @@
 // @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Download } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import {
+  ReportWorkspace,
+  useReportQueryParams,
+  applyBranchQueryParam,
+} from "@/features/reports";
 
 interface FinancialData {
   currentAssets: number;
@@ -209,15 +213,33 @@ const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = (
 };
 
 export default function RatioAnalysis() {
-  const { accounts, vouchers, stockMovements, currentFiscalYear } = useStore();
+  const { accounts, vouchers, stockMovements, currentFiscalYear, initLifecycle } = useStore();
+  const storeLoading = initLifecycle === "loading" || initLifecycle === "initializing";
   const { branchFilter, setBranchFilter, branchOptions, matchBranch, matchMovement } =
     useBranchFilter();
 
   const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
   const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
+  const { params, writeParams } = useReportQueryParams({ from: fyStart, to: fyEnd });
 
-  const [fromDate, setFromDate] = useState(fyStart);
-  const [toDate, setToDate] = useState(fyEnd);
+  const [fromDate, setFromDate] = useState(() => params.from || fyStart);
+  const [toDate, setToDate] = useState(() => params.to || fyEnd);
+
+  useEffect(() => {
+    if (params.from) setFromDate(params.from);
+    if (params.to) setToDate(params.to);
+    if (params.branch) applyBranchQueryParam(params.branch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const syncQuery = () => {
+    writeParams({
+      fy: currentFiscalYear?.id || currentFiscalYear?.name,
+      from: fromDate,
+      to: toDate,
+      branch: branchFilter,
+    });
+  };
 
   const scopedVouchers = useMemo(
     () => (vouchers || []).filter((v) => matchBranch((v as any).branchId)),
@@ -392,50 +414,62 @@ export default function RatioAnalysis() {
     return res;
   }, [financialData]);
 
-  return (
-    <div className="bg-[#f5f6fa] min-h-screen">
-      <div className="flex items-center justify-between mb-4 px-4 pt-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Ratios</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Key financial indicators and metrics</p>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
-            aria-label="From date"
-          />
-          <input
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
-            aria-label="To date"
-          />
-          {branchOptions.length > 0 && (
-            <select
-              value={branchFilter}
-              onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
-              aria-label="Branch"
-            >
-              <option value="all">All branches</option>
-              {branchOptions.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name || b.code || b.id}
-                </option>
-              ))}
-            </select>
-          )}
-          <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-2">
-            <Download size={14} /> Export
-          </button>
-        </div>
-      </div>
+  const inputCls =
+    "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
-      <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 24 }}>
+  return (
+    <ReportWorkspace
+      title="Ratios"
+      description="Key financial indicators and metrics"
+      periodLabel={`${fromDate} to ${toDate}`}
+      loading={storeLoading}
+      onPrint={() => window.print()}
+      onShowReport={syncQuery}
+      showReportLabel="Apply filters"
+      filterSlot={
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            From date
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className={inputCls}
+              aria-label="From date"
+            />
+          </label>
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+            To date
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className={inputCls}
+              aria-label="To date"
+            />
+          </label>
+          {branchOptions.length > 0 && (
+            <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex flex-col gap-1">
+              Branch
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={inputCls}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+      }
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         {CATEGORIES.map((cat) => {
           const catRatios = RATIO_DEFS.filter((r) => r.category === cat.key);
           return (
@@ -468,6 +502,6 @@ export default function RatioAnalysis() {
           );
         })}
       </div>
-    </div>
+    </ReportWorkspace>
   );
 }

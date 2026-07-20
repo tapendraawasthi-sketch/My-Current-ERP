@@ -7,6 +7,8 @@ interface OrbixWindowControlsProps {
   onMinimize: () => void;
   onMaximize: () => void;
   onClose: () => void;
+  /** Mobile full-screen overlay — maximize/restore is a no-op */
+  hideMaximize?: boolean;
 }
 
 const WinBtn: React.FC<{
@@ -30,22 +32,25 @@ const OrbixWindowControls: React.FC<OrbixWindowControlsProps> = ({
   onMinimize,
   onMaximize,
   onClose,
+  hideMaximize = false,
 }) => (
   <div className="flex items-center flex-shrink-0 -mr-1">
     <WinBtn onClick={onMinimize} title="Minimize" hoverClass="hover:bg-[var(--ds-surface-muted)] hover:text-[var(--ds-text-default)]">
       <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
     </WinBtn>
-    <WinBtn
-      onClick={onMaximize}
-      title={windowMode === "maximized" ? "Restore" : "Maximize"}
-      hoverClass="hover:bg-[var(--ds-surface-muted)] hover:text-[var(--ds-text-default)]"
-    >
-      {windowMode === "maximized" ? (
-        <Copy className="h-3 w-3" strokeWidth={2} />
-      ) : (
-        <Square className="h-3 w-3" strokeWidth={2} />
-      )}
-    </WinBtn>
+    {!hideMaximize && (
+      <WinBtn
+        onClick={onMaximize}
+        title={windowMode === "maximized" ? "Restore" : "Maximize"}
+        hoverClass="hover:bg-[var(--ds-surface-muted)] hover:text-[var(--ds-text-default)]"
+      >
+        {windowMode === "maximized" ? (
+          <Copy className="h-3 w-3" strokeWidth={2} />
+        ) : (
+          <Square className="h-3 w-3" strokeWidth={2} />
+        )}
+      </WinBtn>
+    )}
     <WinBtn onClick={onClose} title="Close" hoverClass="hover:bg-[var(--ds-status-danger)] hover:text-white">
       <X className="h-3.5 w-3.5" strokeWidth={2.5} />
     </WinBtn>

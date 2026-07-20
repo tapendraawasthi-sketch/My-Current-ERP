@@ -276,7 +276,7 @@ const StockJournalPage: React.FC = () => {
       <div className="min-h-screen bg-[var(--ox-bg,var(--ds-canvas))] p-4 text-[12px] text-[var(--ox-text)]">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Stock journal</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Stock journal</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">Adjust stock with accounting.</p>
             <p className="mt-0.5 text-[12px] text-gray-500">
               Transfer inventory between warehouses
@@ -289,7 +289,7 @@ const StockJournalPage: React.FC = () => {
                 setMode("list");
                 resetForm();
               }}
-              className="h-8 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
+              className="h-8 rounded-lg border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
             >
               Back to list
             </button>
@@ -392,12 +392,12 @@ const StockJournalPage: React.FC = () => {
               </Button>
               <div className="text-right text-[12px] text-gray-600">
                 Total qty:{" "}
-                <span className="font-mono font-semibold text-gray-800">
+                <span className="font-mono font-semibold text-gray-700">
                   {formatNumber(totals.totalQty)}
                 </span>
                 <br />
                 Total value:{" "}
-                <span className="font-mono font-semibold text-gray-800">
+                <span className="font-mono font-semibold text-gray-700">
                   {symbol} {formatNumber(totals.totalValue)}
                 </span>
               </div>
@@ -414,7 +414,7 @@ const StockJournalPage: React.FC = () => {
             </button>
             <button
               type="button"
-              className="h-8 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
+              className="h-8 rounded-lg border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
               onClick={() => {
                 setMode("list");
                 resetForm();
@@ -432,7 +432,7 @@ const StockJournalPage: React.FC = () => {
     <div className="min-h-screen bg-[var(--ox-bg,var(--ds-canvas))] p-4 text-[12px]">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock journal</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Stock journal</h1>
           <p className="mt-0.5 text-[12px] text-gray-500">
             Draft and post warehouse transfer journals
           </p>
@@ -442,7 +442,7 @@ const StockJournalPage: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -464,7 +464,7 @@ const StockJournalPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)]">
+      <div className="overflow-hidden rounded-lg border border-[var(--ox-border)] bg-[var(--ox-surface)]">
         <SearchableTable
           columns={columns as any}
           data={journalRows}

@@ -25,14 +25,14 @@ const PurchaseOrderOutstanding: React.FC = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Purchase Order Outstanding</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Purchase Order Outstanding</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">Pending receipt and bill against purchase orders</p>
         </div>
         {branchOptions.length > 0 && (
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -45,9 +45,9 @@ const PurchaseOrderOutstanding: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white border rounded-md overflow-auto">
+      <div className="bg-white border rounded-lg overflow-auto">
         <table className="w-full text-[12px]">
-          <thead className="bg-[#f5f6fa]">
+          <thead className="bg-gray-50">
             <tr>
               {[
                 "PO No.",

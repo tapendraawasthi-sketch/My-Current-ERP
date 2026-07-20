@@ -182,13 +182,13 @@ const StockItemReport: React.FC = () => {
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isOpening || row.isClosing) {
       if (columnKey === "particulars") {
-        return <span className="font-bold text-gray-800">{value}</span>;
+        return <span className="font-bold text-gray-700">{value}</span>;
       }
       if (
         ["inwardQty", "outwardQty", "rate", "value", "balanceQty"].includes(columnKey) &&
         value !== ""
       ) {
-        return <span className="font-bold font-mono text-gray-800">{formatNumber(value)}</span>;
+        return <span className="font-bold font-mono text-gray-700">{formatNumber(value)}</span>;
       }
       return value;
     }
@@ -242,7 +242,7 @@ const StockItemReport: React.FC = () => {
             <select
               value={selectedItemId}
               onChange={(e) => setSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
             >
               {(items || []).map((item) => (
                 <option key={item.id} value={item.id}>
@@ -258,7 +258,7 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -268,7 +268,7 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -276,7 +276,7 @@ const StockItemReport: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -293,7 +293,7 @@ const StockItemReport: React.FC = () => {
             <select
               value={selectedWarehouseId}
               onChange={(e) => setSelectedWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
             >
               {allWarehouses.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -328,7 +328,7 @@ const StockItemReport: React.FC = () => {
 
       {/* Summary section */}
       <div className="grid grid-cols-4 gap-4 text-[12px] mb-4">
-        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Inward Qty
           </div>
@@ -336,7 +336,7 @@ const StockItemReport: React.FC = () => {
             {formatNumber(reportData.summary.totalInwardQty)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Outward Qty
           </div>
@@ -344,7 +344,7 @@ const StockItemReport: React.FC = () => {
             {formatNumber(reportData.summary.totalOutwardQty)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Closing Stock Qty
           </div>
@@ -354,17 +354,17 @@ const StockItemReport: React.FC = () => {
             {formatNumber(reportData.summary.closingQty)}
           </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col justify-center">
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Closing Stock Value
           </div>
-          <div className="text-[14px] font-mono font-semibold text-gray-800">
+          <div className="text-[14px] font-mono font-semibold text-gray-700">
             Rs. {formatNumber(reportData.summary.closingValue)}
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden mb-6">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <ReportGrid
           columns={[
             { key: "date", label: "Date" },
@@ -398,7 +398,7 @@ const StockItemReport: React.FC = () => {
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {(items || []).map((item) => (
                 <option key={item.id} value={item.id}>
@@ -414,7 +414,7 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -424,7 +424,7 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -434,7 +434,7 @@ const StockItemReport: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>
@@ -452,7 +452,7 @@ const StockItemReport: React.FC = () => {
             <select
               value={pendingSelectedWarehouseId}
               onChange={(e) => setPendingSelectedWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {allWarehouses.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -469,7 +469,7 @@ const StockItemReport: React.FC = () => {
               onChange={(e) =>
                 setPendingValuationMethod(e.target.value as "weighted-average" | "fifo")
               }
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="weighted-average">Weighted Average</option>
               <option value="fifo">FIFO</option>

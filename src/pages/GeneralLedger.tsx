@@ -5,6 +5,8 @@ import { useStore } from "../store/useStore";
 import { type DrillRow, useDrillDownNav } from "../hooks/useDrillDownNav";
 import LedgerStatementView from "../components/accounts/LedgerStatementView";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { pushDrillCrumb, useNavCrumbStore } from "../routing/navCrumbStore";
+import { formatNumber } from "@/lib/utils";
 
 interface Account {
   id: string;
@@ -96,10 +98,7 @@ function buildVisibleRows(accounts: Account[], expandedIds: Set<string>): DrillR
 }
 
 function formatBalance(value: number): string {
-  return Math.abs(Number(value || 0)).toLocaleString("en-NP", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  return formatNumber(Math.abs(Number(value || 0)), 2);
 }
 
 interface TreeSnapshot {
@@ -148,8 +147,14 @@ const GeneralLedger: React.FC = () => {
         scrollTop: treeRef.current?.scrollTop ?? 0,
       });
       setSelectedLedgerId(id);
+      const acct = accountList.find((a) => a.id === id);
+      pushDrillCrumb({
+        page: "ledger",
+        label: acct?.name || "Ledger",
+        entityId: id,
+      });
     },
-    [expandedIds],
+    [expandedIds, accountList],
   );
 
   const { focusedId, setFocusedId, handleKeyDown } = useDrillDownNav({
@@ -164,6 +169,10 @@ const GeneralLedger: React.FC = () => {
       setFocusedId(treeSnapshot.focusedId);
     }
     setSelectedLedgerId(null);
+    const stack = useNavCrumbStore.getState().stack;
+    if (stack.length > 1) {
+      useNavCrumbStore.getState().popTo(stack.length - 2);
+    }
   }, [treeSnapshot, setFocusedId]);
 
   useEffect(() => {
@@ -192,7 +201,7 @@ const GeneralLedger: React.FC = () => {
     <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Account activity</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Account activity</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
             History of one account — pick a ledger to open the statement.
           </p>
@@ -201,7 +210,7 @@ const GeneralLedger: React.FC = () => {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -214,7 +223,7 @@ const GeneralLedger: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md flex flex-col flex-1 min-h-0">
+      <div className="bg-white border border-gray-200 rounded-lg flex flex-col flex-1 min-h-0">
         <div
           ref={treeRef}
           tabIndex={0}
@@ -254,7 +263,7 @@ const GeneralLedger: React.FC = () => {
                     }}
                   >
                     <td
-                      className="text-[12px] text-gray-800"
+                      className="text-[12px] text-gray-700"
                       style={{ paddingLeft: `${12 + row.depth * 20}px` }}
                     >
                       <div className="flex items-center gap-1.5">

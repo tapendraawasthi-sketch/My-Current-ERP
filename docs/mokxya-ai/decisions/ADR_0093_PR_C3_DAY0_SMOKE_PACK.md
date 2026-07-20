@@ -27,7 +27,7 @@ cannot honestly PASS until at least one launch row is armed and a real
 
 PR-H1 / PR-H2 were already covered by PR-B6 (ADR_0089). Progress table
 updates them to DONE → evidence ADR_0089 / PR_B6_HYGIENE_GATE.md.
-PR-H3 / PR-H4 remain OPEN.
+PR-H3 / PR-H4 hygiene ships landed; Day-0 smoke still NOT_RUN until after arm.
 
 ## Explicit non-claims
 

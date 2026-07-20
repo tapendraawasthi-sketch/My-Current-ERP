@@ -111,11 +111,25 @@ export interface CompanySettings {
   vatNumber?: string;
   currencySymbol?: string;
   defaultCurrency?: string;
+  /** Legal entity (Sole Prop, Pvt. Ltd., …). */
+  businessType?: string;
+  /** Industry nature id — drives module visibility (see lib/businessNature). */
+  businessNature?: string;
   enableCostCenter?: boolean;
   enableBillWiseTracking?: boolean;
   enableBillWise?: boolean;
   enableBatchTracking?: boolean;
   enableMultiCurrency?: boolean;
+  /** Nature-driven: show inventory module. */
+  enableInventory?: boolean;
+  /** Nature-driven: show POS counter. */
+  enablePOS?: boolean;
+  /** Nature-driven: manufacturing / recipe production. */
+  enableProduction?: boolean;
+  /** Nature-driven: job-work registers. */
+  enableJobWork?: boolean;
+  /** Nature-driven: budget surfaces. */
+  enableBudget?: boolean;
   tdsEnabled?: boolean;
   enableBankReconciliation?: boolean;
   enablePayroll?: boolean;

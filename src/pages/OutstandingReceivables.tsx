@@ -341,7 +341,7 @@ const OutstandingReceivables: React.FC = () => {
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total Invoiced
             </p>
-            <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
+            <p className="text-[12px] number-cell-bold text-gray-700 mt-0.5">
               {money(totals.original)}
             </p>
           </div>
@@ -403,7 +403,7 @@ const OutstandingReceivables: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center gap-1 border border-gray-300 rounded-md overflow-hidden">
+        <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden">
           {["all", "unpaid", "partial"].map((s) => (
             <button
               key={s}
@@ -423,7 +423,7 @@ const OutstandingReceivables: React.FC = () => {
         <select
           value={partyFilter}
           onChange={(e) => setPartyFilter(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+          className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         >
           <option value="">All Parties</option>
           {uniqueParties.map((p) => (
@@ -438,7 +438,7 @@ const OutstandingReceivables: React.FC = () => {
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
             aria-label="Branch"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             <option value="all">All branches</option>
             {branchOptions.map((b) => (
@@ -455,7 +455,7 @@ const OutstandingReceivables: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search party, invoice, PAN…"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+            className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
           />
         </div>
       </div>
@@ -473,25 +473,25 @@ const OutstandingReceivables: React.FC = () => {
               <thead>
                 <tr className="bg-[var(--ds-surface-muted)] border-b-2 border-[var(--ds-border-default)]">
                   <th className="w-9 px-2 py-2.5" />
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Party / Invoice
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Inv. No.
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Date
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Due Date
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Days Overdue
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Outstanding
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                     Action
                   </th>
                 </tr>
@@ -579,7 +579,7 @@ const OutstandingReceivables: React.FC = () => {
               {filteredRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
-                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                    <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-700">
                       Total ({filteredRows.length} invoices)
                     </td>
                     <td colSpan={4} />
@@ -605,7 +605,7 @@ const OutstandingReceivables: React.FC = () => {
         >
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
             <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
-              <span className="text-[13px] font-semibold text-gray-800">
+              <span className="text-[13px] font-semibold text-gray-700">
                 Invoice: {selectedRow.invoiceNo}
               </span>
               <button
@@ -623,7 +623,7 @@ const OutstandingReceivables: React.FC = () => {
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Party
                   </p>
-                  <p className="text-gray-800 font-semibold">{selectedRow.partyName}</p>
+                  <p className="text-gray-700 font-semibold">{selectedRow.partyName}</p>
                 </div>
                 <div>
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
@@ -649,7 +649,7 @@ const OutstandingReceivables: React.FC = () => {
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Original Amount
                   </p>
-                  <p className="text-gray-800 font-mono font-semibold">
+                  <p className="text-gray-700 font-mono font-semibold">
                     {money(selectedRow.originalAmount)}
                   </p>
                 </div>
@@ -686,7 +686,7 @@ const OutstandingReceivables: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedRow(null)}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                className="h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Close
               </button>

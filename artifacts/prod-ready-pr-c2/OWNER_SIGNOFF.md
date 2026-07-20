@@ -8,6 +8,6 @@
 | Date | _pending_ |
 | Staging golden path green within 48h of flip | _pending_ |
 | Accept residual open gaps as disclosed | _pending_ |
-| Confirm Ask Mode zero-mutation for this row | _pending_ |
+| Zero-mutation proof accepted | _pending_ |
 
 Sign by filling the fields above and setting status to **SIGNED** before PR-C2-ARM.

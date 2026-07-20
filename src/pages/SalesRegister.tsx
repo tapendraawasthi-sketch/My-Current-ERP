@@ -159,7 +159,7 @@ const SalesRegister: React.FC = () => {
   const renderCell = (col: ColumnDef, invoice: any) => {
     switch (col.key) {
       case "invoiceNo":
-        return <span className="font-mono font-medium text-gray-800">{invoice.invoiceNo}</span>;
+        return <span className="font-mono font-medium text-gray-700">{invoice.invoiceNo}</span>;
       case "date":
         return <DualDate date={invoice.date} dateNepali={invoice.dateNepali} />;
       case "party":
@@ -229,15 +229,15 @@ const SalesRegister: React.FC = () => {
     >
       <div className="p-4 pb-0 shrink-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total sales
             </p>
-            <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
+            <p className="text-[12px] number-cell-bold text-gray-700 mt-0.5">
               {formatCurrency(filteredInvoices.reduce((s, r) => s + (r.grandTotal || 0), 0))}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Invoices
             </p>
@@ -245,15 +245,15 @@ const SalesRegister: React.FC = () => {
               {filteredInvoices.length}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total VAT
             </p>
-            <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
+            <p className="text-[12px] number-cell-bold text-gray-700 mt-0.5">
               {formatCurrency(filteredInvoices.reduce((s, r) => s + (r.vatAmount || 0), 0))}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5">
             <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Posted
             </p>
@@ -265,7 +265,7 @@ const SalesRegister: React.FC = () => {
       </div>
 
       <div className="px-4 shrink-0">
-        <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
+        <div className="no-print bg-white border border-gray-200 rounded-lg p-3 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3">
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">From date</label>
@@ -368,14 +368,14 @@ const SalesRegister: React.FC = () => {
 
       <div className="flex-1 min-h-0 px-4 pb-4 flex flex-col">
         {filteredInvoices.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-md flex-1">
+          <div className="bg-white border border-gray-200 rounded-lg flex-1">
             <ReportEmptyState
               message="No sales invoices found"
               hint="Adjust filters or create invoices from Billing."
             />
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col flex-1 min-h-0">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="overflow-auto flex-1 min-h-0">
               <table className="data-table w-full min-w-[900px]">
                 <colgroup>
@@ -420,7 +420,7 @@ const SalesRegister: React.FC = () => {
                           <td
                             key="grand-label"
                             colSpan={amountStartIdx}
-                            className="px-3 py-2.5 text-gray-800"
+                            className="px-3 py-2.5 text-gray-700"
                           >
                             Grand total ({filteredInvoices.length} records)
                           </td>
@@ -429,7 +429,7 @@ const SalesRegister: React.FC = () => {
                       if (amountStartIdx > 0 && idx > 0 && idx < amountStartIdx) return null;
                       if (amountStartIdx === -1 && idx === 0) {
                         return (
-                          <td key="grand-label" className="px-3 py-2.5 text-gray-800">
+                          <td key="grand-label" className="px-3 py-2.5 text-gray-700">
                             Grand total ({filteredInvoices.length} records)
                           </td>
                         );

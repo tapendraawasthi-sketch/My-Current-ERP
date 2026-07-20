@@ -113,7 +113,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
     <div className="page p-4 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">{title}</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">{help}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -121,7 +121,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -164,13 +164,13 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
 
       {showForm && (
         <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h3 className="text-[13px] font-semibold text-gray-800 mb-3">New {title}</h3>
+          <h3 className="text-[13px] font-semibold text-gray-700 mb-3">New {title}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <div>
               <label className="text-[12px] font-medium text-gray-600 mb-1 block">Date</label>
               <input
                 type="date"
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg"
                 value={entry.date}
                 onChange={(e) => setEntry({ ...entry, date: e.target.value })}
               />
@@ -178,7 +178,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
             <div>
               <label className="text-[12px] font-medium text-gray-600 mb-1 block">Party</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg"
                 value={entry.partyName}
                 onChange={(e) => setEntry({ ...entry, partyName: e.target.value })}
               />
@@ -186,7 +186,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
             <div>
               <label className="text-[12px] font-medium text-gray-600 mb-1 block">Ref No</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg"
                 value={entry.refNo}
                 onChange={(e) => setEntry({ ...entry, refNo: e.target.value })}
               />
@@ -194,7 +194,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
             <div className="col-span-2">
               <label className="text-[12px] font-medium text-gray-600 mb-1 block">Narration</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg"
                 value={entry.narration}
                 onChange={(e) => setEntry({ ...entry, narration: e.target.value })}
               />
@@ -226,7 +226,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
                   <td className="px-2 py-1">
                     <input
                       type="number"
-                      className="w-24 h-8 px-2 text-[12px] border border-gray-300 rounded-md text-right"
+                      className="w-24 h-8 px-2 text-[12px] border border-gray-200 rounded-lg text-right"
                       value={item.qty}
                       onChange={(e) => updateItem(idx, "qty", Number(e.target.value))}
                     />
@@ -234,7 +234,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
                   <td className="px-2 py-1">
                     <input
                       type="number"
-                      className="w-24 h-8 px-2 text-[12px] border border-gray-300 rounded-md text-right"
+                      className="w-24 h-8 px-2 text-[12px] border border-gray-200 rounded-lg text-right"
                       value={item.rate}
                       onChange={(e) => updateItem(idx, "rate", Number(e.target.value))}
                     />
@@ -258,7 +258,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
           </table>
           <div className="flex gap-2">
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg"
               onClick={addRow}
             >
               Add Row
@@ -270,7 +270,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
               Save & Post
             </button>
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg"
               onClick={() => setShowForm(false)}
             >
               Cancel

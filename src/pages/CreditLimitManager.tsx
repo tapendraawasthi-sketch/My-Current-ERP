@@ -25,7 +25,7 @@ function money(v: number): string {
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -144,7 +144,7 @@ function Modal({ open, title, children, onClose }) {
     >
       <div className="bg-white border border-gray-200 shadow-xl rounded-lg w-full max-w-xl flex flex-col max-h-[90vh]">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-          <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
@@ -441,10 +441,10 @@ export default function CreditLimitManager() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <ShieldAlert size={18} className="text-[var(--ds-action-primary)]" /> Credit Limit Manager
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -458,7 +458,7 @@ export default function CreditLimitManager() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -476,30 +476,30 @@ export default function CreditLimitManager() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col justify-center">
           <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
             Total Limit Extended
           </div>
-          <div className="text-[20px] font-bold text-gray-800">Rs. {money(stats.totalLimit)}</div>
+          <div className="text-[20px] font-bold text-gray-700">Rs. {money(stats.totalLimit)}</div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col justify-center">
           <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
             Total Outstanding
           </div>
-          <div className="text-[20px] font-bold text-gray-800">
+          <div className="text-[20px] font-bold text-gray-700">
             Rs. {money(stats.totalOutstanding)}
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col justify-center">
           <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide mb-1">
             Overall Utilization
           </div>
-          <div className="text-[20px] font-bold text-gray-800">{money(stats.utilization)}%</div>
+          <div className="text-[20px] font-bold text-gray-700">{money(stats.utilization)}%</div>
         </div>
 
-        <div className="bg-red-50/50 border border-red-200 rounded-md p-4 shadow-sm flex flex-col justify-center">
+        <div className="bg-red-50/50 border border-red-200 rounded-lg p-4 shadow-sm flex flex-col justify-center">
           <div className="text-[11px] font-medium text-red-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
             <AlertTriangle size={14} /> Over Limit / Blocked
           </div>
@@ -603,7 +603,7 @@ export default function CreditLimitManager() {
       </div>
 
       <div className={cardClass}>
-        <div className="overflow-x-auto rounded-md border border-gray-200">
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
           <table className="w-full border-collapse">
             <thead>
               <tr>
@@ -713,8 +713,8 @@ export default function CreditLimitManager() {
       <Modal open={editModal} title="Edit Credit Settings" onClose={() => setEditModal(false)}>
         {editingParty && (
           <div className="space-y-4">
-            <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-[12px]">
-              <div className="font-semibold text-gray-800 text-[14px] mb-1">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-[12px]">
+              <div className="font-semibold text-gray-700 text-[14px] mb-1">
                 {editingParty.name}
               </div>
               <div className="text-gray-500">

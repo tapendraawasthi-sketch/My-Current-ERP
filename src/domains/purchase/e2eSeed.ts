@@ -174,19 +174,17 @@ export async function seedOrbixE2ECompany(): Promise<{
     updatedAt: now,
   } as any);
 
-  const fyExisting = await db.fiscalYears.get(E2E_FY_ID);
-  if (!fyExisting) {
-    await db.fiscalYears.add({
-      id: E2E_FY_ID,
-      name: "E2E FY 2082/83",
-      startDate: "2025-07-16",
-      endDate: "2026-07-15",
-      status: "open",
-      isDefault: true,
-      isCurrent: true,
-      createdAt: now,
-    } as any);
-  }
+  // Keep E2E FY covering "today" (Nepal FY rolls mid-July). Always upsert.
+  await db.fiscalYears.put({
+    id: E2E_FY_ID,
+    name: "E2E FY 2083/84",
+    startDate: "2026-07-16",
+    endDate: "2027-07-15",
+    status: "open",
+    isDefault: true,
+    isCurrent: true,
+    createdAt: now,
+  } as any);
 
   const ensureUser = async (
     id: string,

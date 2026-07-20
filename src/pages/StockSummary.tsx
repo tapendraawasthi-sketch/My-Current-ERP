@@ -11,13 +11,13 @@ import toast from "@/lib/appToast";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const th =
-  "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-[#f5f6fa] text-right";
+  "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-gray-50 text-right";
 const thL =
-  "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-[#f5f6fa] text-left";
+  "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-gray-50 text-left";
 const td = "px-2 py-2 text-[12px] text-gray-700 border border-gray-200 text-right font-mono";
 const tdL = "px-2 py-2 text-[12px] text-gray-700 border border-gray-200 text-left";
 const tdBold =
-  "px-2 py-2 text-[12px] font-bold text-gray-800 border border-gray-200 text-right font-mono bg-[#f0f4ff]";
+  "px-2 py-2 text-[12px] font-bold text-gray-700 border border-gray-200 text-right font-mono bg-[#f0f4ff]";
 
 export default function StockSummary() {
   const { stockMovements, items, currentFiscalYear } = useStore();
@@ -106,11 +106,11 @@ export default function StockSummary() {
   const activeItem = showLedger ? filtered.find((f) => f.itemId === showLedger) : null;
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 bg-gray-50 min-h-screen">
       {/* Page Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock summary</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Stock summary</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Opening · During Year · Closing — with valuation method
           </p>
@@ -118,7 +118,7 @@ export default function StockSummary() {
         <div className="flex gap-2">
           <button
             onClick={exportExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
           >
             Export Excel
           </button>
@@ -132,7 +132,7 @@ export default function StockSummary() {
           <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Valuation Method
           </label>
-          <div className="flex rounded-md border border-gray-300 overflow-hidden h-8">
+          <div className="flex rounded-lg border border-gray-300 overflow-hidden h-8">
             {(
               [
                 ["weighted_average", "Weighted Avg"],
@@ -161,7 +161,7 @@ export default function StockSummary() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div className="flex flex-col gap-1">
@@ -172,7 +172,7 @@ export default function StockSummary() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--ds-action-primary)]"
           />
         </div>
 
@@ -184,7 +184,7 @@ export default function StockSummary() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -207,7 +207,7 @@ export default function StockSummary() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Item name..."
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--ds-action-primary)]"
           />
         </div>
 
@@ -456,7 +456,7 @@ export default function StockSummary() {
               {/* Totals row */}
               {filtered.length > 0 && (
                 <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
-                  <td className="px-2 py-2.5 text-[12px] font-bold text-gray-800">TOTAL</td>
+                  <td className="px-2 py-2.5 text-[12px] font-bold text-gray-700">TOTAL</td>
                   <td colSpan={2} className="border border-gray-200" />
                   <td className="px-2 py-2.5 text-right font-mono text-[12px] border border-gray-200">
                     Rs. {formatNumber(totals.openingAmount)}

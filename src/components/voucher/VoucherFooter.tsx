@@ -99,7 +99,7 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
 
         <div className="grid grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+            <div className="text-[11px] font-medium text-[var(--ds-text-muted)]">
               Dr Total
             </div>
             <div className="font-mono text-[12px] font-semibold text-[var(--ds-text-default)]">
@@ -108,7 +108,7 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
             </div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+            <div className="text-[11px] font-medium text-[var(--ds-text-muted)]">
               Cr Total
             </div>
             <div className="font-mono text-[12px] font-semibold text-[var(--ds-text-default)]">
@@ -117,7 +117,7 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
             </div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+            <div className="text-[11px] font-medium text-[var(--ds-text-muted)]">
               Amount
             </div>
             <div className="font-mono text-[13px] font-semibold text-[var(--ds-text-default)]">

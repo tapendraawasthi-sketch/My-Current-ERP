@@ -47,7 +47,7 @@ const DEFAULT_LEVELS = [
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -168,7 +168,7 @@ function Modal({ open, title, children, onClose, wide = false }) {
         className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full ${wide ? "max-w-6xl" : "max-w-2xl"} flex flex-col max-h-[90vh]`}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-          <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
@@ -316,12 +316,20 @@ export default function PriceListMaster() {
 
   async function deleteLevel(id: string) {
     if (!confirm("Delete this price level?")) return;
+    const snapshot = priceLevels.find((x) => x.id === id);
+    if (!snapshot) return;
     await getDB()
       .table("priceLevels")
       .delete(id)
       .catch(() => {});
     setPriceLevels((r) => r.filter((x) => x.id !== id));
-    toast.success("Price level deleted");
+    toast.undo("Price level deleted", async () => {
+      await getDB()
+        .table("priceLevels")
+        .put(snapshot)
+        .catch(() => {});
+      setPriceLevels((r) => r.filter((x) => x.id !== id).concat(snapshot));
+    });
   }
 
   function openPriceList(pl?: any) {
@@ -444,12 +452,21 @@ export default function PriceListMaster() {
 
   async function deletePriceList(id: string) {
     if (!confirm("Delete this price list?")) return;
+    const snapshot = priceLists.find((x) => x.id === id);
+    if (!snapshot) return;
     await getDB()
       .table("priceLists")
       .delete(id)
       .catch(() => {});
     setPriceLists((r) => r.filter((x) => x.id !== id));
-    toast.success("Price list deleted");
+    if (selectedList?.id === id) setSelectedList(null);
+    toast.undo("Price list deleted", async () => {
+      await getDB()
+        .table("priceLists")
+        .put(snapshot)
+        .catch(() => {});
+      setPriceLists((r) => r.filter((x) => x.id !== id).concat(snapshot));
+    });
   }
 
   function clonePriceList(pl: any) {
@@ -557,10 +574,10 @@ export default function PriceListMaster() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Tag size={18} className="text-[var(--ds-action-primary)]" /> Price List Master
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -571,7 +588,7 @@ export default function PriceListMaster() {
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             aria-label="Branch"
           >
             <option value="all">All branches</option>
@@ -592,7 +609,7 @@ export default function PriceListMaster() {
             className={`px-4 py-2 text-[12px] rounded-t-md font-medium flex items-center gap-1.5 transition-colors ${
               activeTab === t.id
                 ? "bg-white text-[var(--ds-action-primary)] border-t border-l border-r border-gray-200 shadow-[0_-2px_0_0_var(--ds-action-primary)]"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-700"
             }`}
           >
             {t.icon} {t.id}
@@ -608,7 +625,7 @@ export default function PriceListMaster() {
               <Plus size={14} /> Add Price Level
             </button>
           </div>
-          <div className="overflow-x-auto rounded-md border border-gray-200">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -668,7 +685,7 @@ export default function PriceListMaster() {
               <Plus size={14} /> Create Price List
             </button>
           </div>
-          <div className="overflow-x-auto rounded-md border border-gray-200">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -833,7 +850,7 @@ export default function PriceListMaster() {
               </div>
               <div>
                 <button
-                  className="h-8 px-4 bg-white border border-blue-300 text-blue-700 hover:bg-blue-50 text-[12px] font-medium rounded-md transition-colors"
+                  className="h-8 px-4 bg-white border border-blue-300 text-blue-700 hover:bg-blue-50 text-[12px] font-medium rounded-lg transition-colors"
                   onClick={assignGroup}
                 >
                   Apply to Group
@@ -843,7 +860,7 @@ export default function PriceListMaster() {
           </div>
 
           <div className={cardClass}>
-            <div className="overflow-x-auto rounded-md border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -943,10 +960,10 @@ export default function PriceListMaster() {
           {selectedItemId ? (
             <div className="space-y-6">
               <div>
-                <h2 className="text-[14px] font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-1 flex items-center gap-2">
+                <h2 className="text-[14px] font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-1 flex items-center gap-2">
                   <CheckCircle size={14} className="text-green-600" /> Current Active Prices
                 </h2>
-                <div className="overflow-x-auto rounded-md border border-gray-200 shadow-sm">
+                <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                   <table className="w-full border-collapse">
                     <thead>
                       <tr>
@@ -987,10 +1004,10 @@ export default function PriceListMaster() {
               </div>
 
               <div>
-                <h2 className="text-[14px] font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-1 flex items-center gap-2">
+                <h2 className="text-[14px] font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-1 flex items-center gap-2">
                   <History size={14} className="text-gray-500" /> Historical Record
                 </h2>
-                <div className="overflow-x-auto rounded-md border border-gray-200 shadow-sm">
+                <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                   <table className="w-full border-collapse">
                     <thead>
                       <tr>
@@ -1117,7 +1134,7 @@ export default function PriceListMaster() {
         onClose={() => setListModal(false)}
         wide
       >
-        <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
           <h3 className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide mb-3">
             General Information
           </h3>
@@ -1225,9 +1242,9 @@ export default function PriceListMaster() {
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded-md border border-gray-200 max-h-[400px] overflow-y-auto">
+        <div className="overflow-x-auto rounded-lg border border-gray-200 max-h-[400px] overflow-y-auto">
           <table className="w-full border-collapse sticky-header">
-            <thead className="sticky top-0 bg-[#f5f6fa] z-10 shadow-sm">
+            <thead className="sticky top-0 bg-gray-50 z-10 shadow-sm">
               <tr>
                 {[
                   "Item Code",
@@ -1273,7 +1290,7 @@ export default function PriceListMaster() {
                         <label className="flex gap-1.5 items-center cursor-pointer">
                           <input
                             type="checkbox"
-                            className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                            className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                             checked={line.hasSlabs}
                             onChange={(e) =>
                               updateItemLine(idx, {

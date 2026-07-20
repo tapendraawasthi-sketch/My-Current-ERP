@@ -6,11 +6,11 @@ engineering package (this ship).
 
 | Ticket | Status | Source |
 |--------|--------|--------|
-| TICKET-PR-B1-001 | OPEN | Staging operator attestation |
-| TICKET-PR-B1-002 | OPEN | Connected E2E green |
-| TICKET-PR-B3-001 | OPEN | Conflict reconfirm exercise |
-| TICKET-PR-B5-001 | OPEN | Knowledge professional review |
-| OWNER_SIGNOFF | PENDING | `artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` |
+| TICKET-PR-B1-001 | PASS | Staging operator attestation (2026-07-20) |
+| TICKET-PR-B1-002 | PASS (residual) | next12 staging green; browser/sync residual accepted 2026-07-20 |
+| TICKET-PR-B3-001 | PASS (residual) | Owner approved b3 2026-07-20 |
+| TICKET-PR-B5-001 | PASS | Owner `b5pass` 2026-07-20 |
+| OWNER_SIGNOFF | PENDING | last gate — `artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` |
 
 ## Clear arm when
 

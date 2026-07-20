@@ -1,11 +1,19 @@
 // src/pages/MiscMasters.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import toast from "@/lib/appToast";
-import { Plus, Edit2, Trash2, MapPin, Layers, DollarSign, Search, X, Save } from "lucide-react";
+import { Plus, MapPin, Layers, DollarSign, Search, X, Save } from "lucide-react";
 import { getDB } from "../lib/db";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 interface MaterialCentre {
   id: string;
@@ -39,14 +47,12 @@ interface PriceListItem {
 type ActiveTab = "material-centres" | "bom" | "price-lists";
 type FormMode = "mc" | "pl" | null;
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyMCForm = (): Omit<MaterialCentre, "id"> => ({
@@ -65,10 +71,15 @@ const emptyPLForm = (): Omit<PriceListItem, "id"> => ({
 });
 
 export default function MiscMasters() {
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { branchFilter, matchBranch } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = "misc-masters";
+
   const [activeTab, setActiveTab] = useState<ActiveTab>("material-centres");
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState<FormMode>(null);
+  const [loading, setLoading] = useState(true);
   const [materialCentres, setMaterialCentres] = useState<MaterialCentre[]>([]);
   const [bomItems] = useState<BOMItem[]>([]);
   const [priceLists, setPriceLists] = useState<PriceListItem[]>([]);
@@ -84,6 +95,7 @@ export default function MiscMasters() {
   }, []);
 
   const loadAll = async () => {
+    setLoading(true);
     try {
       const db = getDB();
       if (db.warehouses) {
@@ -141,6 +153,8 @@ export default function MiscMasters() {
       ]);
     } catch {
       /* noop */
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,12 +184,110 @@ export default function MiscMasters() {
     });
   }, [priceLists, search, matchBranch, branchFilter]);
 
+  const mcColumns = useMemo<EnterpriseColumnDef<MaterialCentre>[]>(
+    () => [
+      {
+        id: "code",
+        header: "Code",
+        cell: (mc) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{mc.code}</span>
+        ),
+      },
+      {
+        id: "name",
+        header: "Name",
+        cell: (mc) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{mc.name}</span>
+        ),
+      },
+      {
+        id: "address",
+        header: "Address",
+        cell: (mc) => (
+          <span className="text-[12px] text-gray-500">{mc.address || "—"}</span>
+        ),
+      },
+      {
+        id: "default",
+        header: "Default",
+        align: "center",
+        cell: (mc) =>
+          mc.isDefault ? (
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700">
+              Default
+            </span>
+          ) : (
+            <span className="text-gray-400">—</span>
+          ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (mc) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              mc.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {mc.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const plColumns = useMemo<EnterpriseColumnDef<PriceListItem>[]>(
+    () => [
+      {
+        id: "name",
+        header: "Name",
+        cell: (pl) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{pl.name}</span>
+        ),
+      },
+      {
+        id: "category",
+        header: "Category",
+        cell: (pl) => (
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+            Category {pl.category}
+          </span>
+        ),
+      },
+      {
+        id: "description",
+        header: "Description",
+        cell: (pl) => (
+          <span className="text-[12px] text-gray-500">{pl.description}</span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (pl) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              pl.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {pl.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
+
   const resetForm = () => {
     setShowForm(null);
     setEditMC(null);
     setEditPL(null);
     setMCForm(emptyMCForm());
     setPLForm(emptyPLForm());
+    clearEntity(pageId);
   };
 
   const switchTab = (tab: ActiveTab) => {
@@ -188,6 +300,7 @@ export default function MiscMasters() {
     setEditMC(null);
     setMCForm(emptyMCForm());
     setShowForm("mc");
+    openEntity(pageId, "new");
   };
 
   const openEditMC = (mc: MaterialCentre) => {
@@ -195,12 +308,14 @@ export default function MiscMasters() {
     const { id, ...rest } = mc;
     setMCForm(rest);
     setShowForm("mc");
+    openEntity(pageId, mc.id);
   };
 
   const openAddPL = () => {
     setEditPL(null);
     setPLForm(emptyPLForm());
     setShowForm("pl");
+    openEntity(pageId, "new");
   };
 
   const openEditPL = (pl: PriceListItem) => {
@@ -208,7 +323,47 @@ export default function MiscMasters() {
     const { id, ...rest } = pl;
     setPLForm(rest);
     setShowForm("pl");
+    openEntity(pageId, pl.id);
   };
+
+  // Deep link: /app/misc-masters/:id | /app/misc-masters/new
+  useEffect(() => {
+    if (route.pageId !== pageId) return;
+    if (route.entityId === "new") {
+      if (activeTab === "price-lists") {
+        setEditPL(null);
+        setPLForm(emptyPLForm());
+        setShowForm("pl");
+      } else {
+        setEditMC(null);
+        setMCForm(emptyMCForm());
+        setShowForm("mc");
+      }
+      return;
+    }
+    if (route.entityId) {
+      const mc = materialCentres.find((m) => m.id === route.entityId);
+      if (mc) {
+        setActiveTab("material-centres");
+        setEditMC(mc);
+        const { id, ...rest } = mc;
+        setMCForm(rest);
+        setShowForm("mc");
+        return;
+      }
+      const pl = priceLists.find((p) => p.id === route.entityId);
+      if (pl) {
+        setActiveTab("price-lists");
+        setEditPL(pl);
+        const { id, ...rest } = pl;
+        setPLForm(rest);
+        setShowForm("pl");
+      }
+      return;
+    }
+    if (showForm) setShowForm(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, materialCentres, priceLists]);
 
   const saveMC = async () => {
     if (!mcForm.name.trim()) {
@@ -242,14 +397,21 @@ export default function MiscMasters() {
     }
   };
 
-  const deleteMC = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this material centre?")) return;
+  const deleteMC = async (mc: MaterialCentre) => {
+    const snapshot = { ...mc };
     try {
       const db = getDB();
-      if (db.warehouses) await db.warehouses.delete(id);
-      setMaterialCentres((prev) => prev.filter((m) => m.id !== id));
-      toast.success("Deleted");
+      if (db.warehouses) await db.warehouses.delete(mc.id);
+      setMaterialCentres((prev) => prev.filter((m) => m.id !== mc.id));
+      if (editMC?.id === mc.id) resetForm();
+      toast.undo(`"${mc.name}" deleted`, async () => {
+        try {
+          if (db.warehouses) await db.warehouses.put(snapshot);
+          setMaterialCentres((prev) => [...prev, snapshot]);
+        } catch {
+          toast.error("Failed to restore material centre.");
+        }
+      });
     } catch {
       toast.error("Failed");
     }
@@ -260,25 +422,24 @@ export default function MiscMasters() {
       toast.error("Name required");
       return;
     }
-    const branchId =
-      editPL?.branchId || readActiveBranchId() || undefined;
+    const branchId = editPL?.branchId || readActiveBranchId() || undefined;
     const newItem: PriceListItem = { ...plForm, id: `pl-${Date.now()}`, branchId };
     setPriceLists((prev) =>
       editPL
-        ? prev.map((p) =>
-            p.id === editPL.id ? { ...editPL, ...plForm, branchId } : p,
-          )
+        ? prev.map((p) => (p.id === editPL.id ? { ...editPL, ...plForm, branchId } : p))
         : [...prev, newItem],
     );
     toast.success(editPL ? "Price List updated" : "Price List added");
     resetForm();
   };
 
-  const deletePL = (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Delete this price list?")) return;
-    setPriceLists((prev) => prev.filter((p) => p.id !== id));
-    toast.success("Deleted");
+  const deletePL = (pl: PriceListItem) => {
+    const snapshot = { ...pl };
+    setPriceLists((prev) => prev.filter((p) => p.id !== pl.id));
+    if (editPL?.id === pl.id) resetForm();
+    toast.undo(`"${pl.name}" deleted`, () => {
+      setPriceLists((prev) => [...prev, snapshot]);
+    });
   };
 
   const tabs: { key: ActiveTab; label: string; icon: typeof MapPin; count: number }[] = [
@@ -304,43 +465,36 @@ export default function MiscMasters() {
     else if (activeTab === "price-lists") openAddPL();
   };
 
-  return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
-      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Misc Masters</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Material centres (warehouses), bill of materials, price lists
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              {tabAddLabel && (
-                <button type="button" className={btnPrimary} onClick={handleTabAdd}>
-                  <Plus className="h-3.5 w-3.5" />
-                  {tabAddLabel}
-                </button>
-              )}
-            </div>
-          </div>
+  const pageMeta =
+    activeTab === "material-centres"
+      ? `${filteredMC.length} of ${materialCentres.length} material centres`
+      : activeTab === "price-lists"
+        ? `${filteredPL.length} of ${priceLists.length} price lists`
+        : `${bomItems.length} bill of materials`;
 
-          <div className="flex gap-1 mb-3 bg-white border border-gray-200 rounded-md p-1 w-fit">
+  return (
+    <div className="flex h-full min-h-0 bg-gray-50">
+      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Misc Masters"
+            description="Material centres (warehouses), bill of materials, price lists"
+            meta={<PageMeta>{pageMeta}</PageMeta>}
+            primaryAction={
+              tabAddLabel ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={handleTabAdd}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  {tabAddLabel}
+                </Button>
+              ) : undefined
+            }
+          />
+
+          <div className="flex gap-1 bg-white border border-gray-200 rounded-lg p-1 w-fit">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -366,7 +520,7 @@ export default function MiscMasters() {
           </div>
 
           {activeTab !== "bom" && (
-            <div className="relative mb-3 max-w-xs">
+            <div className="relative max-w-xs">
               <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               <input
                 placeholder={
@@ -382,100 +536,44 @@ export default function MiscMasters() {
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
           {activeTab === "material-centres" && (
-            <>
-              {filteredMC.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-md">
-                  <ReportEmptyState
-                    message={
-                      search ? "No material centres match your search" : "No material centres found"
-                    }
-                    hint={
-                      search
-                        ? "Try a different search term."
-                        : 'Click "Add material centre" to create your first warehouse/location.'
-                    }
-                  />
-                </div>
-              ) : (
-                <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                        <th className={th}>Code</th>
-                        <th className={th}>Name</th>
-                        <th className={th}>Address</th>
-                        <th className={`${th} text-center`}>Default</th>
-                        <th className={`${th} text-center`}>Status</th>
-                        <th className={`${th} text-right`}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredMC.map((mc) => (
-                        <tr
-                          key={mc.id}
-                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                          onClick={() => openEditMC(mc)}
-                        >
-                          <td className={`${td} font-mono text-gray-600`}>{mc.code}</td>
-                          <td className={`${td} font-medium text-gray-800`}>{mc.name}</td>
-                          <td className={`${td} text-gray-500`}>{mc.address || "—"}</td>
-                          <td className={`${td} text-center`}>
-                            {mc.isDefault ? (
-                              <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700">
-                                Default
-                              </span>
-                            ) : (
-                              <span className="text-gray-400">—</span>
-                            )}
-                          </td>
-                          <td className={`${td} text-center`}>
-                            <span
-                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                                mc.isActive
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-gray-100 text-gray-700"
-                              }`}
-                            >
-                              {mc.isActive ? "Active" : "Inactive"}
-                            </span>
-                          </td>
-                          <td className={`${td} text-right`}>
-                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                type="button"
-                                className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openEditMC(mc);
-                                }}
-                              >
-                                <Edit2 className="h-3.5 w-3.5" />
-                              </button>
-                              <button
-                                type="button"
-                                className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                                onClick={(e) => deleteMC(mc.id, e)}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                    {filteredMC.length} material centre{filteredMC.length === 1 ? "" : "s"}
-                  </div>
-                </div>
-              )}
-            </>
+            <EnterpriseDataTable
+              columns={mcColumns}
+              rows={filteredMC}
+              getRowId={(mc) => mc.id}
+              loading={loading}
+              emptyTitle={
+                search ? "No material centres match your search" : "No material centres found"
+              }
+              emptyDescription={
+                search
+                  ? "Try a different search term."
+                  : 'Click "Add material centre" to create your first warehouse/location.'
+              }
+              emptyAction={
+                !search ? (
+                  <Button
+                    variant="primary"
+                    size="small"
+                    onClick={openAddMC}
+                    startIcon={<Plus className="h-3.5 w-3.5" />}
+                  >
+                    Add material centre
+                  </Button>
+                ) : undefined
+              }
+              onRowClick={openEditMC}
+              rowActions={(mc) => [
+                { label: "Edit", onSelect: () => openEditMC(mc) },
+                { label: "Delete", destructive: true, onSelect: () => deleteMC(mc) },
+              ]}
+              caption="Material centres"
+            />
           )}
 
           {activeTab === "bom" && (
-            <div className="bg-white border border-gray-200 rounded-md">
+            <div className="bg-white border border-gray-200 rounded-lg">
               <ReportEmptyState
                 message="No bill of materials configured"
                 hint="Define finished product recipes — what raw materials are consumed during production. Enable Manufacturing Feature in Configuration → Features/Options to use BOM + Production Vouchers."
@@ -490,86 +588,36 @@ export default function MiscMasters() {
           )}
 
           {activeTab === "price-lists" && (
-            <>
-              {filteredPL.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-md">
-                  <ReportEmptyState
-                    message={search ? "No price lists match your search" : "No price lists found"}
-                    hint={
-                      search
-                        ? "Try a different search term."
-                        : 'Click "Add price list" to create your first price list category.'
-                    }
-                  />
-                </div>
-              ) : (
-                <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                        <th className={th}>Name</th>
-                        <th className={th}>Category</th>
-                        <th className={th}>Description</th>
-                        <th className={`${th} text-center`}>Status</th>
-                        <th className={`${th} text-right`}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredPL.map((pl) => (
-                        <tr
-                          key={pl.id}
-                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                          onClick={() => openEditPL(pl)}
-                        >
-                          <td className={`${td} font-medium text-gray-800`}>{pl.name}</td>
-                          <td className={td}>
-                            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-                              Category {pl.category}
-                            </span>
-                          </td>
-                          <td className={`${td} text-gray-500`}>{pl.description}</td>
-                          <td className={`${td} text-center`}>
-                            <span
-                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                                pl.isActive
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-gray-100 text-gray-700"
-                              }`}
-                            >
-                              {pl.isActive ? "Active" : "Inactive"}
-                            </span>
-                          </td>
-                          <td className={`${td} text-right`}>
-                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                type="button"
-                                className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openEditPL(pl);
-                                }}
-                              >
-                                <Edit2 className="h-3.5 w-3.5" />
-                              </button>
-                              <button
-                                type="button"
-                                className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                                onClick={(e) => deletePL(pl.id, e)}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                    {filteredPL.length} price list{filteredPL.length === 1 ? "" : "s"}
-                  </div>
-                </div>
-              )}
-            </>
+            <EnterpriseDataTable
+              columns={plColumns}
+              rows={filteredPL}
+              getRowId={(pl) => pl.id}
+              loading={loading}
+              emptyTitle={search ? "No price lists match your search" : "No price lists found"}
+              emptyDescription={
+                search
+                  ? "Try a different search term."
+                  : 'Click "Add price list" to create your first price list category.'
+              }
+              emptyAction={
+                !search ? (
+                  <Button
+                    variant="primary"
+                    size="small"
+                    onClick={openAddPL}
+                    startIcon={<Plus className="h-3.5 w-3.5" />}
+                  >
+                    Add price list
+                  </Button>
+                ) : undefined
+              }
+              onRowClick={openEditPL}
+              rowActions={(pl) => [
+                { label: "Edit", onSelect: () => openEditPL(pl) },
+                { label: "Delete", destructive: true, onSelect: () => deletePL(pl) },
+              ]}
+              caption="Price lists"
+            />
           )}
         </div>
       </div>
@@ -577,7 +625,7 @@ export default function MiscMasters() {
       {showForm === "mc" && (
         <div className="w-[400px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editMC ? "Edit material centre" : "Add material centre"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -615,13 +663,13 @@ export default function MiscMasters() {
                 placeholder="Optional address"
               />
             </div>
-            <div className="border border-gray-200 rounded-md p-3 bg-gray-50 flex flex-col gap-2">
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50 flex flex-col gap-2">
               <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
                 <input
                   type="checkbox"
                   checked={mcForm.isDefault}
                   onChange={(e) => setMCForm((p) => ({ ...p, isDefault: e.target.checked }))}
-                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                  className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Set as default
               </label>
@@ -630,7 +678,7 @@ export default function MiscMasters() {
                   type="checkbox"
                   checked={mcForm.isActive}
                   onChange={(e) => setMCForm((p) => ({ ...p, isActive: e.target.checked }))}
-                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                  className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Active
               </label>
@@ -652,7 +700,7 @@ export default function MiscMasters() {
       {showForm === "pl" && (
         <div className="w-[400px] shrink-0 flex flex-col bg-white border-l border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editPL ? "Edit price list" : "Add price list"}
             </span>
             <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
@@ -692,13 +740,13 @@ export default function MiscMasters() {
                 placeholder="Optional description"
               />
             </div>
-            <div className="border border-gray-200 rounded-md p-3 bg-gray-50">
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
               <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
                 <input
                   type="checkbox"
                   checked={plForm.isActive}
                   onChange={(e) => setPLForm((p) => ({ ...p, isActive: e.target.checked }))}
-                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                  className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Active
               </label>

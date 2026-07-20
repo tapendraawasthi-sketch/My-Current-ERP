@@ -129,7 +129,7 @@ const BonusProvision: React.FC = () => {
     <div className="p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Gift className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Bonus provision
           </h1>
@@ -143,7 +143,7 @@ const BonusProvision: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -171,7 +171,7 @@ const BonusProvision: React.FC = () => {
           <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Net Profit (FY)
           </p>
-          <p className="text-[15px] font-semibold text-gray-800 font-mono mt-1">
+          <p className="text-[15px] font-semibold text-gray-700 font-mono mt-1">
             Rs. {money(pl.netProfit)}
           </p>
         </div>
@@ -179,7 +179,7 @@ const BonusProvision: React.FC = () => {
           <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Eligible Employees
           </p>
-          <p className="text-[15px] font-semibold text-gray-800 mt-1">{eligibleEmployees.length}</p>
+          <p className="text-[15px] font-semibold text-gray-700 mt-1">{eligibleEmployees.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-lg p-4">
           <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -202,7 +202,7 @@ const BonusProvision: React.FC = () => {
           step={0.5}
           value={profitSharePercent}
           onChange={(e) => setProfitSharePercent(parseFloat(e.target.value) || 0)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-32"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-32"
         />
         <p className="text-[12px] text-gray-500 mt-2">
           Provision is capped at the lower of one month basic salary (eligible staff) or{" "}
@@ -214,19 +214,19 @@ const BonusProvision: React.FC = () => {
         <table className="w-full">
           <thead>
             <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Employee
               </th>
-              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Department
               </th>
-              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Basic Salary
               </th>
-              <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Eligible
               </th>
-              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Bonus provision
               </th>
             </tr>
@@ -250,7 +250,7 @@ const BonusProvision: React.FC = () => {
                     {row.bonusEligible !== false ? "Yes" : "No"}
                   </span>
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-800">
+                <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-700">
                   {money(row.bonusAmount || 0)}
                 </td>
               </tr>

@@ -34,7 +34,7 @@ function money(v: number): string {
 
 const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -107,7 +107,7 @@ function Modal({ open, title, children, onClose }) {
     >
       <div className="bg-white border border-gray-200 shadow-xl rounded-lg w-full flex flex-col max-w-xl max-h-[90vh]">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-          <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
@@ -564,10 +564,10 @@ export default function PeriodLockPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Shield size={18} className="text-[var(--ds-action-primary)]" /> Period Lock & Data Health
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -579,7 +579,7 @@ export default function PeriodLockPage() {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch filter"
             >
               <option value="all">All branches</option>
@@ -633,12 +633,12 @@ export default function PeriodLockPage() {
       {activeTab === "Period Lock" && (
         <div className={cardClass}>
           <div className="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-            <h2 className="text-[14px] font-semibold text-gray-800">
+            <h2 className="text-[14px] font-semibold text-gray-700">
               Accounting Periods - {currentFiscalYear?.name}
             </h2>
           </div>
 
-          <div className="overflow-x-auto rounded-md border border-gray-200">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -727,7 +727,7 @@ export default function PeriodLockPage() {
           <div className={cardClass}>
             <div className="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
               <Lock size={16} className="text-gray-500" />
-              <h2 className="text-[14px] font-semibold text-gray-800">PIN Configuration</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">PIN Configuration</h2>
             </div>
 
             <div
@@ -784,7 +784,7 @@ export default function PeriodLockPage() {
           <div className={cardClass}>
             <div className="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
               <Settings size={16} className="text-gray-500" />
-              <h2 className="text-[14px] font-semibold text-gray-800">Auto-Lock Settings</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Auto-Lock Settings</h2>
             </div>
 
             <p className="text-[11px] text-gray-500 mb-4">
@@ -793,7 +793,7 @@ export default function PeriodLockPage() {
             </p>
 
             <div className="space-y-4">
-              <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
+              <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                 <input
                   type="checkbox"
                   className="rounded text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
@@ -836,7 +836,7 @@ export default function PeriodLockPage() {
           <div className={cardClass}>
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
               <div>
-                <h2 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2 mb-1">
+                <h2 className="text-[14px] font-semibold text-gray-700 flex items-center gap-2 mb-1">
                   <Activity
                     size={16}
                     className={
@@ -879,7 +879,7 @@ export default function PeriodLockPage() {
           </div>
 
           <div className={cardClass}>
-            <div className="overflow-x-auto rounded-md border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -969,17 +969,17 @@ export default function PeriodLockPage() {
                                 No record sample available.
                               </div>
                             ) : (
-                              <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-h-64 overflow-y-auto">
+                              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden max-h-64 overflow-y-auto">
                                 <table className="w-full border-collapse">
                                   <thead className="bg-gray-100 sticky top-0">
                                     <tr>
-                                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
                                         ID
                                       </th>
-                                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
                                         Name / Reference
                                       </th>
-                                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase">
                                         Details
                                       </th>
                                     </tr>
@@ -990,7 +990,7 @@ export default function PeriodLockPage() {
                                         <td className="px-3 py-1.5 text-[11px] text-gray-500 font-mono">
                                           {r.id?.substring(0, 8) || "..."}
                                         </td>
-                                        <td className="px-3 py-1.5 text-[11px] font-medium text-gray-800">
+                                        <td className="px-3 py-1.5 text-[11px] font-medium text-gray-700">
                                           {r.name || r.invoiceNo || r.voucherNo || "N/A"}
                                         </td>
                                         <td className="px-3 py-1.5 text-[11px] text-gray-600">

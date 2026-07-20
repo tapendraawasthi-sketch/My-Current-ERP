@@ -57,6 +57,7 @@ export const PageContentFrame: React.FC<{
   return (
     <div
       ref={ref}
+      key={page}
       id="main-content"
       tabIndex={-1}
       data-page-layout={mode}

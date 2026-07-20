@@ -33,8 +33,9 @@ import {
 import toast from "@/lib/appToast";
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
-import { ReportWorkspace } from "@/features/reports";
+import { SummaryReportLayout } from "@/features/reports";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
+import { pushDrillCrumb, useNavCrumbStore } from "../routing/navCrumbStore";
 import {
   buildBalanceSheetData,
   balanceSheetDataToRows,
@@ -43,6 +44,7 @@ import {
 } from "../lib/nepalFinancialStatements";
 import { readActiveBranchId } from "../lib/activeBranch";
 import { useBranchFilter } from "../hooks/useBranchFilter";
+import { formatCurrency, formatNumber } from "@/lib/utils";
 
 // ─── Default Options ──────────────────────────────────────────────────────────
 
@@ -63,13 +65,9 @@ const makeDefaultOptions = (fy: any): BSOptions => ({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const fmt = (n: number) =>
-  Math.abs(n) < 0.005
-    ? "—"
-    : Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => (Math.abs(n) < 0.005 ? "—" : formatNumber(n, 2));
 
-const fmt2 = (n: number) =>
-  Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt2 = (n: number) => formatNumber(n || 0, 2);
 
 // ─── Options Dialog ───────────────────────────────────────────────────────────
 
@@ -91,13 +89,13 @@ function OptionsDialog({
   const set = (k: keyof BSOptions, v: any) => setOpts((p) => ({ ...p, [k]: v }));
 
   const inp =
-    "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+    "w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
   const lbl = "block text-[12px] font-semibold text-gray-600 uppercase tracking-wide mb-1";
   const tog = (active: boolean) =>
     `inline-flex h-7 px-3 text-[12px] font-semibold rounded transition-colors ${
       active
         ? "bg-[var(--ds-action-primary)] text-white"
-        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+        : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
     }`;
 
   return createPortal(
@@ -241,7 +239,7 @@ function OptionsDialog({
                 onClick={() => set(key as any, !opts[key as keyof BSOptions])}
               >
                 <div
-                  className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${opts[key as keyof BSOptions] ? "border-[var(--ds-action-primary)] bg-[var(--ds-action-primary)]" : "border-gray-300"}`}
+                  className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${opts[key as keyof BSOptions] ? "border-[var(--ds-action-primary)] bg-[var(--ds-action-primary)]" : "border-gray-200"}`}
                 >
                   {opts[key as keyof BSOptions] && (
                     <svg className="h-2.5 w-2.5 text-white" viewBox="0 0 10 10" fill="none">
@@ -301,7 +299,7 @@ function OptionsDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="h-8 px-4 text-[12px] font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50"
+            className="h-8 px-4 text-[12px] font-medium rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
           >
             Cancel
           </button>
@@ -375,7 +373,7 @@ function BSRow({
               </span>
             )}
             <span
-              className={`truncate ${row.bold ? "font-semibold text-gray-900" : "text-gray-800"} ${
+              className={`truncate ${row.bold ? "font-semibold text-gray-900" : "text-gray-700"} ${
                 row.isPLLine ? "text-green-700 font-semibold" : ""
               } ${row.isClosingStock ? "text-[var(--ds-action-primary)] font-medium" : ""}`}
             >
@@ -612,9 +610,9 @@ function GroupSummaryView({
   findRows(bs.assets);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
-        <h3 className="text-[14px] font-semibold text-gray-800">{groupName}</h3>
+        <h3 className="text-[14px] font-semibold text-gray-700">{groupName}</h3>
         <p className="text-[12px] text-gray-500 mt-0.5">
           Group Detail · {options.fromDate} to {options.toDate} · {allRows.length} accounts
         </p>
@@ -628,16 +626,16 @@ function GroupSummaryView({
         <table className="report-table w-full">
           <thead>
             <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Account
               </th>
-              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Debit
               </th>
-              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Credit
               </th>
-              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase tracking-wide">
                 Balance
               </th>
             </tr>
@@ -662,7 +660,7 @@ function GroupSummaryView({
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-600">—</td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-600">—</td>
                   <td
-                    className={`px-3 py-2.5 text-right font-mono text-[12px] font-semibold ${isZero ? "text-gray-300" : "text-gray-800"}`}
+                    className={`px-3 py-2.5 text-right font-mono text-[12px] font-semibold ${isZero ? "text-gray-300" : "text-gray-700"}`}
                   >
                     {isZero ? "—" : fmt(Math.abs(row.amount || 0))}
                   </td>
@@ -670,7 +668,7 @@ function GroupSummaryView({
               );
             })}
             <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
-              <td className="px-3 py-2 text-[12px] font-bold text-gray-800">Total {groupName}</td>
+              <td className="px-3 py-2 text-[12px] font-bold text-gray-700">Total {groupName}</td>
               <td className="px-3 py-2" />
               <td className="px-3 py-2" />
               <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
@@ -721,10 +719,10 @@ function AccountLedgerView({
   if (!ledger) return null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
         <div>
-          <h3 className="text-[14px] font-semibold text-gray-800">{ledger.accountName}</h3>
+          <h3 className="text-[14px] font-semibold text-gray-700">{ledger.accountName}</h3>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Account Ledger · {fromDate} to {toDate} · {ledger.entries.length} transactions
           </p>
@@ -734,32 +732,33 @@ function AccountLedgerView({
           <p
             className={`font-mono text-[14px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
           >
-            Rs. {fmt2(Math.abs(ledger.closingBalance))} {ledger.closingBalance >= 0 ? "Cr" : "Dr"}
+            {formatCurrency(Math.abs(ledger.closingBalance))}{" "}
+            {ledger.closingBalance >= 0 ? "Cr" : "Dr"}
           </p>
         </div>
       </div>
       <table className="report-table w-full">
         <thead>
           <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
-            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase w-24">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase w-24">
               Date
             </th>
-            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase">
               Particulars
             </th>
-            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase w-24">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase w-24">
               Vch Type
             </th>
-            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase w-24">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-400 uppercase w-24">
               Vch No
             </th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase w-28">
+            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase w-28">
               Debit
             </th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase w-28">
+            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase w-28">
               Credit
             </th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase w-32">
+            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-400 uppercase w-32">
               Balance
             </th>
           </tr>
@@ -789,7 +788,7 @@ function AccountLedgerView({
               onClick={() => onDrillVoucher(entry.voucherId, entry.voucherNo)}
             >
               <td className="px-3 py-2 text-[12px] text-gray-600">{entry.date}</td>
-              <td className="px-3 py-2 text-[12px] text-gray-800">
+              <td className="px-3 py-2 text-[12px] text-gray-700">
                 {entry.particulars}
                 {entry.narration && (
                   <p className="text-[12px] text-gray-500 mt-0.5">{entry.narration}</p>
@@ -812,7 +811,7 @@ function AccountLedgerView({
           ))}
           <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
             <td className="px-3 py-2 text-[12px] font-bold text-gray-700">{toDate}</td>
-            <td className="px-3 py-2 text-[12px] font-bold text-gray-800" colSpan={3}>
+            <td className="px-3 py-2 text-[12px] font-bold text-gray-700" colSpan={3}>
               Closing Balance
             </td>
             <td className="px-3 py-2 text-right font-mono text-[12px] font-bold">
@@ -862,10 +861,10 @@ function VoucherView({ voucherId }: { voucherId: string }) {
   if (!voucher) return <div className="p-8 text-center text-gray-500">Voucher not found</div>;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-w-3xl mx-auto">
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden max-w-3xl mx-auto">
       <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
         <div>
-          <h3 className="text-[14px] font-semibold text-gray-800">
+          <h3 className="text-[14px] font-semibold text-gray-700">
             {voucher.voucherNo || "Voucher"}
           </h3>
           <p className="text-[12px] text-gray-500 mt-0.5">
@@ -874,30 +873,30 @@ function VoucherView({ voucherId }: { voucherId: string }) {
         </div>
         <div className="text-right">
           <p className="text-[12px] font-semibold text-gray-500 uppercase">Amount</p>
-          <p className="font-mono text-[14px] font-bold text-gray-800">
-            Rs. {fmt2(voucher.totalDebit || voucher.grandTotal || 0)}
+          <p className="font-mono text-[14px] font-bold text-gray-700">
+            {formatCurrency(voucher.totalDebit || voucher.grandTotal || 0)}
           </p>
         </div>
       </div>
       <div className="p-4 space-y-4">
         {voucher.narration && (
-          <div className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-[12px] text-gray-700">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-[12px] text-gray-700">
             <span className="font-semibold text-gray-500 text-[12px] uppercase mr-2">
               Narration:
             </span>
             {voucher.narration}
           </div>
         )}
-        <table className="report-table w-full border border-gray-200 rounded-md overflow-hidden">
+        <table className="report-table w-full border border-gray-200 rounded-lg overflow-hidden">
           <thead>
             <tr className="bg-[var(--ds-surface-muted)]">
-              <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase">
+              <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-400 uppercase">
                 Account
               </th>
-              <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-500 uppercase">
+              <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-400 uppercase">
                 Debit
               </th>
-              <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-500 uppercase">
+              <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-400 uppercase">
                 Credit
               </th>
             </tr>
@@ -920,7 +919,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
               </tr>
             ))}
             <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
-              <td className="px-3 py-2 text-[12px] font-bold text-gray-800">Total</td>
+              <td className="px-3 py-2 text-[12px] font-bold text-gray-700">Total</td>
               <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
                 {fmt2(voucher.totalDebit || 0)}
               </td>
@@ -938,7 +937,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
 // ─── Main Balance Sheet Component ─────────────────────────────────────────────
 
 export default function BalanceSheet() {
-  const { tenant, accounts, vouchers, currentFiscalYear } = useStore();
+  const { tenant, accounts, vouchers, currentFiscalYear, companySettings } = useStore();
   const fy = currentFiscalYear || tenant?.fiscalYears?.[0];
 
   const [options, setOptions] = useState<BSOptions>(makeDefaultOptions(fy));
@@ -1019,6 +1018,7 @@ export default function BalanceSheet() {
         path: [...drillState.path, { id, label: name, level: 1 }],
       });
     }
+    pushDrillCrumb({ page: "balance-sheet", label: name, entityId: id });
   };
 
   const handleDrillVoucher = (id: string, no: string) => {
@@ -1029,6 +1029,7 @@ export default function BalanceSheet() {
       voucherNo: no,
       path: [...prev.path, { id, label: no || "Voucher", level: 4 }],
     }));
+    pushDrillCrumb({ page: "balance-sheet", label: no || "Voucher", entityId: id });
   };
 
   const navigateBack = (toLevel: number = -1) => {
@@ -1039,6 +1040,20 @@ export default function BalanceSheet() {
         toLevel >= 0 ? prev.path.filter((p) => p.level <= toLevel) : prev.path.slice(0, -1);
 
       const last = targetPath[targetPath.length - 1];
+
+      // Sync shell breadcrumbs with drill path (STEP 3.4)
+      const base = useNavCrumbStore.getState().stack[0] || {
+        page: "balance-sheet",
+        label: "Balance Sheet",
+      };
+      useNavCrumbStore.getState().reset([
+        base,
+        ...targetPath.map((p) => ({
+          page: "balance-sheet",
+          label: p.label,
+          entityId: p.id,
+        })),
+      ]);
 
       return {
         level: targetLevel as any,
@@ -1076,10 +1091,15 @@ export default function BalanceSheet() {
         />
       )}
 
-      <ReportWorkspace
+      <SummaryReportLayout
         title="What you own and owe"
         description="Assets, liabilities and equity as at the date."
-        companyName={tenant?.name || "Company"}
+        companyName={tenant?.name || companySettings?.companyNameEn || companySettings?.name || "Company"}
+        nameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
+        pan={companySettings?.panNumber || companySettings?.pan}
+        address={companySettings?.address || companySettings?.companyAddress}
+        phone={companySettings?.phone || companySettings?.mobile}
+        logoUrl={companySettings?.logo || companySettings?.logoUrl}
         periodLabel={`As at ${options.toDate}`}
         onRefresh={() => loadBS()}
         onPrint={() => window.print()}
@@ -1107,7 +1127,7 @@ export default function BalanceSheet() {
             </div>
           </div>
         ) : !bsData && !nasData ? (
-          <div className="bg-white border border-gray-200 rounded-md">
+          <div className="bg-white border border-gray-200 rounded-lg">
             <ReportEmptyState
               message="Balance sheet not generated"
               hint='Click Options to configure the report and generate balances.'
@@ -1117,23 +1137,23 @@ export default function BalanceSheet() {
           <div className="max-w-[1200px] mx-auto pb-10">
             {bsData && drillState.level === 0 && (
               <div className="no-print grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-                <div className="border border-gray-300 bg-white px-3 py-2.5">
+                <div className="border border-gray-200 bg-white px-3 py-2.5">
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total assets
                   </p>
-                  <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
+                  <p className="text-[12px] number-cell-bold text-gray-700 mt-0.5">
                     {fmt2(bsData.totalAssets)}
                   </p>
                 </div>
-                <div className="border border-gray-300 bg-white px-3 py-2.5">
+                <div className="border border-gray-200 bg-white px-3 py-2.5">
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Liabilities & equity
                   </p>
-                  <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
+                  <p className="text-[12px] number-cell-bold text-gray-700 mt-0.5">
                     {fmt2(bsData.totalLiabilitiesEquity)}
                   </p>
                 </div>
-                <div className="border border-gray-300 bg-white px-3 py-2.5">
+                <div className="border border-gray-200 bg-white px-3 py-2.5">
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Closing stock
                   </p>
@@ -1141,7 +1161,7 @@ export default function BalanceSheet() {
                     {fmt2(bsData.closingStock)}
                   </p>
                 </div>
-                <div className="border border-gray-300 bg-white px-3 py-2.5">
+                <div className="border border-gray-200 bg-white px-3 py-2.5">
                   <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Status
                   </p>
@@ -1150,7 +1170,9 @@ export default function BalanceSheet() {
                       bsData.isBalanced ? "text-green-700" : "text-red-700"
                     }`}
                   >
-                    {bsData.isBalanced ? "Balanced" : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
+                    {bsData.isBalanced
+                      ? "Balanced"
+                      : `Diff: ${formatCurrency(Math.abs(bsData.difference))}`}
                   </p>
                 </div>
               </div>
@@ -1166,7 +1188,7 @@ export default function BalanceSheet() {
                   <p className="text-[12px] text-red-700 mt-1">
                     Difference in Opening Balances / Vouchers:{" "}
                     <span className="font-mono font-bold">
-                      Rs. {fmt2(Math.abs(bsData.difference))}
+                      {formatCurrency(Math.abs(bsData.difference))}
                     </span>
                   </p>
                   <p className="text-[12px] text-red-600 mt-1">
@@ -1202,7 +1224,7 @@ export default function BalanceSheet() {
                       onClick={() => navigateBack(p.level)}
                       className={
                         i === drillState.path.length - 1
-                          ? "text-gray-800 font-bold"
+                          ? "text-gray-700 font-bold"
                           : "text-[var(--ds-action-primary)] hover:underline"
                       }
                     >
@@ -1269,10 +1291,11 @@ export default function BalanceSheet() {
             </div>
 
             {drillState.level === 0 && bsData && (
-              <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[12px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-lg text-[12px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
                 <span className="inline-flex items-center gap-1">
                   <Scale className="h-3.5 w-3.5" />
-                  Closing stock: {bsData.closingStockSource} (Rs. {fmt2(bsData.closingStock)})
+                  Closing stock: {bsData.closingStockSource} (
+                  {formatCurrency(bsData.closingStock)})
                 </span>
                 <span>·</span>
                 <span>
@@ -1288,7 +1311,7 @@ export default function BalanceSheet() {
             )}
           </div>
         )}
-      </ReportWorkspace>
+      </SummaryReportLayout>
     </>
   );
 }

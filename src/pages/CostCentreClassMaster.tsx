@@ -133,17 +133,26 @@ const CostCentreClassMaster: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Delete this cost centre class?")) {
-      try {
-        await deleteCostCentreClass(id);
-        toast.success("Deleted");
-        if (selected && selected.id === id) {
-          resetForm();
-        }
-      } catch (error) {
-        console.error("Delete error:", error);
-        toast.error("An error occurred while deleting.");
+    if (!window.confirm("Delete this cost centre class?")) return;
+    const row = (costCentreClasses || []).find((c) => c.id === id);
+    if (!row) return;
+    const snapshot = { ...row };
+    try {
+      await deleteCostCentreClass(id);
+      if (selected && selected.id === id) {
+        resetForm();
       }
+      toast.undo(`"${row.name}" deleted`, async () => {
+        try {
+          await addCostCentreClass({ ...snapshot });
+        } catch (error) {
+          console.error("Restore error:", error);
+          toast.error("An error occurred while restoring.");
+        }
+      });
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("An error occurred while deleting.");
     }
   };
 
@@ -177,7 +186,7 @@ const CostCentreClassMaster: React.FC = () => {
         <div className="p-4 flex-1 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Cost Centre Class Master</h1>
+              <h1 className="text-[15px] font-semibold text-gray-900">Cost Centre Class Master</h1>
               <p className="text-[11px] text-gray-500 mt-0.5">
                 Manage cost centre classes and allocation rules
               </p>
@@ -187,7 +196,7 @@ const CostCentreClassMaster: React.FC = () => {
                 <select
                   value={branchFilter}
                   onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
                   aria-label="Branch"
                 >
                   <option value="all">All branches</option>
@@ -215,32 +224,32 @@ const CostCentreClassMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search classes..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="flex-1 overflow-auto border border-gray-200 rounded-md">
+          <div className="flex-1 overflow-auto border border-gray-200 rounded-lg">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200 sticky top-0 z-10">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <tr className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     #
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Name
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Voucher Types
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Allocations Count
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                     Status
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                     Actions
                   </th>
                 </tr>
@@ -303,12 +312,12 @@ const CostCentreClassMaster: React.FC = () => {
       {showForm && (
         <div className="w-full lg:w-96 bg-white flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-20">
           <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-            <h3 className="text-[13px] font-semibold text-gray-800">
+            <h3 className="text-[13px] font-semibold text-gray-700">
               {selected ? "Alter Cost Centre Class" : "Create Cost Centre Class"}
             </h3>
             <button
               onClick={resetForm}
-              className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+              className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <X size={16} />
             </button>
@@ -321,7 +330,7 @@ const CostCentreClassMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Enter class name"
@@ -333,7 +342,7 @@ const CostCentreClassMaster: React.FC = () => {
               <label className="text-[11px] font-medium text-gray-600 mb-1 block">
                 Applicable Voucher Types
               </label>
-              <div className="space-y-2 border border-gray-200 rounded-md p-3 bg-gray-50">
+              <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
                 {[
                   { value: "sales", label: "Sales" },
                   { value: "purchase", label: "Purchase" },
@@ -345,7 +354,7 @@ const CostCentreClassMaster: React.FC = () => {
                     <input
                       type="checkbox"
                       id={`vt-${opt.value}`}
-                      className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
+                      className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                       checked={form.applicableVoucherTypes.includes(opt.value)}
                       onChange={() => toggleVoucherType(opt.value)}
                     />
@@ -364,7 +373,7 @@ const CostCentreClassMaster: React.FC = () => {
               <div className="flex justify-between items-center mb-1.5">
                 <label className="text-[11px] font-medium text-gray-600">Allocations</label>
                 <button
-                  className="h-6 px-2 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded flex items-center gap-1"
+                  className="h-6 px-2 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded-lg flex items-center gap-1"
                   onClick={addAllocationRow}
                 >
                   <Plus size={10} />
@@ -373,17 +382,17 @@ const CostCentreClassMaster: React.FC = () => {
               </div>
 
               {form.allocations.length > 0 ? (
-                <div className="border border-gray-200 rounded-md overflow-hidden">
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                        <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-400 uppercase">
                           Cost Centre
                         </th>
-                        <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase w-20">
+                        <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-400 uppercase w-20">
                           %
                         </th>
-                        <th className="px-2 py-1.5 text-center text-[10px] font-semibold text-gray-500 uppercase w-10"></th>
+                        <th className="px-2 py-1.5 text-center text-[10px] font-semibold text-gray-400 uppercase w-10"></th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -391,7 +400,7 @@ const CostCentreClassMaster: React.FC = () => {
                         <tr key={idx} className="bg-white hover:bg-gray-50">
                           <td className="px-1.5 py-1">
                             <select
-                              className="w-full h-7 px-1.5 text-[11px] border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
+                              className="w-full h-7 px-1.5 text-[11px] border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                               value={alloc.costCentreId}
                               onChange={(e) =>
                                 updateAllocationRow(idx, "costCentreId", e.target.value)
@@ -408,7 +417,7 @@ const CostCentreClassMaster: React.FC = () => {
                           <td className="px-1.5 py-1">
                             <input
                               type="number"
-                              className="w-full h-7 px-1.5 text-[11px] text-right border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
+                              className="w-full h-7 px-1.5 text-[11px] text-right border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                               value={alloc.percentage}
                               onChange={(e) =>
                                 updateAllocationRow(idx, "percentage", e.target.value)
@@ -419,7 +428,7 @@ const CostCentreClassMaster: React.FC = () => {
                           </td>
                           <td className="px-1.5 py-1 text-center">
                             <button
-                              className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                              className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
                               onClick={() => removeAllocationRow(idx)}
                               title="Remove"
                             >
@@ -452,7 +461,7 @@ const CostCentreClassMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-200 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -468,7 +477,7 @@ const CostCentreClassMaster: React.FC = () => {
 
           <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-lg hover:bg-gray-50"
               onClick={resetForm}
             >
               Cancel

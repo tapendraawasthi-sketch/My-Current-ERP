@@ -553,12 +553,12 @@ const AdvancedReportHub: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="w-full">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Advanced reports index</h1>
+            <h1 className="text-[15px] font-semibold text-gray-900">Advanced reports index</h1>
             <p className="text-[11px] text-gray-500 mt-0.5">
               Explore drill-down financials, ratios, exceptions, and schedule automatic reports
             </p>
@@ -567,7 +567,7 @@ const AdvancedReportHub: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch filter"
             >
               <option value="all">All branches</option>
@@ -604,8 +604,8 @@ const AdvancedReportHub: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex items-center gap-1.5 mb-4 text-[12px] bg-gray-50 p-2.5 rounded-md border border-gray-200">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 max-w-full overflow-auto">
+            <div className="flex items-center gap-1.5 mb-4 text-[12px] bg-gray-50 p-2.5 rounded-lg border border-gray-200">
               <Home size={14} className="text-gray-500" />
               {drillPath.map((p, i) => (
                 <React.Fragment key={i}>
@@ -615,7 +615,7 @@ const AdvancedReportHub: React.FC = () => {
                     className={`transition-colors ${
                       i < drillPath.length - 1
                         ? "text-[var(--ds-action-primary)] cursor-pointer hover:underline font-medium"
-                        : "font-semibold text-gray-800"
+                        : "font-semibold text-gray-700"
                     }`}
                   >
                     {p.label}
@@ -629,13 +629,13 @@ const AdvancedReportHub: React.FC = () => {
                 {["asset", "liability", "equity", "income", "expense"].map((type) => (
                   <div
                     key={type}
-                    className="bg-white border border-gray-200 rounded-md p-4 cursor-pointer hover:border-[var(--ds-action-primary)] hover:shadow-md transition-all group"
+                    className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-[var(--ds-action-primary)] hover:shadow-md transition-all group"
                     onClick={() => handleTypeSelect(type)}
                   >
                     <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-2 group-hover:text-[var(--ds-action-primary)] transition-colors">
                       {type}
                     </div>
-                    <div className="text-xl font-bold text-gray-800">
+                    <div className="text-xl font-bold text-gray-700">
                       {money(typeBalances[type])}
                     </div>
                   </div>
@@ -644,26 +644,26 @@ const AdvancedReportHub: React.FC = () => {
             )}
 
             {drillLevel === "account-list" && (
-              <div className="border border-gray-200 rounded-md overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Code
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Name
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Level
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Dr Balance
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Cr Balance
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Net
                       </th>
                     </tr>
@@ -680,13 +680,13 @@ const AdvancedReportHub: React.FC = () => {
                           {acc.name}
                         </td>
                         <td className="px-3 py-2.5 text-gray-600">{acc.level}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-800">
+                        <td className="px-3 py-2.5 text-right text-gray-700">
                           {money(acc.balance > 0 ? acc.balance : 0)}
                         </td>
-                        <td className="px-3 py-2.5 text-right text-gray-800">
+                        <td className="px-3 py-2.5 text-right text-gray-700">
                           {money(acc.balance < 0 ? -acc.balance : 0)}
                         </td>
-                        <td className="px-3 py-2.5 text-right font-medium text-gray-800">
+                        <td className="px-3 py-2.5 text-right font-medium text-gray-700">
                           {money(acc.balance)}
                         </td>
                       </tr>
@@ -704,29 +704,29 @@ const AdvancedReportHub: React.FC = () => {
             )}
 
             {drillLevel === "transactions" && (
-              <div className="border border-gray-200 rounded-md overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Date
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Voucher No
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Type
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Narration
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Dr
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Cr
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Running Balance
                       </th>
                     </tr>
@@ -758,9 +758,9 @@ const AdvancedReportHub: React.FC = () => {
                           >
                             {v.narration}
                           </td>
-                          <td className="px-3 py-2.5 text-right text-gray-800">{money(dr)}</td>
-                          <td className="px-3 py-2.5 text-right text-gray-800">{money(cr)}</td>
-                          <td className="px-3 py-2.5 text-right font-medium text-gray-800">
+                          <td className="px-3 py-2.5 text-right text-gray-700">{money(dr)}</td>
+                          <td className="px-3 py-2.5 text-right text-gray-700">{money(cr)}</td>
+                          <td className="px-3 py-2.5 text-right font-medium text-gray-700">
                             {money(balance)}
                           </td>
                         </tr>
@@ -779,10 +779,10 @@ const AdvancedReportHub: React.FC = () => {
             )}
 
             {drillLevel === "voucher-detail" && selectedVoucher && (
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-5 max-w-4xl mx-auto">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-5 max-w-4xl mx-auto">
                 <div className="flex justify-between items-start mb-6 pb-4 border-b border-gray-200">
                   <div>
-                    <h3 className="text-[16px] font-semibold text-gray-800 mb-1">
+                    <h3 className="text-[16px] font-semibold text-gray-700 mb-1">
                       {selectedVoucher.type.replace("-", " ").toUpperCase()}{" "}
                       <span className="text-gray-500 font-normal">
                         #{selectedVoucher.voucherNo}
@@ -808,27 +808,27 @@ const AdvancedReportHub: React.FC = () => {
                     )}
                   </div>
                   <button
-                    className="h-8 px-4 bg-white border border-gray-300 text-[var(--ds-action-primary)] text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                    className="h-8 px-4 bg-white border border-gray-300 text-[var(--ds-action-primary)] text-[12px] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => setCurrentPage("voucher-entry")}
                   >
                     Open in Entry Mode
                   </button>
                 </div>
 
-                <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
+                <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
                   <table className="w-full min-w-max border-collapse">
                     <thead>
-                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                        <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-1/4">
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-1/4">
                           Account Code
                         </th>
-                        <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-1/4">
+                        <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-1/4">
                           Account Name
                         </th>
-                        <th className="px-4 py-3 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-1/4">
+                        <th className="px-4 py-3 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-1/4">
                           Debit
                         </th>
-                        <th className="px-4 py-3 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-1/4">
+                        <th className="px-4 py-3 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-1/4">
                           Credit
                         </th>
                       </tr>
@@ -837,20 +837,20 @@ const AdvancedReportHub: React.FC = () => {
                       {selectedVoucher.lines?.map((line: any, idx: number) => (
                         <tr key={idx} className="bg-white border-b border-gray-100 text-[12px]">
                           <td className="px-4 py-3 text-gray-600">{line.accountCode}</td>
-                          <td className="px-4 py-3 font-medium text-gray-800">
+                          <td className="px-4 py-3 font-medium text-gray-700">
                             {line.accountName}
                           </td>
-                          <td className="px-4 py-3 text-right text-gray-800">
+                          <td className="px-4 py-3 text-right text-gray-700">
                             {line.debit ? money(line.debit) : ""}
                           </td>
-                          <td className="px-4 py-3 text-right text-gray-800">
+                          <td className="px-4 py-3 text-right text-gray-700">
                             {line.credit ? money(line.credit) : ""}
                           </td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
-                      <tr className="bg-gray-50 border-t-2 border-gray-200 font-bold text-[12px] text-gray-800">
+                      <tr className="bg-gray-50 border-t-2 border-gray-200 font-bold text-[12px] text-gray-700">
                         <td
                           colSpan={2}
                           className="px-4 py-3 text-right uppercase text-[10px] text-gray-500 tracking-wide"
@@ -877,17 +877,17 @@ const AdvancedReportHub: React.FC = () => {
         )}
 
         {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md p-5 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-lg p-5 mb-4 max-w-full overflow-auto">
             <div className="flex justify-between items-end mb-6">
               <div>
-                <h2 className="text-[15px] font-semibold text-gray-800">
+                <h2 className="text-[15px] font-semibold text-gray-700">
                   Ratio Analysis Dashboard
                 </h2>
                 <p className="text-[11px] text-gray-500 mt-0.5">
                   Key performance indicators and financial metrics
                 </p>
               </div>
-              <div className="text-center bg-gray-50 py-2 px-6 rounded-md border border-gray-200 shadow-inner">
+              <div className="text-center bg-gray-50 py-2 px-6 rounded-lg border border-gray-200 shadow-inner">
                 <div
                   className={`text-3xl font-bold ${financialHealthScore >= 80 ? "text-green-600" : financialHealthScore >= 50 ? "text-amber-600" : "text-red-600"}`}
                 >
@@ -901,12 +901,12 @@ const AdvancedReportHub: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Current Ratio
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800 mb-1">
+                <div className="text-2xl font-bold text-gray-700 mb-1">
                   {ratios.currentRatio.toFixed(2)}
                 </div>
                 <div
@@ -916,12 +916,12 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Quick Ratio
                   <Activity size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800 mb-1">
+                <div className="text-2xl font-bold text-gray-700 mb-1">
                   {ratios.quickRatio.toFixed(2)}
                 </div>
                 <div
@@ -931,23 +931,23 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Cash Ratio
                   <TrendingDown size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800 mb-1">
+                <div className="text-2xl font-bold text-gray-700 mb-1">
                   {ratios.cashRatio.toFixed(2)}
                 </div>
                 <div className="text-[11px] font-medium text-green-600">Good</div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   GP Margin
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800 mb-1">
+                <div className="text-2xl font-bold text-gray-700 mb-1">
                   {ratios.gpMargin.toFixed(2)}%
                 </div>
                 <div
@@ -957,12 +957,12 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   NP Margin
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800 mb-1">
+                <div className="text-2xl font-bold text-gray-700 mb-1">
                   {ratios.npMargin.toFixed(2)}%
                 </div>
                 <div
@@ -972,12 +972,12 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   ROA
                   <Activity size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800 mb-1">
+                <div className="text-2xl font-bold text-gray-700 mb-1">
                   {ratios.roa.toFixed(2)}%
                 </div>
                 <div
@@ -989,8 +989,8 @@ const AdvancedReportHub: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-md p-5">
-                <h3 className="text-[13px] font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+              <div className="bg-white border border-gray-200 rounded-lg p-5">
+                <h3 className="text-[13px] font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">
                   Quarterly Gross Margin Trend
                 </h3>
                 <div className="h-64">
@@ -1030,53 +1030,53 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-5">
-                <h3 className="text-[13px] font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+              <div className="bg-white border border-gray-200 rounded-lg p-5">
+                <h3 className="text-[13px] font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">
                   Efficiency Ratios
                 </h3>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
                     <div>
-                      <div className="text-[12px] font-semibold text-gray-800">
+                      <div className="text-[12px] font-semibold text-gray-700">
                         Inventory Turnover
                       </div>
                       <div className="text-[10px] text-gray-500">COGS / Avg. Inventory</div>
                     </div>
-                    <div className="text-lg font-bold text-gray-800">
+                    <div className="text-lg font-bold text-gray-700">
                       {ratios.inventoryTurnover.toFixed(1)}x
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
                     <div>
-                      <div className="text-[12px] font-semibold text-gray-800">
+                      <div className="text-[12px] font-semibold text-gray-700">
                         Debtor Days (DSO)
                       </div>
                       <div className="text-[10px] text-gray-500">Avg. Debtors / (Sales/365)</div>
                     </div>
-                    <div className="text-lg font-bold text-gray-800">
+                    <div className="text-lg font-bold text-gray-700">
                       {Math.round(ratios.debtorDays)} Days
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
                     <div>
-                      <div className="text-[12px] font-semibold text-gray-800">
+                      <div className="text-[12px] font-semibold text-gray-700">
                         Creditor Days (DPO)
                       </div>
                       <div className="text-[10px] text-gray-500">Avg. Creditors / (COGS/365)</div>
                     </div>
-                    <div className="text-lg font-bold text-gray-800">
+                    <div className="text-lg font-bold text-gray-700">
                       {Math.round(ratios.creditorDays)} Days
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
                     <div>
-                      <div className="text-[12px] font-semibold text-gray-800">Debt to Equity</div>
+                      <div className="text-[12px] font-semibold text-gray-700">Debt to Equity</div>
                       <div className="text-[10px] text-gray-500">Total Debt / Total Equity</div>
                     </div>
-                    <div className="text-lg font-bold text-gray-800">
+                    <div className="text-lg font-bold text-gray-700">
                       {ratios.debtToEquity.toFixed(2)}x
                     </div>
                   </div>
@@ -1087,8 +1087,8 @@ const AdvancedReportHub: React.FC = () => {
         )}
 
         {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md p-5 mb-4 max-w-full overflow-auto">
-            <h2 className="text-[15px] font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-100">
+          <div className="bg-white border border-gray-200 rounded-lg p-5 mb-4 max-w-full overflow-auto">
+            <h2 className="text-[15px] font-semibold text-gray-700 mb-5 pb-3 border-b border-gray-100">
               Report Automation Scheduler
             </h2>
 
@@ -1108,7 +1108,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
             )}
 
-            <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-8">
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-8">
               <h3 className="text-[13px] font-semibold text-gray-700 mb-4">Create New Schedule</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
                 <div>
@@ -1118,7 +1118,7 @@ const AdvancedReportHub: React.FC = () => {
                   <select
                     value={scheduleForm.reportType}
                     onChange={(e) => handleScheduleFormChange("reportType", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="">Select Report...</option>
                     <option value="trial-balance">Trial Balance</option>
@@ -1136,7 +1136,7 @@ const AdvancedReportHub: React.FC = () => {
                   <select
                     value={scheduleForm.frequency}
                     onChange={(e) => handleScheduleFormChange("frequency", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="">Select Frequency...</option>
                     <option value="daily">Daily</option>
@@ -1152,7 +1152,7 @@ const AdvancedReportHub: React.FC = () => {
                     type="time"
                     value={scheduleForm.time}
                     onChange={(e) => handleScheduleFormChange("time", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   />
                 </div>
                 <div>
@@ -1162,7 +1162,7 @@ const AdvancedReportHub: React.FC = () => {
                   <select
                     value={scheduleForm.format}
                     onChange={(e) => handleScheduleFormChange("format", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="excel">MS Excel (.xlsx)</option>
                     <option value="pdf">PDF Document (.pdf)</option>
@@ -1177,7 +1177,7 @@ const AdvancedReportHub: React.FC = () => {
                     value={scheduleForm.recipients}
                     onChange={(e) => handleScheduleFormChange("recipients", e.target.value)}
                     placeholder="user@example.com, ..."
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   />
                 </div>
               </div>
@@ -1192,27 +1192,27 @@ const AdvancedReportHub: React.FC = () => {
               </div>
             </div>
 
-            <h3 className="text-[13px] font-semibold text-gray-800 mb-3">Active Schedules</h3>
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <h3 className="text-[13px] font-semibold text-gray-700 mb-3">Active Schedules</h3>
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Report Type
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Frequency
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Next Run
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Recipients
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -1223,7 +1223,7 @@ const AdvancedReportHub: React.FC = () => {
                       key={schedule.id}
                       className="bg-white hover:bg-gray-50 border-b border-gray-100 text-[12px] transition-colors"
                     >
-                      <td className="px-3 py-2.5 font-medium text-gray-800 capitalize">
+                      <td className="px-3 py-2.5 font-medium text-gray-700 capitalize">
                         {schedule.reportType.replace("-", " ")}
                       </td>
                       <td className="px-3 py-2.5 text-gray-600 capitalize">
@@ -1290,28 +1290,28 @@ const AdvancedReportHub: React.FC = () => {
         )}
 
         {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 max-w-full overflow-auto">
-            <h2 className="text-[15px] font-semibold text-gray-800 mb-5">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 max-w-full overflow-auto">
+            <h2 className="text-[15px] font-semibold text-gray-700 mb-5">
               Exception Detection Engine
             </h2>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Category
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Exception Policy
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Affected Records
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Severity Indicator
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                       Investigation
                     </th>
                   </tr>
@@ -1328,10 +1328,10 @@ const AdvancedReportHub: React.FC = () => {
                         }
                       >
                         <td className="px-3 py-3 text-gray-600 font-medium">{exc.category}</td>
-                        <td className="px-3 py-3 text-gray-800">{exc.exception}</td>
+                        <td className="px-3 py-3 text-gray-700">{exc.exception}</td>
                         <td className="px-3 py-3 text-right">
                           {exc.count > 0 ? (
-                            <span className="font-bold text-gray-800">{exc.count}</span>
+                            <span className="font-bold text-gray-700">{exc.count}</span>
                           ) : (
                             <span className="text-gray-400">Clear</span>
                           )}
@@ -1353,8 +1353,8 @@ const AdvancedReportHub: React.FC = () => {
                       {expandedException === exc.exception && (
                         <tr className="bg-gray-50 border-b border-gray-200">
                           <td colSpan={5} className="p-4 px-6">
-                            <div className="bg-white border border-gray-200 rounded-md p-4">
-                              <h4 className="font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 text-[13px]">
+                            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                              <h4 className="font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2 text-[13px]">
                                 Affected Records ({exc.count})
                               </h4>
                               <div className="max-h-48 overflow-y-auto custom-scrollbar">

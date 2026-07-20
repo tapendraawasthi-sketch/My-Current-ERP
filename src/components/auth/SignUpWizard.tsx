@@ -5,6 +5,7 @@ import Step3AccountingSetup from "./wizard/Step3AccountingSetup";
 import Step4AdminAccount from "./wizard/Step4AdminAccount";
 import type { WizardForm } from "./wizard/wizardTypes";
 import { useStore } from "@/store/useStore";
+import { applyNatureToCompanySettings } from "@/lib/businessNature";
 import { Button, ErrorSummary, StepProgress, Alert } from "@/design-system";
 import { PreWorkspaceShell } from "./PreWorkspaceShell";
 
@@ -14,6 +15,7 @@ const defaultForm: WizardForm = {
   companyNameEn: "",
   companyNameNe: "",
   businessType: "",
+  businessNature: "",
   address: "",
   city: "",
   district: "",
@@ -89,7 +91,8 @@ export default function SignUpWizard() {
     switch (step) {
       case 1:
         if (!formData.companyNameEn.trim()) errors.companyNameEn = "Company name (English) is required";
-        if (!formData.businessType) errors.businessType = "Business type is required";
+        if (!formData.businessNature) errors.businessNature = "Business nature is required";
+        if (!formData.businessType) errors.businessType = "Legal entity type is required";
         if (!formData.address.trim()) errors.address = "Address is required";
         if (!formData.city.trim()) errors.city = "City is required";
         if (!formData.phone.trim()) errors.phone = "Phone number is required";
@@ -146,32 +149,35 @@ export default function SignUpWizard() {
     setSubmitError("");
     setSubmitLoading(true);
     try {
+      const companyBase = {
+        name: formData.companyNameEn,
+        nameNepali: formData.companyNameNe,
+        panNumber: formData.panNumber,
+        address: formData.address,
+        phone: formData.phone,
+        email: formData.email,
+        vatNumber: formData.vatNumber,
+        defaultCurrency: "NPR",
+        currencySymbol: "Rs.",
+        defaultDateFormat: formData.dateFormat as "BS" | "AD",
+        fiscalYearStartMonth: 4,
+        stockValuationMethod: "weighted_average",
+        enableCostCenter: formData.enableCostCenter,
+        enableMultiCurrency: false,
+        enableBillWiseTracking: formData.enableBillWise,
+        enableBatchTracking: false,
+        voucherSeries: {},
+        companyNameEn: formData.companyNameEn,
+        companyNameNe: formData.companyNameNe,
+        city: formData.city,
+        businessType: formData.businessType,
+        businessNature: formData.businessNature,
+        dateFormat: formData.dateFormat,
+        enableBillWise: formData.enableBillWise,
+        enableInventory: formData.enableStock,
+      };
       await createCompanyAndAdmin({
-        company: {
-          name: formData.companyNameEn,
-          nameNepali: formData.companyNameNe,
-          panNumber: formData.panNumber,
-          address: formData.address,
-          phone: formData.phone,
-          email: formData.email,
-          vatNumber: formData.vatNumber,
-          defaultCurrency: "NPR",
-          currencySymbol: "Rs.",
-          defaultDateFormat: formData.dateFormat as "BS" | "AD",
-          fiscalYearStartMonth: 4,
-          stockValuationMethod: "weighted_average",
-          enableCostCenter: formData.enableCostCenter,
-          enableMultiCurrency: false,
-          enableBillWiseTracking: formData.enableBillWise,
-          enableBatchTracking: false,
-          voucherSeries: {},
-          companyNameEn: formData.companyNameEn,
-          companyNameNe: formData.companyNameNe,
-          city: formData.city,
-          businessType: formData.businessType,
-          dateFormat: formData.dateFormat,
-          enableBillWise: formData.enableBillWise,
-        } as never,
+        company: applyNatureToCompanySettings(companyBase, formData.businessNature) as never,
         adminUser: {
           name: formData.fullName,
           username: formData.username,

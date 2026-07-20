@@ -10,6 +10,12 @@ import {
   parseFYLabel,
 } from "../../lib/nepaliDate";
 import { useBranchFilter } from "../../hooks/useBranchFilter";
+import { formatNumber } from "@/lib/utils";
+import {
+  DetailReportLayout,
+  PrintDocumentHeader,
+  PrintDocumentSignatures,
+} from "@/features/reports";
 
 type PeriodMode = "month" | "quarter" | "year" | "custom";
 
@@ -43,10 +49,7 @@ interface Voucher {
 }
 
 function money(value: number): string {
-  return Number(value || 0).toLocaleString("en-NP", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  return formatNumber(value || 0, 2);
 }
 
 function bsToNum(bs: string): number {
@@ -290,18 +293,44 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
   }
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen flex flex-col">
-      <div className="no-print flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">General Ledger</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">{account.name} — Ledger Statement</p>
+    <DetailReportLayout
+      title="General Ledger"
+      subtitle="History of one account"
+      entityName={account.name}
+      onBack={onBack}
+      entityMeta={
+        <div className="flex items-center gap-1 flex-wrap">
+          {breadcrumb.map((part, i) => (
+            <React.Fragment key={`${part}-${i}`}>
+              {i > 0 && <ChevronRight className="h-3 w-3 text-gray-400" />}
+              <span>{part}</span>
+            </React.Fragment>
+          ))}
+          <span className="text-gray-400">·</span>
+          <span>
+            {activeRange.fromBS} to {activeRange.toBS}
+          </span>
         </div>
-        <div className="flex items-center gap-2">
+      }
+      kpis={[
+        {
+          label: "Opening",
+          value: `${money(absBalance(ledgerData.openingSigned))} ${openingIndicator}`,
+        },
+        {
+          label: "Closing",
+          value: `${money(absBalance(ledgerData.closingSigned))} ${closingIndicator}`,
+        },
+        { label: "Entries", value: String(ledgerData.rows.length) },
+        { label: "Period", value: periodMode },
+      ]}
+      actions={
+        <>
           {branchOptions.length > 0 && (
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -315,39 +344,22 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
           <button
             type="button"
             onClick={() => window.print()}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-[var(--ds-border-default)] text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
           >
             Print
           </button>
           <button
             type="button"
             onClick={exportLedger}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-[var(--ds-border-default)] text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
           >
             Export
           </button>
-        </div>
-      </div>
-
-      <div className="no-print flex items-center gap-2 mb-3 text-[12px] text-gray-600">
-        <button
-          type="button"
-          onClick={onBack}
-          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 shrink-0"
-        >
-          ← Back (Esc)
-        </button>
-        <div className="flex items-center gap-1 flex-wrap">
-          {breadcrumb.map((part, i) => (
-            <React.Fragment key={`${part}-${i}`}>
-              {i > 0 && <ChevronRight className="h-3 w-3 text-gray-400" />}
-              <span>{part}</span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      <div className="no-print flex flex-wrap items-center gap-3 mb-3">
+        </>
+      }
+      footer="↑↓ Navigate · Enter Open voucher · Esc Back"
+    >
+      <div className="no-print flex flex-wrap items-center gap-3 border-b border-[var(--ds-border-subtle)] px-3 py-2">
         <div className="report-toggle">
           {(["month", "quarter", "year", "custom"] as PeriodMode[]).map((mode) => (
             <button
@@ -413,39 +425,25 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
         )}
       </div>
 
-      <div className="print-only hidden text-center mb-4 p-4">
-        <h1 className="text-[15px] font-semibold">
-          {companySettings?.companyNameEn || companySettings?.name || "Company"}
-        </h1>
-        <h2 className="text-[12px] font-semibold mt-1">Ledger Statement</h2>
-        <div className="text-[11px] text-gray-600">
-          {account.name} | {activeRange.fromBS} to {activeRange.toBS}
-        </div>
+      <div className="print-only ds-print-only hidden px-3 pt-3">
+        <PrintDocumentHeader
+          companyName={companySettings?.companyNameEn || companySettings?.name}
+          nameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
+          address={companySettings?.address || companySettings?.companyAddress}
+          pan={companySettings?.panNumber || companySettings?.pan}
+          phone={companySettings?.phone || companySettings?.mobile}
+          logoUrl={companySettings?.logo || companySettings?.logoUrl}
+          title={`Ledger Statement — ${account.name}`}
+          periodLabel={`${activeRange.fromBS} to ${activeRange.toBS}`}
+        />
       </div>
 
       <div
         ref={scrollRef}
         tabIndex={0}
         onKeyDown={handleTableKeyDown}
-        className="bg-white border border-gray-200 rounded-md flex flex-col flex-1 min-h-0 overflow-y-auto outline-none"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto outline-none"
       >
-        <div
-          className="sticky top-0 z-20 bg-[#f5f6fa] border-b border-gray-200 px-4 py-2.5 flex flex-wrap gap-x-6 gap-y-1 text-[12px]"
-        >
-          <span>
-            Opening Balance:{" "}
-            <span className="number-cell-bold">
-              {money(absBalance(ledgerData.openingSigned))} {openingIndicator}
-            </span>
-          </span>
-          <span>
-            Closing Balance:{" "}
-            <span className="number-cell-bold">
-              {money(absBalance(ledgerData.closingSigned))} {closingIndicator}
-            </span>
-          </span>
-        </div>
-
         {ledgerData.rows.length === 0 ? (
           <div className="empty-state">
             <p className="empty-state-title">No transactions in this period</p>
@@ -501,7 +499,10 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
           </table>
         )}
       </div>
-    </div>
+      <div className="print-only ds-print-only hidden px-3 pb-3">
+        <PrintDocumentSignatures />
+      </div>
+    </DetailReportLayout>
   );
 };
 

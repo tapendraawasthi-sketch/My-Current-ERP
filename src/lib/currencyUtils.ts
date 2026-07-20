@@ -1,4 +1,5 @@
 // src/lib/currencyUtils.ts
+import { formatCurrency } from "./utils";
 
 export function convertCurrency(amount: number, fromRate: number, toRate: number): number {
   const safeAmount = Number(amount) || 0;
@@ -6,11 +7,6 @@ export function convertCurrency(amount: number, fromRate: number, toRate: number
   return Math.round((safeAmount / fromRate) * toRate * 100) / 100;
 }
 
-export function formatWithCurrency(amount: number, currency: any): string {
-  const safeAmount = Number(amount) || 0;
-  if (!currency) return `Rs. ${safeAmount.toFixed(2)}`;
-  return `${currency.symbol} ${new Intl.NumberFormat("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(safeAmount)}`;
+export function formatWithCurrency(amount: number, currency: { symbol?: string } | null | undefined): string {
+  return formatCurrency(amount, { symbol: currency?.symbol || "Rs." });
 }

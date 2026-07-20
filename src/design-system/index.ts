@@ -36,6 +36,17 @@ export {
   VisuallyHidden,
 } from "./primitives/Feedback/Feedback";
 export { Surface, Stack, Inline, Container } from "./primitives/Layout/Layout";
+export {
+  Avatar,
+  SuccessAvatar,
+  avatarInitials,
+  avatarTone,
+} from "./primitives/Avatar/Avatar";
+export type {
+  AvatarProps,
+  AvatarSize,
+  SuccessAvatarProps,
+} from "./primitives/Avatar/Avatar";
 
 export {
   Dialog,
@@ -155,6 +166,10 @@ export {
   DualDateField,
   DualDateDisplay,
   DateRangeField,
+  TableSkeleton,
+  FormSkeleton,
+  KpiSkeleton,
+  ScrollableTable,
 } from "./composites";
 export type {
   ComboboxProps,
@@ -165,6 +180,10 @@ export type {
   LineItemGridProps,
   LineItemRow,
   DateRangePreset,
+  TableSkeletonProps,
+  FormSkeletonProps,
+  KpiSkeletonProps,
+  ScrollableTableProps,
 } from "./composites";
 
 export type { LucideIcon } from "lucide-react";

@@ -1,31 +1,27 @@
 // @ts-nocheck
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store";
 import toast from "@/lib/appToast";
 import { DBPriceList, DBPriceListLine } from "../lib/db";
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  X,
-  Save,
-  Search,
-  Package,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react";
-import { ReportEmptyState } from "../components/ReportEmptyState";
+import { Plus, X, Save, Search, Package, Trash2 } from "lucide-react";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+import { formatCurrency } from "../lib/utils";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
-const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
 const btnOutline =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-white border border-gray-200 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyLine = (): DBPriceListLine & { _id: string } => ({
@@ -37,13 +33,16 @@ const emptyLine = (): DBPriceListLine & { _id: string } => ({
 });
 
 export default function PriceLists() {
-  const { priceLists, addPriceList, updatePriceList, deletePriceList, items } = useStore();
-  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const { priceLists, addPriceList, updatePriceList, deletePriceList, items, initLifecycle } =
+    useStore();
+  const { branchFilter, matchBranch } = useBranchFilter();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
+  const pageId = route.pageId === "price-list-master" ? "price-list-master" : "price-lists";
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -69,12 +68,69 @@ export default function PriceLists() {
     });
   }, [priceLists, search, matchBranch, branchFilter]);
 
-  const deleteTarget = useMemo(
-    () => priceLists.find((pl) => pl.id === deleteTargetId) ?? null,
-    [priceLists, deleteTargetId],
-  );
-
   const stockItems = useMemo(() => (items ?? []).filter((i: any) => i.isActive !== false), [items]);
+
+  const columns = useMemo<EnterpriseColumnDef<DBPriceList>[]>(
+    () => [
+      {
+        id: "code",
+        header: "Code",
+        cell: (pl) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{pl.code || "—"}</span>
+        ),
+      },
+      {
+        id: "name",
+        header: "Name",
+        cell: (pl) => (
+          <span className="font-medium text-[12px] text-[var(--ds-text-default)]">{pl.name}</span>
+        ),
+      },
+      {
+        id: "description",
+        header: "Description",
+        cell: (pl) => (
+          <span className="text-[12px] text-[var(--ds-text-default)] truncate max-w-[200px] block">
+            {pl.description || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "currency",
+        header: "Curr",
+        cell: (pl) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">
+            {pl.currency ?? "INR"}
+          </span>
+        ),
+      },
+      {
+        id: "items",
+        header: "Items",
+        align: "center",
+        cell: (pl) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">
+            {(pl.lines ?? []).length}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        align: "center",
+        cell: (pl) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              pl.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}
+          >
+            {pl.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [],
+  );
 
   const resetForm = () => {
     setFormName("");
@@ -89,6 +145,7 @@ export default function PriceLists() {
     setEditingId(null);
     resetForm();
     setShowForm(true);
+    openEntity(pageId, "new");
   };
 
   const handleOpenEdit = (pl: DBPriceList) => {
@@ -100,13 +157,42 @@ export default function PriceLists() {
     setFormIsActive(pl.isActive);
     setFormLines((pl.lines ?? []).map((l) => ({ ...l, _id: crypto.randomUUID() })));
     setShowForm(true);
+    openEntity(pageId, pl.id);
   };
 
   const handleCloseForm = () => {
     setShowForm(false);
     setEditingId(null);
     resetForm();
+    clearEntity(pageId);
   };
+
+  // Deep link: /app/price-lists/:id | /app/price-lists/new
+  useEffect(() => {
+    if (route.pageId !== "price-lists" && route.pageId !== "price-list-master") return;
+    if (route.entityId === "new") {
+      setEditingId(null);
+      resetForm();
+      setShowForm(true);
+      return;
+    }
+    if (route.entityId) {
+      const pl = priceLists.find((p) => p.id === route.entityId);
+      if (pl) {
+        setEditingId(pl.id);
+        setFormName(pl.name);
+        setFormCode(pl.code);
+        setFormDescription(pl.description ?? "");
+        setFormCurrency(pl.currency ?? "INR");
+        setFormIsActive(pl.isActive);
+        setFormLines((pl.lines ?? []).map((l) => ({ ...l, _id: crypto.randomUUID() })));
+        setShowForm(true);
+      }
+      return;
+    }
+    if (showForm) setShowForm(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.pageId, route.entityId, priceLists]);
 
   const addLine = () => setFormLines((prev) => [...prev, emptyLine()]);
 
@@ -199,63 +285,90 @@ export default function PriceLists() {
     }
   };
 
-  const handleDeleteRequest = (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    setDeleteTargetId(id);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetId) return;
+  const handleDelete = async (pl: DBPriceList) => {
+    const snapshot = { ...pl };
     try {
-      await deletePriceList(deleteTargetId);
-      toast.success("Price list deleted.");
+      await deletePriceList(pl.id);
+      if (editingId === pl.id) handleCloseForm();
+      toast.undo(`"${pl.name}" deleted`, async () => {
+        try {
+          const { id, ...rest } = snapshot;
+          await addPriceList({ ...rest, id } as any);
+        } catch {
+          toast.error("Failed to restore price list.");
+        }
+      });
     } catch {
       toast.error("Failed to delete price list.");
-    } finally {
-      setDeleteTargetId(null);
     }
   };
 
-  const toggleExpand = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpandedId((prev) => (prev === id ? null : id));
-  };
+  const renderExpanded = (pl: DBPriceList) => (
+    <div className="px-4 py-3 bg-[var(--ds-surface-muted)]">
+      {(pl.lines ?? []).length === 0 ? (
+        <p className="text-[11px] text-[var(--ds-text-muted)]">
+          No line items defined for this price list.
+        </p>
+      ) : (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="pb-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+                Item
+              </th>
+              <th className="pb-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-28">
+                Min. qty
+              </th>
+              <th className="pb-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-28">
+                Rate
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {(pl.lines ?? []).map((line, idx) => (
+              <tr key={idx} className="border-t border-gray-200">
+                <td className="py-2 text-[12px] text-gray-700">
+                  {line.itemName || line.itemId || "—"}
+                </td>
+                <td className="py-2 text-right text-[12px] font-mono text-gray-700">
+                  {line.minQty ?? 1}
+                </td>
+                <td className="py-2 text-right">
+                  <span className="ds-financial-value">{formatCurrency(Number(line.rate))}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa] overflow-hidden">
+    <div className="flex h-full min-h-0 bg-gray-50 overflow-hidden">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Price Lists</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Define item-specific pricing for customers
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {branchOptions.length > 0 && (
-                <select
-                  value={branchFilter}
-                  onChange={(e) => setBranchFilter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-                  aria-label="Branch"
-                >
-                  <option value="all">All branches</option>
-                  {branchOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name || b.code || b.id}
-                    </option>
-                  ))}
-                </select>
-              )}
-              <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
-                <Plus className="h-3.5 w-3.5" />
+        <div className="p-4 pb-0 flex flex-col gap-3">
+          <PageHeader
+            title="Price Lists"
+            description="Define item-specific pricing for customers"
+            meta={
+              <PageMeta>
+                {filtered.length} of {priceLists.length} price lists
+              </PageMeta>
+            }
+            primaryAction={
+              <Button
+                variant="primary"
+                size="small"
+                onClick={handleOpenCreate}
+                startIcon={<Plus className="h-3.5 w-3.5" />}
+              >
                 New price list
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+          />
 
-          <div className="relative mb-3 max-w-xs">
+          <div className="relative max-w-xs">
             <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             <input
               placeholder="Search price lists..."
@@ -266,159 +379,47 @@ export default function PriceLists() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
-          {filtered.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-md">
-              <ReportEmptyState
-                message={search ? "No price lists match your search" : "No price lists found"}
-                hint={
-                  search
-                    ? "Try a different search term."
-                    : 'Click "New price list" to create your first price list.'
-                }
-              />
-            </div>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className={`${th} w-10`} />
-                    <th className={th}>Code</th>
-                    <th className={th}>Name</th>
-                    <th className={th}>Description</th>
-                    <th className={th}>Curr</th>
-                    <th className={`${th} text-center`}>Items</th>
-                    <th className={`${th} text-center`}>Status</th>
-                    <th className={`${th} text-right`}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((pl) => {
-                    const isExpanded = expandedId === pl.id;
-                    return (
-                      <React.Fragment key={pl.id}>
-                        <tr
-                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
-                          onClick={() => handleOpenEdit(pl)}
-                        >
-                          <td className={`${td} text-center`}>
-                            <button
-                              type="button"
-                              onClick={(e) => toggleExpand(pl.id, e)}
-                              className="text-gray-400 hover:text-gray-600"
-                            >
-                              {isExpanded ? (
-                                <ChevronDown className="h-4 w-4" />
-                              ) : (
-                                <ChevronRight className="h-4 w-4" />
-                              )}
-                            </button>
-                          </td>
-                          <td className={`${td} font-mono`}>{pl.code || "—"}</td>
-                          <td className={`${td} font-medium text-gray-800`}>{pl.name}</td>
-                          <td className={`${td} truncate max-w-[200px]`}>
-                            {pl.description || "—"}
-                          </td>
-                          <td className={`${td} font-mono`}>{pl.currency ?? "INR"}</td>
-                          <td className={`${td} text-center`}>{(pl.lines ?? []).length}</td>
-                          <td className={`${td} text-center`}>
-                            <span
-                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                                pl.isActive
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-red-100 text-red-700"
-                              }`}
-                            >
-                              {pl.isActive ? "Active" : "Inactive"}
-                            </span>
-                          </td>
-                          <td className={`${td} text-right`}>
-                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                type="button"
-                                className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleOpenEdit(pl);
-                                }}
-                              >
-                                <Edit2 className="h-3.5 w-3.5" />
-                              </button>
-                              <button
-                                type="button"
-                                className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
-                                onClick={(e) => handleDeleteRequest(pl.id, e)}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        {isExpanded && (
-                          <tr className="bg-[#f5f6fa]">
-                            <td colSpan={8} className="p-0 border-b border-gray-200">
-                              <div className="px-8 py-3">
-                                {(pl.lines ?? []).length === 0 ? (
-                                  <p className="text-[11px] text-gray-500">
-                                    No line items defined for this price list.
-                                  </p>
-                                ) : (
-                                  <table className="w-full border-collapse">
-                                    <thead>
-                                      <tr>
-                                        <th className="pb-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                                          Item
-                                        </th>
-                                        <th className="pb-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                                          Min. qty
-                                        </th>
-                                        <th className="pb-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                                          Rate
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {(pl.lines ?? []).map((line, idx) => (
-                                        <tr key={idx} className="border-t border-gray-200">
-                                          <td className="py-2 text-[12px] text-gray-700">
-                                            {line.itemName || line.itemId || "—"}
-                                          </td>
-                                          <td className="py-2 text-right text-[12px] font-mono text-gray-700">
-                                            {line.minQty ?? 1}
-                                          </td>
-                                          <td className="py-2 text-right text-[12px] font-mono font-medium text-gray-800">
-                                            {Number(line.rate).toLocaleString("en-IN", {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                            })}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-                {filtered.length} price list{filtered.length === 1 ? "" : "s"}
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3 min-h-0">
+          <EnterpriseDataTable
+            columns={columns}
+            rows={filtered}
+            getRowId={(pl) => pl.id}
+            loading={priceLists == null || initLifecycle === "loading"}
+            emptyTitle={search ? "No price lists match your search" : "No price lists found"}
+            emptyDescription={
+              search
+                ? "Try a different search term."
+                : 'Click "New price list" to create your first price list.'
+            }
+            emptyAction={
+              !search ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={handleOpenCreate}
+                  startIcon={<Plus className="h-3.5 w-3.5" />}
+                >
+                  New price list
+                </Button>
+              ) : undefined
+            }
+            onRowClick={handleOpenEdit}
+            rowActions={(pl) => [
+              { label: "Edit", onSelect: () => handleOpenEdit(pl) },
+              { label: "Delete", destructive: true, onSelect: () => handleDelete(pl) },
+            ]}
+            expandedIds={expandedIds}
+            onExpandedChange={setExpandedIds}
+            renderExpanded={renderExpanded}
+            caption="Price lists"
+          />
         </div>
       </div>
 
       {showForm && (
         <div className="w-full lg:w-[560px] xl:w-[640px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[13px] font-semibold text-gray-700">
               {editingId ? "Edit price list" : "New price list"}
             </span>
             <button
@@ -482,21 +483,21 @@ export default function PriceLists() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-md px-3 py-2 bg-gray-50 hover:bg-gray-100">
+                <label className="flex w-fit items-center gap-2 cursor-pointer border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 hover:bg-gray-100">
                   <input
                     type="checkbox"
                     checked={formIsActive}
                     onChange={(e) => setFormIsActive(e.target.checked)}
-                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
+                    className="rounded border-[var(--ds-border-default)] text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                   />
                   <span className="text-[12px] font-medium text-gray-700">Active</span>
                 </label>
               </div>
             </div>
 
-            <div className="border border-gray-200 rounded-md overflow-hidden">
-              <div className="bg-[#f5f6fa] border-b border-gray-200 px-3 py-2 flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="bg-gray-50 border-b border-gray-200 px-3 py-2 flex items-center justify-between">
+                <span className="text-[11px] font-medium text-gray-500">
                   Line items
                 </span>
                 <button
@@ -517,14 +518,14 @@ export default function PriceLists() {
               ) : (
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-[#f5f6fa]">
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="border-b border-gray-200 bg-gray-50">
+                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                         Item
                       </th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-24">
                         Min qty
                       </th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">
                         Rate
                       </th>
                       <th className="px-3 py-2 w-10" />
@@ -538,7 +539,7 @@ export default function PriceLists() {
                             <select
                               value={line.itemId}
                               onChange={(e) => updateLine(line._id, "itemId", e.target.value)}
-                              className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
+                              className="w-full h-7 px-1.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                             >
                               <option value="">Select item</option>
                               {stockItems.map((i: any) => (
@@ -553,7 +554,7 @@ export default function PriceLists() {
                               value={line.itemName}
                               onChange={(e) => updateLine(line._id, "itemName", e.target.value)}
                               placeholder={`Item ${idx + 1}`}
-                              className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
+                              className="w-full h-7 px-1.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                             />
                           )}
                         </td>
@@ -564,7 +565,7 @@ export default function PriceLists() {
                             step={1}
                             value={line.minQty ?? 1}
                             onChange={(e) => updateLine(line._id, "minQty", Number(e.target.value))}
-                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
+                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                           />
                         </td>
                         <td className="px-3 py-1.5">
@@ -574,7 +575,7 @@ export default function PriceLists() {
                             step={0.01}
                             value={line.rate}
                             onChange={(e) => updateLine(line._id, "rate", Number(e.target.value))}
-                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
+                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                           />
                         </td>
                         <td className="px-3 py-1.5 text-center">
@@ -603,40 +604,6 @@ export default function PriceLists() {
             <button type="button" className={btnOutline} onClick={handleCloseForm}>
               Cancel
             </button>
-          </div>
-        </div>
-      )}
-
-      {deleteTargetId && deleteTarget && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-md border border-gray-200 w-full max-w-sm shadow-xl">
-            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
-              <h2 className="text-[13px] font-semibold text-gray-800">Delete price list</h2>
-            </div>
-            <div className="p-4">
-              <p className="text-[12px] text-gray-700 mb-4">
-                Are you sure you want to delete{" "}
-                <span className="font-semibold text-gray-900">{deleteTarget.name}</span>? This will
-                remove all {(deleteTarget.lines ?? []).length} line item
-                {(deleteTarget.lines ?? []).length !== 1 ? "s" : ""} and cannot be undone.
-              </p>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  className={btnOutline}
-                  onClick={() => setDeleteTargetId(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDeleteConfirm}
-                  className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}

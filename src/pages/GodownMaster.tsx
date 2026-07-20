@@ -4,6 +4,13 @@ import { useStore } from "../store/useStore";
 import type { DBWarehouse } from "../lib/db";
 import { useBranchFilter } from "../hooks/useBranchFilter";
 import { readActiveBranchId } from "../lib/activeBranch";
+import {
+  Button,
+  PageHeader,
+  PageMeta,
+  EnterpriseDataTable,
+  type EnterpriseColumnDef,
+} from "@/design-system";
 
 const emptyForm = {
   code: "",
@@ -39,6 +46,73 @@ const GodownMaster: React.FC = () => {
   const mainGodowns = useMemo(
     () => visibleWarehouses.filter((w: DBWarehouse) => !w.parentId),
     [visibleWarehouses],
+  );
+
+  const columns = useMemo<EnterpriseColumnDef<DBWarehouse>[]>(
+    () => [
+      {
+        id: "code",
+        header: "Code",
+        cell: (w) => (
+          <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{w.code}</span>
+        ),
+      },
+      {
+        id: "name",
+        header: "Godown",
+        cell: (w) => (
+          <span
+            className="font-medium text-[12px] text-[var(--ds-text-default)]"
+            style={{ paddingLeft: w.parentId ? 18 : 0 }}
+          >
+            {w.parentId ? "↳ " : ""}
+            {w.name}
+          </span>
+        ),
+      },
+      {
+        id: "parent",
+        header: "Parent",
+        cell: (w) => {
+          const parent = (warehouses || []).find((x: DBWarehouse) => x.id === w.parentId);
+          return (
+            <span className="text-[12px] text-[var(--ds-text-default)]">{parent?.name || "Main"}</span>
+          );
+        },
+      },
+      {
+        id: "branch",
+        header: "Branch",
+        cell: (w) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">{w.branchName || "—"}</span>
+        ),
+      },
+      {
+        id: "negativeStock",
+        header: "Negative stock",
+        cell: (w) => (
+          <span className="text-[12px] text-[var(--ds-text-default)]">
+            {w.allowNegativeStock ? "Allowed" : "Denied"}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: (w) => (
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+              w.isActive
+                ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                : "bg-[var(--ds-status-neutral-surface)] text-[var(--ds-status-neutral)]"
+            }`}
+          >
+            {w.isActive ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
+    ],
+    [warehouses],
   );
 
   const save = async () => {
@@ -94,32 +168,38 @@ const GodownMaster: React.FC = () => {
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Godown Master</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Multi-branch and hierarchical godown setup
-          </p>
-        </div>
-        {branchOptions.length > 0 && (
-          <select
-            value={branchFilter}
-            onChange={(e) => setBranchFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-            aria-label="Branch"
-          >
-            <option value="all">All branches</option>
-            {branchOptions.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name || b.code || b.id}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+    <div className="p-4 space-y-4 pb-8">
+      <PageHeader
+        title="Godown Master"
+        description="Multi-branch and hierarchical godown setup"
+        meta={
+          <PageMeta>
+            {visibleWarehouses.length} of {(warehouses || []).length} godowns
+          </PageMeta>
+        }
+        secondaryActions={[
+          ...(branchOptions.length > 0
+            ? [
+                <select
+                  key="branch"
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-lg bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>,
+              ]
+            : []),
+        ]}
+      />
 
-      <div className="bg-white border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
         <Input
           label="Godown Code"
           value={form.code}
@@ -149,7 +229,7 @@ const GodownMaster: React.FC = () => {
                   branchName: b?.name || "",
                 });
               }}
-              className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md w-full"
+              className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg w-full"
             >
               <option value="">Active / none</option>
               {branchOptions.map((b) => (
@@ -177,7 +257,7 @@ const GodownMaster: React.FC = () => {
           <select
             value={form.parentId}
             onChange={(e) => setForm({ ...form, parentId: e.target.value })}
-            className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md w-full"
+            className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg w-full"
           >
             <option value="">Main Godown</option>
             {mainGodowns.map((w: DBWarehouse) => (
@@ -199,7 +279,7 @@ const GodownMaster: React.FC = () => {
           <select
             value={form.costCenterId}
             onChange={(e) => setForm({ ...form, costCenterId: e.target.value })}
-            className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md w-full"
+            className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg w-full"
           >
             <option value="">Not linked</option>
             {(costCenters || []).map((cc: any) => (
@@ -234,62 +314,32 @@ const GodownMaster: React.FC = () => {
         </div>
 
         <div className="md:col-span-3 flex justify-end gap-2">
-          <button
+          <Button
+            variant="secondary"
+            size="small"
             onClick={() => {
               setForm({ ...emptyForm, branchId: readActiveBranchId() || "" });
               setEditingId(null);
             }}
-            className="h-8 px-3 bg-white border border-gray-300 rounded-md text-[12px]"
           >
             Clear
-          </button>
-          <button
-            onClick={save}
-            className="h-8 px-3 bg-[var(--ds-action-primary)] text-white rounded-md text-[12px]"
-          >
+          </Button>
+          <Button variant="primary" size="small" onClick={save}>
             {editingId ? "Update Godown" : "Create Godown"}
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-        <table className="w-full text-[12px]">
-          <thead className="bg-[#f5f6fa]">
-            <tr>
-              <th className="px-3 py-2 text-left">Code</th>
-              <th className="px-3 py-2 text-left">Godown</th>
-              <th className="px-3 py-2 text-left">Parent</th>
-              <th className="px-3 py-2 text-left">Branch</th>
-              <th className="px-3 py-2 text-left">Negative Stock</th>
-              <th className="px-3 py-2 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visibleWarehouses.map((w: DBWarehouse) => {
-              const parent = (warehouses || []).find((x: DBWarehouse) => x.id === w.parentId);
-              return (
-                <tr
-                  key={w.id}
-                  onClick={() => edit(w)}
-                  className="border-t cursor-pointer hover:bg-yellow-50"
-                >
-                  <td className="px-3 py-2 font-mono">{w.code}</td>
-                  <td className="px-3 py-2 font-semibold">
-                    <span style={{ paddingLeft: w.parentId ? 18 : 0 }}>
-                      {w.parentId ? "↳ " : ""}
-                      {w.name}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2">{parent?.name || "Main"}</td>
-                  <td className="px-3 py-2">{w.branchName || "—"}</td>
-                  <td className="px-3 py-2">{w.allowNegativeStock ? "Allowed" : "Denied"}</td>
-                  <td className="px-3 py-2">{w.isActive ? "Active" : "Inactive"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <EnterpriseDataTable
+        columns={columns}
+        rows={visibleWarehouses}
+        getRowId={(w) => w.id}
+        emptyTitle="No godowns found"
+        emptyDescription="Create a godown using the form above."
+        onRowClick={edit}
+        rowActions={(w) => [{ label: "Edit", onSelect: () => edit(w) }]}
+        caption="Godowns"
+      />
     </div>
   );
 };
@@ -308,7 +358,7 @@ const Input = ({
     <input
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md w-full"
+      className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg w-full"
     />
   </div>
 );

@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./styles.css";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -31,21 +32,22 @@ function FatalErrorScreen({ message }: { message: string }) {
         minHeight: "100vh",
         fontFamily: "ui-sans-serif, system-ui, sans-serif",
         flexDirection: "column",
-        gap: 16,
-        background: "#f5f6fa",
-        padding: 24,
+        gap: 20,
+        background: "#f8fafc",
+        padding: 32,
       }}
     >
-      <div style={{ fontSize: 18, fontWeight: 700, color: "#1f2937" }}>Sutra ERP - Runtime Error</div>
+      <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a" }}>Sutra ERP - Runtime Error</div>
       <div
         style={{
           fontSize: 13,
           color: "#dc2626",
           maxWidth: 600,
           textAlign: "left",
-          background: "#fee2e2",
-          padding: 16,
-          borderRadius: 8,
+          background: "#fef2f2",
+          padding: 20,
+          borderRadius: 10,
+          border: "1px solid #fecaca",
           overflow: "auto",
           wordWrap: "break-word",
         }}
@@ -56,13 +58,15 @@ function FatalErrorScreen({ message }: { message: string }) {
         type="button"
         onClick={() => window.location.reload()}
         style={{
-          padding: "8px 16px",
+          padding: "10px 20px",
           background: "var(--ds-action-primary)",
           color: "#fff",
           border: "none",
-          borderRadius: 6,
+          borderRadius: 8,
           cursor: "pointer",
-          fontSize: 13,
+          fontSize: 12,
+          fontWeight: 600,
+          boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
         }}
       >
         Reload Application
@@ -75,10 +79,10 @@ const rootElement = document.getElementById("root");
 
 if (!rootElement) {
   document.body.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:16px;background:#f5f6fa">
-      <div style="font-size:18px;font-weight:700;color:#1f2937">Sutra ERP</div>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:20px;background:#f8fafc;padding:32px">
+      <div style="font-size:17px;font-weight:700;color:#0f172a">Sutra ERP</div>
       <div style="font-size:13px;color:#dc2626">Error: Root element not found. Please refresh the page.</div>
-      <button onclick="location.reload()" style="padding:8px 16px;background:var(--ds-action-primary);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
+      <button onclick="location.reload()" style="padding:10px 20px;background:var(--ds-action-primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.08)">
         Refresh
       </button>
     </div>`;
@@ -99,12 +103,12 @@ function renderFatalError(message: string): void {
   }
 
   rootElement.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:16px;background:#f5f6fa;padding:24px">
-      <div style="font-size:18px;font-weight:700;color:#1f2937">Sutra ERP - Runtime Error</div>
-      <div style="font-size:13px;color:#dc2626;max-width:600px;text-align:left;background:#fee2e2;padding:16px;border-radius:8px;overflow:auto;word-wrap:break-word;">
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:20px;background:#f8fafc;padding:32px">
+      <div style="font-size:17px;font-weight:700;color:#0f172a">Sutra ERP - Runtime Error</div>
+      <div style="font-size:13px;color:#dc2626;max-width:600px;text-align:left;background:#fef2f2;padding:20px;border-radius:10px;border:1px solid #fecaca;overflow:auto;word-wrap:break-word;">
         ${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
       </div>
-      <button onclick="location.reload()" style="padding:8px 16px;background:var(--ds-action-primary);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
+      <button onclick="location.reload()" style="padding:10px 20px;background:var(--ds-action-primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.08)">
         Reload Application
       </button>
     </div>`;
@@ -126,9 +130,11 @@ try {
   reactRoot = ReactDOM.createRoot(rootElement);
   reactRoot.render(
     <ErrorBoundary>
-      <ThemeProvider>
-        <App onMounted={dismissRootLoading} />
-      </ThemeProvider>
+      <BrowserRouter>
+        <ThemeProvider>
+          <App onMounted={dismissRootLoading} />
+        </ThemeProvider>
+      </BrowserRouter>
     </ErrorBoundary>,
   );
 } catch (err) {

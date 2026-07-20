@@ -140,10 +140,10 @@ const StockBook: React.FC = () => {
   const methodLabel = method === "fifo" ? "FIFO" : "Weighted Average";
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Ledger</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">Stock Ledger</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Item-wise movement history with {methodLabel.toLowerCase()} valuation
           </p>
@@ -170,7 +170,7 @@ const StockBook: React.FC = () => {
         </div>
       </div>
 
-      <div className="no-print flex flex-wrap items-end gap-3 mb-4 bg-white border border-gray-200 rounded-md p-3">
+      <div className="no-print flex flex-wrap items-end gap-3 mb-4 bg-white border border-gray-200 rounded-lg p-3">
         <div>
           <label className={labelCls}>Stock item</label>
           <select
@@ -245,7 +245,7 @@ const StockBook: React.FC = () => {
       </div>
 
       {result && (
-        <div className="flex flex-col sm:flex-row border border-gray-200 rounded-md bg-white overflow-hidden mb-4">
+        <div className="flex flex-col sm:flex-row border border-gray-200 rounded-lg bg-white overflow-hidden mb-4">
           {[
             { label: "Opening qty", val: result.openingQty },
             { label: "Total inward", val: result.totalInQty },
@@ -259,7 +259,7 @@ const StockBook: React.FC = () => {
               <div className="text-[12px] font-medium text-[var(--ds-text-muted)]">
                 {cell.label}
               </div>
-              <div className="text-[12px] number-cell-bold text-gray-800 mt-1">
+              <div className="text-[12px] number-cell-bold text-gray-700 mt-1">
                 {formatNumber(cell.val)}
               </div>
             </div>
@@ -267,7 +267,7 @@ const StockBook: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         {!selectedItemId ? (
           <ReportEmptyState
             icon={<Package size={28} strokeWidth={1.5} />}
@@ -336,7 +336,7 @@ const StockBook: React.FC = () => {
               </tbody>
               <tfoot>
                 <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
-                  <td colSpan={3} className={`${td} font-semibold text-gray-800`}>
+                  <td colSpan={3} className={`${td} font-semibold text-gray-700`}>
                     Period totals / closing stock
                   </td>
                   <td className={`${td} number-cell-bold`}>{formatNumber(totals.inQty)}</td>

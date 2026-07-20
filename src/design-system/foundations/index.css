@@ -9,3 +9,24 @@
   color: var(--ds-text-default);
   background: var(--ds-canvas);
 }
+
+/* STEP 7.3 — sticky identity column inside ScrollableTable */
+.scrollable-table-sticky [data-sticky-col] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--ds-surface);
+  box-shadow: 1px 0 0 0 var(--ds-border-default);
+}
+.scrollable-table-sticky thead [data-sticky-col] {
+  background: var(--ds-surface-muted);
+}
+
+/* STEP 7.4 — stack dense form grids on small screens */
+@media (max-width: 767px) {
+  .form-section .grid,
+  [data-testid="invoice-essential-header"] .grid,
+  .ds-form-stack {
+    grid-template-columns: 1fr !important;
+  }
+}

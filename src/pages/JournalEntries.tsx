@@ -11,15 +11,18 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { Select, NepaliDatePicker } from "../components/ui";
 import JournalVoucherForm from "../components/voucher/JournalVoucherForm";
-import { Plus, Eye, Search, Download } from "lucide-react";
+import { Plus, Eye, Search, Download, BookOpen } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import { ReportEmptyState } from "../components/ReportEmptyState";
 import {
   BRANCH_CHANGED_EVENT,
   matchesBranchFilter,
   readActiveBranchId,
 } from "../lib/activeBranch";
+import { Button, EmptyState } from "@/design-system";
+import { useAppRoute, useNavigateApp } from "../routing/useAppRoute";
+
+const PAGE_ID = "journal";
 
 const th =
   "px-3 py-2.5 text-left text-[12px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide";
@@ -28,7 +31,7 @@ const td =
 const btnPrimary =
   "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
-  "h-8 px-3 bg-[var(--ds-surface)] border border-[var(--ds-border-default)] text-[var(--ds-text-default)] text-[12px] font-medium rounded-md hover:bg-[var(--ds-surface-muted)] inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-surface)] border border-[var(--ds-border-default)] text-[var(--ds-text-default)] text-[12px] font-medium rounded-lg hover:bg-[var(--ds-surface-muted)] inline-flex items-center gap-1.5";
 const inputCls =
   "h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
@@ -47,6 +50,8 @@ const statusLabel = (status: string) => {
 
 const JournalEntries: React.FC = () => {
   const { vouchers, companySettings, branches } = useStore();
+  const route = useAppRoute();
+  const { openEntity, clearEntity } = useNavigateApp();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
@@ -72,6 +77,29 @@ const JournalEntries: React.FC = () => {
     () => vouchers.filter((v) => v.type === VoucherType.JOURNAL),
     [vouchers],
   );
+
+  // Deep link: /app/journal/new | /app/journal/:id
+  useEffect(() => {
+    if (route.pageId !== PAGE_ID) return;
+    if (route.entityId === "new") {
+      setActiveId(null);
+      setMode("new");
+      return;
+    }
+    if (route.entityId) {
+      const row = journals.find((v) => v.id === route.entityId);
+      if (row) {
+        setActiveId(row.id);
+        setMode("edit");
+      }
+      return;
+    }
+    if (mode !== "list") {
+      setMode("list");
+      setActiveId(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync from URL entity only
+  }, [route.pageId, route.entityId, journals]);
 
   const filtered = useMemo(() => {
     return journals
@@ -103,14 +131,17 @@ const JournalEntries: React.FC = () => {
   const openNew = () => {
     setActiveId(null);
     setMode("new");
+    openEntity(PAGE_ID, "new");
   };
   const openEdit = (row: any) => {
     setActiveId(row.id);
     setMode("edit");
+    openEntity(PAGE_ID, row.id);
   };
   const backToList = () => {
     setMode("list");
     setActiveId(null);
+    clearEntity(PAGE_ID);
   };
 
   const exportCsv = () => {
@@ -151,7 +182,7 @@ const JournalEntries: React.FC = () => {
           </button>
         </div>
 
-        <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-md">
+        <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-lg">
           <span className="text-[12px] text-gray-500">From</span>
           <div className="w-32">
             <NepaliDatePicker value={fromDate} onChange={setFromDate} />
@@ -226,14 +257,54 @@ const JournalEntries: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
         {searched.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-md">
-            <ReportEmptyState
-              message="No journal vouchers found"
-              hint='Adjust filters or click "New journal entry" to create your first entry.'
+          <div className="rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-2">
+            <EmptyState
+              icon={
+                searchTerm.trim() || fromDate || toDate || statusFilter !== "ALL" ? (
+                  <Search className="h-4 w-4" aria-hidden />
+                ) : (
+                  <BookOpen className="h-4 w-4" aria-hidden />
+                )
+              }
+              title={
+                journals.length === 0
+                  ? "No journal vouchers yet"
+                  : "No journal vouchers match your filters"
+              }
+              description={
+                journals.length === 0
+                  ? "Post a double-entry journal to adjust ledgers or record non-cash movements."
+                  : "Clear search or adjust status and dates to see more vouchers."
+              }
+              primaryAction={
+                journals.length === 0 ? (
+                  <Button
+                    variant="primary"
+                    size="small"
+                    onClick={openNew}
+                    startIcon={<Plus className="h-3.5 w-3.5" />}
+                  >
+                    New journal entry
+                  </Button>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setFromDate("");
+                      setToDate("");
+                      setStatusFilter("ALL");
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                )
+              }
             />
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
@@ -254,7 +325,7 @@ const JournalEntries: React.FC = () => {
                       className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => openEdit(row)}
                     >
-                      <td className={`${td} font-mono font-medium text-gray-800`}>
+                      <td className={`${td} font-mono font-medium text-gray-700`}>
                         {row.voucherNo}
                       </td>
                       <td className={td}>
@@ -286,7 +357,7 @@ const JournalEntries: React.FC = () => {
                             e.stopPropagation();
                             openEdit(row);
                           }}
-                          className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="h-7 w-7 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
                           title="View / edit"
                         >
                           <Eye className="h-3.5 w-3.5" />

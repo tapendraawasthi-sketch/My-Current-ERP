@@ -25,7 +25,7 @@ function money(v: number): string {
 
 const cardClass = "bg-white border border-gray-200 rounded-md p-4";
 const tableHeadClass =
-  "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "bg-gray-50 border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
@@ -63,7 +63,7 @@ function Modal({ open, title, children, onClose, wide = false }) {
         className={`bg-white border border-gray-200 shadow-xl rounded-lg w-full flex flex-col max-h-[90vh] ${wide ? "max-w-5xl" : "max-w-2xl"}`}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-          <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-700">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
@@ -648,9 +648,9 @@ export default function CostCenterReport() {
 
   if (!costCenters || costCenters.length === 0) {
     return (
-      <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+      <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
         <div className={cardClass}>
-          <h1 className="text-[15px] font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Building size={18} className="text-[var(--ds-action-primary)]" /> Cost Center Report
           </h1>
           <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-md p-4 text-[12px]">
@@ -675,7 +675,7 @@ export default function CostCenterReport() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-4 text-gray-700">
       <style>
         {`
           @media print {
@@ -687,7 +687,7 @@ export default function CostCenterReport() {
 
       <div className="flex items-center justify-between mb-6 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
+          <h1 className="text-[15px] font-semibold text-gray-900 flex items-center gap-2">
             <Building size={18} className="text-[var(--ds-action-primary)]" /> Cost Center Report
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -791,7 +791,7 @@ export default function CostCenterReport() {
 
           {selectedCC !== "all" && selectedPL && (
             <div className={cardClass}>
-              <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+              <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-2">
                 P&L for{" "}
                 <span className="text-[var(--ds-action-primary)]">
                   {costCenters.find((c) => c.id === selectedCC)?.name}
@@ -826,7 +826,7 @@ export default function CostCenterReport() {
                         )}
                         <tr className="bg-gray-50/80">
                           <td
-                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                            className={`${tableCellClass} font-bold text-gray-700 uppercase tracking-wide`}
                           >
                             Total Income
                           </td>
@@ -866,7 +866,7 @@ export default function CostCenterReport() {
                         )}
                         <tr className="bg-gray-50/80">
                           <td
-                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                            className={`${tableCellClass} font-bold text-gray-700 uppercase tracking-wide`}
                           >
                             Total Expenses
                           </td>
@@ -899,10 +899,10 @@ export default function CostCenterReport() {
 
           {selectedCC === "all" && (
             <div className={cardClass}>
-              <h2 className="text-[14px] font-semibold text-gray-800 mb-4">
+              <h2 className="text-[14px] font-semibold text-gray-700 mb-4">
                 Cost Center Comparison Matrix
               </h2>
-              <div className="overflow-x-auto rounded-md border border-gray-200">
+              <div className="overflow-x-auto rounded-lg border border-gray-200">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
@@ -945,7 +945,7 @@ export default function CostCenterReport() {
                       <>
                         <tr className="bg-gray-50/80 border-t-2 border-gray-200">
                           <td
-                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                            className={`${tableCellClass} font-bold text-gray-700 uppercase tracking-wide`}
                           >
                             Income Total
                           </td>
@@ -961,7 +961,7 @@ export default function CostCenterReport() {
 
                         <tr className="bg-gray-50/80">
                           <td
-                            className={`${tableCellClass} font-bold text-gray-800 uppercase tracking-wide`}
+                            className={`${tableCellClass} font-bold text-gray-700 uppercase tracking-wide`}
                           >
                             Expense Total
                           </td>
@@ -1011,13 +1011,13 @@ export default function CostCenterReport() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className={`${cardClass} lg:col-span-2`}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[14px] font-semibold text-gray-800">Allocation Rules</h2>
+              <h2 className="text-[14px] font-semibold text-gray-700">Allocation Rules</h2>
               <button className={primaryBtn} onClick={openRuleModal}>
                 <Plus size={14} /> Create Rule
               </button>
             </div>
 
-            <div className="overflow-x-auto rounded-md border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -1095,7 +1095,7 @@ export default function CostCenterReport() {
           </div>
 
           <div className={`${cardClass} lg:col-span-1`}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-2">
               Apply Allocations
             </h2>
 
@@ -1170,7 +1170,7 @@ export default function CostCenterReport() {
       {activeTab === "Inter-Department Transfer" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-2">
               New Transfer
             </h2>
 
@@ -1256,7 +1256,7 @@ export default function CostCenterReport() {
               />
             </div>
 
-            <div className="border border-gray-200 rounded-md p-3 bg-gray-50/50 mb-4">
+            <div className="border border-gray-200 rounded-lg p-3 bg-gray-50/50 mb-4">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-[12px] font-semibold text-gray-700">
                   Receiving Cost Centers (Debit)
@@ -1352,10 +1352,10 @@ export default function CostCenterReport() {
           </div>
 
           <div className={cardClass}>
-            <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+            <h2 className="text-[14px] font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-2">
               Recent Transfers
             </h2>
-            <div className="overflow-x-auto rounded-md border border-gray-200">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -1443,7 +1443,7 @@ export default function CostCenterReport() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-md border border-gray-200">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
@@ -1619,7 +1619,7 @@ export default function CostCenterReport() {
           {ruleForm.method === "Fixed %" && (
             <div className="mt-2 border-t border-gray-100 pt-4">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-[12px] font-semibold text-gray-800">Cost Center Targets</h3>
+                <h3 className="text-[12px] font-semibold text-gray-700">Cost Center Targets</h3>
                 <div
                   className={`text-[12px] font-bold px-2 py-1 rounded border ${Math.abs(totalRulePct - 100) < 0.01 ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
                 >

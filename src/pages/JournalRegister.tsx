@@ -187,7 +187,7 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -197,7 +197,7 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -205,7 +205,7 @@ const JournalRegister: React.FC = () => {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -222,28 +222,28 @@ const JournalRegister: React.FC = () => {
             placeholder="Search voucher no, narration, account..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
           />
         </>
       }
     >
-      <div className="overflow-x-auto w-full border border-gray-200 rounded-md bg-white">
+      <div className="overflow-x-auto w-full border border-gray-200 rounded-lg bg-white">
         <table className="w-full text-left whitespace-nowrap">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Date
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Vch No
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
                 Particulars
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide text-right">
                 Debit (Rs.)
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right">
+              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide text-right">
                 Credit (Rs.)
               </th>
             </tr>
@@ -319,13 +319,13 @@ const JournalRegister: React.FC = () => {
             {/* Grand total row */}
             {registerData.rows.length > 0 && (
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 text-left">TOTAL</td>
+                <td className="px-3 py-2.5 text-[12px] font-bold text-gray-700 text-left">TOTAL</td>
                 <td className="px-3 py-2.5"></td>
                 <td className="px-3 py-2.5"></td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right">
                   {formatNumber(registerData.grandTotalDebit)}
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
+                <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-700 text-right">
                   {formatNumber(registerData.grandTotalCredit)}
                 </td>
               </tr>
@@ -363,7 +363,7 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -373,7 +373,7 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -383,7 +383,7 @@ const JournalRegister: React.FC = () => {
               <select
                 value={pendingBranchFilter}
                 onChange={(e) => setPendingBranchFilter(e.target.value)}
-                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 aria-label="Branch"
               >
                 <option value="all">All branches</option>

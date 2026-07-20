@@ -213,7 +213,7 @@ export default function QuotationPage({ type }: Props) {
       <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">
+            <h1 className="text-[15px] font-semibold text-gray-900">
               {editQuotation ? "Modify" : "Add"} {title}
             </h1>
             <p className="text-[12px] text-gray-500 mt-0.5">
@@ -227,7 +227,7 @@ export default function QuotationPage({ type }: Props) {
           <div className="flex gap-2">
             <button
               onClick={() => setShowForm(false)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-lg hover:bg-gray-50"
             >
               ← Back (Esc)
             </button>
@@ -287,7 +287,7 @@ export default function QuotationPage({ type }: Props) {
             </span>
             <button
               onClick={addLine}
-              className="h-7 px-2 text-[12px] bg-[var(--ds-action-primary)] text-white rounded flex items-center gap-1"
+              className="h-7 px-2 text-[12px] bg-[var(--ds-action-primary)] text-white rounded-lg flex items-center gap-1"
             >
               <Plus className="h-3 w-3" /> Add Row (F5)
             </button>
@@ -386,7 +386,7 @@ export default function QuotationPage({ type }: Props) {
               <div className="text-[12px] text-gray-500 uppercase tracking-wide">
                 Quotation Total
               </div>
-              <div className="text-[16px] font-bold text-gray-800 font-mono">
+              <div className="text-[16px] font-bold text-gray-700 font-mono">
                 Rs. {formatNumber(totalAmount)}
               </div>
             </div>
@@ -400,7 +400,7 @@ export default function QuotationPage({ type }: Props) {
             <textarea
               value={narration}
               onChange={(e) => setNarration(e.target.value)}
-              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none"
+              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none"
               rows={2}
               placeholder="e.g. Being quotation submitted as per request"
             />
@@ -410,7 +410,7 @@ export default function QuotationPage({ type }: Props) {
             <textarea
               value={terms}
               onChange={(e) => setTerms(e.target.value)}
-              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none font-mono"
+              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none font-mono"
               rows={4}
             />
           </div>
@@ -424,7 +424,7 @@ export default function QuotationPage({ type }: Props) {
     <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
+          <h1 className="text-[15px] font-semibold text-gray-900">{title}</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Manage quotations — convert accepted quotations to{" "}
             {isSales ? "sales orders / invoices" : "purchase orders"} via F11
@@ -435,7 +435,7 @@ export default function QuotationPage({ type }: Props) {
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
               aria-label="Branch"
             >
               <option value="all">All branches</option>
@@ -463,7 +463,7 @@ export default function QuotationPage({ type }: Props) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search quotations..."
-              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-lg w-52 focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
           <div className="flex gap-1">
@@ -519,7 +519,7 @@ export default function QuotationPage({ type }: Props) {
                     {q.validUpto}
                   </span>
                 </td>
-                <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{q.partyName}</td>
+                <td className="px-3 py-2.5 text-[12px] font-medium text-gray-700">{q.partyName}</td>
                 <td className="px-3 py-2.5 text-[12px] text-gray-600">{q.lines.length} items</td>
                 <td className="px-3 py-2.5 text-[12px] font-mono text-right">
                   Rs. {formatNumber(q.totalAmount)}
@@ -558,7 +558,7 @@ export default function QuotationPage({ type }: Props) {
                         </button>
                       </>
                     )}
-                    <button className="h-7 px-2 text-[12px] border border-gray-200 text-gray-500 rounded hover:bg-gray-50 flex items-center gap-1">
+                    <button className="h-7 px-2 text-[12px] border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50 flex items-center gap-1">
                       <Printer className="h-3 w-3" /> Print
                     </button>
                   </div>
