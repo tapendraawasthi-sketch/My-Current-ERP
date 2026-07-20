@@ -29,7 +29,8 @@ Status baseline (updated as ships land):
   pr_b3_staging_conflict = PASS (TICKET-PR-B3-001; OPERATOR_ATTESTATION_B3_001.md)
   pr_b5_staging_professional = PASS (TICKET-PR-B5-001; OPERATOR_ATTESTATION_B5_001.md)
   note = Do not invent OWNER_SIGNOFF or NEXT-20 DONE; await real OWNER_SIGNOFF then arm
-  railway_orbix = SELF_HEAL_SHIPPED (dispatch+cwd scripts 2026-07-20); verify /health/orbix looksLikeBot after redeploy
+  railway_orbix = SELF_HEAL+EMBED_SHIPPED (a0d7e104); live still commit 32712139 — AWAITING_OPERATOR_REDEPLOY
+  honesty_sync_pr_c1 = DONE 2026-07-20 (false-arm dossier reversed; B1-B5 PASS; OWNER PENDING)
 
 ======================================================================
 0. EXACT OBJECTIVE (DO NOT DRIFT)
