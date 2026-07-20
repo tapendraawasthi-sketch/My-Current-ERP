@@ -120,11 +120,11 @@ function railwayBotCandidates() {
 
   const out = [];
   if (privateHost && privatePort) out.push(`http://${privateHost}:${privatePort}`);
-  // Prefer private DNS (bypasses public edge 429). Bot pins PORT=8080 on Railway.
-  out.push(`http://sutra-erp-bot.railway.internal:${privatePort}`);
+  // Private DNS only — public *.up.railway.app edge returns 429 under load and
+  // hairpins poorly from inside the project.
+  out.push(`http://sutra-erp-bot.railway.internal:${privatePort || "8080"}`);
   out.push("http://sutra-erp-bot.railway.internal:8080");
   if (publicHost) out.push(`https://${publicHost}`);
-  out.push("https://sutra-erp-bot-production.up.railway.app");
   return [...new Set(out.map((u) => u.replace(/\/$/, "")))];
 }
 
@@ -303,6 +303,7 @@ async function handleErpBotRequest(req, res, method, rawPath) {
   }
 
   let lastErr = null;
+  const attempts = [];
   for (const base of uniqueBases) {
     const targetUrl = `${base}${subpath}`;
     try {
@@ -318,9 +319,11 @@ async function handleErpBotRequest(req, res, method, rawPath) {
         console.warn(
           `[serve.mjs] upstream ${upstream.status} from ${base}, trying next`,
         );
+        attempts.push({ base, status: upstream.status });
         lastErr = new Error(`upstream ${upstream.status} from ${base}`);
         continue;
       }
+      attempts.push({ base, status: upstream.status });
 
       const contentType = (upstream.headers.get("content-type") || "").toLowerCase();
       // Reject SPA HTML false positives (wrong private port → frontend service).
@@ -373,9 +376,17 @@ async function handleErpBotRequest(req, res, method, rawPath) {
       return;
     } catch (err) {
       lastErr = err;
+      const cause = err && typeof err === "object" ? err.cause : null;
+      attempts.push({
+        base,
+        error: err instanceof Error ? err.message : String(err),
+        code: cause && typeof cause === "object" ? cause.code : undefined,
+        address: cause && typeof cause === "object" ? cause.address : undefined,
+      });
       console.warn(
         `[serve.mjs] proxy error for ${targetUrl}:`,
         err instanceof Error ? err.message : String(err),
+        cause && typeof cause === "object" ? cause.code : "",
       );
     }
   }
@@ -386,6 +397,9 @@ async function handleErpBotRequest(req, res, method, rawPath) {
       error: "ERP bot backend unreachable",
       detail: lastErr instanceof Error ? lastErr.message : String(lastErr || "no candidates"),
       tried: uniqueBases,
+      attempts,
+      hint:
+        "On sutra-erp set ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}} and ensure sutra-erp-bot is Online on PORT=8080",
     }),
   );
 }
