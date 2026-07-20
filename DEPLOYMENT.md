@@ -109,10 +109,11 @@ Hard-refresh the browser after a good `/erp-bot/status`.
 ## How deploys work
 
 1. Push to **`main`** on GitHub.
-2. Railway auto-deploys connected services.
+2. Railway auto-deploys connected services (if stuck on an old `/health` `commit`, open each service → **Deployments → Redeploy**).
 3. Frontend build/start: `scripts/railway-dispatch-*.sh` → frontend `render-build.sh` / `npm start`.
 4. Bot (repo-root misconfig or named `*bot*`): same dispatchers → `erp_bot` Python build/start.
-5. Preferred bot path: Root Directory `erp_bot` → `erp_bot/railway.toml` directly.
+5. Even if the bot dashboard Start Command is hardcoded to `npm start`, `package.json` start routes bot services to Python via `scripts/railway-npm-start.mjs`.
+6. Preferred bot path: Root Directory `erp_bot` → `erp_bot/railway.toml` directly.
 
 ## Orbix chat path
 
