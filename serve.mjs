@@ -1,8 +1,18 @@
 import http from "http";
+import crypto from "node:crypto";
+import dns from "node:dns";
 import { fileURLToPath } from "url";
 import { join, extname, normalize } from "path";
 import { readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
+import jwt from "jsonwebtoken";
+
+// Railway private networking is IPv6 — prefer AAAA when resolving *.railway.internal
+try {
+  dns.setDefaultResultOrder("ipv6first");
+} catch {
+  /* older Node */
+}
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const PORT = parseInt(process.env.PORT || "3000", 10);
@@ -49,8 +59,41 @@ function onRenderPlatform() {
   );
 }
 
+function railwayOipSecret() {
+  const explicit = (
+    process.env.OIP_JWT_SECRET ||
+    process.env.API_SECRET_KEY ||
+    process.env.JWT_SECRET ||
+    ""
+  ).trim();
+  if (explicit.length >= 16) return explicit;
+  const material = [
+    process.env.RAILWAY_PROJECT_ID || "",
+    process.env.RAILWAY_ENVIRONMENT_ID || "",
+    "sutra-orbix-oip",
+  ].join("|");
+  return crypto.createHash("sha256").update(material).digest("hex");
+}
+
+function mintOrbixGatewayToken() {
+  // Must match erp_bot JwtService Sutra shape (sub + tenantId + exp).
+  return jwt.sign(
+    {
+      sub: "sutra-erp-gateway",
+      tenantId: "sutra-production",
+      companyId: "sutra-production",
+      role: "accountant",
+      sessionId: "gateway",
+      username: "sutra-erp-gateway",
+      type: "access",
+    },
+    railwayOipSecret(),
+    { algorithm: "HS256", expiresIn: "30m" },
+  );
+}
+
 function railwayBotCandidates() {
-  const privatePort = (process.env.ERP_BOT_PORT || "").trim();
+  const privatePort = (process.env.ERP_BOT_PORT || "8080").trim();
   const privateHost = (
     process.env.ERP_BOT_PRIVATE_HOST ||
     process.env.ERP_BOT_PRIVATE_DOMAIN ||
@@ -66,10 +109,9 @@ function railwayBotCandidates() {
 
   const out = [];
   if (privateHost && privatePort) out.push(`http://${privateHost}:${privatePort}`);
-  if (privatePort) out.push(`http://sutra-erp-bot.railway.internal:${privatePort}`);
-  // Common pinned ports when dashboard sets PORT=8080 on sutra-erp-bot.
+  // Prefer private DNS (bypasses public edge 429). Bot pins PORT=8080 on Railway.
+  out.push(`http://sutra-erp-bot.railway.internal:${privatePort}`);
   out.push("http://sutra-erp-bot.railway.internal:8080");
-  out.push("http://sutra-erp-bot.railway.internal:8000");
   if (publicHost) out.push(`https://${publicHost}`);
   out.push("https://sutra-erp-bot-production.up.railway.app");
   return [...new Set(out.map((u) => u.replace(/\/$/, "")))];
@@ -165,10 +207,11 @@ async function ensureErpBotBackend() {
     }
   }
 
-  ERP_BOT_BACKEND = "https://sutra-erp-bot-production.up.railway.app";
+  // Prefer private DNS even if probe raced the bot boot — request-time failover retries.
+  ERP_BOT_BACKEND = "http://sutra-erp-bot.railway.internal:8080";
   console.warn(
-    `⚠️  Orbix probe found no healthy bot; using public fallback ${ERP_BOT_BACKEND}.\n` +
-      "    Set on sutra-erp Variables (best):\n" +
+    `⚠️  Orbix probe found no healthy bot yet; defaulting to ${ERP_BOT_BACKEND}.\n` +
+      "    Prefer setting on sutra-erp:\n" +
       "    ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}",
   );
 }
@@ -234,6 +277,18 @@ async function handleErpBotRequest(req, res, method, rawPath) {
   delete forwardHeaders["content-length"];
   if (isStreamingEndpoint) {
     forwardHeaders.accept = "text/event-stream";
+  }
+  // Railway: always attach gateway JWT so OIP_AUTH_REQUIRED accepts chat.
+  // Client SPA tokens are for sync/API and usually do not share OIP_JWT_SECRET.
+  if (onRailwayPlatform()) {
+    try {
+      forwardHeaders.authorization = `Bearer ${mintOrbixGatewayToken()}`;
+    } catch (tokenErr) {
+      console.warn(
+        "[serve.mjs] gateway JWT mint failed:",
+        tokenErr instanceof Error ? tokenErr.message : String(tokenErr),
+      );
+    }
   }
 
   let lastErr = null;

@@ -25,6 +25,47 @@ if _bundled_kb.exists() and not os.environ.get("ORBIX_NP_KB_ROOT"):
     os.environ["ORBIX_NP_KB_ROOT"] = str(_bundled_kb)
 os.environ.setdefault("ORBIX_NP_KB_ENABLED", "true")
 
+
+def _bootstrap_railway_oip_env() -> None:
+    """Fill required production OIP vars when Railway dashboard secrets were omitted."""
+    on_railway = bool(os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_PROJECT_ID"))
+    if not on_railway:
+        return
+
+    os.environ.setdefault("OIP_ENABLED", "true")
+    os.environ.setdefault("OIP_PROVIDER_RUNTIME_ENABLED", "true")
+    os.environ.setdefault("OIP_ORCHESTRATOR_ENABLED", "true")
+    os.environ.setdefault("OIP_AUTH_REQUIRED", "true")
+    # Pin listen port for private DNS from sutra-erp (http://sutra-erp-bot.railway.internal:8080)
+    os.environ.setdefault("PORT", "8080")
+
+    secret = (
+        os.environ.get("OIP_JWT_SECRET")
+        or os.environ.get("API_SECRET_KEY")
+        or os.environ.get("JWT_SECRET")
+        or ""
+    ).strip()
+    if len(secret) < 16:
+        import hashlib
+
+        material = "|".join(
+            [
+                os.environ.get("RAILWAY_PROJECT_ID", ""),
+                os.environ.get("RAILWAY_ENVIRONMENT_ID", ""),
+                "sutra-orbix-oip",
+            ]
+        )
+        derived = hashlib.sha256(material.encode("utf-8")).hexdigest()
+        os.environ["OIP_JWT_SECRET"] = derived
+        os.environ.setdefault("API_SECRET_KEY", derived)
+        print(
+            "[START] WARNING — OIP_JWT_SECRET missing/weak; using project-derived secret "
+            "so OIP can mount. Set OIP_JWT_SECRET in Railway Variables for a stable key."
+        )
+
+
+_bootstrap_railway_oip_env()
+
 import src.config  # noqa: F401 — load env + print ERP_PATH
 from src.config import API_PORT
 
