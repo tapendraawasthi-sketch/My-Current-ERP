@@ -73,6 +73,14 @@ function resolveErpBotBackend() {
   if (privatePort) {
     return `http://sutra-erp-bot.railway.internal:${privatePort}`;
   }
+
+  // Railway project default: public bot host used by this deployment when
+  // ERP_BOT_BACKEND_URL was never set on sutra-erp (otherwise Orbix stays Limited).
+  // Prefer explicit ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}.
+  if (onRailway) {
+    return "https://sutra-erp-bot-production.up.railway.app";
+  }
+
   return "";
 }
 

@@ -111,6 +111,31 @@ export async function checkOrbixQwenStatus(): Promise<OrbixQwenStatus> {
       data.conversational_model ||
       data.model;
 
+    // #region agent log
+    fetch("http://127.0.0.1:7391/ingest/a622d2f5-34c9-493e-94c7-7ff482dbd263", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "15d79f" },
+      body: JSON.stringify({
+        sessionId: "15d79f",
+        hypothesisId: "PROD-A",
+        location: "orbixQwenClient.ts:checkOrbixQwenStatus",
+        message: "prod status probe",
+        data: {
+          botOk,
+          runtimeReady,
+          mode: data.mode,
+          llm_ready: data.llm_ready,
+          khata_llm: data.khata_llm,
+          qwenReady: botOk && runtimeReady,
+          url: ORBIX_QWEN_URL,
+          offlineMessage: typeof data.message === "string" ? data.message.slice(0, 120) : null,
+        },
+        timestamp: Date.now(),
+        runId: "railway-prod",
+      }),
+    }).catch(() => {});
+    // #endregion
+
     return {
       online: botOk && data.mode !== "builtin",
       qwenReady: botOk && runtimeReady,
@@ -123,6 +148,21 @@ export async function checkOrbixQwenStatus(): Promise<OrbixQwenStatus> {
     };
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Unreachable";
+    // #region agent log
+    fetch("http://127.0.0.1:7391/ingest/a622d2f5-34c9-493e-94c7-7ff482dbd263", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "15d79f" },
+      body: JSON.stringify({
+        sessionId: "15d79f",
+        hypothesisId: "PROD-A",
+        location: "orbixQwenClient.ts:checkOrbixQwenStatus:catch",
+        message: "prod status unreachable",
+        data: { error: msg, url: ORBIX_QWEN_URL },
+        timestamp: Date.now(),
+        runId: "railway-prod",
+      }),
+    }).catch(() => {});
+    // #endregion
     return {
       online: false,
       qwenReady: false,
