@@ -1,0 +1,10 @@
+# Railway service for sutra-erp-bot — set Root Directory to `erp_bot` in the dashboard.
+# Without that, Nixpacks sees the monorepo root package.json and runs Bun (wrong).
+[build]
+builder = "NIXPACKS"
+buildCommand = "bash scripts/render-build.sh"
+
+[deploy]
+startCommand = "python scripts/start_render.py"
+healthcheckPath = "/health"
+restartPolicyType = "ON_FAILURE"
