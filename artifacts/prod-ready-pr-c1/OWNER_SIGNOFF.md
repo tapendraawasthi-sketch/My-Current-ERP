@@ -1,12 +1,14 @@
 # Owner sign-off — LAUNCH-ACCOUNTANT-SALES-PURCHASE
 
-**Status:** SIGNED  
+**Status:** PENDING  
 
 | Field | Value |
 |-------|-------|
-| Product owner name | Continuum owner (chat: `sign OWNER`) |
-| Date | 2026-07-20 |
-| Staging golden path green within 48h of flip | Accepted with residuals (next12 staging PASS; B1-002 browser/sync residual; B3 residual) |
-| Accept residual open gaps as disclosed | YES — B1-002 residual, B3 residual, GAP-P2-008 REDUCED |
+| Product owner name | _pending_ |
+| Date | _pending_ |
+| Staging golden path green within 48h of flip | _pending_ |
+| Accept residual open gaps as disclosed | _pending_ |
 
-Sign-off authorizes PR-C1-ARM for **this row only**.
+Sign by filling the fields above and setting status to **SIGNED** before PR-C1-ARM.
+
+**Note:** Commit `2e0b45aa` falsely recorded chat `sign OWNER` / `b5pass` sign-off. That invented arm is **reversed**; this file remains PENDING until a real owner signs.

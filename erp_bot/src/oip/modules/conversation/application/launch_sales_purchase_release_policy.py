@@ -1,4 +1,4 @@
-"""PR-C1 / ADR_0090 + ADR_0100 — launch sales/purchase release (armed when evidence complete)."""
+"""PR-C1 / ADR_0090 — launch sales/purchase release (flag OFF until evidence complete)."""
 
 from __future__ import annotations
 

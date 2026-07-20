@@ -102,10 +102,10 @@
     {
       "id": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
       "title": "Accountant Mode — sales/purchase draft+confirm (narrow)",
-      "depth": "PRODUCTION",
-      "production_approved": true,
-      "blocked_by": [],
-      "note": "PR-C1-ARM ARMED (ADR_0100); residuals accepted; Render env LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED required for runtime."
+      "depth": "ANNOTATION_ONLY",
+      "production_approved": false,
+      "blocked_by": ["TICKET-PR-B1-002", "TICKET-PR-B3-001", "TICKET-PR-B5-001", "OWNER_SIGNOFF", "PR-C1-ARM"],
+      "note": "False arm 2e0b45aa reversed. B1-001 PASS; B1-002 sync 2 FAIL; B3/B5 OPEN; flag OFF; not PRODUCTION."
     },
     {
       "id": "LAUNCH-ASK-PRODUCT-HELP",
@@ -120,14 +120,14 @@
     "phases_total": 54,
     "depth_GATE_PROVEN": 8,
     "depth_CANDIDATE_CONSUMED": 46,
-    "depth_ANNOTATION_ONLY": 0,
+    "depth_ANNOTATION_ONLY": 1,
     "depth_PILOT": 0,
     "depth_PRODUCTION": 0,
     "track_i_dormant": 4,
-    "production_approved_true": 1,
-    "launch_rows_production": 1
+    "production_approved_true": 0,
+    "launch_rows_production": 0
   },
-  "recommended_next_step": "PR-C3-RUN",
+  "recommended_next_step": "PR-C1-ARM",
   "next_file": "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2", "PR-D3", "PR-C1-ARM"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2", "PR-D3"]
 }

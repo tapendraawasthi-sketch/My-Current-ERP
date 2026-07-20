@@ -2,29 +2,32 @@
   "schema_version": "1.0.0",
   "document": "MAI_PR_C1_ARM_ATTEMPT_REGISTRY",
   "as_of": "2026-07-20",
-  "authority": "ADR_0100",
-  "prior_blocked_authority": "ADR_0091",
+  "authority": "ADR_0091",
   "step": "PR-C1-ARM",
-  "decision": "PR_C1_ARM_ARMED",
+  "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",
   "extends": "ADR_0090",
-  "attempt_status": "ARMED",
+  "attempt_status": "BLOCKED",
   "flag": {
-    "armed": true,
-    "production_approved": true
+    "armed": false,
+    "production_approved": false
   },
   "honesty": {
-    "production_approved": true,
-    "flag_armed": true,
-    "next_20_done": true,
-    "owner_signed": true,
-    "staging_golden_path_green": true,
+    "production_approved": false,
+    "flag_armed": false,
+    "next_20_done": false,
+    "owner_signed": false,
+    "staging_golden_path_green": false,
     "flipped_without_evidence": false,
+    "invented_owner_signoff_reversed": true,
+    "false_arm_2e0b45aa_reversed": true,
     "is_execution_authority": false,
     "global_all_rows_production_approved": false
   },
   "forbidden_claims": [
-    "flipped_without_evidence=true",
-    "ask_reports_also_armed",
+    "production_approved=true",
+    "flag_armed=true",
+    "next_20_done=true",
+    "attempt_status=PASS_without_tickets",
     "owner_signed=true_without_file"
   ]
 }

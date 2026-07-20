@@ -4,8 +4,7 @@
   "authority": "ADR_0086",
   "as_of": "2026-07-20",
   "engineering_pack_ready": true,
-  "staging_conflict_attested": true,
-  "staging_conflict_attestation_mode": "OWNER_RESIDUAL",
+  "staging_conflict_attested": false,
   "production_approved": false,
   "dual_sync_closed": false,
   "unit_proofs": {
@@ -13,11 +12,9 @@
     "notes": "maiNext04 + ui3 + ui6 + maiPrB3 + noDoubleSync (queued≠synced / accounting outbox block)"
   },
   "staging": {
-    "conflict_reconfirm": "OWNER_RESIDUAL_ACCEPTED",
+    "conflict_reconfirm": "PENDING",
     "connected_sync": "PENDING",
-    "ticket": "TICKET-PR-B3-001",
-    "residual_note": "artifacts/prod-ready-pr-c1-arm/OWNER_RESIDUAL_ACCEPTANCE_B3_001.md",
-    "owner_decision": "approved b3 (2026-07-20)"
+    "ticket": "TICKET-PR-B3-001"
   },
-  "blocks_pr_c_with_pr_b1_tickets": false
+  "blocks_pr_c_with_pr_b1_tickets": true
 }

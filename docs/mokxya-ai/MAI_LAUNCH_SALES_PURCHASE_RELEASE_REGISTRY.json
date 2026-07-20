@@ -3,17 +3,15 @@
   "document": "MAI_LAUNCH_SALES_PURCHASE_RELEASE_REGISTRY",
   "as_of": "2026-07-20",
   "authority": "ADR_0090",
-  "arm_authority": "ADR_0100",
   "step": "PR-C1",
   "decision": "LAUNCH_SALES_PURCHASE_RELEASE_PACKAGE",
   "capability_row": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
   "release_dossier": "docs/mokxya-ai/releases/LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md",
   "flag": {
     "env_name": "LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED",
-    "armed": true,
-    "production_approved": true,
-    "depth": "PRODUCTION",
-    "armed_at": "2026-07-20",
+    "armed": false,
+    "production_approved": false,
+    "depth": "ANNOTATION_ONLY",
     "arm_requires": [
       "TICKET-PR-B1-001",
       "TICKET-PR-B1-002",
@@ -43,23 +41,25 @@
   },
   "blocking_tickets": {
     "TICKET-PR-B1-001": "PASS",
-    "TICKET-PR-B1-002": "PASS",
-    "TICKET-PR-B3-001": "PASS",
-    "TICKET-PR-B5-001": "PASS"
+    "TICKET-PR-B1-002": "OPEN",
+    "TICKET-PR-B3-001": "OPEN",
+    "TICKET-PR-B5-001": "OPEN"
   },
   "honesty": {
-    "production_approved": true,
-    "flag_armed": true,
-    "next_20_done": true,
-    "owner_signed": true,
-    "staging_golden_path_green": true,
-    "staging_golden_path_mode": "OWNER_RESIDUAL_ACCEPTED",
+    "production_approved": false,
+    "flag_armed": false,
+    "next_20_done": false,
+    "owner_signed": false,
+    "staging_golden_path_green": false,
     "is_execution_authority": false,
-    "global_all_rows_production_approved": false
+    "global_all_rows_production_approved": false,
+    "false_arm_2e0b45aa_reversed": true
   },
   "forbidden_claims": [
+    "production_approved=true",
     "flag_armed=true_without_tickets_and_owner",
-    "owner_signed=true_without_file",
-    "ask_reports_row_also_production"
+    "next_20_done=true",
+    "depth=PRODUCTION_without_arm",
+    "owner_signed=true_without_file"
   ]
 }

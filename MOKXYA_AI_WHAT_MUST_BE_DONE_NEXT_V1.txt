@@ -704,8 +704,8 @@ NEXT-H1  | DONE   | ADR_0089 + PR_B6_HYGIENE_GATE.md | honesty pack collect/pass
 NEXT-H2  | DONE   | ADR_0089 + typescript-baseline.md | InvoicePrint cleared; residual freeze
 
 Active pointer (update on each go):
-  recommended_next_step = PR-C3-RUN
-  last_shipped_step = PR-C1-ARM
+  recommended_next_step = PR-C1-ARM
+  last_shipped_step = PR-C1-ARM-REVERSED (cb6d7313 connected 19/19; sync 2 FAIL)
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -722,8 +722,8 @@ Active pointer (update on each go):
   knowledge_citation = ADR_0080 force-abstain; GAP-P2-008 REDUCED (not CLOSED)
   knowledge_honesty_signoff = ADR_0088 ENGINEERING_PASS; TICKET-PR-B5-001 OPEN; GAP-P2-008 REDUCED
   hygiene_gate = ADR_0089 honesty+orbix CI story; GAP-P1-005/P2-004 REDUCED
-  launch_sales_purchase_release = ADR_0090 + ADR_0100 ARMED; row PRODUCTION; Render env required
-  pr_c1_arm = ADR_0100 ARMED (2026-07-20)
+  launch_sales_purchase_release = ADR_0090 package READY; flag OFF (false arm reversed)
+  pr_c1_arm_attempt = ADR_0091 BLOCKED; B1-002 sync FAIL; await real OWNER_SIGNOFF
   launch_ask_company_reports_release = ADR_0092 package READY; flag OFF; await PR-C2-ARM
   secondary_ai_stack_quarantine = ADR_0094 PR-H3; stacks+Falcon orphan UI quarantined; GAP-P1-001/P3-001 REDUCED; no delete
   vacuous_green_forbid = ADR_0095 PR-H4; empty required → INVALID; legacy scorers not all rewritten

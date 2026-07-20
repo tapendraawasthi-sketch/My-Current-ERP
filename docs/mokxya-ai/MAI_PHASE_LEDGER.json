@@ -5,9 +5,9 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "PR-C3-RUN",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2", "PR-D3", "PR-C1-ARM"],
-  "active_phase_note": "Post-MAI-53 queue. PR-C1-ARM ARMED (ADR_0100) for LAUNCH-ACCOUNTANT-SALES-PURCHASE. Set Render env flag. Next: PR-C3-RUN Day-0 smoke. Ask row still unarmed.",
+  "recommended_next_step": "PR-C1-ARM",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2", "PR-D3"],
+  "active_phase_note": "Post-MAI-53 queue. False PR-C1-ARM from 2e0b45aa reversed (invented chat sign-off). Connected r6 19/19 PASS; sync 2 FAIL — B1-002 OPEN. PR-C1-ARM still BLOCKED (ADR_0091). Next: clear tickets + real OWNER_SIGNOFF.",
   "dual_writer_sync_burndown": {
     "authority": "ADR_0099",
     "decision": "DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_PACK",
@@ -95,24 +95,23 @@
     "registry": "docs/mokxya-ai/MAI_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_REGISTRY.json"
   },
   "pr_c1_arm_attempt": {
-    "authority": "ADR_0100",
-    "decision": "PR_C1_ARM_ARMED",
-    "attempt_status": "ARMED",
-    "flag_armed": true,
-    "production_approved": true,
-    "next_20_done": true,
-    "prior_blocked_authority": "ADR_0091",
+    "authority": "ADR_0091",
+    "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",
+    "attempt_status": "BLOCKED",
+    "flag_armed": false,
+    "production_approved": false,
+    "next_20_done": false,
+    "false_arm_2e0b45aa_reversed": true,
     "registry": "docs/mokxya-ai/MAI_PR_C1_ARM_ATTEMPT_REGISTRY.json"
   },
   "launch_sales_purchase_release": {
     "authority": "ADR_0090",
-    "arm_authority": "ADR_0100",
     "decision": "LAUNCH_SALES_PURCHASE_RELEASE_PACKAGE",
     "capability_row": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
-    "flag_armed": true,
-    "production_approved": true,
-    "next_20_done": true,
-    "owner_signed": true,
+    "flag_armed": false,
+    "production_approved": false,
+    "next_20_done": false,
+    "owner_signed": false,
     "registry": "docs/mokxya-ai/MAI_LAUNCH_SALES_PURCHASE_RELEASE_REGISTRY.json"
   },
   "hygiene_gate": {
