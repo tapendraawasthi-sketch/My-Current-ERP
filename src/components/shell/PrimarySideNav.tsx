@@ -237,7 +237,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                       aria-current={active ? "page" : undefined}
                       title={shortcutTitle(item.label, item.page)}
                     >
-                      <Icon className="h-4 w-4 flex-shrink-0 opacity-80" aria-hidden />
+                      <Icon className="h-4 w-4 flex-shrink-0 text-current opacity-90" aria-hidden />
                       <span className="truncate pr-6">{item.label}</span>
                     </button>
                     <button
@@ -280,7 +280,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                         className={itemClass(active)}
                         aria-current={active ? "page" : undefined}
                       >
-                        <Icon className="h-4 w-4 flex-shrink-0 opacity-80" aria-hidden />
+                        <Icon className="h-4 w-4 flex-shrink-0 text-current opacity-90" aria-hidden />
                         <span className="truncate">{item.label}</span>
                       </button>
                     );
@@ -313,7 +313,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                     className={itemClass(active)}
                     aria-current={active ? "page" : undefined}
                   >
-                    <Icon className="h-4 w-4 flex-shrink-0 opacity-80" aria-hidden />
+                    <Icon className="h-4 w-4 flex-shrink-0 text-current opacity-90" aria-hidden />
                     {!collapsedMode && <span className="truncate font-medium">{group.label}</span>}
                   </button>
                 </div>
@@ -346,7 +346,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                   className={itemClass(active)}
                   aria-expanded={isOpen}
                 >
-                  <Icon className="h-4 w-4 flex-shrink-0 opacity-80" aria-hidden />
+                  <Icon className="h-4 w-4 flex-shrink-0 text-current opacity-90" aria-hidden />
                   {!collapsedMode && (
                     <>
                       <span className="min-w-0 flex-1 truncate font-medium">{group.label}</span>
@@ -379,7 +379,7 @@ const PrimarySideNav: React.FC<PrimarySideNavProps> = ({
                             }`}
                             aria-current={itemActive ? "page" : undefined}
                           >
-                            <ItemIcon className="h-3.5 w-3.5 flex-shrink-0 opacity-70" aria-hidden />
+                            <ItemIcon className="h-3.5 w-3.5 flex-shrink-0 text-current opacity-85" aria-hidden />
                             <span className="min-w-0 flex-1 truncate">{item.label}</span>
                           </button>
                           <button

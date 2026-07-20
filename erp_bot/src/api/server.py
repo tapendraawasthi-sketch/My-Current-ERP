@@ -12,7 +12,7 @@ import asyncio
 import httpx
 from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -269,6 +269,34 @@ class KhataFeedbackRequest(BaseModel):
     correctedNarration: str | None = None
     id: str | None = None
     timestamp: str | None = None
+
+
+@app.get("/", response_class=HTMLResponse)
+async def root_landing() -> str:
+    """Browser landing — this service is the AI API, not the ERP SPA."""
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sutra ERP Bot (API)</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; color: #1e2433; line-height: 1.45; }
+    code { background: #f5f6fa; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.9em; }
+    a { color: #1557b0; }
+    .ok { color: #059669; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <p class="ok">API is running.</p>
+  <h1>This is not the ERP website</h1>
+  <p>You opened the <strong>Python AI bot</strong> service. It has no login screens or ledgers — only API routes used by the web app.</p>
+  <p>Open the ERP UI here:</p>
+  <p><a href="https://my-current-erp.onrender.com">https://my-current-erp.onrender.com</a></p>
+  <p>Bot checks: <a href="/livez"><code>/livez</code></a> · <a href="/health"><code>/health</code></a></p>
+</body>
+</html>
+"""
 
 
 @app.get("/livez")

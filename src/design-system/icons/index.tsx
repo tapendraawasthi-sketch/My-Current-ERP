@@ -90,3 +90,6 @@ export function SyncConflictIcon(props: IconProps) {
     </>,
   );
 }
+
+export type { NavIcon, NavIconProps } from "./navIcons";
+export * from "./navIcons";
