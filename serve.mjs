@@ -207,7 +207,35 @@ async function ensureErpBotBackend() {
     return;
   }
 
-  // Runtime evidence: public bot edge can 429; private DNS bypasses the edge.
+  // Probe private host on several ports (bot PORT may not be 8080 if dashboard overrides).
+  const host = (
+    process.env.ERP_BOT_PRIVATE_DOMAIN ||
+    process.env.ERP_BOT_PRIVATE_HOST ||
+    "sutra-erp-bot"
+  )
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/\.railway\.internal$/i, "")
+    .replace(/\/$/, "");
+  const fqdn = `${host}.railway.internal`;
+  const ports = [
+    ...(process.env.ERP_BOT_PORT ? [process.env.ERP_BOT_PORT.trim()] : []),
+    "8080",
+    "8000",
+    "8765",
+    "3000",
+  ];
+  for (const p of [...new Set(ports.filter(Boolean))]) {
+    const base = `http://${fqdn}:${p}`;
+    const ok = await probeErpBotBase(base);
+    console.log(`🧠 Orbix probe ${ok ? "OK" : "miss"} → ${base}`);
+    if (ok) {
+      ERP_BOT_BACKEND = base;
+      console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
+      return;
+    }
+  }
+
   for (const base of railwayBotCandidates()) {
     const ok = await probeErpBotBase(base);
     console.log(`🧠 Orbix probe ${ok ? "OK" : "miss"} → ${base}`);
@@ -480,34 +508,62 @@ async function serveRequest(req, res) {
   // Diagnose Railway private DNS / Orbix reachability (no secrets).
   if (rawPath === "/health/orbix") {
     const dnsPromises = await import("node:dns/promises");
-    const host = "sutra-erp-bot.railway.internal";
-    let lookup = null;
-    try {
-      lookup = await dnsPromises.lookup(host, { all: true });
-    } catch (e) {
-      lookup = { error: e instanceof Error ? e.message : String(e) };
+    const botHost = "sutra-erp-bot.railway.internal";
+    const selfHost = process.env.RAILWAY_PRIVATE_DOMAIN || "sutra-erp.railway.internal";
+    async function lookupHost(host) {
+      try {
+        return await dnsPromises.lookup(host, { all: true });
+      } catch (e) {
+        return { error: e instanceof Error ? e.message : String(e) };
+      }
     }
-    let livez = null;
-    const probeUrl = `http://${host}:8080/livez`;
-    try {
-      const r = await proxyFetch(probeUrl, {
-        headers: { Accept: "application/json" },
-        signal: AbortSignal.timeout(8000),
-      });
-      const text = await r.text();
-      livez = {
-        status: r.status,
-        contentType: r.headers.get("content-type"),
-        bodyPreview: text.slice(0, 180),
-        looksLikeSpa: text.includes("<!doctype") || text.includes("<html"),
-      };
-    } catch (e) {
-      const cause = e && typeof e === "object" ? e.cause : null;
-      livez = {
-        error: e instanceof Error ? e.message : String(e),
-        code: cause && typeof cause === "object" ? cause.code : undefined,
-        address: cause && typeof cause === "object" ? cause.address : undefined,
-      };
+    async function probeLivez(url) {
+      try {
+        const r = await proxyFetch(url, {
+          headers: { Accept: "application/json" },
+          signal: AbortSignal.timeout(5000),
+        });
+        const text = await r.text();
+        return {
+          url,
+          status: r.status,
+          contentType: r.headers.get("content-type"),
+          bodyPreview: text.slice(0, 120),
+          looksLikeSpa: text.includes("<!doctype") || text.includes("<html"),
+          looksLikeBot: text.includes('"status"') && !text.includes("<html"),
+        };
+      } catch (e) {
+        const cause = e && typeof e === "object" ? e.cause : null;
+        return {
+          url,
+          error: e instanceof Error ? e.message : String(e),
+          code: cause && typeof cause === "object" ? cause.code : undefined,
+        };
+      }
+    }
+    const botLookup = await lookupHost(botHost);
+    const selfLookup = await lookupHost(selfHost);
+    const ports = [
+      ...(process.env.ERP_BOT_PORT ? [process.env.ERP_BOT_PORT.trim()] : []),
+      "8080",
+      "8000",
+      "8765",
+    ];
+    const uniquePorts = [...new Set(ports.filter(Boolean))];
+    const probes = [];
+    for (const p of uniquePorts) {
+      probes.push(await probeLivez(`http://${botHost}:${p}/livez`));
+    }
+    // Also try IPv6 literal if present (legacy Railway private net).
+    const v6 =
+      Array.isArray(botLookup) &&
+      botLookup.find((x) => x && x.family === 6 && x.address);
+    if (v6) {
+      probes.push(await probeLivez(`http://[${v6.address}]:8080/livez`));
+    }
+    const good = probes.find((p) => p.looksLikeBot);
+    if (good) {
+      ERP_BOT_BACKEND = good.url.replace(/\/livez$/, "");
     }
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(
@@ -515,12 +571,20 @@ async function serveRequest(req, res) {
         {
           self_private_domain: process.env.RAILWAY_PRIVATE_DOMAIN || null,
           self_service: process.env.RAILWAY_SERVICE_NAME || null,
-          bot_host: host,
-          bot_lookup: lookup,
-          livez_probe: livez,
-          erp_bot_backend: ERP_BOT_BACKEND,
-          hint:
-            "If livez_probe.looksLikeSpa=true, private DNS is not reaching the Python bot. Set ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}} on sutra-erp.",
+          self_lookup: selfLookup,
+          bot_host: botHost,
+          bot_lookup: botLookup,
+          same_ip_as_frontend:
+            Array.isArray(botLookup) &&
+            Array.isArray(selfLookup) &&
+            botLookup.some((b) =>
+              selfLookup.some((s) => s.address && s.address === b.address),
+            ),
+          probes,
+          selected_backend: ERP_BOT_BACKEND,
+          hint: good
+            ? `Found Python bot at ${ERP_BOT_BACKEND}`
+            : "No JSON /livez on probed ports. On sutra-erp set ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}. On sutra-erp-bot confirm Root Directory=erp_bot and startCommand runs Python.",
         },
         null,
         2,
