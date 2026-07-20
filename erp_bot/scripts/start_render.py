@@ -23,13 +23,25 @@ if _bundled_kb.exists() and not os.environ.get("ORBIX_NP_KB_ROOT"):
 os.environ.setdefault("ORBIX_NP_KB_ENABLED", "true")
 
 import src.config  # noqa: F401 — load env + print ERP_PATH
-from src.api.oip_chat_ingress import provider_runtime_active
 from src.config import API_PORT
 
-if provider_runtime_active():
-    print("[START] Render: Provider Runtime active — OIP chat ingress (Groq/stub, no Ollama)")
-else:
-    print("[START] Render: WARNING — OIP Provider Runtime not active; check OIP_* env vars")
+# Never crash before bind: missing OIP_AUTH_REQUIRED / JWT secret must not
+# prevent /livez healthchecks (Railway/Render). OIP mount is fail-closed inside server.
+try:
+    from src.oip.config.settings import get_oip_settings
+    from src.api.oip_chat_ingress import provider_runtime_active
+
+    get_oip_settings()  # surface auth/secret misconfig clearly in deploy logs
+    if provider_runtime_active():
+        print("[START] Render: Provider Runtime active — OIP chat ingress (Groq/stub, no Ollama)")
+    else:
+        print("[START] Render: WARNING — OIP Provider Runtime not active; check OIP_* env vars")
+except Exception as exc:
+    print(
+        f"[START] WARNING — OIP settings unavailable at boot ({exc}). "
+        "API will still bind; set OIP_AUTH_REQUIRED=true and a strong "
+        "OIP_JWT_SECRET (or API_SECRET_KEY, length>=16) for full OIP chat."
+    )
 
 print(f"[START] Listening on 0.0.0.0:{API_PORT}")
 

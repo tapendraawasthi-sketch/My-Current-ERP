@@ -6,5 +6,6 @@ buildCommand = "bash scripts/render-build.sh"
 
 [deploy]
 startCommand = "python scripts/start_render.py"
-healthcheckPath = "/health"
+healthcheckPath = "/livez"
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"

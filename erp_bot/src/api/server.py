@@ -271,49 +271,58 @@ class KhataFeedbackRequest(BaseModel):
     timestamp: str | None = None
 
 
+@app.get("/livez")
+async def livez() -> dict:
+    """Process liveness for Railway/Render — no OIP/Chroma/provider I/O."""
+    return {"status": "ok"}
+
+
 @app.get("/health")
 async def health() -> dict:
-    """Lightweight readiness probe for deploy scripts."""
-    from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count
-    from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count
-    from ..vectorstore.nepal_knowledge_store import get_nepal_knowledge_count
+    """Deploy probe — always 200 once the API is bound (details may be degraded)."""
+    try:
+        from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count
+        from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count
+        from ..vectorstore.nepal_knowledge_store import get_nepal_knowledge_count
 
-    if oip_chat_enabled():
-        runtime = await provider_runtime_status_payload()
+        if oip_chat_enabled():
+            runtime = await provider_runtime_status_payload()
+            return {
+                "status": "online",
+                "mode": runtime.get("mode", "oip"),
+                "provider_runtime_enabled": runtime.get("provider_runtime_enabled", False),
+                "provider_runtime_ready": runtime.get("provider_runtime_ready", False),
+                "llm_ready": runtime.get("llm_ready", False),
+                "configured_provider": runtime.get("configured_provider"),
+                "default_model": runtime.get("default_model"),
+                "resolved_provider": runtime.get("resolved_provider"),
+                "provider_health": runtime.get("provider_health"),
+                "indexed_files": chroma_store.get_indexed_file_count(),
+                "nepal_knowledge_chunks": get_nepal_knowledge_count(),
+                "ca_knowledge_chunks": get_ca_knowledge_count(),
+                "nlu_knowledge_chunks": get_nlu_knowledge_count(),
+            }
+
+        ollama_ok = False
+        try:
+            resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5)
+            ollama_ok = resp.status_code == 200
+        except Exception:
+            pass
+
         return {
             "status": "online",
-            "mode": runtime.get("mode", "oip"),
-            "provider_runtime_enabled": runtime.get("provider_runtime_enabled", False),
-            "provider_runtime_ready": runtime.get("provider_runtime_ready", False),
-            "llm_ready": runtime.get("llm_ready", False),
-            "configured_provider": runtime.get("configured_provider"),
-            "default_model": runtime.get("default_model"),
-            "resolved_provider": runtime.get("resolved_provider"),
-            "provider_health": runtime.get("provider_health"),
+            "mode": "legacy",
+            "ollama": "connected" if ollama_ok else "unreachable",
+            "khata_llm": ollama_ok,
             "indexed_files": chroma_store.get_indexed_file_count(),
             "nepal_knowledge_chunks": get_nepal_knowledge_count(),
             "ca_knowledge_chunks": get_ca_knowledge_count(),
             "nlu_knowledge_chunks": get_nlu_knowledge_count(),
+            "model": MODEL_NAME,
         }
-
-    ollama_ok = False
-    try:
-        resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5)
-        ollama_ok = resp.status_code == 200
-    except Exception:
-        pass
-
-    return {
-        "status": "online",
-        "mode": "legacy",
-        "ollama": "connected" if ollama_ok else "unreachable",
-        "khata_llm": ollama_ok,
-        "indexed_files": chroma_store.get_indexed_file_count(),
-        "nepal_knowledge_chunks": get_nepal_knowledge_count(),
-        "ca_knowledge_chunks": get_ca_knowledge_count(),
-        "nlu_knowledge_chunks": get_nlu_knowledge_count(),
-        "model": MODEL_NAME,
-    }
+    except Exception as exc:
+        return {"status": "degraded", "error": str(exc)[:200]}
 
 
 @app.get("/ready")

@@ -39,11 +39,16 @@ def is_production_environment(
     node_env = (env.get("NODE_ENV") or "").strip().lower()
     app_env = (env.get("APP_ENV") or env.get("ENVIRONMENT") or "").strip().lower()
     render = (env.get("RENDER") or "").strip().lower() in {"1", "true", "yes"}
+    railway = (env.get("RAILWAY_ENVIRONMENT") or "").strip().lower() in {
+        "production",
+        "prod",
+    }
     oip_prod = (env.get("OIP_PRODUCTION") or "").strip().lower() in {"1", "true", "yes"}
     return (
         node_env == "production"
         or app_env in {"production", "prod"}
         or render
+        or railway
         or oip_prod
     )
 

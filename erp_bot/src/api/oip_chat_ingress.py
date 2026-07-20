@@ -19,18 +19,27 @@ _OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", 
 
 
 def oip_chat_enabled() -> bool:
-    settings = get_oip_settings()
+    try:
+        settings = get_oip_settings()
+    except Exception:
+        return False
     return settings.enabled and settings.orchestrator_enabled and settings.provider_runtime_enabled
 
 
 def provider_runtime_active(settings: OipSettings | None = None) -> bool:
     """True when production should not depend on a local Ollama daemon."""
-    cfg = settings or get_oip_settings()
+    try:
+        cfg = settings or get_oip_settings()
+    except Exception:
+        return False
     return cfg.enabled and cfg.provider_runtime_enabled
 
 
 def provider_runtime_llm_ready(settings: OipSettings | None = None) -> bool:
-    cfg = settings or get_oip_settings()
+    try:
+        cfg = settings or get_oip_settings()
+    except Exception:
+        return False
     if not provider_runtime_active(cfg):
         return False
     if cfg.provider_offline_mode:
