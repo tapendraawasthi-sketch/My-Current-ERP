@@ -2,97 +2,107 @@
   "schema_version": "1.0.0",
   "step": "PR-B1",
   "authority": "ADR_0084",
-  "as_of": "2026-07-19",
+  "as_of": "2026-07-20",
   "engineering_pack_ready": true,
   "staging_attestation_complete": false,
   "production_approved": false,
   "connected_run": {
     "status": "FAIL",
-    "environment": "local_dev_127.0.0.1:8765",
-    "command": "ORBIX_E2E_CONNECTED=true npx playwright test e2e/orbix-next12-launch-slice.spec.ts e2e/orbix-connected.spec.ts e2e/orbix-sales-connected.spec.ts e2e/orbix-sync.spec.ts",
+    "environment": "https://sutra-erp-bot.onrender.com (via SPA https://my-current-erp.onrender.com)",
+    "command": "ORBIX_E2E_CONNECTED=true ERP_BOT_BACKEND_URL=https://sutra-erp-bot.onrender.com npx playwright test e2e/orbix-next12-launch-slice.spec.ts e2e/orbix-connected.spec.ts e2e/orbix-sales-connected.spec.ts",
     "log": "artifacts/prod-ready-pr-b1/connected/CONNECTED_SUMMARY.md",
-    "local_full_log_gitignored": "artifacts/prod-ready-pr-b1/connected/playwright-pr-b1.log",
+    "local_full_log_gitignored": "artifacts/prod-ready-pr-b1/connected/playwright-pr-b1-render-r3.log",
     "summary": {
-      "passed": 1,
-      "failed": 13,
-      "skipped": 5,
-      "did_not_run": 5
+      "passed": 10,
+      "failed": 4,
+      "did_not_run": 5,
+      "sync": "NOT_RUN"
     },
     "notes": [
-      "Health/ready API path passed",
-      "SSE chat paths returned general_error / null complete (provider/auth env likely incomplete locally)",
-      "Browser specs blocked: Playwright chromium_headless_shell missing in agent cache",
-      "Staging URL attestation still required for PR-C"
-    ]
+      "SPA /health ok; erp-bot ready with Groq; cold-start 502 intermittent",
+      "NEXT-12 launch slice PASS 3/3 on Render",
+      "Purchase API + sales API paths PASS after sales botURL fix",
+      "Browser Confirm/Dexie clarification UI FAIL; postE2ESale validation_error",
+      "Sync NOT_RUN (needs ORBIX_SYNC_E2E test-mode backend)",
+      "Owner residual NOT accepted this session — ticket stays OPEN"
+    ],
+    "ticket_b1_002": "OPEN"
   },
   "manual_run": {
-    "status": "PENDING",
-    "operator": null,
-    "attestation_path": "artifacts/prod-ready-pr-b1/manual/"
+    "status": "PASS",
+    "operator": "continuum_operator_chat",
+    "attested_at": "2026-07-20",
+    "attestation_path": "artifacts/prod-ready-pr-b1/manual/OPERATOR_ATTESTATION.md",
+    "evidence": "Operator chat attestation: pass (all six manual critical rows)"
   },
   "critical_rows": [
     {
       "id": "auto_next12_purchase",
-      "status": "FAIL",
-      "ticket": "TICKET-PR-B1-002"
+      "status": "PASS",
+      "ticket": "TICKET-PR-B1-002",
+      "note": "staging next12 r3"
     },
     {
       "id": "auto_next12_sales",
-      "status": "FAIL",
-      "ticket": "TICKET-PR-B1-002"
+      "status": "PASS",
+      "ticket": "TICKET-PR-B1-002",
+      "note": "staging next12 r3"
     },
     {
       "id": "auto_next12_ask_report",
-      "status": "FAIL",
-      "ticket": "TICKET-PR-B1-002"
+      "status": "PASS",
+      "ticket": "TICKET-PR-B1-002",
+      "note": "staging next12 r3"
     },
     {
       "id": "auto_connected_purchase",
       "status": "FAIL",
-      "ticket": "TICKET-PR-B1-002"
+      "ticket": "TICKET-PR-B1-002",
+      "note": "browser Confirm/Dexie path"
     },
     {
       "id": "auto_sales_connected",
-      "status": "FAIL",
-      "ticket": "TICKET-PR-B1-002"
+      "status": "PARTIAL",
+      "ticket": "TICKET-PR-B1-002",
+      "note": "API PASS; harness postE2ESale FAIL"
     },
     {
       "id": "auto_sync",
-      "status": "PARTIAL",
-      "ticket": "TICKET-PR-B1-002",
-      "note": "Some sync specs did not fully execute after earlier failures"
+      "status": "NOT_RUN",
+      "ticket": "TICKET-PR-B1-002"
     },
     {
       "id": "manual_romanized_purchase",
-      "status": "PENDING",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-001"
     },
     {
       "id": "manual_devanagari_sale",
-      "status": "PENDING",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-001"
     },
     {
       "id": "manual_english_sale",
-      "status": "PENDING",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-001"
     },
     {
       "id": "manual_ask_balance_sheet",
-      "status": "PENDING",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-001"
     },
     {
       "id": "manual_ask_sale_refuse",
-      "status": "PENDING",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-001"
     },
     {
       "id": "manual_ask_fake_cite",
-      "status": "PENDING",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-001"
     }
   ],
   "blocks_pr_c": true,
-  "allows_pr_b_residual_parallel": true
+  "allows_pr_b_residual_parallel": true,
+  "b1_tickets_cleared": ["TICKET-PR-B1-001"]
 }

@@ -10,6 +10,15 @@ const botURL =
   process.env.ERP_BOT_BACKEND_URL ||
   process.env.VITE_ERP_BOT_URL ||
   "http://127.0.0.1:8765";
+/** Browser must use same-origin /erp-bot when the bot is a remote URL (CORS). */
+const viteBotURL =
+  connected &&
+  /^https?:\/\//i.test(botURL) &&
+  !/localhost|127\.0\.0\.1|\[::1\]/i.test(botURL)
+    ? "/erp-bot"
+    : connected
+      ? botURL
+      : "";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -39,7 +48,7 @@ export default defineConfig({
       VITE_SELF_CONTAINED_AI: connected ? "false" : "true",
       // Auth visual fixture — required for production preview builds of /e2e/ui-auth.html
       VITE_ALLOW_AUTH_FIXTURE: "true",
-      VITE_ERP_BOT_URL: connected ? botURL : "",
+      VITE_ERP_BOT_URL: viteBotURL,
       ERP_BOT_BACKEND_URL: botURL,
       // Phase 5 sync E2E — point Vite at isolated sync backend (not production).
       VITE_ORBIX_SYNC_TEST_MODE:

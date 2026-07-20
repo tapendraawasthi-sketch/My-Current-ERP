@@ -4,7 +4,7 @@
 **Capability row:** `LAUNCH-ACCOUNTANT-SALES-PURCHASE`  
 **Flag after attempt:** **OFF**  
 
-## Probe
+## Probe (initial + recheck)
 
 | Check | Result |
 |-------|--------|
@@ -16,6 +16,17 @@
 | PR-B1 manual_run | PENDING |
 | PR-B3 conflict attestation | PENDING |
 | PR-B5 professional knowledge review | PENDING |
+
+### Recheck (continuum “go”, later 2026-07-20)
+
+Runtime probe repeated after PR-H3/PR-H4 hygiene ships:
+
+- `blocking_tickets_clear=false`
+- `owner_signed=false`
+- `runtime_production_approved=false`
+- honesty assert still green with flag OFF
+
+**Still refused** to invent OWNER_SIGNOFF, staging PASS, or matrix `depth=PRODUCTION`.
 
 ## Actions taken
 
@@ -33,9 +44,21 @@
 5. Fill `artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` with **Status: SIGNED**, name, date  
 6. Then continuum may arm: registry `flag_armed=true`, env flag on, matrix row PRODUCTION for **this row only**, NEXT-20 DONE  
 
+### Recheck (2026-07-20 ~09:10 +05:45 — Render probe)
+
+Operator asked continuum to do what is possible against
+https://my-current-erp.onrender.com (operator cannot act personally).
+
+- SPA `/health` ok; `sutra-erp-bot` Groq ready (cold-start 502 intermittent)
+- Connected r3: **10 passed / 4 failed**; next12 **3/3**; sales API fixed via `ERP_BOT_BACKEND_URL`
+- Browser Confirm/Dexie + `postE2ESale` + sync still red/missing
+- **Refused** invented owner residual clear for B1-002
+- **Still BLOCKED** — open: B1-002, B3-001, B5-001, OWNER_SIGNOFF
+
 ## Explicit non-claims
 
 - Not production_approved  
 - Not NEXT-20 DONE  
 - Not staging golden path green  
 - Not owner-signed  
+

@@ -5,15 +5,20 @@ import { test, expect } from "@playwright/test";
 import { getLedgerSnapshot, type LedgerSnapshot } from "./helpers/orbixE2E";
 
 const connected = process.env.ORBIX_E2E_CONNECTED === "true";
-const botURL = (process.env.ORBIX_BOT_URL || "http://127.0.0.1:8765").replace(/\/$/, "");
+const botURL = (
+  process.env.ERP_BOT_BACKEND_URL ||
+  process.env.ORBIX_BOT_URL ||
+  process.env.VITE_ERP_BOT_URL ||
+  "http://127.0.0.1:8765"
+).replace(/\/$/, "");
 
 async function readSseComplete(text: string): Promise<Record<string, unknown> | null> {
   for (const block of text.split("\n\n")) {
-    const line = block.split("\n").find((l) => l.startsWith("data:"));
-    if (!line) continue;
+    const line = block.trim();
+    if (!line.startsWith("data: ")) continue;
     try {
-      const payload = JSON.parse(line.slice(5).trim()) as Record<string, unknown>;
-      if (payload.type === "complete" || payload.response_type || payload.error) return payload;
+      const payload = JSON.parse(line.slice(6)) as Record<string, unknown>;
+      if (payload.type === "complete") return payload;
     } catch {
       /* ignore */
     }
