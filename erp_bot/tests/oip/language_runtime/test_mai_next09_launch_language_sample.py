@@ -124,4 +124,4 @@ def test_gap_register_and_pointer_pr_b1() -> None:
         encoding="utf-8"
     )
     assert "recommended_next_step = PR-C1-ARM" in nxt
-    assert "NEXT-09" in nxt and "last_shipped_step = PR-D1" in nxt
+    assert "NEXT-09" in nxt and "last_shipped_step = PR-D2" in nxt

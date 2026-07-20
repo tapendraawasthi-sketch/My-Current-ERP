@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_LANGUAGE_DEFECT_BURNDOWN_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0098",
+  "step": "PR-D2",
+  "decision": "LANGUAGE_DEFECT_BURNDOWN_PACK",
+  "pack_ready": true,
+  "defects_collected": false,
+  "burn_down_complete": false,
+  "assertion_weakening_allowed": false,
+  "procedure": "docs/mokxya-ai/releases/LANGUAGE_DEFECT_BURNDOWN_V1.md",
+  "languages": ["en", "ne_devanagari", "ne_romanized", "code_mix"],
+  "honesty": {
+    "production_approved": false,
+    "defects_collected": false,
+    "burn_down_complete": false,
+    "assertion_weakening_allowed": false,
+    "linguist_approved": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "defects_collected=true_without_log",
+    "burn_down_complete=true",
+    "assertion_weakening_allowed=true",
+    "linguist_approved=true_without_file"
+  ]
+}

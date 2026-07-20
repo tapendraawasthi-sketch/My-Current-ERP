@@ -10,7 +10,7 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-D1
+  last_shipped_step = PR-D2
   recommended_next_step = PR-C1-ARM
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
@@ -22,6 +22,7 @@ Status baseline (updated as ships land):
   pr_h4_vacuous_green_forbid = READY (ADR_0095; empty required → INVALID; legacy residual)
   pr_d4_operator_runbook = PACK_READY (ADR_0096; not 14-day stable)
   pr_d1_incident_loop = PACK_READY (ADR_0097; weekly reviews NOT_RUN)
+  pr_d2_language_burndown = PACK_READY (ADR_0098; defects_collected=false)
   pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
   pr_b3_staging_conflict = PENDING (TICKET-PR-B3-001)
   pr_b5_staging_professional = PENDING (TICKET-PR-B5-001)
@@ -605,7 +606,8 @@ PR-C2-ARM| OPEN   |                   | clear Ask tickets + owner sign-off + fli
 PR-C3    | PACK_READY | ADR_0093 + DAY0_PRODUCTION_SMOKE_V1.md | checklist READY; smoke NOT_RUN / not PASS
 PR-C3-RUN| OPEN   |                   | execute Day-0 after arm
 PR-D1    | PACK_READY | ADR_0097 + ERROR_BUDGET_INCIDENT_LOOP_V1.md | weekly loop READY; reviews NOT_RUN; not 14-day stable
-PR-D2-D3 | OPEN   |                   | language / dual-writer burn-down
+PR-D2    | PACK_READY | ADR_0098 + LANGUAGE_DEFECT_BURNDOWN_V1.md | procedure READY; defects_collected=false
+PR-D3    | OPEN   |                   | dual-writer / sync residual burn-down
 PR-D4    | PACK_READY | ADR_0096 + OPERATOR_RUNBOOK_LAUNCH_V1.md | on-call runbook READY; not 14-day stable
 PR-E1-E4 | BLOCKED_UNTIL_PR-D_STABLE |
 PR-F1-F4 | BLOCKED_UNTIL_PR-C        | Track I
@@ -619,7 +621,7 @@ Already DONE before this plan (do not reopen as PR work):
 
 Active pointer:
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-D1
+  last_shipped_step = PR-D2
   production_approved = false
   pr_b1_blocks_pr_c = true
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE

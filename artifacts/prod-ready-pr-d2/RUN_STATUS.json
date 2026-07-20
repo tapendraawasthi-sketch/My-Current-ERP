@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-D2",
+  "authority": "ADR_0098",
+  "as_of": "2026-07-20",
+  "pack_ready": true,
+  "defects_collected": false,
+  "burn_down_complete": false,
+  "assertion_weakening_allowed": false,
+  "production_approved": false,
+  "procedure": "docs/mokxya-ai/releases/LANGUAGE_DEFECT_BURNDOWN_V1.md"
+}
