@@ -1,0 +1,15 @@
+# Frontend service (sutra-erp) — Root Directory = repo root (blank / ".")
+# Bot service (sutra-erp-bot) — Root Directory = erp_bot (uses erp_bot/railway.toml instead)
+#
+# Railway wraps build as: chmod +x <buildCommand> && sh <buildCommand>
+# so buildCommand must be a single executable path (no "bash" / "npm" prefix).
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "scripts/render-build.sh"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
