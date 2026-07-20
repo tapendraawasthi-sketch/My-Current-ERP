@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-D1",
+  "authority": "ADR_0097",
+  "as_of": "2026-07-20",
+  "pack_ready": true,
+  "fourteen_day_stable_claimed": false,
+  "weekly_reviews_executed": false,
+  "production_approved": false,
+  "day0_smoke_pass": false,
+  "loop_doc": "docs/mokxya-ai/releases/ERROR_BUDGET_INCIDENT_LOOP_V1.md"
+}

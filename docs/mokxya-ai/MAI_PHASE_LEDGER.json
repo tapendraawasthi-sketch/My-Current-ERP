@@ -6,8 +6,17 @@
   "branch": "main",
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4"],
-  "active_phase_note": "Post-MAI-53 queue. PR-D4 operator runbook PACK_READY (ADR_0096). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1"],
+  "active_phase_note": "Post-MAI-53 queue. PR-D1 incident loop PACK_READY (ADR_0097). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "error_budget_incident_loop": {
+    "authority": "ADR_0097",
+    "decision": "ERROR_BUDGET_INCIDENT_LOOP_PACK",
+    "pack_ready": true,
+    "fourteen_day_stable": false,
+    "weekly_reviews_executed": false,
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_ERROR_BUDGET_INCIDENT_LOOP_REGISTRY.json"
+  },
   "operator_runbook": {
     "authority": "ADR_0096",
     "decision": "OPERATOR_RUNBOOK_PACK",

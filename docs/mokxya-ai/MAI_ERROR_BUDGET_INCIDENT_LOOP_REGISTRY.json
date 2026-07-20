@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_ERROR_BUDGET_INCIDENT_LOOP_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0097",
+  "step": "PR-D1",
+  "decision": "ERROR_BUDGET_INCIDENT_LOOP_PACK",
+  "pack_ready": true,
+  "fourteen_day_stable_claimed": false,
+  "loop_doc": "docs/mokxya-ai/releases/ERROR_BUDGET_INCIDENT_LOOP_V1.md",
+  "signals": [
+    "confirm_token_denial_rate",
+    "posting_failed_rate",
+    "sync_pending_age",
+    "ask_abstain_rate",
+    "mode_restriction_count",
+    "unexpected_mutation_attempt_count"
+  ],
+  "honesty": {
+    "production_approved": false,
+    "fourteen_day_stable": false,
+    "post_launch_stable": false,
+    "day0_smoke_pass": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "fourteen_day_stable=true",
+    "post_launch_stable=true",
+    "day0_smoke_pass=true",
+    "zero_incidents_claimed_without_window"
+  ]
+}
