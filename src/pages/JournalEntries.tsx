@@ -194,6 +194,7 @@ const JournalEntries: React.FC = () => {
           <span className="text-[12px] text-gray-500">Status</span>
           <div className="w-36">
             <Select
+              aria-label="Journal status"
               options={[
                 { value: "ALL", label: "All statuses" },
                 { value: VoucherStatus.DRAFT, label: "Draft" },
@@ -209,6 +210,7 @@ const JournalEntries: React.FC = () => {
               <span className="text-[12px] text-gray-500">Branch</span>
               <div className="w-40">
                 <Select
+                  aria-label="Branch"
                   options={[
                     { value: "all", label: "All branches" },
                     ...branchOptions.map((b: any) => ({

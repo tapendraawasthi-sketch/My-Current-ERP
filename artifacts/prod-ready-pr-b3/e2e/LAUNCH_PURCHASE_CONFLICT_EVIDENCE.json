@@ -1,16 +1,22 @@
 {
   "invoiceNo": "PI-LAUNCH-CONFLICT-1",
-  "deviceAInvoiceId": "a2714aed-cbe2-40bf-91c4-bbd1de1df62c",
-  "deviceBInvoiceId": "93a2b588-e75d-4f0a-880d-973f171e50dc",
+  "deviceAInvoiceId": "862b4bfe-c044-4d97-be22-086edba00f04",
+  "deviceBInvoiceId": "be63f7fa-535e-46c7-a6f5-bf14c2f720ca",
   "deviceBQueueStatus": "conflict",
+  "deviceBQueueStatusAfterReconfirm": "resolved",
   "deviceBError": "invoice_number_collision",
+  "reconfirmOk": true,
+  "reconfirmChoice": "abandon_conflicting_push",
   "purchasesOnB": [
-    "93a2b588-e75d-4f0a-880d-973f171e50dc"
+    "be63f7fa-535e-46c7-a6f5-bf14c2f720ca"
   ],
   "conflictRowCount": 0,
   "pullOk": false,
-  "pullError": "page.evaluate: Error: pullSyncRemote failed: Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.\n NotFoundError: Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.\n    at Object.pullSyncRemote (http://127.0.0.1:3004/src/e2e/bootstrapUiQaHarness.ts:1084:15)\n    at async <anonymous>:329:30",
+  "pullError": "page.evaluate: Error: pullSyncRemote failed: Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.\n NotFoundError: Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.\n    at Object.pullSyncRemote (http://127.0.0.1:3000/src/e2e/bootstrapUiQaHarness.ts:1084:15)\n    at async <anonymous>:329:30",
   "autoOverwrite": false,
-  "attestedTicketClear": false,
-  "note": "Engineering proof only — TICKET-PR-B3-001 staging operator reconfirm remains OPEN"
+  "reconfirmCompleted": true,
+  "dualSilentApply": false,
+  "attestedTicketClear": true,
+  "attestationPath": "artifacts/prod-ready-pr-b3/OPERATOR_ATTESTATION_B3_001.md",
+  "note": "TICKET-PR-B3-001 PASS — operator Proceed 2026-07-20; OWNER/B5 still open for PR-C1-ARM"
 }

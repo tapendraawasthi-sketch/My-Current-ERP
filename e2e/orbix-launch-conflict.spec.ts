@@ -1,8 +1,9 @@
 /**
  * PR-B3 launch purchase material conflict (invoice_number_collision).
  *
- * Proves: two devices posting the same invoice number → conflict (not silent overwrite).
- * Does NOT clear TICKET-PR-B3-001 (operator reconfirm UI / staging attestation still PENDING).
+ * Proves: two devices posting the same invoice number → conflict (not silent overwrite),
+ * then operator reconfirm (abandon conflicting push) completes with no dual apply.
+ * Staging attestation (TICKET-PR-B3-001) remains human — do not invent OWNER residual.
  *
  * Requires same env as e2e/orbix-sync.spec.ts.
  */
@@ -183,19 +184,49 @@ test.describe("PR-B3 launch purchase material conflict", () => {
     });
     expect(rowB?.status).toBe("conflict");
 
+    // Operator reconfirm: abandon conflicting push (keep local B; no remote overwrite)
+    const reconfirm = await pageB.evaluate(async (queueRowId) => {
+      return window.__orbixE2E!.reconfirmMaterialConflict({
+        queueRowId,
+        choice: "abandon_conflicting_push",
+      });
+    }, String(rowB?.id || payloadB.sync_event_id));
+    expect(reconfirm.ok).toBe(true);
+    expect(reconfirm.status).toBe("resolved");
+
+    const queueBAfter = await pageB.evaluate(async () =>
+      window.__orbixE2E!.getSyncQueueSnapshot(),
+    );
+    const rowBAfter = queueBAfter.find((r) => r.eventId === payloadB.sync_event_id);
+    expect(rowBAfter?.status).toBe("resolved");
+    expect(String(rowBAfter?.lastErrorCode || "")).toBe("operator_reconfirm_abandon");
+
+    await pageB.evaluate(async () => window.__orbixE2E!.reloadFromDexie());
+    const snapB3 = await pageB.evaluate(async () => window.__orbixE2E!.getSnapshot());
+    const purchasesB3 = (
+      snapB3.invoices as Array<{ id?: string; invoiceNo?: string; type?: string }>
+    ).filter((i) => i.type === "purchase-invoice" && i.invoiceNo === INVOICE_NO);
+    expect(purchasesB3.some((i) => i.id === payloadB.invoice_id)).toBeTruthy();
+    expect(purchasesB3.some((i) => i.id === payloadA.invoice_id)).toBeFalsy();
+
     const evidence = {
       invoiceNo: INVOICE_NO,
       deviceAInvoiceId: payloadA.invoice_id,
       deviceBInvoiceId: payloadB.invoice_id,
       deviceBQueueStatus: rowB?.status,
+      deviceBQueueStatusAfterReconfirm: rowBAfter?.status,
       deviceBError: err,
-      purchasesOnB: purchasesB2.map((i) => i.id),
+      reconfirmOk: reconfirm.ok === true,
+      reconfirmChoice: "abandon_conflicting_push",
+      purchasesOnB: purchasesB3.map((i) => i.id),
       conflictRowCount: conflictRows.length,
       pullOk,
       pullError: pullError || null,
       autoOverwrite: false,
+      reconfirmCompleted: true,
+      dualSilentApply: false,
       attestedTicketClear: false,
-      note: "Engineering proof only — TICKET-PR-B3-001 staging operator reconfirm remains OPEN",
+      note: "Engineering reconfirm PASS — TICKET-PR-B3-001 staging human attestation still OPEN",
     };
     fs.writeFileSync(
       path.join(ARTIFACTS, "LAUNCH_PURCHASE_CONFLICT_EVIDENCE.json"),
@@ -203,6 +234,9 @@ test.describe("PR-B3 launch purchase material conflict", () => {
     );
     await pageB.screenshot({
       path: path.join(ARTIFACTS, "device-b-after-conflict.png"),
+    });
+    await pageB.screenshot({
+      path: path.join(ARTIFACTS, "device-b-after-reconfirm.png"),
     });
 
     await contextA.close();

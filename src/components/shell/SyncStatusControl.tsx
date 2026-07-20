@@ -19,18 +19,24 @@ import {
   type AggregatedSyncStatus,
   type UiSyncState,
 } from "@/platform/sync/syncStatusAggregate";
+import { listConflictSyncEvents, type DBEventSyncQueueRow } from "@/platform/sync/syncQueue";
+import { reconfirmMaterialConflict } from "@/platform/sync/reconfirmMaterialConflict";
 
 const SyncStatusControl: React.FC = () => {
   const [legacyStatus, setLegacyStatus] = useState<SyncStatus>("synced");
   const [agg, setAgg] = useState<AggregatedSyncStatus | null>(null);
   const [manualSyncing, setManualSyncing] = useState(false);
   const [open, setOpen] = useState(false);
+  const [conflicts, setConflicts] = useState<DBEventSyncQueueRow[]>([]);
+  const [reconfirmBusy, setReconfirmBusy] = useState(false);
+  const [reconfirmMsg, setReconfirmMsg] = useState("");
   const [online, setOnline] = useState(
     typeof navigator === "undefined" ? true : navigator.onLine,
   );
 
   const refreshAgg = (legacy?: SyncStatus) => {
     void getAggregatedSyncStatus(online, legacy ?? legacyStatus).then(setAgg);
+    void listConflictSyncEvents(5).then(setConflicts).catch(() => setConflicts([]));
   };
 
   useEffect(() => {
@@ -224,12 +230,62 @@ const SyncStatusControl: React.FC = () => {
                     <p>Last sync: {new Date(agg.lastSuccessfulSync).toLocaleString()}</p>
                   ) : null}
                 </div>
+                {conflicts.length > 0 ? (
+                  <div
+                    className="mt-3 rounded-[var(--ds-radius-md)] border border-[var(--ds-status-danger)]/30 bg-[var(--ds-status-danger-surface)] p-2"
+                    data-testid="sync-conflict-reconfirm"
+                  >
+                    <p className="text-[12px] font-medium text-[var(--ds-status-danger)]">
+                      Material conflict — reconfirm required
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-[var(--ds-text-muted)]">
+                      {conflicts[0].lastErrorCode || conflicts[0].lastError || "Conflict"} · push
+                      parked (no auto-overwrite)
+                    </p>
+                    <button
+                      type="button"
+                      data-testid="sync-reconfirm-abandon"
+                      disabled={reconfirmBusy}
+                      aria-label="Reconfirm: abandon conflicting push"
+                      onClick={() => {
+                        const rowId = conflicts[0]?.id;
+                        if (!rowId) return;
+                        setReconfirmBusy(true);
+                        setReconfirmMsg("");
+                        void reconfirmMaterialConflict({
+                          queueRowId: rowId,
+                          choice: "abandon_conflicting_push",
+                        })
+                          .then((r) => {
+                            if (!r.ok) {
+                              setReconfirmMsg(r.error);
+                              return;
+                            }
+                            setReconfirmMsg("Reconfirm complete — conflicting push abandoned");
+                            refreshAgg();
+                          })
+                          .finally(() => setReconfirmBusy(false));
+                      }}
+                      className="mt-2 h-8 w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2 text-[12px] font-medium text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)] disabled:opacity-50"
+                    >
+                      {reconfirmBusy ? "Reconfirming…" : "Reconfirm: abandon conflicting push"}
+                    </button>
+                    {reconfirmMsg ? (
+                      <p className="mt-1 text-[11px] text-[var(--ds-text-muted)]">{reconfirmMsg}</p>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             </div>
             <div className="mt-3 flex gap-2">
               <button
                 type="button"
-                disabled={!online || busy || effective === "local_only"}
+                disabled={
+                  !online ||
+                  busy ||
+                  effective === "local_only" ||
+                  effective === "conflict"
+                }
                 onClick={() => {
                   handlePrimary();
                   setOpen(false);
@@ -238,7 +294,9 @@ const SyncStatusControl: React.FC = () => {
               >
                 {effective === "failed" || effective === "action_required"
                   ? "Retry sync"
-                  : "Sync now"}
+                  : effective === "conflict"
+                    ? "Resolve conflict first"
+                    : "Sync now"}
               </button>
               <button
                 type="button"

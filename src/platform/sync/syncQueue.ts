@@ -9,6 +9,7 @@ export type EventSyncQueueStatus =
   | "synced"
   | "failed"
   | "conflict"
+  | "resolved"
   | "dead_letter";
 
 export interface DBEventSyncQueueRow {
@@ -74,7 +75,12 @@ export async function getPendingSyncEvents(limit = 20): Promise<DBEventSyncQueue
   const rows = (await db.eventSyncQueue
     .filter((r: DBEventSyncQueueRow) => {
       if (r.origin === "remote_sync") return false;
-      if (r.status === "synced" || r.status === "dead_letter" || r.status === "conflict") {
+      if (
+        r.status === "synced" ||
+        r.status === "dead_letter" ||
+        r.status === "conflict" ||
+        r.status === "resolved"
+      ) {
         return false;
       }
       if (r.status === "syncing") {
@@ -108,7 +114,12 @@ export async function claimSyncEvents(
     for (const row of rows) {
       const current = (await db.eventSyncQueue.get(row.id)) as DBEventSyncQueueRow | undefined;
       if (!current) continue;
-      if (current.status === "synced" || current.status === "dead_letter" || current.status === "conflict") {
+      if (
+        current.status === "synced" ||
+        current.status === "dead_letter" ||
+        current.status === "conflict" ||
+        current.status === "resolved"
+      ) {
         continue;
       }
       if (
@@ -239,9 +250,30 @@ export async function markEventConflict(
   });
 }
 
+export async function listConflictSyncEvents(limit = 20): Promise<DBEventSyncQueueRow[]> {
+  if (!isEventSyncSchemaReady()) return [];
+  const db = getDB();
+  const rows = (await db.eventSyncQueue
+    .filter(
+      (r: DBEventSyncQueueRow) => r.origin !== "remote_sync" && r.status === "conflict",
+    )
+    .toArray()) as DBEventSyncQueueRow[];
+  return rows
+    .sort((a, b) => b.globalSequence - a.globalSequence)
+    .slice(0, limit);
+}
+
 export async function countSyncQueueByStatus(): Promise<Record<string, number>> {
   if (!isEventSyncSchemaReady()) {
-    return { pending: 0, syncing: 0, failed: 0, conflict: 0, dead_letter: 0, synced: 0 };
+    return {
+      pending: 0,
+      syncing: 0,
+      failed: 0,
+      conflict: 0,
+      resolved: 0,
+      dead_letter: 0,
+      synced: 0,
+    };
   }
   const db = getDB();
   const rows = (await db.eventSyncQueue.toArray()) as DBEventSyncQueueRow[];
@@ -250,6 +282,7 @@ export async function countSyncQueueByStatus(): Promise<Record<string, number>> 
     syncing: 0,
     failed: 0,
     conflict: 0,
+    resolved: 0,
     dead_letter: 0,
     synced: 0,
   };

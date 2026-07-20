@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T12:34:45.238Z",
+  "generated_at": "2026-07-20T11:09:47.568Z",
   "frontend_start_command": "npm run dev",
   "frontend_url": "http://127.0.0.1:3000",
   "ui_qa_harness_url": "http://127.0.0.1:3000/e2e/ui-qa.html",

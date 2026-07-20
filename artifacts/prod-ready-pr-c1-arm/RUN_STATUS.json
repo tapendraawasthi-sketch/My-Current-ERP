@@ -4,8 +4,9 @@
   "authority": "ADR_0091",
   "prior_false_arm_commit": "2e0b45aa",
   "as_of": "2026-07-20",
-  "last_reprobe": "2026-07-20T11:50+05:45",
+  "last_reprobe": "2026-07-20T17:17+05:45",
   "attempt_status": "BLOCKED_HUMAN",
+  "block_reason": "OWNER_SIGNOFF_PENDING",
   "preflight_ready": true,
   "flag_armed": false,
   "production_approved": false,
@@ -13,20 +14,26 @@
   "owner_signed": false,
   "staging_golden_path_green": false,
   "blocking_tickets_clear": false,
-  "blocking_tickets_pass": ["TICKET-PR-B1-001", "TICKET-PR-B1-002"],
-  "blocking_tickets_open": [
+  "blocking_tickets_pass": [
+    "TICKET-PR-B1-001",
+    "TICKET-PR-B1-002",
     "TICKET-PR-B3-001",
-    "TICKET-PR-B5-001",
+    "TICKET-PR-B5-001"
+  ],
+  "blocking_tickets_open": [
     "OWNER_SIGNOFF"
   ],
   "honesty": {
     "flipped_without_evidence": false,
     "invented_owner_signoff": false,
+    "refused_chat_go_as_owner_signoff": true,
     "invented_staging_pass": false,
     "false_arm_2e0b45aa_reversed": true,
     "false_b3_b5_residuals_voided": true,
     "b1_001_operator_chat_attestation": true,
     "b1_002_sync_engineering_pass": true,
+    "b3_001_operator_debug_proceed_attestation": true,
+    "b5_001_operator_debug_proceed_attestation": true,
     "launch_connected_19_of_19_pass": true,
     "sync_two_device_5_of_5_pass": true
   }

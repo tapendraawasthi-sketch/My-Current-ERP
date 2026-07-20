@@ -7,8 +7,11 @@ import os
 import sys
 from pathlib import Path
 
-# Skip file watcher + Chroma knowledge ingest (same lean path as cloud deploy)
-os.environ.setdefault("RENDER", "true")
+# Lean start: skip file watcher + Chroma knowledge ingest.
+# Do NOT force RENDER=true on localhost — that marks the process as production
+# and rejects local OIP_AUTH_REQUIRED=false / OIP_ALLOW_INSECURE_DEV_IDENTITY,
+# which 500s /orbix/chat/stream. Real Render already sets RENDER=true.
+os.environ.setdefault("ORBIX_LEAN_START", "true")
 
 BOT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BOT_ROOT))

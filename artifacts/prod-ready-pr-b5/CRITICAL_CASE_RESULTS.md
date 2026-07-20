@@ -1,8 +1,9 @@
 # PR-B5 — Critical case engineering re-proof
 
-**Date:** 2026-07-19  
-**Command:** `python -m pytest tests/oip/language_runtime/test_mai_next13_knowledge_citation.py -q`  
-**Result:** PASS (all critical parametrized cases → `ABSTAIN_UNGROUNDED`)  
+**Date:** 2026-07-20 (re-run)  
+**Commands:**
+- `cd erp_bot && set PYTHONPATH=src && python -m pytest tests/oip/language_runtime/test_mai_next13_knowledge_citation.py -q` → **10 passed**
+- `python erp_bot/scripts/probe_pr_b5_critical_cases.py` → `engineering_gate_pass=true`
 
 | Case ID | Prompt cue | Gate |
 |---------|------------|------|
@@ -15,4 +16,6 @@
 
 Also: `fake_citation_allowed=false`, `claims_verified=false`, safe no-answer path green.
 
-Staging connected Ask re-run remains PENDING (see BLOCKING_TICKETS.md).
+Prior HTTP staging probe (422 on sync backend) was **invalid target** — Orbix Ask is not on `:3010`. Replaced with in-process Ask gate probe JSON.
+
+Staging UI professional review remains PENDING (see `manual/STAGING_PROFESSIONAL_REVIEW_WORKSHEET.md`).

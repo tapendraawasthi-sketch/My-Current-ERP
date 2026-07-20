@@ -325,14 +325,34 @@ class TraceRecorder:
             )
         )
 
+    def begin_stage(self, *args: Any, **kwargs: Any) -> str:
+        """Alias for start_stage — used by MAI-20+ ingress stages."""
+        return self.start_stage(*args, **kwargs)
+
+    @staticmethod
+    def _normalize_stage_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+        # Ingress historically passed version_map; recorder stores component_versions.
+        if "version_map" in kwargs and "component_versions" not in kwargs:
+            kwargs = dict(kwargs)
+            kwargs["component_versions"] = kwargs.pop("version_map")
+        elif "version_map" in kwargs:
+            kwargs = dict(kwargs)
+            kwargs.pop("version_map", None)
+        return kwargs
+
     def complete_stage(self, event_id: str, **kwargs: Any) -> None:
-        self._finish(event_id, TraceStatus.COMPLETED, **kwargs)
+        self._finish(event_id, TraceStatus.COMPLETED, **self._normalize_stage_kwargs(kwargs))
 
     def fail_stage(self, event_id: str, *, safe_error_code: str, **kwargs: Any) -> None:
-        self._finish(event_id, TraceStatus.FAILED, safe_error_code=safe_error_code, **kwargs)
+        self._finish(
+            event_id,
+            TraceStatus.FAILED,
+            safe_error_code=safe_error_code,
+            **self._normalize_stage_kwargs(kwargs),
+        )
 
     def cancel_stage(self, event_id: str, **kwargs: Any) -> None:
-        self._finish(event_id, TraceStatus.CANCELLED, **kwargs)
+        self._finish(event_id, TraceStatus.CANCELLED, **self._normalize_stage_kwargs(kwargs))
 
     def record_event(
         self,

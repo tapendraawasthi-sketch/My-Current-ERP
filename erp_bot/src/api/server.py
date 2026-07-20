@@ -9,6 +9,7 @@ Phase 1 — Conversation Brain:
 from __future__ import annotations
 
 import asyncio
+import os
 import httpx
 from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -164,9 +165,14 @@ def on_startup():
     import os
 
     _is_render = os.getenv("RENDER", "").lower() == "true"
+    _lean_start = os.getenv("ORBIX_LEAN_START", "").lower() in {"1", "true", "yes"}
+    _skip_watcher = _is_render or _lean_start
 
-    if _is_render:
-        print("[SERVER] Render deploy — skipping file watcher and Chroma ingest (OIP chat only)")
+    if _skip_watcher:
+        print(
+            "[SERVER] Lean/cloud start — skipping file watcher and Chroma ingest "
+            f"(RENDER={_is_render}, ORBIX_LEAN_START={_lean_start})"
+        )
     else:
         start_watcher()
         print("[SERVER] Watcher started")
@@ -194,7 +200,7 @@ def on_startup():
             print(f"[SERVER] R2 storage verification failed: {exc}")
             raise
 
-    if not _is_render:
+    if not _skip_watcher:
         try:
             from backend.knowledge.jobs.worker import start_knowledge_worker
 
@@ -621,9 +627,14 @@ async def orbix_chat_stream(
                 principal = await container.jwt_service.verify_access_token(token)
                 bind_principal(principal)
             except JwtAuthError:
-                from ..oip.config.settings import get_oip_settings
+                auth_required = False
+                try:
+                    from ..oip.config.settings import get_oip_settings
 
-                if get_oip_settings().auth_required:
+                    auth_required = bool(get_oip_settings().auth_required)
+                except Exception:
+                    auth_required = False
+                if auth_required:
                     async def auth_error():
                         yield _sse_json(
                             {
@@ -643,9 +654,16 @@ async def orbix_chat_stream(
                         },
                     )
     except Exception:
-        from ..oip.config.settings import get_oip_settings
+        # Never re-raise via get_oip_settings here — insecure RENDER+dev flags
+        # used to turn this into HTTP 500 and block legacy Ollama fallback.
+        auth_required = False
+        try:
+            from ..oip.config.settings import get_oip_settings
 
-        if get_oip_settings().auth_required:
+            auth_required = bool(get_oip_settings().auth_required)
+        except Exception:
+            auth_required = False
+        if auth_required:
             async def auth_unavailable():
                 yield _sse_json(
                     {

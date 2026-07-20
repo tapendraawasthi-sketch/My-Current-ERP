@@ -52,6 +52,7 @@ import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
 import { computeNextDueDate } from "../lib/recurringUtils";
+import { getFiscalYearDateRange } from "../lib/nepaliDate";
 import { registerWriteInternals } from "./writeInternals";
 import {
   facadeAddAccount,
@@ -340,7 +341,21 @@ export const useStore = create<AppState>()((...a) => {
           if (unitCount === 0) await db.units.bulkAdd(DEFAULT_UNITS as any);
 
           const fyCount = await db.fiscalYears.count();
-          if (fyCount === 0) await db.fiscalYears.add(DEFAULT_FISCAL_YEAR as any);
+          if (fyCount === 0) {
+            // Prefer Shrawan–Ashadh AD bounds for the default label (not Baisakh calendar year).
+            let seedFy: FiscalYear = DEFAULT_FISCAL_YEAR;
+            try {
+              const range = getFiscalYearDateRange(DEFAULT_FISCAL_YEAR.name);
+              seedFy = {
+                ...DEFAULT_FISCAL_YEAR,
+                startDate: range.startDate,
+                endDate: range.endDate,
+              };
+            } catch {
+              /* keep DEFAULT_FISCAL_YEAR literal bounds */
+            }
+            await db.fiscalYears.add(seedFy as any);
+          }
 
           const currencyCount = await db.currencies.count();
           if (currencyCount === 0) await db.currencies.add(DEFAULT_CURRENCY as any);
@@ -1090,10 +1105,39 @@ export const useStore = create<AppState>()((...a) => {
         passwordHash: hash,
         isActive: true,
       } as any);
+
+      // Persist the FY chosen during company setup (wizard). Replace any empty-DB default seed.
+      const selectedFyLabel = String(
+        (company as any).fiscalYear || (company as any).fiscalYearBS || "",
+      ).trim();
+      let createdFy: FiscalYear | null = null;
+      if (selectedFyLabel) {
+        const range = getFiscalYearDateRange(selectedFyLabel);
+        const fyId = `fy-${selectedFyLabel.replace(/\//g, "-")}`;
+        createdFy = {
+          id: fyId,
+          name: selectedFyLabel,
+          fiscalYearBS: selectedFyLabel,
+          startDate: range.startDate,
+          endDate: range.endDate,
+          isCurrent: true,
+          isClosed: false,
+        };
+        // First company setup owns the FY table — drop placeholder seeds (e.g. DEFAULT 2083/84).
+        await db.fiscalYears.clear();
+        await db.fiscalYears.put(createdFy as any);
+      }
+
       const settings = await db.companySettings.get("main");
       set({
         companySettings: settings as CompanySettings,
         authStage: "gateway" as AuthStage,
+        ...(createdFy
+          ? {
+              currentFiscalYear: createdFy,
+              fiscalYears: [createdFy] as FiscalYear[],
+            }
+          : {}),
       });
     },
 

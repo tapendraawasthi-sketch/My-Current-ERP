@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useId } from "react";
 
 export interface SelectOption {
   value: string;
@@ -12,6 +12,8 @@ interface SelectProps {
   onChange?: (val: string) => void;
   options: SelectOption[];
   placeholder?: string;
+  /** Accessible name when visual label is provided outside this component. */
+  "aria-label"?: string;
   required?: boolean;
   disabled?: boolean;
   searchable?: boolean;
@@ -24,6 +26,7 @@ const Select: React.FC<SelectProps> = ({
   onChange,
   options,
   placeholder = "Select...",
+  "aria-label": ariaLabelProp,
   required,
   disabled,
   searchable,
@@ -32,6 +35,8 @@ const Select: React.FC<SelectProps> = ({
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const selectId = useId();
+  const accessibleName = (ariaLabelProp || label || placeholder || "Select").trim();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -45,12 +50,17 @@ const Select: React.FC<SelectProps> = ({
     return (
       <div className={`flex flex-col gap-0.5 ${className}`}>
         {label && (
-          <label style={{ fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 2 }}>
+          <label
+            htmlFor={selectId}
+            style={{ fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 2 }}
+          >
             {label}
             {required && <span style={{ marginLeft: 2 }}>*</span>}
           </label>
         )}
         <select
+          id={selectId}
+          aria-label={accessibleName}
           value={value || ""}
           onChange={(e) => onChange?.(e.target.value)}
           required={required}

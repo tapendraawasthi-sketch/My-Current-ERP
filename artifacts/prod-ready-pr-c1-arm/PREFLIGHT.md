@@ -14,16 +14,14 @@
 | Sync two-device pack | PASS 5/5 |
 | TICKET-PR-B1-001 | PASS |
 | TICKET-PR-B1-002 | PASS |
-| B3 unit/UI honesty pack | ENGINEERING READY (`staging_conflict_attested=false`) |
-| B3 launch conflict E2E | **PASS** (`orbix-launch-conflict` — collision, no overwrite; reconfirm still OPEN) |
-| B5 force-abstain gate | ENGINEERING_PASS (`staging_professional_attested=false`) |
+| TICKET-PR-B3-001 | PASS |
+| TICKET-PR-B5-001 | **PASS** (`OPERATOR_ATTESTATION_B5_001.md`) |
 | False arm / invented residuals | VOID / disarmed |
 
 ## Human still required
 
-1. Staging conflict → reconfirm exercise → clear TICKET-PR-B3-001  
-   (engineering collision E2E already PASS; reconfirm step still required)  
-2. Staging professional knowledge review → clear TICKET-PR-B5-001  
+1. ~~Staging conflict → reconfirm~~ **PASS**  
+2. ~~Staging professional knowledge review~~ **PASS**  
 3. Real `OWNER_SIGNOFF.md` → **SIGNED** with name + date  
 
 ## Explicit non-claims

@@ -1,6 +1,6 @@
 # UI Component Duplication Map
 
-Generated: 2026-07-13T12:34:45.217Z
+Generated: 2026-07-20T11:09:47.550Z
 
 ## Policy (Phase UI-0)
 
@@ -18,12 +18,13 @@ Generated: 2026-07-13T12:34:45.217Z
 
 ## By primitive
 
-### Button (4)
+### Button (5)
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
 | `src/ai/interface/MessageShareButton.tsx` | merge | page-local-or-feature | ~0 |
-| `src/components/ui/Button.tsx` | canonical candidate | design-system-candidate | ~11 |
+| `src/components/ekhata/OrbixDocumentCameraButton.tsx` | merge | page-local-or-feature | ~0 |
+| `src/components/ui/Button.tsx` | canonical candidate | design-system-candidate | ~10 |
 | `src/design-system/primitives/Button/Button.tsx` | merge | page-local-or-feature | ~0 |
 | `src/design-system/primitives/IconButton/IconButton.tsx` | merge | page-local-or-feature | ~0 |
 
@@ -51,11 +52,11 @@ Generated: 2026-07-13T12:34:45.217Z
 |------|----------------|-------|-----------------:|
 | `src/components/ui/Select.tsx` | canonical candidate | design-system-candidate | ~5 |
 
-### Combobox (0)
+### Combobox (1)
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
-| _none found_ | | | |
+| `src/design-system/composites/Combobox.tsx` | merge | page-local-or-feature | ~0 |
 
 ### Checkbox (1)
 
@@ -79,13 +80,13 @@ Generated: 2026-07-13T12:34:45.217Z
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
-| `src/components/ui/NepaliDatePicker.tsx` | canonical candidate | design-system-candidate | ~9 |
+| `src/components/ui/NepaliDatePicker.tsx` | canonical candidate | design-system-candidate | ~10 |
 
 ### NepaliDatePicker (1)
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
-| `src/components/ui/NepaliDatePicker.tsx` | canonical candidate | design-system-candidate | ~9 |
+| `src/components/ui/NepaliDatePicker.tsx` | canonical candidate | design-system-candidate | ~10 |
 
 ### AmountInput (1)
 
@@ -124,7 +125,7 @@ Generated: 2026-07-13T12:34:45.217Z
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
 | `src/components/ui/DataTable.tsx` | canonical candidate | design-system-candidate | ~1 |
-| `src/components/ui/SearchableTable.tsx` | canonical candidate | design-system-candidate | ~8 |
+| `src/components/ui/SearchableTable.tsx` | canonical candidate | design-system-candidate | ~7 |
 | `src/components/ui/Table.tsx` | canonical candidate | design-system-candidate | ~3 |
 | `src/design-system/primitives/DataTable/EnterpriseDataTable.tsx` | merge | page-local-or-feature | ~0 |
 
@@ -146,7 +147,7 @@ Generated: 2026-07-13T12:34:45.217Z
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
 | `src/components/ui/ConfirmDialog.tsx` | canonical candidate | design-system-candidate | ~1 |
-| `src/components/ui/LanguageModal.tsx` | canonical candidate | design-system-candidate | ~0 |
+| `src/components/ui/LanguageModal.tsx` | canonical candidate | design-system-candidate | ~1 |
 | `src/components/ui/Modal.tsx` | canonical candidate | design-system-candidate | ~3 |
 
 ### ConfirmDialog (1)
@@ -196,18 +197,19 @@ Generated: 2026-07-13T12:34:45.217Z
 | `src/components/ReportEmptyState.tsx` | merge | page-local-or-feature | ~0 |
 | `src/components/ui/EmptyState.tsx` | canonical candidate | design-system-candidate | ~1 |
 
-### LoadingState (2)
+### LoadingState (3)
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
 | `src/components/ui/PageLoader.tsx` | canonical candidate | design-system-candidate | ~1 |
 | `src/components/ui/Spinner.tsx` | canonical candidate | design-system-candidate | ~1 |
+| `src/design-system/composites/Skeletons.tsx` | merge | page-local-or-feature | ~0 |
 
-### Skeleton (0)
+### Skeleton (1)
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
-| _none found_ | | | |
+| `src/design-system/composites/Skeletons.tsx` | merge | page-local-or-feature | ~0 |
 
 ### PageHeader (0)
 
@@ -223,11 +225,11 @@ Generated: 2026-07-13T12:34:45.217Z
 | `src/components/reports/ReportToolbar.tsx` | merge | page-local-or-feature | ~0 |
 | `src/components/ui/ActionToolbar.tsx` | canonical candidate | design-system-candidate | ~1 |
 
-### Tabs (0)
+### Tabs (1)
 
 | File | Recommendation | Style | Consumers (est.) |
 |------|----------------|-------|-----------------:|
-| _none found_ | | | |
+| `src/pages/billing/BillingTabs.tsx` | merge | page-local-or-feature | ~0 |
 
 ### Breadcrumbs (1)
 

@@ -55,6 +55,7 @@ export function BillingFilterBar({
         <span className="text-[12px] text-gray-500">Payment</span>
         <div className="w-32">
           <Select
+            aria-label="Payment status"
             options={[
               { value: "ALL", label: "All" },
               { value: PaymentStatus.PAID, label: "Paid" },
@@ -81,6 +82,7 @@ export function BillingFilterBar({
           />
         </div>
         <select
+          aria-label="Rows per page"
           value={pageSize}
           onChange={(e) => onPageSize(Number(e.target.value))}
           className={inputCls}

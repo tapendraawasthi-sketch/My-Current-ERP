@@ -191,6 +191,10 @@ declare global {
       flushSyncQueue: (opts?: { maxRounds?: number }) => Promise<{ pushed: number; remaining: number }>;
       pullSyncRemote: (companyId?: string) => Promise<number>;
       getSyncQueueSnapshot: () => Promise<Record<string, unknown>[]>;
+      reconfirmMaterialConflict: (input: {
+        queueRowId: string;
+        choice: "abandon_conflicting_push";
+      }) => Promise<Record<string, unknown>>;
       confirmWithInject: (
         injectFailure: "after_validation" | "before_stock" | "before_audit",
       ) => Promise<Record<string, unknown>>;
@@ -1445,6 +1449,12 @@ export async function bootstrapUiQaHarness(): Promise<void> {
       const db = getDB();
       if (!db.eventSyncQueue) return [];
       return db.eventSyncQueue.toArray();
+    },
+    async reconfirmMaterialConflict(input) {
+      const { reconfirmMaterialConflict } = await import(
+        "@/platform/sync/reconfirmMaterialConflict"
+      );
+      return (await reconfirmMaterialConflict(input)) as unknown as Record<string, unknown>;
     },
     async reloadFromDexie() {
       const db = getDB();

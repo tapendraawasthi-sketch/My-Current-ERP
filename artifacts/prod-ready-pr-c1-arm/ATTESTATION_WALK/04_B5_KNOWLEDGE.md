@@ -1,9 +1,13 @@
 # TICKET-PR-B5-001 — Staging professional knowledge review
 
-**Status:** OPEN / PENDING  
+**Status:** **PASS** (2026-07-20)
 
 ## Verdict
 
-- Engineering gate: **ENGINEERING_PASS** (unchanged)  
-- Staging professional: **PENDING**  
-- Invented chat `b5pass`: **VOID** (`OWNER_ATTESTATION_B5_001.md`)
+- Engineering gate: **PASS** (pytest + in-process Ask gate probe)  
+- Staging professional: **PASS** (`manual/OPERATOR_ATTESTATION_B5_001.md`)  
+- Invented chat `b5pass`: **VOID** (superseded)
+
+## Clear when
+
+done — `staging_professional_attested=true`

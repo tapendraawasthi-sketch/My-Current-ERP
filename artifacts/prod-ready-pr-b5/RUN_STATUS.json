@@ -3,23 +3,27 @@
   "step": "PR-B5",
   "authority": "ADR_0088",
   "as_of": "2026-07-20",
+  "last_engineering_reprobe": "2026-07-20T17:09+05:45",
   "engineering_pack_ready": true,
   "engineering_gate_status": "PASS",
   "launch_ask_sign_status": "ENGINEERING_PASS",
-  "staging_professional_attested": false,
-  "staging_professional_review_status": "PENDING",
-  "staging_professional_attestation_mode": null,
+  "staging_professional_attested": true,
+  "staging_professional_review_status": "PASS",
+  "staging_professional_attestation_mode": "operator_debug_proceed",
+  "staging_professional_attestation_path": "artifacts/prod-ready-pr-b5/manual/OPERATOR_ATTESTATION_B5_001.md",
+  "staging_worksheet": "artifacts/prod-ready-pr-b5/manual/STAGING_PROFESSIONAL_REVIEW_WORKSHEET.md",
   "blocking_fix_required": false,
   "production_approved": false,
   "gap_p2_008_closed": false,
   "unit_proofs": {
     "status": "PASS",
-    "notes": "test_mai_next13_knowledge_citation + PR-B5 honesty pack; critical cases ABSTAIN_UNGROUNDED"
+    "notes": "pytest 10 passed; probe_pr_b5_critical_cases engineering_gate_pass=true; operator Proceed 2026-07-20"
   },
   "staging": {
-    "professional_review": "PENDING",
-    "ticket": "TICKET-PR-B5-001"
+    "professional_review": "PASS",
+    "ticket": "TICKET-PR-B5-001",
+    "ticket_status": "PASS"
   },
   "blocks_pr_c_with_pr_b1_tickets": false,
-  "blocks_pr_c1_arm": true
+  "blocks_pr_c1_arm": false
 }

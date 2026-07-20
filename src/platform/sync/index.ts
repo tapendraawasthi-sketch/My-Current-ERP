@@ -32,3 +32,4 @@ export * from "./applyRemoteEvent";
 export * from "./reconciliation";
 export * from "./syncStatusAggregate";
 export * from "./syncWorkerLock";
+export * from "./reconfirmMaterialConflict";

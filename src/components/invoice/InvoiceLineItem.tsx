@@ -146,6 +146,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
 
         <td className="px-1 py-1.5 min-w-[200px]">
           <select
+            aria-label={`Line ${lineNo} item`}
             className={cellInput}
             value={line.itemId}
             onChange={(e) => handleItem(e.target.value)}
@@ -288,6 +289,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
         {showRareCols && showWarehouse ? (
           <td className="px-1 py-1.5 w-32">
             <select
+              aria-label={`Line ${lineNo} warehouse`}
               className={cellInput}
               value={line.warehouseId || ""}
               onChange={(e) => onUpdate({ warehouseId: e.target.value })}

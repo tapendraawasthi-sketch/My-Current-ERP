@@ -44,7 +44,15 @@ function resolveErpBotBackend() {
       process.env.RAILWAY_PROJECT_ID ||
       process.env.RAILWAY_SERVICE_NAME,
   );
-  if (!onRailway) return "";
+  const onRender = Boolean(
+    process.env.RENDER || process.env.RENDER_SERVICE_ID || process.env.RENDER_EXTERNAL_URL,
+  );
+
+  // Local serve.mjs (:3000) — default to the standard erp_bot port so Orbix
+  // works without forcing every developer to export ERP_BOT_BACKEND_URL.
+  if (!onRailway && !onRender) {
+    return "http://127.0.0.1:8765";
+  }
 
   // Allow partial wiring: public host, or private host + port.
   const publicHost = (process.env.ERP_BOT_PUBLIC_DOMAIN || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");

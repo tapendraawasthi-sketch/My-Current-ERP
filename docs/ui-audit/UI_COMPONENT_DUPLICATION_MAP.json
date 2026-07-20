@@ -1,16 +1,29 @@
 {
-  "generated_at": "2026-07-13T12:34:45.217Z",
+  "generated_at": "2026-07-20T11:09:47.550Z",
   "approved_import_path": "@/components/ui",
   "barrel": "src/components/ui/index.ts",
   "note": "Consumer counts are heuristic (string match). Use for migration planning, not exact dependency graphs.",
   "components": [
     {
       "primitive": "Button",
-      "implementation_count": 4,
+      "implementation_count": 5,
       "implementations": [
         {
           "filename": "src/ai/interface/MessageShareButton.tsx",
           "export": "MessageShareButton",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/ekhata/OrbixDocumentCameraButton.tsx",
+          "export": "OrbixDocumentCameraButton",
           "active_consumers_sample": [],
           "active_consumer_count_estimate": 0,
           "visual_style": "page-local-or-feature",
@@ -34,10 +47,9 @@
             "src/design-system/primitives/Filters/Filters.tsx",
             "src/design-system/primitives/Menu/DropdownMenu.tsx",
             "src/design-system/primitives/Page/Page.tsx",
-            "src/pages/CurrencyMaster.tsx",
-            "src/pages/VouchersLog.tsx"
+            "src/pages/CurrencyMaster.tsx"
           ],
-          "active_consumer_count_estimate": 11,
+          "active_consumer_count_estimate": 10,
           "visual_style": "design-system-candidate",
           "accessibility": "unverified",
           "size_variants": "unknown",
@@ -167,8 +179,22 @@
     },
     {
       "primitive": "Combobox",
-      "implementation_count": 0,
-      "implementations": []
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/composites/Combobox.tsx",
+          "export": "Combobox",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
     },
     {
       "primitive": "Checkbox",
@@ -238,6 +264,7 @@
             "src/components/ui/index.ts",
             "src/components/ui/ReportDateRangePicker.tsx",
             "src/components/voucher/VoucherHeader.tsx",
+            "src/design-system/composites/DateFields.tsx",
             "src/pages/FiscalYear.tsx",
             "src/pages/PurchaseRegister.tsx",
             "src/pages/PurchaseVoucher.tsx",
@@ -245,7 +272,7 @@
             "src/pages/SalesVoucher.tsx",
             "src/pages/VouchersLog.tsx"
           ],
-          "active_consumer_count_estimate": 9,
+          "active_consumer_count_estimate": 10,
           "visual_style": "design-system-candidate",
           "accessibility": "unverified",
           "size_variants": "unknown",
@@ -267,6 +294,7 @@
             "src/components/ui/index.ts",
             "src/components/ui/ReportDateRangePicker.tsx",
             "src/components/voucher/VoucherHeader.tsx",
+            "src/design-system/composites/DateFields.tsx",
             "src/pages/FiscalYear.tsx",
             "src/pages/PurchaseRegister.tsx",
             "src/pages/PurchaseVoucher.tsx",
@@ -274,7 +302,7 @@
             "src/pages/SalesVoucher.tsx",
             "src/pages/VouchersLog.tsx"
           ],
-          "active_consumer_count_estimate": 9,
+          "active_consumer_count_estimate": 10,
           "visual_style": "design-system-candidate",
           "accessibility": "unverified",
           "size_variants": "unknown",
@@ -429,13 +457,12 @@
             "src/components/ui/index.ts",
             "src/pages/MaterialIssuedPage.tsx",
             "src/pages/MaterialReceivedPage.tsx",
-            "src/pages/PhysicalStockPage.tsx",
             "src/pages/ProductionPage.tsx",
             "src/pages/RejectionVoucherPage.tsx",
             "src/pages/UnassemblePage.tsx",
             "src/pages/VouchersLog.tsx"
           ],
-          "active_consumer_count_estimate": 8,
+          "active_consumer_count_estimate": 7,
           "visual_style": "design-system-candidate",
           "accessibility": "unverified",
           "size_variants": "unknown",
@@ -555,8 +582,10 @@
         {
           "filename": "src/components/ui/LanguageModal.tsx",
           "export": "LanguageModal",
-          "active_consumers_sample": [],
-          "active_consumer_count_estimate": 0,
+          "active_consumers_sample": [
+            "src/components/shell/TopCommandBar.tsx"
+          ],
+          "active_consumer_count_estimate": 1,
           "visual_style": "design-system-candidate",
           "accessibility": "unverified",
           "size_variants": "unknown",
@@ -776,7 +805,7 @@
     },
     {
       "primitive": "LoadingState",
-      "implementation_count": 2,
+      "implementation_count": 3,
       "implementations": [
         {
           "filename": "src/components/ui/PageLoader.tsx",
@@ -807,13 +836,40 @@
           "dependency": "@/components/ui",
           "test_coverage": "unknown",
           "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/design-system/composites/Skeletons.tsx",
+          "export": "Skeletons",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
         }
       ]
     },
     {
       "primitive": "Skeleton",
-      "implementation_count": 0,
-      "implementations": []
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/composites/Skeletons.tsx",
+          "export": "Skeletons",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
     },
     {
       "primitive": "PageHeader",
@@ -869,8 +925,22 @@
     },
     {
       "primitive": "Tabs",
-      "implementation_count": 0,
-      "implementations": []
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/pages/billing/BillingTabs.tsx",
+          "export": "BillingTabs",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
     },
     {
       "primitive": "Breadcrumbs",
@@ -942,7 +1012,7 @@
           "filename": "src/components/ui/AttachmentUploader.tsx",
           "export": "AttachmentUploader",
           "active_consumers_sample": [
-            "src/components/invoice/SalesInvoiceForm.tsx",
+            "src/components/invoice/InvoiceTotals.tsx",
             "src/components/ui/index.ts"
           ],
           "active_consumer_count_estimate": 2,
