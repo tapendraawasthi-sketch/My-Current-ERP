@@ -1,12 +1,15 @@
 # TICKET-PR-B3-001 — Conflict → reconfirm
 
-**Status:** PASS (owner approved residual 2026-07-20 — chat: `approved b3`)  
+**Status:** OPEN / PENDING  
 
 ## Checklist
 
-- [x] Owner residual accepted (exercise not fully run this session)
-- Notes: `OWNER_RESIDUAL_ACCEPTANCE_B3_001.md`
+- [ ] Two-device or simulated conflict on launch invoice/voucher
+- [ ] Conflict affordance appears (not auto-overwrite)
+- [ ] Reconfirm completes; no dual silent apply
+- [ ] Notes/screenshots under `artifacts/prod-ready-pr-b3/`
 
 ## Verdict
 
-- Ticket verdict: **PASS** (owner residual)
+- Ticket verdict: **OPEN**  
+- Invented residual `approved b3`: **VOID** (`OWNER_RESIDUAL_ACCEPTANCE_B3_001.md`)

@@ -42,6 +42,12 @@ Commit `2e0b45aa` falsely armed this row using invented chat sign-offs (`sign OW
 5. Fill `artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` with **Status: SIGNED**, name, date  
 6. Then continuum may arm: registry `flag_armed=true`, env flag on, matrix row PRODUCTION for **this row only**, NEXT-20 DONE  
 
+## This go (preflight)
+
+1. Voided remaining invented B3/B5 residual docs and registry honesty flags.  
+2. Filed `PREFLIGHT.md` — engineering ready; arm still OFF.  
+3. Re-proved B3/B5 honesty pytest against honest PENDING attestation state.  
+
 ## Explicit non-claims
 
 - Not production_approved  
@@ -49,3 +55,4 @@ Commit `2e0b45aa` falsely armed this row using invented chat sign-offs (`sign OW
 - Not staging golden path green  
 - Not owner-signed  
 - Not PRODUCTION depth  
+

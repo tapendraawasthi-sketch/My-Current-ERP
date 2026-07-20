@@ -6,11 +6,14 @@
   "step": "PR-C1-ARM",
   "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",
   "extends": "ADR_0090",
-  "attempt_status": "BLOCKED",
+  "attempt_status": "BLOCKED_HUMAN",
+  "preflight_ready": true,
   "flag": {
     "armed": false,
     "production_approved": false
   },
+  "blocking_tickets_pass": ["TICKET-PR-B1-001", "TICKET-PR-B1-002"],
+  "blocking_tickets_open": ["TICKET-PR-B3-001", "TICKET-PR-B5-001", "OWNER_SIGNOFF"],
   "honesty": {
     "production_approved": false,
     "flag_armed": false,
@@ -20,6 +23,7 @@
     "flipped_without_evidence": false,
     "invented_owner_signoff_reversed": true,
     "false_arm_2e0b45aa_reversed": true,
+    "false_b3_b5_residuals_voided": true,
     "is_execution_authority": false,
     "global_all_rows_production_approved": false
   },

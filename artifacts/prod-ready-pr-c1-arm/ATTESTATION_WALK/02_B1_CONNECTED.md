@@ -1,16 +1,15 @@
 # TICKET-PR-B1-002 — Connected E2E
 
-**Status:** PASS (owner residual accepted 2026-07-20)  
+**Status:** PASS (engineering — 2026-07-20)  
 **Staging URL:** https://my-current-erp.onrender.com  
-**Bot proxy:** https://my-current-erp.onrender.com/erp-bot  
+**Bot:** https://sutra-erp-bot.onrender.com  
 
 ## Results
 
 | Spec | Result | Notes |
 |------|--------|-------|
-| orbix-next12-launch-slice | **PASS** (3/3) | staging-api config |
-| orbix-connected + sales-connected | FAIL | 5 pass / 6 fail / 5 DNR — residual accepted |
-| orbix-sync | NOT RUN | residual accepted |
+| orbix-next12 + connected + sales-connected | **PASS 19/19** | r6 vs Render bot |
+| orbix-sync | **PASS 5/5** | r4 local `:3010` test mode |
 
-Evidence: `CONNECTED_STAGING_SUMMARY.md`  
-Residual note: `OWNER_RESIDUAL_ACCEPTANCE_B1_002.md`
+Evidence: `artifacts/prod-ready-pr-b1/connected/CONNECTED_SUMMARY.md`  
+Owner residual: not used (engineering clear).

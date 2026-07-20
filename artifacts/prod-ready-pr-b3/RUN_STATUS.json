@@ -5,6 +5,7 @@
   "as_of": "2026-07-20",
   "engineering_pack_ready": true,
   "staging_conflict_attested": false,
+  "staging_conflict_attestation_mode": null,
   "production_approved": false,
   "dual_sync_closed": false,
   "unit_proofs": {
@@ -13,8 +14,9 @@
   },
   "staging": {
     "conflict_reconfirm": "PENDING",
-    "connected_sync": "PENDING",
+    "connected_sync": "PASS",
     "ticket": "TICKET-PR-B3-001"
   },
-  "blocks_pr_c_with_pr_b1_tickets": true
+  "blocks_pr_c_with_pr_b1_tickets": false,
+  "blocks_pr_c1_arm": true
 }

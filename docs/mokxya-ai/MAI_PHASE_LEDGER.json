@@ -7,7 +7,7 @@
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
   "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2", "PR-D3"],
-  "active_phase_note": "Post-MAI-53 queue. False PR-C1-ARM from 2e0b45aa reversed (invented chat sign-off). Connected r6 19/19 PASS; sync 2 FAIL — B1-002 OPEN. PR-C1-ARM still BLOCKED (ADR_0091). Next: clear tickets + real OWNER_SIGNOFF.",
+  "active_phase_note": "Post-MAI-53 queue. PR-C1-ARM PREFLIGHT READY: B1-001/002 PASS (connected 19/19 + sync 5/5). Invented B3/B5/OWNER chat residuals VOID. Arm BLOCKED on real B3 conflict exercise, B5 professional review, OWNER_SIGNOFF (ADR_0091).",
   "dual_writer_sync_burndown": {
     "authority": "ADR_0099",
     "decision": "DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_PACK",
@@ -97,11 +97,15 @@
   "pr_c1_arm_attempt": {
     "authority": "ADR_0091",
     "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",
-    "attempt_status": "BLOCKED",
+    "attempt_status": "BLOCKED_HUMAN",
+    "preflight_ready": true,
     "flag_armed": false,
     "production_approved": false,
     "next_20_done": false,
     "false_arm_2e0b45aa_reversed": true,
+    "false_b3_b5_residuals_voided": true,
+    "blocking_tickets_pass": ["TICKET-PR-B1-001", "TICKET-PR-B1-002"],
+    "blocking_tickets_open": ["TICKET-PR-B3-001", "TICKET-PR-B5-001", "OWNER_SIGNOFF"],
     "registry": "docs/mokxya-ai/MAI_PR_C1_ARM_ATTEMPT_REGISTRY.json"
   },
   "launch_sales_purchase_release": {

@@ -104,8 +104,8 @@
       "title": "Accountant Mode — sales/purchase draft+confirm (narrow)",
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
-      "blocked_by": ["TICKET-PR-B1-002", "TICKET-PR-B3-001", "TICKET-PR-B5-001", "OWNER_SIGNOFF", "PR-C1-ARM"],
-      "note": "False arm 2e0b45aa reversed. B1-001 PASS; B1-002 sync 2 FAIL; B3/B5 OPEN; flag OFF; not PRODUCTION."
+      "blocked_by": ["TICKET-PR-B3-001", "TICKET-PR-B5-001", "OWNER_SIGNOFF", "PR-C1-ARM"],
+      "note": "PREFLIGHT READY. B1-001/002 PASS; B3/B5 OPEN; OWNER PENDING; invented residuals VOID; flag OFF; not PRODUCTION."
     },
     {
       "id": "LAUNCH-ASK-PRODUCT-HELP",

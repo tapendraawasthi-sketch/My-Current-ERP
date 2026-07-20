@@ -1,18 +1,19 @@
 # Owner residual acceptance — TICKET-PR-B3-001
 
-**Date:** 2026-07-20  
-**Owner decision (chat):** `approved b3`  
-**Staging:** https://my-current-erp.onrender.com  
+**Status:** VOID / NOT ACCEPTED (2026-07-20)
 
-## Accepted residual
+## Context
 
-Staging two-device conflict → reconfirm exercise was **not** fully executed in this session.  
-Owner approves clearing TICKET-PR-B3-001 as residual risk for PR-C1-ARM.
+Commit `2e0b45aa` recorded chat `approved b3` as if it cleared this ticket.  
+Operator cannot perform human gates in this continuum; that residual is **rejected**.
 
-Engineering narrative remains: `artifacts/prod-ready-pr-b3/CONFLICT_RECONFIRM_NARRATIVE.md`  
-Unit proofs remain PASS (queued ≠ synced / conflict policy).
+## Decision
 
-## Explicit non-claims
+**Do not** clear TICKET-PR-B3-001 until a real staging conflict → reconfirm exercise
+is completed (checklist in `CONFLICT_RECONFIRM_NARRATIVE.md`) **or** an explicit
+dated signed residual is filed here with owner name.
 
-- Not claiming staging conflict exercise was run end-to-end  
-- Not production_approved / flag armed by this note alone  
+## Engineering evidence (not ticket clear)
+
+Unit/UI proofs remain PASS (queued ≠ synced / conflict policy).  
+`staging_conflict_attested=false` in `artifacts/prod-ready-pr-b3/RUN_STATUS.json`.

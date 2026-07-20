@@ -19,4 +19,5 @@
 - [ ] Reconfirm completes; no dual silent apply
 - [ ] Attach notes/screenshots under this folder
 
-**Attestation status:** PASS via owner residual (2026-07-20 — `approved b3`; exercise not fully run)
+**Attestation status:** PENDING — staging exercise not completed.  
+Chat token `approved b3` / invented OWNER_RESIDUAL from false arm `2e0b45aa` is **VOID** (see `OWNER_RESIDUAL_ACCEPTANCE_B3_001.md`).

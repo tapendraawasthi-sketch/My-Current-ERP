@@ -1,13 +1,15 @@
-# PR-C1-ARM attestation walk — COMPLETE
+# PR-C1-ARM attestation walk — HUMAN BLOCKED
 
 | Gate | Status |
 |------|--------|
-| B1-001 | PASS |
-| B1-002 | PASS (residual) |
-| B3-001 | PASS (residual) |
-| B5-001 | PASS (`b5pass`) |
-| OWNER_SIGNOFF | SIGNED (`sign OWNER`) |
-| Arm | **ARMED** (ADR_0100) |
+| B1-001 | **PASS** (operator chat attestation) |
+| B1-002 | **PASS** (connected 19/19 + sync 5/5) |
+| B3-001 | **OPEN** — staging conflict → reconfirm PENDING |
+| B5-001 | **OPEN** — staging professional review PENDING |
+| OWNER_SIGNOFF | **PENDING** |
+| Arm | **OFF** — not PRODUCTION |
 
-**Next continuum step:** PR-C3-RUN (Day-0 smoke)  
-**Render:** set `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true`
+**False arm note:** Invented chat residuals (`approved b3`, `b5pass`, `sign OWNER`) from `2e0b45aa` remain VOID.
+
+**Next continuum step after humans clear B3/B5/OWNER:** arm this row only (registry + flag + matrix PRODUCTION).  
+**Until then:** `recommended_next_step` stays PR-C1-ARM; do not invent sign-off.

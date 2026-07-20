@@ -1,6 +1,6 @@
 # PR-B5 — Knowledge honesty sign note (launch Ask)
 
-**Date:** 2026-07-19  
+**Date:** 2026-07-20  
 **Authority:** ADR_0088 (extends ADR_0080)  
 **Suite:** `knowledge_no_answer_v1` critical cases  
 
@@ -10,9 +10,9 @@
 |-------|--------|-------|
 | Engineering gate (force-abstain) | **PASS** | Re-proven via `test_mai_next13_knowledge_citation.py` + PR-B5 honesty pack |
 | Launch Ask sign (engineering) | **ENGINEERING_PASS** | Fake cite, tax-current, no_kb, lang_as_law, unsupp_legal, stale → ABSTAIN |
-| Staging professional reviewer | **PASS** | Owner chat `b5pass` 2026-07-20 — TICKET-PR-B5-001 cleared |
+| Staging professional reviewer | **PENDING** | Chat `b5pass` from false arm is VOID; real reviewer attestation required |
 | GAP-P2-008 | **REDUCED** | Not CLOSED |
-| Blocking FIX | **None required** | Gate green; no FIX list |
+| Blocking FIX | **None required** for engineering gate | Gate green; no FIX list |
 
 ## Critical cases covered
 
@@ -29,7 +29,7 @@
 - Not `claims_verified` / `citations_verified`
 - Not `legal_effective_dates_proven`
 - Not GAP-P2-008 CLOSED
-- Staging professional PASS via owner attestation (`b5pass`); GAP-P2-008 still not CLOSED
+- Not staging professional PASS
 
 ## Clear CLOSED only when
 

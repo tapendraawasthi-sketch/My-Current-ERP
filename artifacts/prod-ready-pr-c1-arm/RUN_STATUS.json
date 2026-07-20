@@ -4,8 +4,9 @@
   "authority": "ADR_0091",
   "prior_false_arm_commit": "2e0b45aa",
   "as_of": "2026-07-20",
-  "last_reprobe": "2026-07-20T11:45+05:45",
-  "attempt_status": "BLOCKED",
+  "last_reprobe": "2026-07-20T11:50+05:45",
+  "attempt_status": "BLOCKED_HUMAN",
+  "preflight_ready": true,
   "flag_armed": false,
   "production_approved": false,
   "next_20_done": false,
@@ -20,13 +21,12 @@
   ],
   "honesty": {
     "flipped_without_evidence": false,
-    "invented_owner_signoff": true,
+    "invented_owner_signoff": false,
     "invented_staging_pass": false,
     "false_arm_2e0b45aa_reversed": true,
+    "false_b3_b5_residuals_voided": true,
     "b1_001_operator_chat_attestation": true,
-    "b1_002_owner_residual_accepted": false,
     "b1_002_sync_engineering_pass": true,
-    "render_probe_2026_07_20_r6": true,
     "launch_connected_19_of_19_pass": true,
     "sync_two_device_5_of_5_pass": true
   }

@@ -8,16 +8,18 @@
   "launch_ask_sign_status": "ENGINEERING_PASS",
   "staging_professional_attested": false,
   "staging_professional_review_status": "PENDING",
+  "staging_professional_attestation_mode": null,
   "blocking_fix_required": false,
   "production_approved": false,
   "gap_p2_008_closed": false,
   "unit_proofs": {
     "status": "PASS",
-    "notes": "test_mai_next13_knowledge_citation 10 passed; critical cases ABSTAIN_UNGROUNDED"
+    "notes": "test_mai_next13_knowledge_citation + PR-B5 honesty pack; critical cases ABSTAIN_UNGROUNDED"
   },
   "staging": {
     "professional_review": "PENDING",
     "ticket": "TICKET-PR-B5-001"
   },
-  "blocks_pr_c_with_pr_b1_tickets": true
+  "blocks_pr_c_with_pr_b1_tickets": false,
+  "blocks_pr_c1_arm": true
 }
