@@ -5,9 +5,19 @@
   "repository_commit": "ab08b89b0d9e0f327db3746ff4aecf8d0fff5f37",
   "branch": "main",
   "recommended_next_phase": null,
-  "recommended_next_step": "PR-B6",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5"],
-  "active_phase_note": "Post-MAI-53 queue. PR-B5 ADR_0088 knowledge honesty ENGINEERING_PASS; GAP-P2-008 REDUCED; TICKET-PR-B5-001 OPEN. NEXT recommended=PR-B6 hygiene. PR-B1/B3/B5 staging tickets block PR-C. Track I freeze ACTIVE; production_approved=false",
+  "recommended_next_step": "PR-C1",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6"],
+  "active_phase_note": "Post-MAI-53 queue. PR-B6 ADR_0089 hygiene gate landed; GAP-P1-005/P2-004 REDUCED. NEXT recommended=PR-C1 (blocked by PR-B1/B3/B5 staging tickets). Track I freeze ACTIVE; production_approved=false",
+  "hygiene_gate": {
+    "authority": "ADR_0089",
+    "decision": "PROD_READY_HYGIENE_GATE",
+    "invoice_print_syntax_fixed": true,
+    "full_tsc_green_claimed": false,
+    "gap_p1_005_register_status": "REDUCED",
+    "gap_p2_004_register_status": "REDUCED",
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_HYGIENE_GATE_REGISTRY.json"
+  },
   "knowledge_honesty_signoff": {
     "authority": "ADR_0088",
     "decision": "KNOWLEDGE_HONESTY_SIGNOFF_PACK",

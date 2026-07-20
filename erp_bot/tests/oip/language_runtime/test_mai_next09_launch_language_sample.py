@@ -100,7 +100,7 @@ def test_gap_register_and_pointer_pr_b1() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B6"
+    assert ledger["recommended_next_step"] == "PR-C1"
     assert "NEXT-09" in ledger.get("completed_next_steps", [])
     assert ledger.get("launch_language_sample", {}).get("authority") == "ADR_0083"
 
@@ -109,7 +109,7 @@ def test_gap_register_and_pointer_pr_b1() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-B6"
+    assert matrix["recommended_next_step"] == "PR-C1"
     assert "NEXT-09" in matrix.get("completed_steps", [])
     gaps = {g["id"]: g for g in matrix["blocking_gaps"]}
     assert gaps["GAP-P1-009"]["status"] == "REDUCED"
@@ -118,10 +118,10 @@ def test_gap_register_and_pointer_pr_b1() -> None:
     plan = (
         ROOT / "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt"
     ).read_text(encoding="utf-8")
-    assert "recommended_next_step = PR-B6" in plan
+    assert "recommended_next_step = PR-C1" in plan
 
     nxt = (ROOT / "MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt").read_text(
         encoding="utf-8"
     )
-    assert "recommended_next_step = PR-B6" in nxt
-    assert "NEXT-09" in nxt and "last_shipped_step = PR-B5" in nxt
+    assert "recommended_next_step = PR-C1" in nxt
+    assert "NEXT-09" in nxt and "last_shipped_step = PR-B6" in nxt

@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_HYGIENE_GATE_REGISTRY",
+  "as_of": "2026-07-19",
+  "authority": "ADR_0089",
+  "step": "PR-B6",
+  "decision": "PROD_READY_HYGIENE_GATE",
+  "covers": ["NEXT-H1", "NEXT-H2"],
+  "gap_p1_005": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "runtime_status_reason": "Launch-critical honesty pytest collect/pass baseline documented and scripted; full erp_bot suite still broader than pack"
+  },
+  "gap_p2_004": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "invoice_print_syntax_fixed": true,
+    "runtime_status_reason": "InvoicePrint historical TS1005/TS1109 cleared; residual project tsc diagnostics frozen in typescript-baseline inventory"
+  },
+  "packs": {
+    "honesty_pytest": {
+      "command": "npm run test:prod-ready-honesty",
+      "cwd": "repo root",
+      "path_glob": "erp_bot/tests/oip/language_runtime/test_mai_{next*,pr_b*,capability*}.py",
+      "vacuous_greens_forbidden": true
+    },
+    "orbix_vitest": {
+      "command": "npm run test:prod-ready-orbix",
+      "path_globs": [
+        "src/__tests__/orbix/maiNext*.test.ts",
+        "src/__tests__/orbix/maiPrB*.test.ts",
+        "src/__tests__/orbix/postSalesTransaction.test.ts",
+        "src/__tests__/orbix/postPurchaseTransaction.test.ts"
+      ],
+      "test_timeout_ms": 30000,
+      "vacuous_greens_forbidden": true
+    },
+    "playwright_launch_slice": {
+      "command": "npm run test:e2e:orbix-launch-slice",
+      "status": "OPTIONAL_WHEN_SECRETS",
+      "spec": "e2e/orbix-next12-launch-slice.spec.ts",
+      "blocks_pr_b6_done": false
+    }
+  },
+  "ci": {
+    "workflow": ".github/workflows/prod-ready-hygiene.yml",
+    "manual_substitute": "scripts/run_prod_ready_hygiene.sh",
+    "full_project_tsc_required_green": false,
+    "tsc_inventory": "docs/typescript-baseline.md"
+  },
+  "honesty": {
+    "production_approved": false,
+    "full_tsc_green_claimed": false,
+    "playwright_required_green": false,
+    "vacuous_greens_allowed": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "full_tsc_green_claimed=true",
+    "vacuous_greens_allowed=true",
+    "gap_p2_004_closed=true_without_tsc_green_or_signed_baseline_only"
+  ]
+}

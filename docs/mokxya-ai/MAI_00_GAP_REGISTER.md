@@ -370,6 +370,7 @@ Severity legend:
 - **Dependencies:** GAP-P0-004 (closed)
 - **Acceptance condition:** Documented pytest command collects and passes baseline subset
 - **Status:** REDUCED
+- **Progress (2026-07-19, PR-B6):** ADR_0089 documents launch-critical honesty pack (`npm run test:prod-ready-honesty`); language_runtime collect **1672**; NEXT/PR-B honesty subset collect **96**. Does **not** mark CLOSED (full erp_bot suite broader than pack).
 
 ### GAP-P1-006 — Ask Mode constitution not globally executable across all stacks
 
@@ -487,14 +488,15 @@ Severity legend:
 
 - **Severity:** P2
 - **Affected capability:** quality
-- **Evidence:** this audit `npx tsc --noEmit` → 2 errors in `InvoicePrint.tsx` (improved vs historical 127–156 baseline in `docs/typescript-baseline.md`)
-- **User/business impact:** CI tsc step may fail
-- **Current mitigation:** Historical debt accepted in docs
-- **Required remediation:** Fix InvoicePrint syntax
+- **Evidence:** historical audit `npx tsc --noEmit` → 2 errors in `InvoicePrint.tsx`; current inventory in `artifacts/prod-ready-pr-b6/TSC_INVENTORY.txt` + `docs/typescript-baseline.md`
+- **User/business impact:** Root CI `tsc` step may still fail on residual non-InvoicePrint debt
+- **Current mitigation:** InvoicePrint syntax cleared; residual inventory frozen
+- **Required remediation:** Clear remaining tsc inventory or keep signed freeze
 - **Recommended MAI phase:** hygiene / outside MAI track OK
 - **Dependencies:** none
 - **Acceptance condition:** `tsc --noEmit` exit 0 or updated signed baseline
-- **Status:** OPEN
+- **Status:** REDUCED
+- **Progress (2026-07-19, PR-B6):** ADR_0089 — `InvoicePrint.tsx` historical TS1005/TS1109 **cleared** (0 hits). Residual project diagnostics remain; inventory frozen. Does **not** mark CLOSED (full-project tsc not green).
 
 ### GAP-P2-005 — Knowledge source zips untracked / large; runtime depends on prebuilt indexes
 

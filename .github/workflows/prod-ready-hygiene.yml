@@ -1,0 +1,82 @@
+name: Prod-ready hygiene
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "erp_bot/tests/oip/language_runtime/**"
+      - "erp_bot/src/oip/**"
+      - "src/__tests__/orbix/**"
+      - "src/platform/**"
+      - "docs/mokxya-ai/**"
+      - "scripts/run_prod_ready_hygiene.*"
+      - ".github/workflows/prod-ready-hygiene.yml"
+      - "package.json"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "erp_bot/tests/oip/language_runtime/**"
+      - "erp_bot/src/oip/**"
+      - "src/__tests__/orbix/**"
+      - "src/platform/**"
+      - "docs/mokxya-ai/**"
+      - "scripts/run_prod_ready_hygiene.*"
+      - ".github/workflows/prod-ready-hygiene.yml"
+      - "package.json"
+  workflow_dispatch:
+    inputs:
+      run_playwright:
+        description: "Also run Playwright launch slice"
+        required: false
+        default: "false"
+
+jobs:
+  honesty-pytest:
+    name: NEXT honesty pytest pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: erp_bot/requirements.txt
+      - name: Install Python dependencies
+        run: pip install -r erp_bot/requirements.txt
+      - name: Run honesty pack
+        run: npm run test:prod-ready-honesty
+
+  orbix-vitest:
+    name: Orbix vitest launch pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Run Orbix pack
+        run: npm run test:prod-ready-orbix
+
+  playwright-launch-slice:
+    name: Playwright launch slice (optional)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_playwright == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Run launch slice
+        run: npm run test:e2e:orbix-launch-slice
+        env:
+          CI: "true"

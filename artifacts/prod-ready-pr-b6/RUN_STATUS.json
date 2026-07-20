@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-B6",
+  "authority": "ADR_0089",
+  "as_of": "2026-07-19",
+  "engineering_pack_ready": true,
+  "production_approved": false,
+  "full_tsc_green_claimed": false,
+  "invoice_print_syntax_fixed": true,
+  "playwright_required_green": false,
+  "baselines": {
+    "language_runtime_collect": 1672,
+    "honesty_next_prb_pack_collect": 99,
+    "honesty_next_prb_pack_pass": 99,
+    "invoice_print_tsc_hits": 0,
+    "tsc_inventory_distinct_lines": 17,
+    "tsc_inventory_file": "artifacts/prod-ready-pr-b6/TSC_INVENTORY.txt"
+  },
+  "commands": {
+    "honesty": "npm run test:prod-ready-honesty",
+    "orbix": "npm run test:prod-ready-orbix",
+    "hygiene_script": "bash scripts/run_prod_ready_hygiene.sh",
+    "playwright_optional": "npm run test:e2e:orbix-launch-slice"
+  },
+  "ci_workflow": ".github/workflows/prod-ready-hygiene.yml"
+}

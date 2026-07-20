@@ -80,7 +80,7 @@ def test_ledger_points_next_05() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-B6"
+    assert ledger["recommended_next_step"] == "PR-C1"
     assert "NEXT-06" in ledger.get("completed_next_steps", []) or ledger[
         "active_phase_note"
     ].find("NEXT-06") >= 0
