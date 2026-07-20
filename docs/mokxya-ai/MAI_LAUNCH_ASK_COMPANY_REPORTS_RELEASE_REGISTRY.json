@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0092",
+  "step": "PR-C2",
+  "decision": "LAUNCH_ASK_COMPANY_REPORTS_RELEASE_PACKAGE",
+  "capability_row": "LAUNCH-ASK-COMPANY-REPORTS",
+  "release_dossier": "docs/mokxya-ai/releases/LAUNCH_ASK_COMPANY_REPORTS_V1.md",
+  "flag": {
+    "env_name": "LAUNCH_ASK_COMPANY_REPORTS_PRODUCTION_APPROVED",
+    "armed": false,
+    "production_approved": false,
+    "depth": "ANNOTATION_ONLY",
+    "arm_requires": [
+      "TICKET-PR-B1-001",
+      "TICKET-PR-B1-002",
+      "TICKET-PR-B5-001",
+      "OWNER_SIGNOFF_ASK_REPORTS",
+      "STAGING_GOLDEN_PATH_GREEN_WITHIN_48H",
+      "ZERO_MUTATION_PROOF"
+    ]
+  },
+  "disclosures": [
+    "ASK_MODE_ZERO_MUTATION",
+    "NL_YES_DOES_NOT_POST",
+    "LEGAL_TAX_CURRENT_MAY_ABSTAIN",
+    "PROD_RETRIEVAL_LEXICAL_ONLY",
+    "CITATION_FORCE_ABSTAIN_WHEN_UNGROUNDED"
+  ],
+  "monitoring": [
+    "ask_abstain_rate",
+    "citation_force_abstain_count",
+    "mode_restriction_count",
+    "unexpected_mutation_attempt_count"
+  ],
+  "rollback": {
+    "action": "SET_FLAG_OFF",
+    "effect": "ASK_REPORT_ANSWERS_DISABLED_ERP_REPORT_SCREENS_REMAIN"
+  },
+  "blocking_tickets": {
+    "TICKET-PR-B1-001": "OPEN",
+    "TICKET-PR-B1-002": "OPEN",
+    "TICKET-PR-B5-001": "OPEN"
+  },
+  "honesty": {
+    "production_approved": false,
+    "flag_armed": false,
+    "next_20_done": false,
+    "owner_signed": false,
+    "staging_golden_path_green": false,
+    "zero_mutation_proven_for_arm": true,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "flag_armed=true_without_tickets_and_owner",
+    "next_20_done=true",
+    "depth=PRODUCTION_without_arm",
+    "owner_signed=true_without_file",
+    "ask_mode_posts_or_mutates"
+  ]
+}

@@ -12,6 +12,7 @@ LR = ROOT / "erp_bot" / "tests" / "oip" / "language_runtime"
 PATTERNS = (
     "test_mai_next*.py",
     "test_mai_pr_b*.py",
+    "test_mai_pr_c*.py",
     "test_mai_capability_truth_matrix.py",
 )
 

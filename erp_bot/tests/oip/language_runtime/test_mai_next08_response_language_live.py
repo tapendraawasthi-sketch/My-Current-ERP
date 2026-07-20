@@ -198,7 +198,7 @@ def test_pointer_next09_and_artifacts() -> None:
         encoding="utf-8"
     )
     assert "recommended_next_step = PR-C1-ARM" in nxt
-    assert "NEXT-08" in nxt and "last_shipped_step = PR-C1-ARM-ATTEMPT" in nxt
+    assert "NEXT-08" in nxt and "last_shipped_step = PR-C2" in nxt
 
 
 def test_unsupported_default_english_nonempty() -> None:

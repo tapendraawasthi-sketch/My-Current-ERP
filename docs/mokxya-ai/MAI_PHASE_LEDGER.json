@@ -6,8 +6,19 @@
   "branch": "main",
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1"],
-  "active_phase_note": "Post-MAI-53 queue. PR-C1-ARM attempt BLOCKED (ADR_0091); flag OFF; tickets/owner still open. NEXT remains PR-C1-ARM. Track I freeze ACTIVE; production_approved=false.",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2"],
+  "active_phase_note": "Post-MAI-53 queue. PR-C2 Ask reports package READY (ADR_0092; flag OFF). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "launch_ask_company_reports_release": {
+    "authority": "ADR_0092",
+    "decision": "LAUNCH_ASK_COMPANY_REPORTS_RELEASE_PACKAGE",
+    "capability_row": "LAUNCH-ASK-COMPANY-REPORTS",
+    "flag_armed": false,
+    "production_approved": false,
+    "next_20_done": false,
+    "owner_signed": false,
+    "zero_mutation": true,
+    "registry": "docs/mokxya-ai/MAI_LAUNCH_ASK_COMPANY_REPORTS_RELEASE_REGISTRY.json"
+  },
   "pr_c1_arm_attempt": {
     "authority": "ADR_0091",
     "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",

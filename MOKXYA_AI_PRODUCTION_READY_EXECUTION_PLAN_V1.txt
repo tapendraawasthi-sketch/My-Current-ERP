@@ -10,16 +10,17 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-C1-ARM-ATTEMPT
+  last_shipped_step = PR-C2
   recommended_next_step = PR-C1-ARM
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
   pr_c1_package = READY (ADR_0090; flag OFF)
   pr_c1_arm_attempt = BLOCKED (ADR_0091; 2026-07-20)
+  pr_c2_package = READY (ADR_0092; flag OFF)
   pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
   pr_b3_staging_conflict = PENDING (TICKET-PR-B3-001)
   pr_b5_staging_professional = PENDING (TICKET-PR-B5-001)
-  note = PR-C1-ARM retry after human staging evidence + OWNER_SIGNOFF; do not invent PASS
+  note = PR-C1-ARM first; PR-C2-ARM after Ask owner/tickets; do not invent PASS
 
 ======================================================================
 0. EXACT OBJECTIVE (DO NOT DRIFT)
@@ -569,7 +570,7 @@ If owner only says “go”, execute earliest OPEN:
   8. PR-B5             Knowledge honesty sign-off
   9. PR-B6             Hygiene gate
  10. PR-C1 / NEXT-20   First PRODUCTION row (sales/purchase)
- 11. PR-C2             Ask reports PRODUCTION (or defer note)
+ 11. PR-C2             Ask reports package READY (flag OFF; arm = PR-C2-ARM)
  12. PR-C3             Day-0 production smoke
  13. PR-D*             Post-launch hardening
  14. PR-E*             Expand launch set (only if stable)
@@ -594,7 +595,8 @@ PR-B5    | DONE   | ADR_0088 + PR_B5_KNOWLEDGE_HONESTY_SIGNOFF.md | ENGINEERING_
 PR-B6    | DONE   | ADR_0089 + PR_B6_HYGIENE_GATE.md | honesty+orbix scripts; InvoicePrint cleared; GAP-P1-005/P2-004 REDUCED
 PR-C1    | DONE   | ADR_0090 + LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md | package READY; flag OFF; not PRODUCTION
 PR-C1-ARM| BLOCKED| ADR_0091 + ARM_ATTEMPT.md | attempt recorded; tickets/owner still open; flag OFF
-PR-C2    | OPEN   |                   | Ask reports PROD
+PR-C2    | DONE   | ADR_0092 + LAUNCH_ASK_COMPANY_REPORTS_V1.md | package READY; flag OFF; not PRODUCTION
+PR-C2-ARM| OPEN   |                   | clear Ask tickets + owner sign-off + flip flag
 PR-C3    | OPEN   |                   | Day-0 smoke
 PR-D1-D4 | OPEN   |                   | post-launch
 PR-E1-E4 | BLOCKED_UNTIL_PR-D_STABLE |
@@ -606,7 +608,7 @@ Already DONE before this plan (do not reopen as PR work):
 
 Active pointer:
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-C1-ARM-ATTEMPT
+  last_shipped_step = PR-C2
   production_approved = false
   pr_b1_blocks_pr_c = true
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE
