@@ -40,10 +40,12 @@ Config files: `railway.toml` (frontend), `erp_bot/railway.toml` (bot), `nixpacks
 ### 2) Bot — `sutra-erp-bot`
 
 1. Second service from the **same** repo / project.
-2. **Root Directory:** `erp_bot` (required).
-3. Uses `erp_bot/railway.toml`.
-4. Generate a public domain (Settings → Networking) so the frontend reference resolves.
-5. Variables:
+2. **Root Directory:** `erp_bot` (preferred). Uses `erp_bot/railway.toml` + `erp_bot/nixpacks.toml`.
+3. If Root Directory is left at repo root, service name `*bot*` still builds/starts Python via
+   `scripts/railway-dispatch-*.sh` (self-heal). Set `SUTRA_SERVICE_ROLE=bot` if the name is ambiguous.
+4. Set Variable **`PORT=8080`** on the bot (matches private DNS wiring).
+5. Generate a public domain (Settings → Networking) optional; private DNS is preferred.
+6. Variables:
 
 | Variable | Value | Notes |
 |----------|-------|-------|
@@ -66,19 +68,21 @@ Config files: `railway.toml` (frontend), `erp_bot/railway.toml` (bot), `nixpacks
 
 Without `ERP_BOT_BACKEND_URL` on **sutra-erp**, `/erp-bot/status` returns `"mode":"builtin"` and the UI shows **Orbix unavailable**.
 
-Use the Railway reference variable (service name must match):
-
-```text
-ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
-```
-
-Private-network alternative (same project; set `PORT=8080` manually on the bot first):
+Prefer private DNS (same project; bot `PORT=8080`):
 
 ```text
 ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}
 ```
 
-Redeploy **sutra-erp** after setting the variable.
+Public fallback (service name must match; no trailing slash):
+
+```text
+ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
+```
+
+Also ensure bot has a strong `OIP_JWT_SECRET` (≥16 chars) or `API_SECRET_KEY` — otherwise OIP boots as unavailable (`INSECURE_PRODUCTION_CONFIGURATION`).
+
+Redeploy **both** services after changing Root Directory / variables.
 
 ## Verify
 
@@ -89,10 +93,14 @@ BOT=https://<sutra-erp-bot>.up.railway.app
 curl -sf "$BASE/health" | jq .
 # expect: "erp_bot_proxy":"configured"
 
+curl -sf "$BASE/health/orbix" | jq .
+# expect: private probe body looksLikeBot=true (JSON {"status":"ok"}, not SPA HTML)
+
 curl -sf "$BASE/erp-bot/status" | jq .
 # expect: "mode":"oip" (not "builtin")
 
 curl -sf "$BOT/livez" | jq .
+# expect: {"status":"ok"} — if this returns HTML, the bot service is still the SPA
 curl -sf "$BOT/status" | jq .
 ```
 
@@ -102,7 +110,9 @@ Hard-refresh the browser after a good `/erp-bot/status`.
 
 1. Push to **`main`** on GitHub.
 2. Railway auto-deploys connected services.
-3. Frontend build: `scripts/render-build.sh` (LF / POSIX `sh` — required by Railway’s chmod wrapper).
+3. Frontend build/start: `scripts/railway-dispatch-*.sh` → frontend `render-build.sh` / `npm start`.
+4. Bot (repo-root misconfig or named `*bot*`): same dispatchers → `erp_bot` Python build/start.
+5. Preferred bot path: Root Directory `erp_bot` → `erp_bot/railway.toml` directly.
 
 ## Orbix chat path
 

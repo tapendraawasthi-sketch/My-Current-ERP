@@ -8,6 +8,28 @@ import { readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
 import jwt from "jsonwebtoken";
 
+// Belt-and-suspenders: bot Railway services must never run this SPA server.
+// Prefer scripts/railway-dispatch-start.sh (or Root Directory = erp_bot).
+{
+  const svc = String(process.env.RAILWAY_SERVICE_NAME || "").toLowerCase();
+  const role = String(process.env.SUTRA_SERVICE_ROLE || "").toLowerCase();
+  const looksBot =
+    role === "bot" ||
+    role === "erp-bot" ||
+    role === "sutra-erp-bot" ||
+    /erp-bot|erp_bot/.test(svc) ||
+    /(^|-)bot$|^bot-/.test(svc) ||
+    (svc.includes("bot") && svc.includes("erp"));
+  if (looksBot) {
+    console.error(
+      `\n❌ FATAL: Railway service "${process.env.RAILWAY_SERVICE_NAME}" looks like sutra-erp-bot,\n` +
+        `   but Node serve.mjs started. Use scripts/railway-dispatch-start.sh or set\n` +
+        `   Root Directory = erp_bot (erp_bot/railway.toml).\n`,
+    );
+    process.exit(1);
+  }
+}
+
 // Railway private DNS often returns AAAA+A; healthchecks use IPv4 (100.64/10.x).
 // Prefer IPv4 so Node fetch does not hang or mis-route on IPv6-first happy eyeballs.
 try {

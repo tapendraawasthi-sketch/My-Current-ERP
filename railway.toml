@@ -1,10 +1,16 @@
 # Frontend service (sutra-erp) — Root Directory = repo root (blank / ".")
-# Bot service (sutra-erp-bot) — Root Directory = erp_bot (uses erp_bot/railway.toml)
+# Bot service (sutra-erp-bot) — preferred Root Directory = erp_bot (erp_bot/railway.toml).
+#
+# If sutra-erp-bot is accidentally pointed at repo root, dispatch scripts detect
+# RAILWAY_SERVICE_NAME=*bot* and build/start Python OIP instead of the SPA.
+# Override with SUTRA_SERVICE_ROLE=bot|frontend when the service name is ambiguous.
 #
 # Railway wraps build as: chmod +x <buildCommand> && sh <buildCommand>
 # so buildCommand must be a single executable path (no "bash" / "npm" prefix).
 #
-# REQUIRED Variable on this service (sutra-erp → Variables):
+# REQUIRED Variable on this service (sutra-erp → Variables), private DNS preferred:
+#   ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}
+# Public fallback:
 #   ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
 # (service name must match; no trailing slash)
 #
@@ -12,10 +18,10 @@
 
 [build]
 builder = "NIXPACKS"
-buildCommand = "scripts/render-build.sh"
+buildCommand = "scripts/railway-dispatch-build.sh"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "scripts/railway-dispatch-start.sh"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"

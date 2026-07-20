@@ -1,0 +1,8 @@
+# When Railway Root Directory = erp_bot, force a Python runtime (not Node/Bun).
+# Frontend nixpacks stays at repo-root nixpacks.toml.
+
+[phases.setup]
+nixPkgs = ["...", "python311", "gcc"]
+
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.11"

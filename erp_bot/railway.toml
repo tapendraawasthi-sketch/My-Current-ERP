@@ -18,10 +18,10 @@
 
 [build]
 builder = "NIXPACKS"
-buildCommand = "scripts/render-build.sh"
+buildCommand = "scripts/railway-cwd-build.sh"
 
 [deploy]
-startCommand = "sh -c 'export PORT=8080; exec python scripts/start_render.py'"
+startCommand = "scripts/railway-cwd-start.sh"
 healthcheckPath = "/livez"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
