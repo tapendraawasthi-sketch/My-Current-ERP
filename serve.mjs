@@ -33,29 +33,60 @@ console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 // Frontend always calls /erp-bot (same-origin proxy) — no VITE_ERP_BOT_URL required.
 // Primary deploy target: Railway. Set on sutra-erp (recommended):
 //   ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
-// Private network alternative (same project; set PORT=8080 on the bot service):
+// Private network (preferred when public edge rate-limits):
 //   ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}
-function resolveErpBotBackend() {
-  const explicit = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
-  if (explicit) return explicit;
-
-  const onRailway = Boolean(
+function onRailwayPlatform() {
+  return Boolean(
     process.env.RAILWAY_ENVIRONMENT ||
       process.env.RAILWAY_PROJECT_ID ||
       process.env.RAILWAY_SERVICE_NAME,
   );
-  const onRender = Boolean(
+}
+
+function onRenderPlatform() {
+  return Boolean(
     process.env.RENDER || process.env.RENDER_SERVICE_ID || process.env.RENDER_EXTERNAL_URL,
   );
+}
 
-  // Local serve.mjs (:3000) — default to the standard erp_bot port so Orbix
-  // works without forcing every developer to export ERP_BOT_BACKEND_URL.
-  if (!onRailway && !onRender) {
+function railwayBotCandidates() {
+  const privatePort = (process.env.ERP_BOT_PORT || "").trim();
+  const privateHost = (
+    process.env.ERP_BOT_PRIVATE_HOST ||
+    process.env.ERP_BOT_PRIVATE_DOMAIN ||
+    ""
+  )
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+  const publicHost = (process.env.ERP_BOT_PUBLIC_DOMAIN || "")
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+
+  const out = [];
+  if (privateHost && privatePort) out.push(`http://${privateHost}:${privatePort}`);
+  if (privatePort) out.push(`http://sutra-erp-bot.railway.internal:${privatePort}`);
+  // Common pinned ports when dashboard sets PORT=8080 on sutra-erp-bot.
+  out.push("http://sutra-erp-bot.railway.internal:8080");
+  out.push("http://sutra-erp-bot.railway.internal:8000");
+  if (publicHost) out.push(`https://${publicHost}`);
+  out.push("https://sutra-erp-bot-production.up.railway.app");
+  return [...new Set(out.map((u) => u.replace(/\/$/, "")))];
+}
+
+function resolveErpBotBackendSync() {
+  const explicit = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
+  if (explicit) return explicit;
+
+  if (!onRailwayPlatform() && !onRenderPlatform()) {
     return "http://127.0.0.1:8765";
   }
 
-  // Allow partial wiring: public host, or private host + port.
-  const publicHost = (process.env.ERP_BOT_PUBLIC_DOMAIN || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  const publicHost = (process.env.ERP_BOT_PUBLIC_DOMAIN || "")
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
   if (publicHost) return `https://${publicHost}`;
 
   const privateHost = (
@@ -68,34 +99,63 @@ function resolveErpBotBackend() {
     .replace(/\/$/, "");
   const privatePort = (process.env.ERP_BOT_PORT || "").trim();
   if (privateHost && privatePort) return `http://${privateHost}:${privatePort}`;
+  if (privatePort) return `http://sutra-erp-bot.railway.internal:${privatePort}`;
 
-  // Same-project default private DNS (requires bot service named sutra-erp-bot + PORT var).
-  if (privatePort) {
-    return `http://sutra-erp-bot.railway.internal:${privatePort}`;
-  }
-
-  // Railway project default when ERP_BOT_BACKEND_URL was never set on sutra-erp.
-  // Prefer dashboard: ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
-  // Runtime evidence (2026-07-20): /health had erp_bot_proxy=missing; Railway bot
-  // public edge returned 429; Render sutra-erp-bot returned OIP+Groq ready.
-  if (onRailway) {
-    return (
-      (process.env.ERP_BOT_RENDER_FALLBACK_URL || "").trim().replace(/\/$/, "") ||
-      "https://sutra-erp-bot.onrender.com"
-    );
-  }
-
+  // Placeholder until async probe selects a live candidate on Railway.
+  if (onRailwayPlatform()) return railwayBotCandidates()[0] || "";
   return "";
 }
 
-const ERP_BOT_BACKEND = resolveErpBotBackend();
+let ERP_BOT_BACKEND = resolveErpBotBackendSync();
 
-if (ERP_BOT_BACKEND) {
-  console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
-} else {
+async function probeErpBotBase(base) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+  try {
+    const resp = await fetch(`${base}/livez`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+    return resp.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function ensureErpBotBackend() {
+  const explicit = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
+  if (explicit) {
+    ERP_BOT_BACKEND = explicit;
+    console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND} (ERP_BOT_BACKEND_URL)`);
+    return;
+  }
+
+  if (!onRailwayPlatform()) {
+    if (ERP_BOT_BACKEND) {
+      console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
+    }
+    return;
+  }
+
+  // Runtime evidence: public bot edge can 429; private DNS bypasses the edge.
+  for (const base of railwayBotCandidates()) {
+    const ok = await probeErpBotBase(base);
+    console.log(`🧠 Orbix probe ${ok ? "OK" : "miss"} → ${base}`);
+    if (ok) {
+      ERP_BOT_BACKEND = base;
+      console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
+      return;
+    }
+  }
+
+  ERP_BOT_BACKEND = "https://sutra-erp-bot-production.up.railway.app";
   console.warn(
-    "⚠️  ERP_BOT_BACKEND_URL not set — Orbix offline. On Railway sutra-erp Variables set:\n" +
-      "    ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}",
+    `⚠️  Orbix probe found no healthy bot; using public fallback ${ERP_BOT_BACKEND}.\n` +
+      "    Set on sutra-erp Variables (best):\n" +
+      "    ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}}",
   );
 }
 
@@ -146,73 +206,93 @@ async function handleErpBotRequest(req, res, method, rawPath) {
     return;
   }
 
-  // Backend configured — actually proxy the request through.
-  const targetUrl = `${ERP_BOT_BACKEND}${subpath}`;
+  // Backend configured — proxy through, with failover when public edge 429s.
   const body = method === "GET" || method === "HEAD" ? undefined : await readRequestBody(req);
-
-  // Check if this is a streaming endpoint (SSE)
   const isStreamingEndpoint = subpath === "/chat/stream" || subpath.endsWith("/stream");
+  const bases = [
+    ERP_BOT_BACKEND,
+    ...(onRailwayPlatform() ? railwayBotCandidates() : []),
+  ].filter(Boolean);
+  const uniqueBases = [...new Set(bases.map((u) => String(u).replace(/\/$/, "")))];
 
-  try {
-    const forwardHeaders = { ...req.headers };
-    delete forwardHeaders.host;
-    delete forwardHeaders["content-length"];
+  const forwardHeaders = { ...req.headers };
+  delete forwardHeaders.host;
+  delete forwardHeaders["content-length"];
+  if (isStreamingEndpoint) {
+    forwardHeaders.accept = "text/event-stream";
+  }
 
-    // For streaming, set Accept header
-    if (isStreamingEndpoint) {
-      forwardHeaders.accept = "text/event-stream";
-    }
-
-    const upstream = await fetch(targetUrl, {
-      method,
-      headers: forwardHeaders,
-      body,
-      signal: AbortSignal.timeout(isStreamingEndpoint ? 120000 : 30000), // 2 min for streaming
-    });
-
-    const contentType = upstream.headers.get("content-type") || "application/json";
-
-    // Handle SSE streaming response
-    if (isStreamingEndpoint && upstream.body) {
-      res.writeHead(upstream.status, {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-        "X-Accel-Buffering": "no", // Disable nginx buffering
+  let lastErr = null;
+  for (const base of uniqueBases) {
+    const targetUrl = `${base}${subpath}`;
+    try {
+      const upstream = await fetch(targetUrl, {
+        method,
+        headers: forwardHeaders,
+        body,
+        signal: AbortSignal.timeout(isStreamingEndpoint ? 120000 : 30000),
       });
 
-      const reader = upstream.body.getReader();
-      const decoder = new TextDecoder();
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          res.write(chunk);
-        }
-      } catch (streamErr) {
-        console.error("[serve.mjs] SSE stream error:", streamErr);
-      } finally {
-        res.end();
+      // Fail over on public-edge rate limit / gateway errors.
+      if ([429, 502, 503, 504].includes(upstream.status) && uniqueBases.length > 1) {
+        console.warn(`[serve.mjs] upstream ${upstream.status} from ${base}, trying next`);
+        lastErr = new Error(`upstream ${upstream.status}`);
+        continue;
       }
-      return;
-    }
 
-    // Non-streaming response
-    const buf = Buffer.from(await upstream.arrayBuffer());
-    res.writeHead(upstream.status, { "Content-Type": contentType });
-    res.end(buf);
-  } catch (err) {
-    res.writeHead(502, { "Content-Type": "application/json" });
-    res.end(
-      JSON.stringify({
-        error: "ERP bot backend unreachable",
-        detail: err instanceof Error ? err.message : String(err),
-        target: targetUrl,
-      }),
-    );
+      if (base !== ERP_BOT_BACKEND) {
+        ERP_BOT_BACKEND = base;
+        console.log(`[serve.mjs] Orbix failover selected → ${base}`);
+      }
+
+      const contentType = upstream.headers.get("content-type") || "application/json";
+
+      if (isStreamingEndpoint && upstream.body) {
+        res.writeHead(upstream.status, {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+          "X-Accel-Buffering": "no",
+        });
+
+        const reader = upstream.body.getReader();
+        const decoder = new TextDecoder();
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            res.write(decoder.decode(value, { stream: true }));
+          }
+        } catch (streamErr) {
+          console.error("[serve.mjs] SSE stream error:", streamErr);
+        } finally {
+          res.end();
+        }
+        return;
+      }
+
+      const buf = Buffer.from(await upstream.arrayBuffer());
+      res.writeHead(upstream.status, { "Content-Type": contentType });
+      res.end(buf);
+      return;
+    } catch (err) {
+      lastErr = err;
+      console.warn(
+        `[serve.mjs] proxy error for ${targetUrl}:`,
+        err instanceof Error ? err.message : String(err),
+      );
+    }
   }
+
+  res.writeHead(502, { "Content-Type": "application/json" });
+  res.end(
+    JSON.stringify({
+      error: "ERP bot backend unreachable",
+      detail: lastErr instanceof Error ? lastErr.message : String(lastErr || "no candidates"),
+      tried: uniqueBases,
+    }),
+  );
 }
 
 const MIME_TYPES = {
@@ -273,6 +353,15 @@ async function serveRequest(req, res) {
           "unknown",
         service: "sutra-erp",
         erp_bot_proxy: ERP_BOT_BACKEND ? "configured" : "missing",
+        erp_bot_target: ERP_BOT_BACKEND
+          ? (() => {
+              try {
+                return new URL(ERP_BOT_BACKEND).host;
+              } catch {
+                return "invalid";
+              }
+            })()
+          : null,
       }),
     );
     return;
@@ -351,10 +440,13 @@ const listenHost =
   process.env.HOST ||
   (process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PROJECT_ID ? "::" : "0.0.0.0");
 
+await ensureErpBotBackend();
+
 server.listen(PORT, listenHost, () => {
   console.log(`\n🚀 Sutra ERP server running on http://${listenHost}:${PORT}`);
   console.log(`   Serving files from: ${DIST_DIR}`);
-  console.log(`   SPA mode: enabled (all routes → index.html)\n`);
+  console.log(`   SPA mode: enabled (all routes → index.html)`);
+  console.log(`   Orbix proxy target: ${ERP_BOT_BACKEND || "(missing)"}\n`);
 });
 
 // Graceful shutdown for platform SIGTERM
