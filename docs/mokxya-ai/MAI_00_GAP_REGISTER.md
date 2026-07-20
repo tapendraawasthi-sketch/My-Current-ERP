@@ -24,6 +24,7 @@ Severity legend:
 - **Acceptance condition:** Single documented write authority enforced by tests; alternate paths classified and gated
 - **Status:** REDUCED
 - **Progress (2026-07-19):** NEXT-02 / ADR_0072 Option A + NEXT-05 confirm tokens. **PR-B2 / ADR_0085:** launch-marked Node `/khata/confirm` overlap intents + OEC/AI confirm dispatch **hard-denied** (`draft_mutations=0`); product launch path remains `executeOrbixConfirm` → Dexie; `oec_sole=false`. Residual: unmarked Node khata + `VOUCHER_SLICE_UI`. Does **not** CLOSE the gap.
+- **Progress (2026-07-20):** **PR-D3 / ADR_0099:** residual burn-down schedule READY (`DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_V1.md`). Schedule-only; does **not** CLOSE; forbids silent second-writer reintroduction on launch path.
 
 ### GAP-P1-010 — Transliteration V1 target labels contradict English/name identity safety
 
@@ -333,6 +334,7 @@ Severity legend:
 - **Acceptance condition:** One authoritative sync path for accounting events; tests for two-device conflict
 - **Status:** REDUCED
 - **Progress (2026-07-19):** NEXT-04 / ADR_0074 EVENT_SYNC_QUEUE + accounting outbox block. **PR-B3 / ADR_0086:** queued≠synced presentation hardened (`queued`/`waiting_to_sync` → Waiting to sync); aggregate pending≠synced documented; conflict→reconfirm narrative + TICKET-PR-B3-001; `syncCoordinator` not rewritten. Residual dual badge exception remains; staging conflict attestation PENDING. Does **not** CLOSE.
+- **Progress (2026-07-20):** **PR-D3 / ADR_0099:** residual burn-down schedule READY. Schedule-only; does **not** CLOSE; queued≠synced and EVENT_SYNC_QUEUE authority retained.
 
 - **Severity:** P1
 - **Affected capability:** security

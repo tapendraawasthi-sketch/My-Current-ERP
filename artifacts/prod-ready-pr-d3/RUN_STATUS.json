@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-D3",
+  "authority": "ADR_0099",
+  "as_of": "2026-07-20",
+  "pack_ready": true,
+  "gap_p0_001_closed": false,
+  "gap_p1_002_closed": false,
+  "oec_sole": false,
+  "production_approved": false,
+  "schedule": "docs/mokxya-ai/releases/DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_V1.md"
+}

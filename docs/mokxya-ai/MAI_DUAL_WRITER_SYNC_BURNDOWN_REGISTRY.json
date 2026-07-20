@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_DUAL_WRITER_SYNC_BURNDOWN_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0099",
+  "step": "PR-D3",
+  "decision": "DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_PACK",
+  "pack_ready": true,
+  "schedule": "docs/mokxya-ai/releases/DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_V1.md",
+  "gaps": {
+    "GAP-P0-001": {
+      "register_status": "REDUCED",
+      "closed": false,
+      "product_path": "DEXIE_EXECUTE_ORBIX_CONFIRM",
+      "oec_is_sole_mutation_authority": false
+    },
+    "GAP-P1-002": {
+      "register_status": "REDUCED",
+      "closed": false,
+      "accounting_sync_authority": "EVENT_SYNC_QUEUE",
+      "queued_must_not_label_synced": true
+    }
+  },
+  "honesty": {
+    "production_approved": false,
+    "gap_p0_001_closed": false,
+    "gap_p1_002_closed": false,
+    "oec_sole": false,
+    "silent_second_writer_reintroduced": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "gap_p0_001_closed=true",
+    "gap_p1_002_closed=true",
+    "oec_sole=true",
+    "production_approved=true",
+    "silent_second_writer_ok=true"
+  ]
+}

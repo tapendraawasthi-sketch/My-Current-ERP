@@ -66,7 +66,7 @@ def test_empty_required_not_pass_and_pointer() -> None:
         ROOT / "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt"
     ).read_text(encoding="utf-8")
     assert "recommended_next_step = PR-C1-ARM" in plan
-    assert "last_shipped_step = PR-D2" in plan
+    assert "last_shipped_step = PR-D3" in plan
     assert "production_approved = false" in plan
 
     art = ROOT / "artifacts" / "prod-ready-pr-h4"

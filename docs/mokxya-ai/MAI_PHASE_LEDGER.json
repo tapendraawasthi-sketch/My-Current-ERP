@@ -6,8 +6,18 @@
   "branch": "main",
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2"],
-  "active_phase_note": "Post-MAI-53 queue. PR-D2 language burn-down PACK_READY (ADR_0098). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4", "PR-D1", "PR-D2", "PR-D3"],
+  "active_phase_note": "Post-MAI-53 queue. PR-D3 dual-writer/sync burn-down schedule READY (ADR_0099). PR-C1-ARM still BLOCKED on human tickets. Engineering prep packs exhausted. Track I freeze ACTIVE; production_approved=false.",
+  "dual_writer_sync_burndown": {
+    "authority": "ADR_0099",
+    "decision": "DUAL_WRITER_SYNC_RESIDUAL_BURNDOWN_PACK",
+    "pack_ready": true,
+    "gap_p0_001_closed": false,
+    "gap_p1_002_closed": false,
+    "oec_sole": false,
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_DUAL_WRITER_SYNC_BURNDOWN_REGISTRY.json"
+  },
   "language_defect_burndown": {
     "authority": "ADR_0098",
     "decision": "LANGUAGE_DEFECT_BURNDOWN_PACK",
