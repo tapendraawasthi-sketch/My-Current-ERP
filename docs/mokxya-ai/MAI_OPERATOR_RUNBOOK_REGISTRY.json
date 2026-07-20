@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_OPERATOR_RUNBOOK_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0096",
+  "step": "PR-D4",
+  "decision": "OPERATOR_RUNBOOK_PACK",
+  "pack_ready": true,
+  "post_launch_stable_claimed": false,
+  "runbook": "docs/mokxya-ai/releases/OPERATOR_RUNBOOK_LAUNCH_V1.md",
+  "covers": [
+    "CONFIRM_TOKEN_DENIALS",
+    "POSTING_FAILED",
+    "SYNC_PENDING_AGE",
+    "ASK_ABSTAIN_SPIKES",
+    "MODE_RESTRICTION",
+    "ROLLBACK_LAUNCH_FLAGS"
+  ],
+  "honesty": {
+    "production_approved": false,
+    "post_launch_stable": false,
+    "day0_smoke_pass": false,
+    "next_20_done": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "post_launch_stable=true",
+    "14_day_stable=true",
+    "day0_smoke_pass=true",
+    "next_20_done=true"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-D4",
+  "authority": "ADR_0096",
+  "as_of": "2026-07-20",
+  "pack_ready": true,
+  "post_launch_stable_claimed": false,
+  "production_approved": false,
+  "day0_smoke_pass": false,
+  "next_20_done": false,
+  "runbook": "docs/mokxya-ai/releases/OPERATOR_RUNBOOK_LAUNCH_V1.md"
+}

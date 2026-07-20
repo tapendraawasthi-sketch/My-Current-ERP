@@ -10,7 +10,7 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-H4
+  last_shipped_step = PR-D4
   recommended_next_step = PR-C1-ARM
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
@@ -20,10 +20,11 @@ Status baseline (updated as ships land):
   pr_c3_smoke_pack = READY (ADR_0093; smoke NOT_RUN / not PASS)
   pr_h3_quarantine = READY (ADR_0094; GAP-P1-001/P3-001 REDUCED; no delete)
   pr_h4_vacuous_green_forbid = READY (ADR_0095; empty required → INVALID; legacy residual)
+  pr_d4_operator_runbook = PACK_READY (ADR_0096; not 14-day stable)
   pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
   pr_b3_staging_conflict = PENDING (TICKET-PR-B3-001)
   pr_b5_staging_professional = PENDING (TICKET-PR-B5-001)
-  note = PR-C1-ARM first; PR-H hygiene complete; do not invent PASS
+  note = PR-C1-ARM first; runbook ready; do not invent PASS
 
 ======================================================================
 0. EXACT OBJECTIVE (DO NOT DRIFT)
@@ -602,7 +603,8 @@ PR-C2    | DONE   | ADR_0092 + LAUNCH_ASK_COMPANY_REPORTS_V1.md | package READY;
 PR-C2-ARM| OPEN   |                   | clear Ask tickets + owner sign-off + flip flag
 PR-C3    | PACK_READY | ADR_0093 + DAY0_PRODUCTION_SMOKE_V1.md | checklist READY; smoke NOT_RUN / not PASS
 PR-C3-RUN| OPEN   |                   | execute Day-0 after arm
-PR-D1-D4 | OPEN   |                   | post-launch
+PR-D1-D3 | OPEN   |                   | error budget / language / dual-writer burn-down
+PR-D4    | PACK_READY | ADR_0096 + OPERATOR_RUNBOOK_LAUNCH_V1.md | on-call runbook READY; not 14-day stable
 PR-E1-E4 | BLOCKED_UNTIL_PR-D_STABLE |
 PR-F1-F4 | BLOCKED_UNTIL_PR-C        | Track I
 PR-H1    | DONE   | ADR_0089 / PR-B6  | pytest honesty baseline (covered by PR-B6)
@@ -615,7 +617,7 @@ Already DONE before this plan (do not reopen as PR work):
 
 Active pointer:
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-H4
+  last_shipped_step = PR-D4
   production_approved = false
   pr_b1_blocks_pr_c = true
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE

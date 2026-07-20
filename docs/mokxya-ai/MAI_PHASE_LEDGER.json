@@ -6,8 +6,16 @@
   "branch": "main",
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4"],
-  "active_phase_note": "Post-MAI-53 queue. PR-H4 vacuous-green forbid READY (ADR_0095). PR-H3 quarantine READY. PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3", "PR-H4", "PR-D4"],
+  "active_phase_note": "Post-MAI-53 queue. PR-D4 operator runbook PACK_READY (ADR_0096). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "operator_runbook": {
+    "authority": "ADR_0096",
+    "decision": "OPERATOR_RUNBOOK_PACK",
+    "pack_ready": true,
+    "post_launch_stable": false,
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_OPERATOR_RUNBOOK_REGISTRY.json"
+  },
   "vacuous_green_forbid": {
     "authority": "ADR_0095",
     "decision": "VACUOUS_GREEN_FORBID",
