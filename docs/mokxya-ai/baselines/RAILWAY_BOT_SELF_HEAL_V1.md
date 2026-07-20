@@ -14,10 +14,12 @@ Python OIP (Root Directory / config pointed at the monorepo frontend).
 1. Root `railway.toml` build/start → `scripts/railway-dispatch-*.sh`  
    Detects `RAILWAY_SERVICE_NAME=*bot*` (or `SUTRA_SERVICE_ROLE=bot`) and runs
    `erp_bot` Python build/start with `PORT=8080`.
-2. `erp_bot/railway.toml` → cwd-tolerant `scripts/railway-cwd-*.sh`.
-3. `erp_bot/nixpacks.toml` — force Python when Root Directory = `erp_bot`.
-4. `serve.mjs` refuses to start when the Railway service name looks like the bot.
-5. `DEPLOYMENT.md` — private DNS + JWT secret + `/health/orbix` verify steps.
+2. `package.json` `"start"` → `scripts/railway-npm-start.mjs` so a dashboard
+   override of `npm start` still runs Python on bot services (pip install + start).
+3. `erp_bot/railway.toml` → cwd-tolerant `scripts/railway-cwd-*.sh`.
+4. `erp_bot/nixpacks.toml` — force Python when Root Directory = `erp_bot`.
+5. `serve.mjs` refuses to start when the Railway service name looks like the bot.
+6. `DEPLOYMENT.md` — private DNS + JWT secret + `/health/orbix` verify steps.
 
 ## Operator verify after redeploy
 

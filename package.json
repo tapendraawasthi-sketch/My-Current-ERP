@@ -12,7 +12,7 @@
     "setup": "mkdir -p public/uploads/logos",
     "dev": "vite dev",
     "ui:render": "npm run build && node serve.mjs",
-    "start": "node serve.mjs",
+    "start": "node scripts/railway-npm-start.mjs",
     "build": "python3 erp_bot/scripts/export_nepal_ai_runtime_maps.py && node scripts/build-falcon-page-index.mjs && NODE_OPTIONS=--max-old-space-size=6144 vite build",
     "falcon:index": "node scripts/build-falcon-page-index.mjs",
     "build:dev": "vite build --mode development",
