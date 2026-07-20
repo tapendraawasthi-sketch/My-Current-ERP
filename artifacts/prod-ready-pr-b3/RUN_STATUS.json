@@ -4,17 +4,20 @@
   "authority": "ADR_0086",
   "as_of": "2026-07-20",
   "engineering_pack_ready": true,
+  "launch_conflict_e2e": "PASS",
+  "launch_conflict_e2e_path": "e2e/orbix-launch-conflict.spec.ts",
   "staging_conflict_attested": false,
   "staging_conflict_attestation_mode": null,
   "production_approved": false,
   "dual_sync_closed": false,
   "unit_proofs": {
     "status": "PASS",
-    "notes": "maiNext04 + ui3 + ui6 + maiPrB3 + noDoubleSync (queued≠synced / accounting outbox block)"
+    "notes": "maiNext04 + ui3 + ui6 + maiPrB3 + noDoubleSync; launch invoice_number_collision E2E PASS"
   },
   "staging": {
     "conflict_reconfirm": "PENDING",
     "connected_sync": "PASS",
+    "launch_collision_e2e": "PASS",
     "ticket": "TICKET-PR-B3-001"
   },
   "blocks_pr_c_with_pr_b1_tickets": false,

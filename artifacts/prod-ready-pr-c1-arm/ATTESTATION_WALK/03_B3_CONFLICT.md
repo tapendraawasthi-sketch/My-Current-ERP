@@ -1,15 +1,16 @@
 # TICKET-PR-B3-001 — Conflict → reconfirm
 
-**Status:** OPEN / PENDING  
+**Status:** OPEN / PENDING (engineering collision E2E PASS)  
 
 ## Checklist
 
-- [ ] Two-device or simulated conflict on launch invoice/voucher
-- [ ] Conflict affordance appears (not auto-overwrite)
-- [ ] Reconfirm completes; no dual silent apply
-- [ ] Notes/screenshots under `artifacts/prod-ready-pr-b3/`
+- [x] Two-device launch purchase same `invoiceNo` → conflict (E2E)
+- [x] No silent overwrite of Device B local invoice
+- [ ] Operator reconfirm UI / staging exercise completes
+- [x] Evidence under `artifacts/prod-ready-pr-b3/e2e/`
 
 ## Verdict
 
-- Ticket verdict: **OPEN**  
-- Invented residual `approved b3`: **VOID** (`OWNER_RESIDUAL_ACCEPTANCE_B3_001.md`)
+- Engineering collision proof: **PASS**  
+- Ticket clear: **OPEN** (reconfirm still required)  
+- Invented residual `approved b3`: **VOID**

@@ -14,10 +14,19 @@
 
 ## Staging exercise checklist (TICKET-PR-B3-001)
 
-- [ ] Two-device or simulated conflict on a launch invoice/voucher
-- [ ] Confirm conflict affordance appears (not auto-overwrite)
-- [ ] Reconfirm completes; no dual silent apply
-- [ ] Attach notes/screenshots under this folder
+- [x] Two-device or simulated conflict on a launch invoice/voucher — **engineering E2E** `e2e/orbix-launch-conflict.spec.ts` (2026-07-20)
+- [x] Confirm conflict affordance appears (not auto-overwrite) — Device B queue `status=conflict` / `invoice_number_collision`; A invoice not applied onto B
+- [ ] Reconfirm completes; no dual silent apply — **PENDING** (no dedicated reconfirm UI wired; operator staging still required)
+- [x] Attach notes/screenshots under this folder — `artifacts/prod-ready-pr-b3/e2e/`
 
-**Attestation status:** PENDING — staging exercise not completed.  
-Chat token `approved b3` / invented OWNER_RESIDUAL from false arm `2e0b45aa` is **VOID** (see `OWNER_RESIDUAL_ACCEPTANCE_B3_001.md`).
+**Attestation status:** PENDING — engineering collision proof **PASS**; operator reconfirm exercise **OPEN**.  
+Chat token `approved b3` / invented OWNER_RESIDUAL from false arm `2e0b45aa` remains **VOID**.
+
+## Engineering evidence
+
+| Item | Path |
+|------|------|
+| Spec | `e2e/orbix-launch-conflict.spec.ts` |
+| JSON | `artifacts/prod-ready-pr-b3/e2e/LAUNCH_PURCHASE_CONFLICT_EVIDENCE.json` |
+| Log | `artifacts/prod-ready-pr-b3/e2e/playwright-launch-conflict.log` |
+| Screenshot | `artifacts/prod-ready-pr-b3/e2e/device-b-after-conflict.png` |

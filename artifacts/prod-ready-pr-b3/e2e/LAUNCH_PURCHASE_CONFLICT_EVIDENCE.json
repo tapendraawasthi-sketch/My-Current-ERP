@@ -1,0 +1,16 @@
+{
+  "invoiceNo": "PI-LAUNCH-CONFLICT-1",
+  "deviceAInvoiceId": "a2714aed-cbe2-40bf-91c4-bbd1de1df62c",
+  "deviceBInvoiceId": "93a2b588-e75d-4f0a-880d-973f171e50dc",
+  "deviceBQueueStatus": "conflict",
+  "deviceBError": "invoice_number_collision",
+  "purchasesOnB": [
+    "93a2b588-e75d-4f0a-880d-973f171e50dc"
+  ],
+  "conflictRowCount": 0,
+  "pullOk": false,
+  "pullError": "page.evaluate: Error: pullSyncRemote failed: Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.\n NotFoundError: Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.\n    at Object.pullSyncRemote (http://127.0.0.1:3004/src/e2e/bootstrapUiQaHarness.ts:1084:15)\n    at async <anonymous>:329:30",
+  "autoOverwrite": false,
+  "attestedTicketClear": false,
+  "note": "Engineering proof only — TICKET-PR-B3-001 staging operator reconfirm remains OPEN"
+}
