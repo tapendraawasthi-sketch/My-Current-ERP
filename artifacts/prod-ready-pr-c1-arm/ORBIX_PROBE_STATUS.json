@@ -1,0 +1,19 @@
+{
+  "as_of": "2026-07-20T14:00:00Z",
+  "probe_target": "https://sutra-erp-production-5677.up.railway.app",
+  "live_commit": "327121391ad40c12ca0dfbe96d1028d2ae3fa5f9",
+  "expected_commit_min": "692ad5f0",
+  "erp_bot_proxy": "configured",
+  "looksLikeBot": false,
+  "looksLikeSpa_on_8080": true,
+  "erp_bot_status": "502 html_spa_false_positive",
+  "verdict": "AWAITING_OPERATOR_REDEPLOY",
+  "ships_waiting_on_deploy": [
+    "182f8792",
+    "a5f3a844",
+    "974c8eab",
+    "f67403b9",
+    "692ad5f0"
+  ],
+  "operator_action": "artifacts/prod-ready-pr-c1-arm/OPERATOR_ACTIONS_REQUIRED.md"
+}
