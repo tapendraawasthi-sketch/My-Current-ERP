@@ -83,7 +83,7 @@ def test_gap_and_pointer_pr_c1() -> None:
             encoding="utf-8"
         )
     )
-    assert ledger["recommended_next_step"] == "PR-C1"
+    assert ledger["recommended_next_step"] == "PR-C1-ARM"
     assert "PR-B6" in ledger.get("completed_next_steps", [])
     assert ledger.get("hygiene_gate", {}).get("authority") == "ADR_0089"
 
@@ -92,11 +92,11 @@ def test_gap_and_pointer_pr_c1() -> None:
             ROOT / "docs" / "mokxya-ai" / "MAI_CAPABILITY_TRUTH_MATRIX.json"
         ).read_text(encoding="utf-8")
     )
-    assert matrix["recommended_next_step"] == "PR-C1"
+    assert matrix["recommended_next_step"] == "PR-C1-ARM"
     assert "PR-B6" in matrix.get("completed_steps", [])
 
     plan = (
         ROOT / "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt"
     ).read_text(encoding="utf-8")
-    assert "recommended_next_step = PR-C1" in plan
-    assert "last_shipped_step = PR-B6" in plan
+    assert "recommended_next_step = PR-C1-ARM" in plan
+    assert "last_shipped_step = PR-C1" in plan

@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_LAUNCH_SALES_PURCHASE_RELEASE_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0090",
+  "step": "PR-C1",
+  "decision": "LAUNCH_SALES_PURCHASE_RELEASE_PACKAGE",
+  "capability_row": "LAUNCH-ACCOUNTANT-SALES-PURCHASE",
+  "release_dossier": "docs/mokxya-ai/releases/LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md",
+  "flag": {
+    "env_name": "LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED",
+    "armed": false,
+    "production_approved": false,
+    "depth": "ANNOTATION_ONLY",
+    "arm_requires": [
+      "TICKET-PR-B1-001",
+      "TICKET-PR-B1-002",
+      "TICKET-PR-B3-001",
+      "TICKET-PR-B5-001",
+      "OWNER_SIGNOFF",
+      "STAGING_GOLDEN_PATH_GREEN_WITHIN_48H"
+    ]
+  },
+  "disclosures": [
+    "SETTLEMENT_RETURNS_BANK_RECON_NOT_IN_AI_LAUNCH",
+    "NL_YES_DOES_NOT_POST",
+    "SYNC_MAY_SHOW_WAITING_UNTIL_ACK",
+    "LEGAL_TAX_CURRENT_MAY_ABSTAIN",
+    "UI_TOTALS_ARE_DISPLAY_ESTIMATES"
+  ],
+  "monitoring": [
+    "confirm_token_denial_rate",
+    "posting_failed_rate",
+    "sync_pending_age",
+    "mode_restriction_count",
+    "launch_event_unsupported_count"
+  ],
+  "rollback": {
+    "action": "SET_FLAG_OFF",
+    "effect": "AI_DRAFTS_DISABLED_ERP_SCREENS_REMAIN"
+  },
+  "blocking_tickets": {
+    "TICKET-PR-B1-001": "OPEN",
+    "TICKET-PR-B1-002": "OPEN",
+    "TICKET-PR-B3-001": "OPEN",
+    "TICKET-PR-B5-001": "OPEN"
+  },
+  "honesty": {
+    "production_approved": false,
+    "flag_armed": false,
+    "next_20_done": false,
+    "owner_signed": false,
+    "staging_golden_path_green": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "flag_armed=true_without_tickets_and_owner",
+    "next_20_done=true",
+    "depth=PRODUCTION_without_arm",
+    "owner_signed=true_without_file"
+  ]
+}

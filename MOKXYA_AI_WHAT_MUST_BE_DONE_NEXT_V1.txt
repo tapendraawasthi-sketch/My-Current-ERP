@@ -695,7 +695,7 @@ NEXT-12  | DONE   | ADR_0079 + NEXT_12_E2E_LAUNCH_SLICE.md | launch verticals ev
 NEXT-13  | DONE   | ADR_0080 + NEXT_13_KNOWLEDGE_CITATION_HONESTY.md | GAP-P2-008 REDUCED
 NEXT-14  | DONE   | ADR_0081 + NEXT_14_PROD_RETRIEVAL.md | GAP-P2-001 REDUCED
 NEXT-15  | OPEN   |                   | optional tax pilot
-NEXT-20  | OPEN   |                   | first prod release
+NEXT-20  | OPEN   |                   | first prod release (await PR-C1-ARM)
 NEXT-30  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-50
 NEXT-31  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-51
 NEXT-32  | BLOCKED_UNTIL_NEXT-20 |    | real MAI-52
@@ -704,8 +704,8 @@ NEXT-H1  | DONE   | ADR_0089 + PR_B6_HYGIENE_GATE.md | honesty pack collect/pass
 NEXT-H2  | DONE   | ADR_0089 + typescript-baseline.md | InvoicePrint cleared; residual freeze
 
 Active pointer (update on each go):
-  recommended_next_step = PR-C1
-  last_shipped_step = PR-B6
+  recommended_next_step = PR-C1-ARM
+  last_shipped_step = PR-C1
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -722,10 +722,11 @@ Active pointer (update on each go):
   knowledge_citation = ADR_0080 force-abstain; GAP-P2-008 REDUCED (not CLOSED)
   knowledge_honesty_signoff = ADR_0088 ENGINEERING_PASS; TICKET-PR-B5-001 OPEN; GAP-P2-008 REDUCED
   hygiene_gate = ADR_0089 honesty+orbix CI story; GAP-P1-005/P2-004 REDUCED
+  launch_sales_purchase_release = ADR_0090 package READY; flag OFF; await PR-C1-ARM
   prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
   response_language_live = ADR_0082 scaffold parity; applied_response_rewrite=false
   launch_language_sample = ADR_0083 PRODUCT_POLICY launch slice; GAP-P1-009 REDUCED
-  staging_golden_path = ADR_0084 pack ready; TICKET-PR-B1-001/002 OPEN (block PR-C)
+  staging_golden_path = ADR_0084 pack ready; TICKET-PR-B1-001/002 OPEN (block PR-C1-ARM)
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

@@ -33,4 +33,4 @@
 
 ## Pointer
 
-recommended_next_step → **PR-C1** (still blocked by PR-B1/B3/B5 staging tickets)
+recommended_next_step → **PR-C1** (shipped package; active pointer now PR-C1-ARM)
