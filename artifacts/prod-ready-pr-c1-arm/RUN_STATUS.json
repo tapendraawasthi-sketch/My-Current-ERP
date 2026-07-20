@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-C1-ARM",
+  "authority": "ADR_0091",
+  "as_of": "2026-07-20",
+  "attempt_status": "BLOCKED",
+  "flag_armed": false,
+  "production_approved": false,
+  "next_20_done": false,
+  "owner_signed": false,
+  "staging_golden_path_green": false,
+  "blocking_tickets_clear": false,
+  "blocking_tickets_open": [
+    "TICKET-PR-B1-001",
+    "TICKET-PR-B1-002",
+    "TICKET-PR-B3-001",
+    "TICKET-PR-B5-001",
+    "OWNER_SIGNOFF"
+  ],
+  "honesty": {
+    "flipped_without_evidence": false,
+    "invented_owner_signoff": false,
+    "invented_staging_pass": false
+  }
+}

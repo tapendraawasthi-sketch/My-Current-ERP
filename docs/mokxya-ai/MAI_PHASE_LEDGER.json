@@ -7,7 +7,16 @@
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
   "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1"],
-  "active_phase_note": "Post-MAI-53 queue. PR-C1 ADR_0090 sales/purchase release package READY; flag OFF; production_approved=false. NEXT=PR-C1-ARM (clear staging tickets + owner sign-off + flip). Track I freeze ACTIVE.",
+  "active_phase_note": "Post-MAI-53 queue. PR-C1-ARM attempt BLOCKED (ADR_0091); flag OFF; tickets/owner still open. NEXT remains PR-C1-ARM. Track I freeze ACTIVE; production_approved=false.",
+  "pr_c1_arm_attempt": {
+    "authority": "ADR_0091",
+    "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",
+    "attempt_status": "BLOCKED",
+    "flag_armed": false,
+    "production_approved": false,
+    "next_20_done": false,
+    "registry": "docs/mokxya-ai/MAI_PR_C1_ARM_ATTEMPT_REGISTRY.json"
+  },
   "launch_sales_purchase_release": {
     "authority": "ADR_0090",
     "decision": "LAUNCH_SALES_PURCHASE_RELEASE_PACKAGE",

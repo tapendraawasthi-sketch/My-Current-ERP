@@ -104,7 +104,7 @@
       "depth": "ANNOTATION_ONLY",
       "production_approved": false,
       "blocked_by": ["TICKET-PR-B1-001", "TICKET-PR-B1-002", "TICKET-PR-B3-001", "TICKET-PR-B5-001", "OWNER_SIGNOFF", "PR-C1-ARM"],
-      "note": "PR-C1 ADR_0090 release package READY; flag OFF; not PRODUCTION until PR-C1-ARM."
+      "note": "PR-C1-ARM attempt BLOCKED (ADR_0091); package READY; flag OFF; tickets/owner open; not PRODUCTION."
     },
     {
       "id": "LAUNCH-ASK-PRODUCT-HELP",

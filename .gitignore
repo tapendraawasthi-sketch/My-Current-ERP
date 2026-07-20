@@ -64,6 +64,8 @@ artifacts/*
 !artifacts/prod-ready-pr-b6/**
 !artifacts/prod-ready-pr-c1/
 !artifacts/prod-ready-pr-c1/**
+!artifacts/prod-ready-pr-c1-arm/
+!artifacts/prod-ready-pr-c1-arm/**
 artifacts/prod-ready-pr-b1/connected/*.log
 artifacts/prod-ready-pr-b1/manual/screenshots/
 artifacts/prod-ready-pr-b3/manual/screenshots/
@@ -71,6 +73,7 @@ artifacts/prod-ready-pr-b4/manual/screenshots/
 artifacts/prod-ready-pr-b5/manual/screenshots/
 artifacts/prod-ready-pr-b6/manual/screenshots/
 artifacts/prod-ready-pr-c1/manual/screenshots/
+artifacts/prod-ready-pr-c1-arm/manual/screenshots/
 test-results/
 playwright-report/
 

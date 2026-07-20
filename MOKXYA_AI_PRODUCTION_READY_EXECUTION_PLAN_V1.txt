@@ -10,15 +10,16 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-C1
+  last_shipped_step = PR-C1-ARM-ATTEMPT
   recommended_next_step = PR-C1-ARM
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
   pr_c1_package = READY (ADR_0090; flag OFF)
+  pr_c1_arm_attempt = BLOCKED (ADR_0091; 2026-07-20)
   pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
   pr_b3_staging_conflict = PENDING (TICKET-PR-B3-001)
   pr_b5_staging_professional = PENDING (TICKET-PR-B5-001)
-  note = PR-C1-ARM clears tickets + owner sign-off then flips row flag only
+  note = PR-C1-ARM retry after human staging evidence + OWNER_SIGNOFF; do not invent PASS
 
 ======================================================================
 0. EXACT OBJECTIVE (DO NOT DRIFT)
@@ -592,7 +593,7 @@ PR-B4    | DONE   | ADR_0087 + PR_B4_CALC_PREVIEW_RESIDUAL.md | labels wired; 0 
 PR-B5    | DONE   | ADR_0088 + PR_B5_KNOWLEDGE_HONESTY_SIGNOFF.md | ENGINEERING_PASS; TICKET-PR-B5-001; GAP-P2-008 REDUCED
 PR-B6    | DONE   | ADR_0089 + PR_B6_HYGIENE_GATE.md | honesty+orbix scripts; InvoicePrint cleared; GAP-P1-005/P2-004 REDUCED
 PR-C1    | DONE   | ADR_0090 + LAUNCH_ACCOUNTANT_SALES_PURCHASE_V1.md | package READY; flag OFF; not PRODUCTION
-PR-C1-ARM| OPEN   |                   | clear tickets + owner sign-off + flip flag (NEXT-20)
+PR-C1-ARM| BLOCKED| ADR_0091 + ARM_ATTEMPT.md | attempt recorded; tickets/owner still open; flag OFF
 PR-C2    | OPEN   |                   | Ask reports PROD
 PR-C3    | OPEN   |                   | Day-0 smoke
 PR-D1-D4 | OPEN   |                   | post-launch
@@ -605,7 +606,7 @@ Already DONE before this plan (do not reopen as PR work):
 
 Active pointer:
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-C1
+  last_shipped_step = PR-C1-ARM-ATTEMPT
   production_approved = false
   pr_b1_blocks_pr_c = true
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE

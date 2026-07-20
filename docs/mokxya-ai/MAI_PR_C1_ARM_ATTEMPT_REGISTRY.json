@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_PR_C1_ARM_ATTEMPT_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0091",
+  "step": "PR-C1-ARM",
+  "decision": "PR_C1_ARM_ATTEMPT_BLOCKED",
+  "extends": "ADR_0090",
+  "attempt_status": "BLOCKED",
+  "flag": {
+    "armed": false,
+    "production_approved": false
+  },
+  "honesty": {
+    "production_approved": false,
+    "flag_armed": false,
+    "next_20_done": false,
+    "owner_signed": false,
+    "staging_golden_path_green": false,
+    "flipped_without_evidence": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "production_approved=true",
+    "flag_armed=true",
+    "next_20_done=true",
+    "attempt_status=PASS_without_tickets",
+    "owner_signed=true_without_file"
+  ]
+}
