@@ -326,15 +326,16 @@ async function handleErpBotRequest(req, res, method, rawPath) {
       attempts.push({ base, status: upstream.status });
 
       const contentType = (upstream.headers.get("content-type") || "").toLowerCase();
-      // Reject SPA HTML false positives (wrong private port → frontend service).
-      if (!isStreamingEndpoint && uniqueBases.length > 1) {
+      // Always reject SPA HTML — wrong private DNS/port often hits sutra-erp itself.
+      if (!isStreamingEndpoint) {
         const maybeHtml =
           contentType.includes("text/html") || !contentType.includes("json");
         if (maybeHtml) {
           const peek = await upstream.clone().text();
           if (peek.includes("<!doctype") || peek.includes("<html")) {
-            console.warn(`[serve.mjs] upstream HTML from ${base}, trying next`);
-            lastErr = new Error("upstream returned HTML");
+            console.warn(`[serve.mjs] upstream HTML from ${base} (not Python bot)`);
+            attempts.push({ base, status: upstream.status, error: "html_spa_false_positive" });
+            lastErr = new Error(`upstream HTML from ${base} (DNS likely not sutra-erp-bot)`);
             continue;
           }
         }
@@ -472,6 +473,58 @@ async function serveRequest(req, res) {
             })()
           : null,
       }),
+    );
+    return;
+  }
+
+  // Diagnose Railway private DNS / Orbix reachability (no secrets).
+  if (rawPath === "/health/orbix") {
+    const dnsPromises = await import("node:dns/promises");
+    const host = "sutra-erp-bot.railway.internal";
+    let lookup = null;
+    try {
+      lookup = await dnsPromises.lookup(host, { all: true });
+    } catch (e) {
+      lookup = { error: e instanceof Error ? e.message : String(e) };
+    }
+    let livez = null;
+    const probeUrl = `http://${host}:8080/livez`;
+    try {
+      const r = await proxyFetch(probeUrl, {
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(8000),
+      });
+      const text = await r.text();
+      livez = {
+        status: r.status,
+        contentType: r.headers.get("content-type"),
+        bodyPreview: text.slice(0, 180),
+        looksLikeSpa: text.includes("<!doctype") || text.includes("<html"),
+      };
+    } catch (e) {
+      const cause = e && typeof e === "object" ? e.cause : null;
+      livez = {
+        error: e instanceof Error ? e.message : String(e),
+        code: cause && typeof cause === "object" ? cause.code : undefined,
+        address: cause && typeof cause === "object" ? cause.address : undefined,
+      };
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        {
+          self_private_domain: process.env.RAILWAY_PRIVATE_DOMAIN || null,
+          self_service: process.env.RAILWAY_SERVICE_NAME || null,
+          bot_host: host,
+          bot_lookup: lookup,
+          livez_probe: livez,
+          erp_bot_backend: ERP_BOT_BACKEND,
+          hint:
+            "If livez_probe.looksLikeSpa=true, private DNS is not reaching the Python bot. Set ERP_BOT_BACKEND_URL=http://${{sutra-erp-bot.RAILWAY_PRIVATE_DOMAIN}}:${{sutra-erp-bot.PORT}} on sutra-erp.",
+        },
+        null,
+        2,
+      ),
     );
     return;
   }
