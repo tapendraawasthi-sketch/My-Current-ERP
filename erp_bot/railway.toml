@@ -2,7 +2,9 @@
 # Without that, Nixpacks sees the monorepo root package.json and runs Bun (wrong).
 [build]
 builder = "NIXPACKS"
-buildCommand = "bash scripts/render-build.sh"
+# Railway wraps as `chmod +x <cmd> && sh <cmd>` — do not prefix with `bash`
+# or chmod targets the word "bash" and the build fails.
+buildCommand = "scripts/render-build.sh"
 
 [deploy]
 startCommand = "python scripts/start_render.py"
