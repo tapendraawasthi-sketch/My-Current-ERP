@@ -1,17 +1,28 @@
 import http from "http";
 import crypto from "node:crypto";
 import dns from "node:dns";
+import net from "node:net";
 import { fileURLToPath } from "url";
 import { join, extname, normalize } from "path";
 import { readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
 import jwt from "jsonwebtoken";
 
-// Railway private networking is IPv6 — prefer AAAA when resolving *.railway.internal
+// Railway private DNS often returns AAAA+A; healthchecks use IPv4 (100.64/10.x).
+// Prefer IPv4 so Node fetch does not hang or mis-route on IPv6-first happy eyeballs.
 try {
-  dns.setDefaultResultOrder("ipv6first");
+  dns.setDefaultResultOrder("ipv4first");
 } catch {
   /* older Node */
+}
+try {
+  net.setDefaultAutoSelectFamilyAttemptTimeout(1000);
+} catch {
+  /* older Node */
+}
+
+async function proxyFetch(url, init = {}) {
+  return fetch(url, init);
 }
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -156,7 +167,7 @@ async function probeErpBotBase(base) {
   try {
     // Must be the Python bot JSON livez — SPA HTML 200s are false positives
     // (private DNS + wrong port can hit sutra-erp itself).
-    const resp = await fetch(`${base}/livez`, {
+    const resp = await proxyFetch(`${base}/livez`, {
       method: "GET",
       headers: { Accept: "application/json" },
       signal: controller.signal,
@@ -295,7 +306,7 @@ async function handleErpBotRequest(req, res, method, rawPath) {
   for (const base of uniqueBases) {
     const targetUrl = `${base}${subpath}`;
     try {
-      const upstream = await fetch(targetUrl, {
+      const upstream = await proxyFetch(targetUrl, {
         method,
         headers: forwardHeaders,
         body,
@@ -304,8 +315,10 @@ async function handleErpBotRequest(req, res, method, rawPath) {
 
       // Fail over on public-edge rate limit / gateway errors.
       if ([429, 502, 503, 504].includes(upstream.status) && uniqueBases.length > 1) {
-        console.warn(`[serve.mjs] upstream ${upstream.status} from ${base}, trying next`);
-        lastErr = new Error(`upstream ${upstream.status}`);
+        console.warn(
+          `[serve.mjs] upstream ${upstream.status} from ${base}, trying next`,
+        );
+        lastErr = new Error(`upstream ${upstream.status} from ${base}`);
         continue;
       }
 

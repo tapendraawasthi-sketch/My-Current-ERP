@@ -90,9 +90,10 @@ except Exception as exc:
         "OIP_JWT_SECRET (or API_SECRET_KEY, length>=16) for full OIP chat."
     )
 
-# Railway private networking (esp. legacy IPv6-only envs) needs bind on :: .
-# Public edge still reaches the service; dual-stack :: is the safe cloud default.
-_host = os.environ.get("HOST") or ("::" if _on_railway else "0.0.0.0")
+# Bind 0.0.0.0 so Railway private IPv4 healthchecks (100.64/10.x) and
+# sutra-erp Node fetch (ipv4first) can reach the bot. Uvicorn on "::" is
+# not reliably dual-stack. Override with HOST=:: only for legacy IPv6-only envs.
+_host = os.environ.get("HOST") or "0.0.0.0"
 print(f"[START] Listening on {_host}:{API_PORT}")
 
 import uvicorn
