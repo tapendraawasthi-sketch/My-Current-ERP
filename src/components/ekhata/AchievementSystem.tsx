@@ -1,5 +1,5 @@
 /**
- * Gamification — achievements and daily challenges for consistent bookkeeping.
+ * Gamification â€” achievements and daily challenges for consistent bookkeeping.
  */
 import { useEffect, useState } from "react";
 import { getDB } from "@/lib/db";
@@ -126,7 +126,7 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
         ))}
       </div>
       <p className="text-[12px] text-gray-500 mt-2">
-        Daily challenge: 5 entries today — keep your khata up to date!
+        Daily challenge: 5 entries today â€” keep your khata up to date!
       </p>
     </div>
   );
