@@ -1,10 +1,10 @@
 # Release dossier — LAUNCH-ACCOUNTANT-SALES-PURCHASE V1
 
 **Date:** 2026-07-20  
-**Step:** PR-C1 / ADR_0090 + PR-C1-ARM / ADR_0100  
+**Step:** PR-C1 / ADR_0090 (package) — PR-C1-ARM blocked on OWNER_SIGNOFF (ADR_0091)  
 **Capability row:** `LAUNCH-ACCOUNTANT-SALES-PURCHASE`  
-**Flag status:** **ARMED** (registry); set Render env `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true`  
-**Depth:** PRODUCTION (this row only; Ask row still off)
+**Flag status:** **OFF** (`flag_armed=false`; env `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED` unset/false)  
+**Depth:** ANNOTATION_ONLY (false arm `2e0b45aa` / ADR_0100 **reversed**)
 
 ## 1. Scope
 
@@ -48,7 +48,7 @@ Out of AI launch set (ERP screens may still exist):
 | GAP-P0-001 | REDUCED | Mutation residual; launch hard-deny |
 | GAP-P1-002 | REDUCED | Sync honesty; dual badge residual |
 | GAP-P2-002 | REDUCED | UI display estimates |
-| GAP-P2-008 | REDUCED | Knowledge honesty; staging review PENDING |
+| GAP-P2-008 | REDUCED | Knowledge honesty; TICKET-PR-B5-001 PASS (attested) |
 | GAP-P2-001 | REDUCED | Prod LEXICAL_ONLY |
 
 ## 5. Blocking tickets before flag arm
@@ -89,21 +89,26 @@ Owner name + date required in `artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` befo
 
 ## 9. Arm checklist (PR-C1-ARM)
 
-- [x] TICKET-PR-B1-001 PASS  
-- [x] TICKET-PR-B1-002 PASS (owner residual — next12 staging; browser/sync gaps accepted)  
-- [x] TICKET-PR-B3-001 PASS (owner residual — approved b3 2026-07-20)  
-- [x] TICKET-PR-B5-001 PASS (owner `b5pass` 2026-07-20)  
-- [x] Owner sign-off filed (`sign OWNER` 2026-07-20)  
-- [x] Staging golden path green within 48h of flip (owner residual accepted)  
-- [x] Matrix row → `depth=PRODUCTION`, `production_approved=true` **for this row only**  
-- [x] Registry flag armed (ADR_0100); set Render env `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true`  
-- [x] NEXT-20 marked DONE for this row  
+Engineering / staging tickets (attested — not invented chat tokens):
 
-**Depth:** PRODUCTION (armed 2026-07-20)
+- [x] TICKET-PR-B1-001 PASS  
+- [x] TICKET-PR-B1-002 PASS (connected 19/19 + sync 5/5)  
+- [x] TICKET-PR-B3-001 PASS (`OPERATOR_ATTESTATION_B3_001.md`)  
+- [x] TICKET-PR-B5-001 PASS (`OPERATOR_ATTESTATION_B5_001.md`)  
+
+Human / arm flip (still open — chat `go` / `sign OWNER` are **not** sign-off):
+
+- [ ] Owner sign-off filed (`artifacts/prod-ready-pr-c1/OWNER_SIGNOFF.md` → **SIGNED**)  
+- [ ] Staging golden path green within 48h of flip  
+- [ ] Matrix row → `depth=PRODUCTION`, `production_approved=true` **for this row only**  
+- [ ] Registry `flag_armed=true`; set env `LAUNCH_ACCOUNTANT_SALES_PURCHASE_PRODUCTION_APPROVED=true`  
+- [ ] NEXT-20 marked DONE for this row  
+
+**Depth:** ANNOTATION_ONLY (`production_approved=false`)
 
 ## Explicit non-claims
 
+- Not production_approved (row or global)
 - Not Ask-reports row PRODUCTION (needs PR-C2-ARM)
-- Not global all-rows production_approved
 - Not 14-day stability proven
-- Runtime live gate still needs Render env flag set
+- Not armed (false arm ADR_0100 / `2e0b45aa` reversed)

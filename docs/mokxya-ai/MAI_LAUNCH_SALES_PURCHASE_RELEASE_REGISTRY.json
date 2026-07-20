@@ -41,9 +41,10 @@
   },
   "blocking_tickets": {
     "TICKET-PR-B1-001": "PASS",
-    "TICKET-PR-B1-002": "OPEN",
-    "TICKET-PR-B3-001": "OPEN",
-    "TICKET-PR-B5-001": "OPEN"
+    "TICKET-PR-B1-002": "PASS",
+    "TICKET-PR-B3-001": "PASS",
+    "TICKET-PR-B5-001": "PASS",
+    "OWNER_SIGNOFF": "PENDING"
   },
   "honesty": {
     "production_approved": false,
