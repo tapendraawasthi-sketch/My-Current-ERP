@@ -74,11 +74,15 @@ function resolveErpBotBackend() {
     return `http://sutra-erp-bot.railway.internal:${privatePort}`;
   }
 
-  // Railway project default: public bot host used by this deployment when
-  // ERP_BOT_BACKEND_URL was never set on sutra-erp (otherwise Orbix stays Limited).
-  // Prefer explicit ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}.
+  // Railway project default when ERP_BOT_BACKEND_URL was never set on sutra-erp.
+  // Prefer dashboard: ERP_BOT_BACKEND_URL=https://${{sutra-erp-bot.RAILWAY_PUBLIC_DOMAIN}}
+  // Runtime evidence (2026-07-20): /health had erp_bot_proxy=missing; Railway bot
+  // public edge returned 429; Render sutra-erp-bot returned OIP+Groq ready.
   if (onRailway) {
-    return "https://sutra-erp-bot-production.up.railway.app";
+    return (
+      (process.env.ERP_BOT_RENDER_FALLBACK_URL || "").trim().replace(/\/$/, "") ||
+      "https://sutra-erp-bot.onrender.com"
+    );
   }
 
   return "";
