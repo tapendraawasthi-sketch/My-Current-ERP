@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "step": "PR-H3",
+  "authority": "ADR_0094",
+  "as_of": "2026-07-20",
+  "engineering_pack_ready": true,
+  "deletion_in_this_ship": false,
+  "gap_p1_001_closed": false,
+  "gap_p3_001_closed": false,
+  "production_approved": false,
+  "falcon_orphan_ui_quarantined": true,
+  "secondary_stacks_quarantined": true,
+  "dossier": "docs/mokxya-ai/baselines/PR_H3_SECONDARY_AI_STACK_QUARANTINE.md"
+}

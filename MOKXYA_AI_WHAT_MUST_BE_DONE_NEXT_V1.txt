@@ -705,7 +705,7 @@ NEXT-H2  | DONE   | ADR_0089 + typescript-baseline.md | InvoicePrint cleared; re
 
 Active pointer (update on each go):
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-C3-PACK
+  last_shipped_step = PR-H3
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -725,6 +725,7 @@ Active pointer (update on each go):
   launch_sales_purchase_release = ADR_0090 package READY; flag OFF
   pr_c1_arm_attempt = ADR_0091 BLOCKED; await human staging + OWNER_SIGNOFF
   launch_ask_company_reports_release = ADR_0092 package READY; flag OFF; await PR-C2-ARM
+  secondary_ai_stack_quarantine = ADR_0094 PR-H3; stacks+Falcon orphan UI quarantined; GAP-P1-001/P3-001 REDUCED; no delete
   day0_smoke_pack = ADR_0093 pack READY; smoke NOT_RUN; await PR-C3-RUN after arm
   prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
   response_language_live = ADR_0082 scaffold parity; applied_response_rewrite=false

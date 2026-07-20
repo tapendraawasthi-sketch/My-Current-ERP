@@ -6,8 +6,22 @@
   "branch": "main",
   "recommended_next_phase": null,
   "recommended_next_step": "PR-C1-ARM",
-  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2"],
-  "active_phase_note": "Post-MAI-53 queue. PR-C3 Day-0 smoke pack READY (ADR_0093; NOT_RUN). PR-C1-ARM still BLOCKED on human tickets. Track I freeze ACTIVE; production_approved=false.",
+  "completed_next_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3"],
+  "active_phase_note": "Post-MAI-53 queue. PR-H3 secondary/Falcon quarantine READY (ADR_0094; GAP-P1-001/P3-001 REDUCED; no delete). PR-C1-ARM still BLOCKED on human tickets. PR-H4 OPEN. Track I freeze ACTIVE; production_approved=false.",
+  "secondary_ai_stack_quarantine": {
+    "authority": "ADR_0094",
+    "decision": "SECONDARY_AI_STACK_QUARANTINE",
+    "disposition": "QUARANTINED_NON_PROD_ONLY",
+    "deletion_in_this_ship": false,
+    "flag_armed": false,
+    "gap_p1_001_register_status": "REDUCED",
+    "gap_p1_001_closed": false,
+    "gap_p3_001_register_status": "REDUCED",
+    "gap_p3_001_closed": false,
+    "production_approved": false,
+    "registry": "docs/mokxya-ai/MAI_SECONDARY_AI_STACK_QUARANTINE_REGISTRY.json",
+    "artifacts": "artifacts/prod-ready-pr-h3/"
+  },
   "day0_smoke_pack": {
     "authority": "ADR_0093",
     "decision": "DAY0_PRODUCTION_SMOKE_PACK",
@@ -235,6 +249,7 @@
   },
   "ai_stack_strangler": {
     "authority": "ADR_0073",
+    "extends_quarantine": "ADR_0094",
     "primary_chat_route": "/orbix/chat/stream",
     "secondary_disabled_in_production_by_default": true,
     "break_glass_env": "MOKXYA_ALLOW_SECONDARY_AI_STACKS",

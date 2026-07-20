@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "document": "MAI_SECONDARY_AI_STACK_QUARANTINE_REGISTRY",
+  "as_of": "2026-07-20",
+  "authority": "ADR_0094",
+  "step": "PR-H3",
+  "decision": "SECONDARY_AI_STACK_QUARANTINE",
+  "extends": "ADR_0073",
+  "primary_chat_route": "/orbix/chat/stream",
+  "disposition": "QUARANTINED_NON_PROD_ONLY",
+  "deletion_in_this_ship": false,
+  "gap_p1_001": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "runtime_status_reason": "Secondary stacks gated in prod; code retained for non-prod DX; quarantine inventory filed"
+  },
+  "gap_p3_001": {
+    "register_status": "REDUCED",
+    "closed": false,
+    "runtime_status_reason": "Orphan FalconPanel/Launcher/ThinkingPanel inventoried; FalconProvider + lib/falcon retained for Orbix remap/helpers"
+  },
+  "stacks": [
+    {
+      "id": "NIOS_V1",
+      "mount_prefix": "/nios/v1",
+      "module": "erp_bot/src/nios/api.py",
+      "disposition": "QUARANTINED_NON_PROD_ONLY"
+    },
+    {
+      "id": "ORBIX_V2",
+      "mount_prefix": "/orbix/v2",
+      "module": "erp_bot/src/orbix/api.py",
+      "disposition": "QUARANTINED_NON_PROD_ONLY"
+    },
+    {
+      "id": "LEGACY_V2_CHAT_STREAM",
+      "mount_prefix": "/v2/chat/stream",
+      "module": "erp_bot/src/api/streaming.py",
+      "disposition": "QUARANTINED_NON_PROD_ONLY"
+    },
+    {
+      "id": "LEGACY_V2_CHAT",
+      "mount_prefix": "/v2/chat",
+      "module": "erp_bot/src/api/streaming.py",
+      "disposition": "QUARANTINED_NON_PROD_ONLY"
+    }
+  ],
+  "falcon_orphan_ui": [
+    {
+      "id": "FALCON_PANEL",
+      "path": "src/components/falcon/FalconPanel.tsx",
+      "disposition": "QUARANTINED_ORPHAN_UI",
+      "importers_outside_self": false
+    },
+    {
+      "id": "FALCON_LAUNCHER",
+      "path": "src/components/falcon/FalconLauncher.tsx",
+      "disposition": "QUARANTINED_ORPHAN_UI",
+      "importers_outside_self": false
+    },
+    {
+      "id": "FALCON_THINKING_PANEL",
+      "path": "src/components/falcon/FalconThinkingPanel.tsx",
+      "disposition": "QUARANTINED_ORPHAN_UI",
+      "importers_outside_self": false
+    }
+  ],
+  "retained_falcon_surfaces": [
+    "src/components/falcon/FalconProvider.tsx",
+    "src/lib/falcon/",
+    "src/store/falconStore.ts"
+  ],
+  "break_glass_env": "MOKXYA_ALLOW_SECONDARY_AI_STACKS",
+  "honesty": {
+    "production_approved": false,
+    "gap_p1_001_closed": false,
+    "gap_p3_001_closed": false,
+    "secondary_deleted": false,
+    "falcon_tree_deleted": false,
+    "secondary_default_on_in_production": false,
+    "is_execution_authority": false
+  },
+  "forbidden_claims": [
+    "gap_p1_001_closed=true",
+    "gap_p3_001_closed=true",
+    "secondary_deleted=true_this_ship",
+    "falcon_tree_deleted=true_this_ship",
+    "production_approved=true",
+    "secondary_is_product_primary"
+  ]
+}

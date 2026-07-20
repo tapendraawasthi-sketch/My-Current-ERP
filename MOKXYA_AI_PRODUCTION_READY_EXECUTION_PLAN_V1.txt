@@ -10,7 +10,7 @@ Companion files:
   MOKXYA_AI_WHAT_MUST_BE_DONE_NEXT_V1.txt
 Governing queue after this plan lands: follow PHASE steps below on each “go”.
 Status baseline (updated as ships land):
-  last_shipped_step = PR-C3-PACK
+  last_shipped_step = PR-H3
   recommended_next_step = PR-C1-ARM
   production_approved = false
   launch capability rows = ANNOTATION_ONLY (0 PILOT, 0 PRODUCTION)
@@ -18,10 +18,11 @@ Status baseline (updated as ships land):
   pr_c1_arm_attempt = BLOCKED (ADR_0091; 2026-07-20)
   pr_c2_package = READY (ADR_0092; flag OFF)
   pr_c3_smoke_pack = READY (ADR_0093; smoke NOT_RUN / not PASS)
+  pr_h3_quarantine = READY (ADR_0094; GAP-P1-001 still REDUCED)
   pr_b1_blocks_pr_c = true (TICKET-PR-B1-001/002 OPEN)
   pr_b3_staging_conflict = PENDING (TICKET-PR-B3-001)
   pr_b5_staging_professional = PENDING (TICKET-PR-B5-001)
-  note = PR-C1-ARM first; Day-0 run after arm; do not invent smoke PASS
+  note = PR-C1-ARM first; hygiene parallel OK; do not invent PASS
 
 ======================================================================
 0. EXACT OBJECTIVE (DO NOT DRIFT)
@@ -605,14 +606,15 @@ PR-E1-E4 | BLOCKED_UNTIL_PR-D_STABLE |
 PR-F1-F4 | BLOCKED_UNTIL_PR-C        | Track I
 PR-H1    | DONE   | ADR_0089 / PR-B6  | pytest honesty baseline (covered by PR-B6)
 PR-H2    | DONE   | ADR_0089 / PR-B6  | tsc debt freeze (covered by PR-B6)
-PR-H3-H4 | OPEN   |                   | dead-prototype quarantine / vacuous-green forbid
+PR-H3    | DONE   | ADR_0094 + quarantine registry | QUARANTINED_NON_PROD_ONLY; no mass-delete; GAP-P1-001 REDUCED
+PR-H4    | OPEN   |                   | vacuous-green forbid in evals
 
 Already DONE before this plan (do not reopen as PR work):
   NEXT-00…07, NEXT-10…13 = foundation complete
 
 Active pointer:
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-C3-PACK
+  last_shipped_step = PR-H3
   production_approved = false
   pr_b1_blocks_pr_c = true
   first_prod_row_target = LAUNCH-ACCOUNTANT-SALES-PURCHASE

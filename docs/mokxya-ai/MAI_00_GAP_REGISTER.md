@@ -318,6 +318,7 @@ Severity legend:
 - **Acceptance condition:** Non-canonical stacks blocked in production or explicitly gated
 - **Status:** REDUCED
 - **Progress (2026-07-19):** NEXT-03 / ADR_0073 — production disables secondary AI mounts by default (`/nios/v1`, `/orbix/v2`, `/v2/chat`, `/v2/chat/stream`) via `ai_stack_mount_policy.py`; primary remains `/orbix/chat/stream`. Break-glass `MOKXYA_ALLOW_SECONDARY_AI_STACKS=true`. Non-prod keeps secondary for DX. Does **not** CLOSE (secondary code remains; non-prod still mounts).
+- **Progress (2026-07-20):** PR-H3 / ADR_0094 — quarantine inventory + honesty gate filed (`MAI_SECONDARY_AI_STACK_QUARANTINE_REGISTRY.json`); disposition `QUARANTINED_NON_PROD_ONLY`; no delete. Still **REDUCED** (not CLOSED).
 
 ### GAP-P1-002 — Dual sync authorities (event sync + legacy outbox + khata confirm)
 
@@ -553,7 +554,8 @@ Severity legend:
 - **Recommended MAI phase:** cleanup after MAI-16
 - **Dependencies:** usage metrics
 - **Acceptance condition:** Dead code quarantined or removed with tests updated
-- **Status:** OPEN
+- **Status:** REDUCED
+- **Progress (2026-07-20):** PR-H3 / ADR_0094 — orphan `FalconPanel` / `FalconLauncher` / `FalconThinkingPanel` inventoried as `QUARANTINED_ORPHAN_UI` (no external importers). `FalconProvider` + `src/lib/falcon/**` + `falconStore` retained. Does **not** CLOSE (tree not deleted).
 
 ### GAP-P3-002 — Master roadmap path mismatch
 

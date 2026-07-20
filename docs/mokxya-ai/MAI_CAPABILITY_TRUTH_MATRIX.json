@@ -22,7 +22,7 @@
   },
   "blocking_gaps": [
     {"id": "GAP-P0-001", "severity": "P0", "status": "REDUCED", "blocks": ["sole_oec_strangler", "NEXT-20"], "note": "PR-B2 ADR_0085 launch-marked Node/OEC hard-deny; Dexie product path; dual writers residual; oec_sole=false; not CLOSED"},
-    {"id": "GAP-P1-001", "severity": "P1", "status": "REDUCED", "blocks": ["retire_secondary_code", "NEXT-H3"], "note": "ADR_0073 prod mount gate; secondary code remains for non-prod/DX"},
+    {"id": "GAP-P1-001", "severity": "P1", "status": "REDUCED", "blocks": ["retire_secondary_code", "NEXT-H4"], "note": "ADR_0073+ADR_0094 quarantine inventored; secondary code remains non-prod/DX; not CLOSED"},
     {"id": "GAP-P1-002", "severity": "P1", "status": "REDUCED", "blocks": ["single_worker_e2e", "NEXT-20"], "note": "PR-B3 ADR_0086 queued≠synced + conflict narrative; dual badge residual OPEN; staging conflict PENDING; not CLOSED"},
     {"id": "GAP-P1-004", "severity": "P1", "status": "REDUCED", "blocks": ["stale_draft_merge", "production_turn_relation"], "note": "NEXT-06 context_turn_relation_v1 35/35 component green"},
     {"id": "GAP-P1-007", "severity": "P1", "status": "REDUCED", "blocks": ["production_number_roles"], "note": "NEXT-06 number_roles_v1 40/40 component green"},
@@ -128,5 +128,5 @@
   },
   "recommended_next_step": "PR-C1-ARM",
   "next_file": "MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt",
-  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2"]
+  "completed_steps": ["NEXT-00", "NEXT-01", "NEXT-02", "NEXT-03", "NEXT-04", "NEXT-05", "NEXT-06", "NEXT-07", "NEXT-08", "NEXT-09", "NEXT-10", "NEXT-11", "NEXT-12", "NEXT-13", "NEXT-14", "PR-B1", "PR-B2", "PR-B3", "PR-B4", "PR-B5", "PR-B6", "PR-C1", "PR-C2", "PR-C3-PACK", "PR-H1", "PR-H2", "PR-H3"]
 }

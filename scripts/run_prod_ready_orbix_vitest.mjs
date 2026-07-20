@@ -7,6 +7,7 @@ const targets = [
   "src/__tests__/orbix/maiNext*.test.ts",
   "src/__tests__/orbix/maiPrB*.test.ts",
   "src/__tests__/orbix/maiPrC*.test.ts",
+  "src/__tests__/orbix/maiPrH*.test.ts",
   "src/__tests__/orbix/postSalesTransaction.test.ts",
   "src/__tests__/orbix/postPurchaseTransaction.test.ts",
 ];
