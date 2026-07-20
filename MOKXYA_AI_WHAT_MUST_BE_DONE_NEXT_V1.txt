@@ -705,7 +705,7 @@ NEXT-H2  | DONE   | ADR_0089 + typescript-baseline.md | InvoicePrint cleared; re
 
 Active pointer (update on each go):
   recommended_next_step = PR-C1-ARM
-  last_shipped_step = PR-C1-ARM-REVERSED (cb6d7313 connected 19/19; sync 2 FAIL)
+  last_shipped_step = PR-B1-002-SYNC-PASS (sync 5/5; B1 tickets cleared; arm still blocked)
   master_roadmap_exhausted_at = MAI-53 PASSED_ENGINEERING (2026-07-19)
   track_i_freeze = ACTIVE (ADR_0071 until NEXT-20)
   mutation_authority = OPTION_A Model B Dexie (ADR_0072); oec_sole=false
@@ -723,7 +723,7 @@ Active pointer (update on each go):
   knowledge_honesty_signoff = ADR_0088 ENGINEERING_PASS; TICKET-PR-B5-001 OPEN; GAP-P2-008 REDUCED
   hygiene_gate = ADR_0089 honesty+orbix CI story; GAP-P1-005/P2-004 REDUCED
   launch_sales_purchase_release = ADR_0090 package READY; flag OFF (false arm reversed)
-  pr_c1_arm_attempt = ADR_0091 BLOCKED; B1-002 sync FAIL; await real OWNER_SIGNOFF
+  pr_c1_arm_attempt = ADR_0091 BLOCKED; B1-001/002 PASS; await B3/B5 + real OWNER_SIGNOFF
   launch_ask_company_reports_release = ADR_0092 package READY; flag OFF; await PR-C2-ARM
   secondary_ai_stack_quarantine = ADR_0094 PR-H3; stacks+Falcon orphan UI quarantined; GAP-P1-001/P3-001 REDUCED; no delete
   vacuous_green_forbid = ADR_0095 PR-H4; empty required → INVALID; legacy scorers not all rewritten
@@ -735,7 +735,7 @@ Active pointer (update on each go):
   prod_retrieval = ADR_0081 LEXICAL_ONLY in prod; GAP-P2-001 REDUCED (not CLOSED)
   response_language_live = ADR_0082 scaffold parity; applied_response_rewrite=false
   launch_language_sample = ADR_0083 PRODUCT_POLICY launch slice; GAP-P1-009 REDUCED
-  staging_golden_path = ADR_0084 pack ready; TICKET-PR-B1-001/002 OPEN (block PR-C1-ARM)
+  staging_golden_path = ADR_0084 B1-001/002 PASS; PR-C1-ARM still needs B3/B5/OWNER_SIGNOFF
   mai04_language_reproof = ctx 35/35 + num 40/40 GREEN; multi HR waived
 
 ======================================================================

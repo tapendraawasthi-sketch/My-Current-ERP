@@ -17,27 +17,26 @@
 
 Log: `playwright-pr-b1-render-r6.log` (local/gitignored)
 
-## Sync pack (PARTIAL)
+## r4 — sync pack (PASS)
 
 **Command:** local `:3010` `ORBIX_SYNC_TEST_MODE` + `ORBIX_SYNC_E2E=true` → `e2e/orbix-sync.spec.ts`
 
 | Metric | Count |
 |--------|------:|
-| Passed | 3 |
-| Failed | 2 |
+| Passed | **5** |
+| Failed | **0** |
 
-Failed: Device A→B purchase push/pull; Device A→B sales push/pull (`pushSyncPending` returned 0 — envelope/claim path).  
-Passed: readiness, duplicate/integrity, lost-ack replay.
+Includes Device A→B purchase and sales push/pull, readiness, duplicate/integrity, lost-ack replay.
 
-Log: `playwright-pr-b1-sync-r2.log` (local/gitignored)
+Log: `playwright-pr-b1-sync-r4.log` (local/gitignored)
 
-## Engineering fixes (this go)
+## Engineering fixes (sync go)
 
-1. E2E fiscal year rolled to **2026-07-16 → 2027-07-15** (was ending 2026-07-15 → `period_or_fy` / sale `validation_error`).
-2. UI QA harness wrapped in **MemoryRouter** (Billing used `useAppRoute` → blank page).
-3. Confirm E2E asserts **eventSyncQueue** (Phase 6 cutover; not legacy `syncOutbox`).
-4. Day Book / billing locators updated for ReportWorkspace titles.
+1. Root cause of `pushSyncPending=0`: post fires `runEventSyncCycle()` which holds the sync Web Lock; bare `pushPending` used `ifAvailable` and returned 0 while the auto-cycle was syncing.
+2. `EventSyncClient.pushPending` retries briefly when the lock is busy.
+3. `e2e/orbix-sync.spec.ts` drains via `flushSyncQueue` (same pattern as return/settlement sync specs) and asserts final `synced` / `remaining=0`.
 
 ## Ticket
 
-**TICKET-PR-B1-002:** still **OPEN** — launch connected green, but sync two-device push/pull not green. Do not invent PASS.
+**TICKET-PR-B1-002:** **PASS** — launch connected 19/19 + sync 5/5.  
+PR-C1-ARM still blocked on B3-001, B5-001, and real OWNER_SIGNOFF (not invented).

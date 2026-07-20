@@ -144,11 +144,11 @@ test.describe("Phase 5 two-device accounting sync", () => {
     expect(eventRow).toBeTruthy();
     expect(eventRow?.origin).toBe("local_user");
 
-    // Push if still pending (auto worker may already have synced after post)
-    if (eventRow?.status === "pending" || eventRow?.status === "failed") {
-      const pushed = await pageA.evaluate(async () => window.__orbixE2E!.pushSyncPending());
-      expect(pushed).toBeGreaterThanOrEqual(1);
-    }
+    // Drain outbox — auto cycle after post may already be syncing (lock/claim race).
+    const flushA = await pageA.evaluate(async () =>
+      window.__orbixE2E!.flushSyncQueue({ maxRounds: 16 }),
+    );
+    expect(flushA.remaining).toBe(0);
 
     const queueAAfter = await pageA.evaluate(async () =>
       window.__orbixE2E!.getSyncQueueSnapshot(),
@@ -205,7 +205,7 @@ test.describe("Phase 5 two-device accounting sync", () => {
     expect(appliedMarkers.length).toBeGreaterThanOrEqual(1);
 
     // Push from B must not create a new remote purchase for same event
-    await pageB.evaluate(async () => window.__orbixE2E!.pushSyncPending());
+    await pageB.evaluate(async () => window.__orbixE2E!.flushSyncQueue({ maxRounds: 8 }));
     const pullA = await pageA.evaluate(async () =>
       window.__orbixE2E!.pullSyncRemote("orbix-e2e-company"),
     );
@@ -480,10 +480,10 @@ test.describe("Phase 6 two-device Sales sync", () => {
     }, payload.sync_event_id);
     expect(envelopeType || domainType).toBe("sales_posted");
 
-    if (eventRow?.status === "pending" || eventRow?.status === "failed") {
-      const pushed = await pageA.evaluate(async () => window.__orbixE2E!.pushSyncPending());
-      expect(pushed).toBeGreaterThanOrEqual(1);
-    }
+    const flushA = await pageA.evaluate(async () =>
+      window.__orbixE2E!.flushSyncQueue({ maxRounds: 16 }),
+    );
+    expect(flushA.remaining).toBe(0);
 
     const queueAAfter = await pageA.evaluate(async () =>
       window.__orbixE2E!.getSyncQueueSnapshot(),

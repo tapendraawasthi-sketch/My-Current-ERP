@@ -15,7 +15,7 @@
 ## Related open tickets (unchanged)
 
 - TICKET-PR-B1-001 — **PASS**
-- TICKET-PR-B1-002 — **OPEN** (sync 2 FAIL)
+- TICKET-PR-B1-002 — **PASS** (sync 5/5 r4)
 - TICKET-PR-B3-001 — staging conflict attestation PENDING
 
 **Note:** False PASS from commit `2e0b45aa` (chat `b5pass`) is **reversed**.

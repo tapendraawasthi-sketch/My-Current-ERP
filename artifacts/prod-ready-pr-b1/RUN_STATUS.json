@@ -4,25 +4,25 @@
   "authority": "ADR_0084",
   "as_of": "2026-07-20",
   "engineering_pack_ready": true,
-  "staging_attestation_complete": false,
+  "staging_attestation_complete": true,
   "production_approved": false,
   "connected_run": {
-    "status": "PARTIAL",
+    "status": "PASS",
     "environment": "https://sutra-erp-bot.onrender.com + local sync :3010",
     "command": "ORBIX_E2E_CONNECTED=true ERP_BOT_BACKEND_URL=https://sutra-erp-bot.onrender.com npx playwright test next12+connected+sales; ORBIX_SYNC_E2E=true sync on :3010",
     "log": "artifacts/prod-ready-pr-b1/connected/CONNECTED_SUMMARY.md",
     "summary": {
       "launch_connected_passed": 19,
       "launch_connected_failed": 0,
-      "sync_passed": 3,
-      "sync_failed": 2
+      "sync_passed": 5,
+      "sync_failed": 0
     },
     "notes": [
       "r6 launch connected pack PASS 19/19 vs Render bot",
-      "sync two-device push/pull FAIL (pushSyncPending=0); readiness+duplicate+lost-ack PASS",
-      "FY seed + MemoryRouter harness + eventSyncQueue assert fixes landed"
+      "r4 sync pack PASS 5/5 (flushSyncQueue + pushPending lock retry)",
+      "FY seed + MemoryRouter harness + eventSyncQueue assert fixes retained"
     ],
-    "ticket_b1_002": "OPEN"
+    "ticket_b1_002": "PASS"
   },
   "manual_run": {
     "status": "PASS",
@@ -59,9 +59,9 @@
     },
     {
       "id": "auto_sync",
-      "status": "FAIL",
+      "status": "PASS",
       "ticket": "TICKET-PR-B1-002",
-      "note": "3 pass / 2 fail device push-pull"
+      "note": "5/5 including device A→B purchase and sales push/pull"
     },
     {
       "id": "manual_romanized_purchase",
@@ -94,7 +94,7 @@
       "ticket": "TICKET-PR-B1-001"
     }
   ],
-  "blocks_pr_c": true,
+  "blocks_pr_c": false,
   "allows_pr_b_residual_parallel": true,
-  "b1_tickets_cleared": ["TICKET-PR-B1-001"]
+  "b1_tickets_cleared": ["TICKET-PR-B1-001", "TICKET-PR-B1-002"]
 }

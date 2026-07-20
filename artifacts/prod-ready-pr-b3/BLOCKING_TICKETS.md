@@ -10,6 +10,6 @@
 ## Related open (from PR-B1)
 
 - TICKET-PR-B1-001 manual staging attestation — **PASS**
-- TICKET-PR-B1-002 connected E2E green on staging — **OPEN** (sync 2 FAIL)
+- TICKET-PR-B1-002 connected E2E green on staging — **PASS** (sync 5/5 r4)
 
 **Note:** False PASS from commit `2e0b45aa` (chat `approved b3`) is **reversed**.

@@ -8,7 +8,6 @@
 
 ## TICKET-PR-B1-002 — Connected E2E green on staging URL
 
-- **Status:** OPEN — launch connected **PASS 19/19** (2026-07-20 r6); sync **FAIL 2** (device push/pull)
-- **Blocks:** PR-C / PR-C1-ARM
-- **Evidence:** `connected/CONNECTED_SUMMARY.md`
-- **Clear when:** full pack including sync green, **or** explicit signed owner residual + OWNER_SIGNOFF.
+- **Status:** PASS — launch connected **19/19** (r6) + sync **5/5** (r4, 2026-07-20)
+- **Blocks:** cleared for this ticket (PR-C1-ARM still needs B3/B5/OWNER_SIGNOFF)
+- **Evidence:** `connected/CONNECTED_SUMMARY.md`; `RUN_STATUS.json` `connected_run.status=PASS`

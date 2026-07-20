@@ -50,7 +50,18 @@ export class EventSyncClient {
   async pushPending(): Promise<number> {
     if (!isMigrationFlagEnabled("MIGRATION_EVENT_SYNC")) return 0;
 
-    const locked = await withSyncWorkerLock(async () => {
+    // Retry when the Web Lock is held by an in-flight auto sync cycle
+    // (post*Transaction fires runEventSyncCycle; ifAvailable would otherwise return 0).
+    for (let lockAttempt = 0; lockAttempt < 8; lockAttempt++) {
+      const locked = await this.pushPendingOnce();
+      if (locked !== null) return locked;
+      await new Promise((r) => setTimeout(r, 40 + lockAttempt * 30));
+    }
+    return 0;
+  }
+
+  private async pushPendingOnce(): Promise<number | null> {
+    return withSyncWorkerLock(async () => {
       const pending = await getPendingSyncEvents(BATCH_SIZE);
       if (pending.length === 0) return 0;
 
@@ -241,8 +252,6 @@ export class EventSyncClient {
         throw error;
       }
     });
-
-    return locked ?? 0;
   }
 
   async pullRemote(companyId?: string): Promise<number> {
