@@ -1,0 +1,11 @@
+{
+  "holdout_path": "evals/mai07_ranker_r2/splits/holdout_validation.jsonl",
+  "holdout_sha256": "51d2162a6e78e231e3cdaab00902eba906a3c990e0a15146b0e6f7c4bdcc9171",
+  "locked_at": "2026-07-15T12:19:37.039097+00:00",
+  "manifest_id": "MAI_07R2_HOLDOUT_FREEZE",
+  "note": "Holdout labels locked; do not edit after this freeze.",
+  "overlay_version": "mai-07-r2.1.0",
+  "resource_content_hash": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+  "resource_pack_version": "mai-07.3.0",
+  "runtime_version": "mai-07.3.0"
+}

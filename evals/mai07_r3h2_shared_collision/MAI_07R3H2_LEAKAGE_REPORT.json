@@ -1,0 +1,23 @@
+{
+  "blocked_text_pool_size": 9791,
+  "builder_version": "mai-07-r3h2-dataset.1.0.0",
+  "counterfactual_groups_built": 248,
+  "prior_non_frozen_sources": [
+    "evals/mai07_r3h_english_identity/development.jsonl",
+    "evals/mai07_r3f_english_identity/development.jsonl",
+    "evals/mai07_r3f_english_identity/holdout_validation.jsonl",
+    "evals/mai07_r3f_english_identity/safety_challenge.jsonl",
+    "evals/mai07_r3f_english_identity/context_counterfactual.jsonl",
+    "evals/mai07_r3f_seal_new/development.jsonl",
+    "evals/mai07_r3f_seal_new/holdout_validation.jsonl",
+    "evals/mai07_r3f_seal_new/safety_challenge.jsonl",
+    "evals/mai07_r3f_seal_new/context_counterfactual.jsonl"
+  ],
+  "prior_non_frozen_texts_blocked": 9431,
+  "r3h_development_split_read": true,
+  "r3h_holdout_family_read": false,
+  "report_id": "MAI_07R3H2_LEAKAGE_REPORT",
+  "schema_version": "1.0.0",
+  "total_cases": 3074,
+  "v1_texts_blocked": 360
+}

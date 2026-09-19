@@ -1,0 +1,983 @@
+{
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "agreement": {
+    "mismatches": [],
+    "ok": true
+  },
+  "audit": {
+    "failed_gates": [],
+    "formula_version": "mai-07-r3n.formula.1.0.0",
+    "gates": {
+      "acronym_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "acronym_identity_top1",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "ACRONYM_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "acronym_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "authorized_code_corrective": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 9,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "authorized_code_corrective",
+          "notes": "",
+          "numerator": 9,
+          "operation": "==",
+          "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "authorized_code_corrective",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "caps_ok": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "caps_ok",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "CANDIDATE_CAP_PRESSURE",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "caps_ok",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "english_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "english_identity_top1",
+          "notes": "",
+          "numerator": 2,
+          "operation": ">=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.98,
+          "value": 1.0
+        },
+        "metric_id": "english_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "false_devanagari_on_english": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "false_devanagari_on_english",
+          "notes": "",
+          "numerator": 0,
+          "operation": "<=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.02,
+          "value": 0.0
+        },
+        "metric_id": "false_devanagari_on_english",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identifier_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "identifier_identity_top1",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "identifier_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identity_retention": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "identity_retention",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "IDENTITY_RETENTION_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "identity_retention",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "protected_identity": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "protected_identity",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "PROTECTED_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "protected_identity",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "raw_ok_all": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "raw_ok_all",
+          "notes": "",
+          "numerator": 2,
+          "operation": "==",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "raw_ok_all",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "romanized_script_at_5": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "romanized_script_at_5",
+          "notes": "",
+          "numerator": 2,
+          "operation": ">=",
+          "population_id": "ROMANIZED_NEPALI_REQUIRED",
+          "threshold": 0.9,
+          "value": 1.0
+        },
+        "metric_id": "romanized_script_at_5",
+        "outcome": "PASS",
+        "pass": true
+      }
+    },
+    "metrics": {
+      "acronym_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identity_top1",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "authorized_code_corrective": {
+        "applicability": "APPLICABLE",
+        "denominator": 9,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "authorized_code_corrective",
+        "notes": "",
+        "numerator": 9,
+        "operation": "==",
+        "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "caps_ok": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "caps_ok",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_identity_top1",
+        "notes": "",
+        "numerator": 2,
+        "operation": ">=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "false_devanagari_on_english",
+        "notes": "",
+        "numerator": 0,
+        "operation": "<=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.02,
+        "value": 0.0
+      },
+      "identifier_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identifier_identity_top1",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "identity_retention": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_retention",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "protected_identity": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "protected_identity",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "PROTECTED_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "raw_ok_all": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "raw_ok_all",
+        "notes": "",
+        "numerator": 2,
+        "operation": "==",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "romanized_script_at_5": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "romanized_script_at_5",
+        "notes": "",
+        "numerator": 2,
+        "operation": ">=",
+        "population_id": "ROMANIZED_NEPALI_REQUIRED",
+        "threshold": 0.9,
+        "value": 1.0
+      }
+    },
+    "ok": true,
+    "scorer_id": "mai07_r3n_audit_scorer",
+    "scorer_version": "mai-07-r3n.scorer.1.0.0"
+  },
+  "candidate": {
+    "activation_method": "explicit_load_resources_resources_dir_plus_r3n_factory",
+    "candidate_policy_version": "mai-07-r3n.1.0.0",
+    "candidate_runtime_version": "mai-07.1.6-r3n-policyconf",
+    "default_active": false,
+    "overlay_enabled": false,
+    "pack_dir": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\oip\\modules\\language_runtime\\transliteration\\sealed_packs\\mai-07.1.6-r3n-policyconf",
+    "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "parent_runtime_version": "mai-07.1.3-r3f-sealnew"
+  },
+  "canonical": {
+    "canonical_audit_agreement": {
+      "mismatches": [],
+      "ok": true
+    },
+    "failed_gates": [],
+    "formula_version": "mai-07-r3n.formula.1.0.0",
+    "gates": {
+      "acronym_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "acronym_identity_top1",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "ACRONYM_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "acronym_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "authorized_code_corrective": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 9,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "authorized_code_corrective",
+          "notes": "",
+          "numerator": 9,
+          "operation": "==",
+          "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "authorized_code_corrective",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "caps_ok": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "caps_ok",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "CANDIDATE_CAP_PRESSURE",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "caps_ok",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "english_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "english_identity_top1",
+          "notes": "",
+          "numerator": 2,
+          "operation": ">=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.98,
+          "value": 1.0
+        },
+        "metric_id": "english_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "false_devanagari_on_english": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "false_devanagari_on_english",
+          "notes": "",
+          "numerator": 0,
+          "operation": "<=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.02,
+          "value": 0.0
+        },
+        "metric_id": "false_devanagari_on_english",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identifier_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "identifier_identity_top1",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "identifier_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identity_retention": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "identity_retention",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "IDENTITY_RETENTION_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "identity_retention",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "protected_identity": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 1,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "protected_identity",
+          "notes": "",
+          "numerator": 1,
+          "operation": "==",
+          "population_id": "PROTECTED_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "protected_identity",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "raw_ok_all": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "raw_ok_all",
+          "notes": "",
+          "numerator": 2,
+          "operation": "==",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "raw_ok_all",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "romanized_script_at_5": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 2,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "romanized_script_at_5",
+          "notes": "",
+          "numerator": 2,
+          "operation": ">=",
+          "population_id": "ROMANIZED_NEPALI_REQUIRED",
+          "threshold": 0.9,
+          "value": 1.0
+        },
+        "metric_id": "romanized_script_at_5",
+        "outcome": "PASS",
+        "pass": true
+      }
+    },
+    "metrics": {
+      "acronym_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identity_top1",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "authorized_code_corrective": {
+        "applicability": "APPLICABLE",
+        "denominator": 9,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "authorized_code_corrective",
+        "notes": "",
+        "numerator": 9,
+        "operation": "==",
+        "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "caps_ok": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "caps_ok",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_identity_top1",
+        "notes": "",
+        "numerator": 2,
+        "operation": ">=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "false_devanagari_on_english",
+        "notes": "",
+        "numerator": 0,
+        "operation": "<=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.02,
+        "value": 0.0
+      },
+      "identifier_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identifier_identity_top1",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "identity_retention": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_retention",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "protected_identity": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "protected_identity",
+        "notes": "",
+        "numerator": 1,
+        "operation": "==",
+        "population_id": "PROTECTED_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "raw_ok_all": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "raw_ok_all",
+        "notes": "",
+        "numerator": 2,
+        "operation": "==",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "romanized_script_at_5": {
+        "applicability": "APPLICABLE",
+        "denominator": 2,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "romanized_script_at_5",
+        "notes": "",
+        "numerator": 2,
+        "operation": ">=",
+        "population_id": "ROMANIZED_NEPALI_REQUIRED",
+        "threshold": 0.9,
+        "value": 1.0
+      },
+      "split_expected_pass": {
+        "denominator": 19,
+        "formula_version": "mai-07-r3n.formula.1.0.0",
+        "metric_id": "split_expected_pass",
+        "numerator": 19,
+        "scorer_version": "mai-07-r3n.scorer.1.0.0",
+        "value": 1.0
+      }
+    },
+    "observations": [
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0001-1757eaeb",
+        "devanagari_at_5": false,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0002-9c0194b3",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0003-5603aece",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0004-4b64232a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0005-c190b058",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0006-e5c720e0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0007-80fc053e",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0008-cb0d05ea",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0009-9eb05e9c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "AUTHORIZED_CODE_CORRECTIVE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0010-100f839f",
+        "devanagari_at_5": false,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0011-8010de24",
+        "devanagari_at_5": false,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0012-65732a0a",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0013-f86d5866",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0014-22f93c62",
+        "devanagari_at_5": false,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "IDENTITY_RETENTION_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0015-75eef323",
+        "devanagari_at_5": false,
+        "expected_behavior": "ACRONYM_IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "ACRONYM_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0016-a8b144af",
+        "devanagari_at_5": false,
+        "expected_behavior": "PROTECTED_IDENTITY",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "IDENTIFIER_PROTECTION_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0017-a309fd6e",
+        "devanagari_at_5": false,
+        "expected_behavior": "PROTECTED_IDENTITY",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "PROTECTED_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0018-4c552159",
+        "devanagari_at_5": true,
+        "expected_behavior": "SHARED_CONSERVATIVE",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "SHARED_OR_AMBIGUOUS"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N-DEV-0019-78e03b5c",
+        "devanagari_at_5": true,
+        "expected_behavior": "CAP_OK",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CANDIDATE_CAP_PRESSURE"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      }
+    ],
+    "ok": true,
+    "scorer_id": "mai07_r3n_canonical_scorer",
+    "scorer_version": "mai-07-r3n.scorer.1.0.0"
+  },
+  "case_count": 19,
+  "ok": true,
+  "overlay_enabled": false,
+  "predictions_canonical_list_sha256": "aa99aeecb37b622770b75d60981e38ca0aa06ed485e8f89b611dd21ae7292a53",
+  "predictions_raw_sha256": "388d0fd3b0c10fdafae5d156474fddd6204e70d97532419153fc2d79f9a58aa5",
+  "split": "DEVELOPMENT"
+}

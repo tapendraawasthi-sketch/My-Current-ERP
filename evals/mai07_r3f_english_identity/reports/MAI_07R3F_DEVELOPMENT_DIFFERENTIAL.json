@@ -1,0 +1,12 @@
+{
+  "candidate_set_mismatches": 0,
+  "candidate_set_preservation": 1.0,
+  "english_identity_harm": 0,
+  "harm_records_sample": [],
+  "note": "Differential compares English Identity Guard reorder vs unguarded R3D generate+rank on non-frozen cases only.",
+  "proper_name_harm": 0,
+  "protected_harm": 0,
+  "romanized_target_top1_harm": 0,
+  "split": "DEVELOPMENT",
+  "target_recall_at_5_harm": 0
+}

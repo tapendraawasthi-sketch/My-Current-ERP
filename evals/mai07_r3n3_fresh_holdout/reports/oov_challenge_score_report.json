@@ -1,0 +1,2598 @@
+{
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "agreement": {
+    "mismatches": [],
+    "ok": true
+  },
+  "audit": {
+    "failed_gates": [],
+    "formula_version": "mai-07-r3n3.formula.1.0.0",
+    "gates": {
+      "acronym_identifier_analogue": {
+        "metric_id": "acronym_identifier_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "acronym_identity_top1": {
+        "metric_id": "acronym_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "authorized_code_corrective": {
+        "metric_id": "authorized_code_corrective",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "cap_pressure_identity_retention": {
+        "metric_id": "cap_pressure_identity_retention",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "caps_ok": {
+        "metric_id": "caps_ok",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_guard_analogue": {
+        "metric_id": "english_guard_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_identity_top1": {
+        "metric_id": "english_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "exact_raw_identity": {
+        "metric_id": "exact_raw_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "exactly_one_identity": {
+        "metric_id": "exactly_one_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "false_devanagari_on_english": {
+        "metric_id": "false_devanagari_on_english",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "finalizer_idempotence": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 100,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "finalizer_idempotence",
+          "notes": "",
+          "numerator": 100,
+          "operation": "==",
+          "population_id": "SPLIT_OOV_CHALLENGE",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "finalizer_idempotence",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identifier_identity_top1": {
+        "metric_id": "identifier_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_invariant_analogue": {
+        "metric_id": "identity_invariant_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_retention": {
+        "metric_id": "identity_retention",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "protected_identity": {
+        "metric_id": "protected_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "raw_ok_all": {
+        "metric_id": "raw_ok_all",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "romanized_script_at_5": {
+        "metric_id": "romanized_script_at_5",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      }
+    },
+    "metrics": {
+      "acronym_identifier_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identifier_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTIFIER_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "acronym_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "authorized_code_corrective": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "authorized_code_corrective",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "cap_pressure_identity_retention": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "cap_pressure_identity_retention",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "caps_ok": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "caps_ok",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "english_guard_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_guard_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ENGLISH_GUARD_ANALOGUE",
+        "threshold": 0.98,
+        "value": null
+      },
+      "english_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.98,
+        "value": null
+      },
+      "exact_raw_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "exact_raw_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "exactly_one_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "exactly_one_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "false_devanagari_on_english": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "false_devanagari_on_english",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "<=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.02,
+        "value": null
+      },
+      "finalizer_idempotence": {
+        "applicability": "APPLICABLE",
+        "denominator": 100,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "finalizer_idempotence",
+        "notes": "",
+        "numerator": 100,
+        "operation": "==",
+        "population_id": "SPLIT_OOV_CHALLENGE",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "identifier_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identifier_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_invariant_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_invariant_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_INVARIANT_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_retention": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_retention",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "protected_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "protected_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "PROTECTED_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "raw_ok_all": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "raw_ok_all",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "romanized_script_at_5": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "romanized_script_at_5",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ROMANIZED_NEPALI_REQUIRED",
+        "threshold": 0.95,
+        "value": null
+      }
+    },
+    "ok": true,
+    "scorer_id": "mai07_r3n3_audit_scorer",
+    "scorer_version": "mai-07-r3n3.scorer.1.0.0"
+  },
+  "candidate": {
+    "activation_method": "explicit_load_resources_resources_dir_plus_r3n3_factory",
+    "candidate_policy_version": "mai-07-r3n3.1.0.0",
+    "candidate_runtime_version": "mai-07.1.8-r3n3-identityinv",
+    "default_active": false,
+    "overlay_enabled": false,
+    "pack_dir": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\oip\\modules\\language_runtime\\transliteration\\sealed_packs\\mai-07.1.8-r3n3-identityinv",
+    "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "parent_runtime_version": "mai-07.1.3-r3f-sealnew"
+  },
+  "canonical": {
+    "canonical_audit_agreement": {
+      "mismatches": [],
+      "ok": true
+    },
+    "failed_gates": [],
+    "formula_version": "mai-07-r3n3.formula.1.0.0",
+    "gates": {
+      "acronym_identifier_analogue": {
+        "metric_id": "acronym_identifier_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "acronym_identity_top1": {
+        "metric_id": "acronym_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "authorized_code_corrective": {
+        "metric_id": "authorized_code_corrective",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "cap_pressure_identity_retention": {
+        "metric_id": "cap_pressure_identity_retention",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "caps_ok": {
+        "metric_id": "caps_ok",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_guard_analogue": {
+        "metric_id": "english_guard_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_identity_top1": {
+        "metric_id": "english_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "exact_raw_identity": {
+        "metric_id": "exact_raw_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "exactly_one_identity": {
+        "metric_id": "exactly_one_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "false_devanagari_on_english": {
+        "metric_id": "false_devanagari_on_english",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "finalizer_idempotence": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 100,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "finalizer_idempotence",
+          "notes": "",
+          "numerator": 100,
+          "operation": "==",
+          "population_id": "SPLIT_OOV_CHALLENGE",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "finalizer_idempotence",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identifier_identity_top1": {
+        "metric_id": "identifier_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_invariant_analogue": {
+        "metric_id": "identity_invariant_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_retention": {
+        "metric_id": "identity_retention",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "protected_identity": {
+        "metric_id": "protected_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "raw_ok_all": {
+        "metric_id": "raw_ok_all",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "romanized_script_at_5": {
+        "metric_id": "romanized_script_at_5",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      }
+    },
+    "metrics": {
+      "acronym_identifier_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identifier_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTIFIER_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "acronym_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "authorized_code_corrective": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "authorized_code_corrective",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "cap_pressure_identity_retention": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "cap_pressure_identity_retention",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "caps_ok": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "caps_ok",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "english_guard_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_guard_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ENGLISH_GUARD_ANALOGUE",
+        "threshold": 0.98,
+        "value": null
+      },
+      "english_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.98,
+        "value": null
+      },
+      "exact_raw_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "exact_raw_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "exactly_one_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "exactly_one_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "false_devanagari_on_english": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "false_devanagari_on_english",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "<=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.02,
+        "value": null
+      },
+      "finalizer_idempotence": {
+        "applicability": "APPLICABLE",
+        "denominator": 100,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "finalizer_idempotence",
+        "notes": "",
+        "numerator": 100,
+        "operation": "==",
+        "population_id": "SPLIT_OOV_CHALLENGE",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "identifier_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identifier_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_invariant_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_invariant_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_INVARIANT_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_retention": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_retention",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "protected_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "protected_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "PROTECTED_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "raw_ok_all": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "raw_ok_all",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "romanized_script_at_5": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "romanized_script_at_5",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ROMANIZED_NEPALI_REQUIRED",
+        "threshold": 0.95,
+        "value": null
+      },
+      "split_expected_pass": {
+        "denominator": 100,
+        "formula_version": "mai-07-r3n3.formula.1.0.0",
+        "metric_id": "split_expected_pass",
+        "numerator": 67,
+        "scorer_version": "mai-07-r3n3.scorer.1.0.0",
+        "value": 0.67
+      }
+    },
+    "observations": [
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0001-34f6726b",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0002-e43bd0c9",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0003-7c881a66",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0004-a053fdc6",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0005-2dfc4e66",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0006-fb34a057",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0007-6e385653",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0008-0fbfaf71",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0009-713fd3ce",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0010-d49aaed0",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0011-5263e05d",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0012-6f542413",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0013-08258d48",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0014-be87cbac",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0015-584852a8",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0016-cd45ae47",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0017-4cf7d3c1",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0018-e363f082",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0019-d888d5dc",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0020-a4b35a03",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0021-921f98e8",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0022-20d779f4",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0023-cc39005e",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0024-a2f863a5",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0025-063e6864",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0026-689f5431",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0027-8330cfc0",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0028-35efd956",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0029-89a4ab81",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0030-f03943c2",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0031-b85fb9d1",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0032-44ce023c",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0033-db1a5119",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0034-6361a749",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0035-37a27165",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0036-e6d9ce15",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0037-36a58c36",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0038-429a28e8",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0039-bca5b52b",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0040-fe2333cf",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0041-72c067f3",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0042-659d04fd",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0043-72783dfe",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0044-5a7b4b25",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0045-5e0195a3",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0046-cec322d1",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0047-c6a09283",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0048-36f0383b",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0049-9ca01002",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0050-b836d21a",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0051-7d814de7",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0052-33575863",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0053-735cc9b6",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0054-8c3b09b8",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0055-3eba4158",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0056-da5066d0",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0057-9d7f2e8d",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0058-860ae9fa",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0059-dd793ac8",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0060-befab8b6",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0061-70b5aa0c",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0062-c3fe9a8c",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0063-96e8d50c",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0064-be596908",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0065-3dbc39f0",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0066-275f9d44",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0067-69e82fb4",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0068-28d40ff5",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0069-ccc7ba79",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0070-c3f7f6b4",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0071-97cef387",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0072-91c57c52",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0073-3dc2e8c5",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0074-6fea6864",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0075-13ee4c5f",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0076-fca561fd",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0077-8d11358d",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0078-61d188b1",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0079-83f4d9f0",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0080-7909b481",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0081-0feac187",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0082-1e9b1fc5",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0083-bab6a00b",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0084-a2740b28",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0085-b1c3b104",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0086-90a02347",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0087-aa3beb72",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0088-e48bfe20",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0089-59a16ee3",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0090-e147b20b",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0091-789ffc5c",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0092-07366bf2",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0093-e8d69ad0",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0094-99e734bc",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0095-0be0fc43",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0096-68075371",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0097-3bfa6244",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0098-6f3137e9",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0099-9221ff4f",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_RETAINED",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 1,
+        "caps_ok": true,
+        "case_id": "R3N3-OOV-0100-8539f67e",
+        "devanagari_at_5": false,
+        "exact_raw_identity": true,
+        "exactly_one_identity": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "finalizer_idempotence": true,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "OOV"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      }
+    ],
+    "ok": true,
+    "scorer_id": "mai07_r3n3_canonical_scorer",
+    "scorer_version": "mai-07-r3n3.scorer.1.0.0"
+  },
+  "case_count": 100,
+  "include_parent": false,
+  "ok": true,
+  "overlay_enabled": false,
+  "predictions_canonical_list_sha256": "35ce60c0dd79017139869085f51299f9936c3ae3b93c75dd9004e0f5ea3cc996",
+  "predictions_raw_sha256": "f9d7b1807452df2d0197fe29ac78d3750f6196c41861a76d747acfea42207228",
+  "split": "OOV_CHALLENGE"
+}

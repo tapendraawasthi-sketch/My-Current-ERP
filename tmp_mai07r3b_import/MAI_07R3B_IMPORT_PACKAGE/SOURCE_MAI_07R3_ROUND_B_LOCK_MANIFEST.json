@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "status": "LOCKED",
+  "reviewer": "Tapendra Awasthi",
+  "review_date": "2026-07-15",
+  "product_owner_reviewed": true,
+  "nepali_fluent_reviewed": true,
+  "professional_linguist": false,
+  "independent_from_round_a_declared": true,
+  "blind_mapping_not_inspected_declared": true,
+  "ranks_scores_provenance_not_used_declared": true,
+  "ai_did_not_autofill_declared": true,
+  "candidate_judgment_count": 263,
+  "unique_review_id_count": 149,
+  "incomplete_count": 0,
+  "decision_counts": {
+    "ACCEPTABLE": 223,
+    "UNACCEPTABLE": 36,
+    "CANNOT_DECIDE": 4
+  },
+  "source_file": "MAI_07R3_ROUND_B_REVIEW.csv",
+  "source_sha256": "bb1d2b1929def4d1fc05b021bd7dcdc4238cad4fbeb23106fb1ef5d224b8b221",
+  "round_a_locked_file": "MAI_07R3_ROUND_A_RESPONSES_LOCKED.csv",
+  "round_a_locked_sha256": "f01270e3017162259d2d305e158e86e386eb86841e4928b99546cd613d037f49",
+  "csv_file": "MAI_07R3_ROUND_B_RESPONSES_LOCKED.csv",
+  "csv_sha256": "79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61",
+  "workbook_file": "MokXya_MAI_07R3_Round_B_LOCKED.xlsx",
+  "workbook_sha256": "6282b6a14a8a7eefcb1da4012a6a8ffa67fc076f5db287d1dd19625e81d58901",
+  "locked_at_utc": "2026-07-15T15:03:47.934Z",
+  "next_action": "BEGIN_MAI_07R3B_IMPORT_AND_ADJUDICATION",
+  "required_next_inputs": [
+    "MAI_07R3_BLIND_MAPPING.json",
+    "MAI_07R3_REVIEW_SCHEMA.json",
+    "MAI_07R3_IMPORT_TEMPLATE.json"
+  ],
+  "linguist_approved": false,
+  "production_approved": false,
+  "frozen_quality_run_authorized": false,
+  "mai08_authorized": false
+}

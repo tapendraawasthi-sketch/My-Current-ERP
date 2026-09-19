@@ -1,0 +1,14 @@
+{
+  "active_ok": true,
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "attempt_bodies_unchanged_by_this_phase": true,
+  "candidate_promoted": false,
+  "lock_bodies_unchanged_by_this_phase": true,
+  "lock_body_post_closeout_mutation": false,
+  "lock_chain_semantic_integrity": true,
+  "no_prediction_rerun": true,
+  "overlay_disabled": true,
+  "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "raw_file_hash_is_lock_authority": false,
+  "schema_version": "mai07_r3n_integrity_immutability_v2"
+}

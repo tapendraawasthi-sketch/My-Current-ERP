@@ -1,0 +1,15 @@
+{
+  "consumed": true,
+  "holdout_attempt_path": "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_HOLDOUT_ATTEMPT_001.json",
+  "lock_record_path": "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCK_RECORD.json",
+  "locked_not_run_path": "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+  "locked_raw_sha256": "5ad47ae4688a4e23b8b333855a9413afe4698871b871c51418f970760e0264c1",
+  "locked_semantic_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+  "parent_holdout_predictions_path": "evals/mai07_r3n4_fresh_holdout/reports/parent_holdout_predictions.jsonl",
+  "parent_holdout_predictions_sha256": "2c4700661f9ab62e1149a3f5186c765464a13706591f5f0d30859e9142c5deaf",
+  "parent_r3n3_holdout_predictions_path": "evals/mai07_r3n4_fresh_holdout/reports/parent_r3n3_holdout_predictions.jsonl",
+  "parent_r3n3_holdout_predictions_sha256": "0893b4a2b8899c6bb31edfdc88e79215c32d486e59451719f0a0dcaa67550db7",
+  "qualification_path": "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+  "rc_id": "MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "verdict": "FAILED_HOLDOUT_QUALITY"
+}

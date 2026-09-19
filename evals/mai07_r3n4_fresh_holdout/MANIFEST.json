@@ -1,0 +1,108 @@
+{
+  "builder_version": "mai-07-r3n4-dataset.1.0.0",
+  "candidate_policy_version": "mai-07-r3n4.1.0.0",
+  "frozen_v2_unused": true,
+  "manifest_id": "MANIFEST",
+  "multi_token_coverage": {
+    "multi_token_case_count": 4975,
+    "multi_token_coverage_pct": 100.0,
+    "total_cases": 4975
+  },
+  "parent_active_runtime": "mai-07.1.3-r3f-sealnew",
+  "parent_failed_r3n3_runtime": "mai-07.1.8-r3n3-identityinv",
+  "population_counts": {
+    "ACRONYM_IDENTIFIER_ANALOGUE": 121,
+    "ACRONYM_IDENTITY_REQUIRED": 247,
+    "AUTHORIZED_CODE_CORRECTIVE": 9,
+    "CANDIDATE_CAP_PRESSURE": 397,
+    "COALESCED_SPAN_IDENTITY": 246,
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "ENGLISH_GUARD_ANALOGUE": 147,
+    "ENGLISH_IDENTITY_REQUIRED": 497,
+    "EXACTLY_ONE_IDENTITY_REQUIRED": 897,
+    "EXACT_RAW_IDENTITY_REQUIRED": 897,
+    "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+    "IDENTIFIER_PROTECTION_REQUIRED": 247,
+    "IDENTITY_ANCHOR_CHALLENGE": 500,
+    "IDENTITY_INVARIANT_ANALOGUE": 396,
+    "IDENTITY_RETENTION_REQUIRED": 897,
+    "MONOTONIC_PARENT_CORRECT": 400,
+    "MONOTONIC_PARENT_INCORRECT": 46,
+    "MULTI_TOKEN_IDENTITY": 346,
+    "OOV": 100,
+    "PROTECTED_IDENTITY_REQUIRED": 247,
+    "REFINED_SPAN_IDENTITY": 246,
+    "ROMANIZED_NEPALI_REQUIRED": 397,
+    "SERIALIZATION_ROUNDTRIP": 546,
+    "SHARED_OR_AMBIGUOUS": 197,
+    "UNICODE_IDENTITY": 196
+  },
+  "prohibited_for_training": true,
+  "r3l_synthetic_overlap_blocked": true,
+  "schema_version": "mai07_r3n4_manifest_v1",
+  "seeds": {
+    "DEVELOPMENT": 20260724,
+    "HOLDOUT_FAMILY": 20260725
+  },
+  "splits": {
+    "CONTEXT_COUNTERFACTUAL": {
+      "case_count": 300,
+      "filename": "context_counterfactual.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\context_counterfactual.jsonl",
+      "seed": 20260725,
+      "sha256": "b6ed9209bc9386d9cd965268aff89019681ff4aa58d5ded775f73a97aa8d73fe"
+    },
+    "DEVELOPMENT": {
+      "case_count": 800,
+      "filename": "development.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\development.jsonl",
+      "seed": 20260724,
+      "sha256": "01ce78c7dfd6dd2b574bd75232e3f7261127b471f3c00772af1296d900ee1dd7"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 2475,
+      "filename": "holdout_validation.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\holdout_validation.jsonl",
+      "seed": 20260725,
+      "sha256": "9d9b95bd53eb033d383c10b572e5ea7c69278fa778100c2078fce20298bff688"
+    },
+    "IDENTITY_ANCHOR_CHALLENGE": {
+      "case_count": 500,
+      "filename": "identity_anchor_challenge.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\identity_anchor_challenge.jsonl",
+      "seed": 20260725,
+      "sha256": "b82ba33b84dd766155fbfff9dcd42e429c964dc89062466ace577ecd6a795d2f"
+    },
+    "MONOTONIC_REGRESSION": {
+      "case_count": 400,
+      "filename": "monotonic_regression.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\monotonic_regression.jsonl",
+      "seed": 20260725,
+      "sha256": "6ea867f3fe4352eca7bd21694269bdee9632564391774ad4fe1da07ba56aede6"
+    },
+    "OOV_CHALLENGE": {
+      "case_count": 100,
+      "filename": "oov_challenge.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\oov_challenge.jsonl",
+      "seed": 20260725,
+      "sha256": "3cac7948750e2f92a0321e0b0b074bf81a2ceb568538f5846c16c0abe955839a"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 400,
+      "filename": "safety_challenge.jsonl",
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\safety_challenge.jsonl",
+      "seed": 20260725,
+      "sha256": "2e71a10c44370039095fa5e2b50ce8a92c6d5801e504bdce257b3182ed61ebca"
+    }
+  },
+  "total_cases": 4975,
+  "totals": {
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "DEVELOPMENT": 800,
+    "HOLDOUT_VALIDATION": 2475,
+    "IDENTITY_ANCHOR_CHALLENGE": 500,
+    "MONOTONIC_REGRESSION": 400,
+    "OOV_CHALLENGE": 100,
+    "SAFETY_CHALLENGE": 400
+  }
+}

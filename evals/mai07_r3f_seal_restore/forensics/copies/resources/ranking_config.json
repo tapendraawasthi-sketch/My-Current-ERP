@@ -1,0 +1,13 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "english_identity_boost": 0.45,
+  "english_dev_penalty": -0.85,
+  "english_form_dev_penalty": -0.4,
+  "name_like_identity_boost": 0.45,
+  "name_like_dev_penalty": -0.55,
+  "conservative_identity_boost": 0.25,
+  "provenance": "MAI-07R3D safety ranking weights; engineering-curated; not linguist-approved",
+  "resource_id": "ranking_config_r3d",
+  "version": "mai-07.1.1-r3d"
+}

@@ -1,0 +1,95 @@
+{
+  "gates": {
+    "acronym_identifier_identity_top1": {
+      "op": "==",
+      "value": 1.0
+    },
+    "candidate_duplication_after_reordering": {
+      "op": "==",
+      "value": 0
+    },
+    "candidate_set_preservation": {
+      "op": "==",
+      "value": 1.0
+    },
+    "caps_respected": {
+      "op": "==",
+      "value": 1.0
+    },
+    "clear_romanized_target_recall_at_5": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "clear_romanized_target_top1": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "cross_path_parity": {
+      "op": "==",
+      "value": 1.0
+    },
+    "deterministic_output": {
+      "op": "==",
+      "value": 1.0
+    },
+    "english_context_identity_accuracy": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "false_devanagari_on_clear_english": {
+      "op": "<=",
+      "value": 0.01
+    },
+    "harm_count_clearly_romanized": {
+      "op": "==",
+      "value": 0
+    },
+    "name_identity_top1": {
+      "op": "==",
+      "value": 1.0
+    },
+    "nepali_context_target_accuracy": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "overall_english_identity_top1": {
+      "op": ">=",
+      "value": 0.99
+    },
+    "paired_counterfactual_accuracy": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "policy_invocation_coverage": {
+      "op": "==",
+      "value": 1.0
+    },
+    "protected_span_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "raw_view_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "shared_collision_english_identity_top1": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "target_missing_from_top5_rate": {
+      "op": "<=",
+      "value": 0.02
+    },
+    "technical_english_identity_top1": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "unresolved_shared_identity_review_accuracy": {
+      "op": ">=",
+      "value": 0.98
+    }
+  },
+  "locked_before_holdout_observation": true,
+  "schema_version": "1.0.0",
+  "threshold_id": "MAI_07R3H_THRESHOLDS_V1"
+}

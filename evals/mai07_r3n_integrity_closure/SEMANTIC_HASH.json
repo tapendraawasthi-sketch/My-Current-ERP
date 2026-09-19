@@ -1,0 +1,34 @@
+{
+  "MAI-08": "NOT_STARTED",
+  "artifact_raw_sha256": {
+    "DENOMINATOR_ADEQUACY_AUDIT.json": "547bf481ca856a478d52961b6b27c753553d7eb19d18828b8cec69480a80555e",
+    "GATE_SEMANTICS_AUDIT.json": "7cb77823390375fb7bc8df3ec8aa7b6de21d2b8a9638d8432af2dc213533b1b4",
+    "HISTORICAL_INVALIDATION_SIDECAR.json": "3e02dd4fa2997274ed56e7a4db0111548adc58c5d3a6a44a1332bb4497e81f21",
+    "HOLDOUT_REUSE_AUDIT.json": "17f8f56ef770176852d1c607a1817a86c47e6f329350f222d98852bcfb4594aa",
+    "IMMUTABILITY_REPORT.json": "24fe6ab6df0ef7c6afa77c75744981bbdb41815dd8a17e52058c6dad7929327f",
+    "LOCK_CHAIN_SEMANTIC_INTEGRITY.json": "5948c7880448622fb97022ec1879c709964d420ef4dcaac2fd730e5e86ba8b30",
+    "LOCK_HASH_BINDING_NOTE.json": "03b57e314f6b7850f63d27cd987079966552f5752da4dc5eae8fce3327aad657",
+    "RC_002_VALIDITY_DECISION.json": "e6deb6cb1e4331c74a151182822c763e74f0996296ea0bf2cb2266948c36adef",
+    "RUNTIME_SEMANTIC_DIFF.json": "1c544013ae9585a0568dff251313a1c49670145de2f3fafbc9bdc7772bfe0a7b",
+    "SCORER_AND_POPULATION_DIFF.json": "cf9b080431dbed1ef205c22cc1c1e3e5c8473b02cb06bdf736211f22f3e9233c",
+    "sidecar_beside_rc002": "3e02dd4fa2997274ed56e7a4db0111548adc58c5d3a6a44a1332bb4497e81f21"
+  },
+  "lock_body_post_closeout_mutation": false,
+  "lock_chain_semantic_integrity": true,
+  "next_governed_phase": "MAI-07R3N2-FRESH-HOLDOUT-POLICY-CONFORMANCE-CORRECTIVE",
+  "passed_corrective_rc_remains_valid": false,
+  "phase": "MAI-07R3N-INTEGRITY-CLOSURE",
+  "primary_verdict": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+  "prohibited_for_training": true,
+  "r3m_closure_preserved": "f39432c6e085c89964e2551fe27921d32c79235061fea218262f6d3093e00afd",
+  "raw_file_hash_is_lock_authority": false,
+  "schema_version": "mai07_r3n_integrity_closure_semantic_v2",
+  "secondary_reasons": [
+    "HOLDOUT_CONTAMINATED",
+    "POST_OBSERVATION_GATE_SEMANTICS_CHANGE",
+    "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE",
+    "MINIMUM_DENOMINATOR_POLICY_MISSING",
+    "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT"
+  ],
+  "semantic_sha256": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae"
+}

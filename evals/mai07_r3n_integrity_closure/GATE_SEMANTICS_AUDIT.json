@@ -1,0 +1,193 @@
+{
+  "POST_OBSERVATION_GATE_SEMANTICS_CHANGE": true,
+  "authorized_code_corrective": {
+    "classification": "POST_OBSERVATION_GATE_SEMANTICS_CHANGE",
+    "question_changed_required_empty_failure_to_0_0_not_applicable_after_attempt001": true,
+    "rc001": {
+      "applicability": "INVALID_REQUIRED_POPULATION",
+      "denominator": 0,
+      "notes": "required population empty",
+      "numerator": 0,
+      "population_id": "AUTHORIZED_CODE_CORRECTIVE"
+    },
+    "rc002": {
+      "applicability": "NOT_APPLICABLE",
+      "denominator": 0,
+      "notes": "optional population empty",
+      "numerator": 0,
+      "population_id": "AUTHORIZED_CODE_CORRECTIVE"
+    },
+    "transition_empty_required_to_not_applicable": true
+  },
+  "current_scorer_source_hashes": {
+    "audit_scorer": "6101a1baac5a4afe31d2f440c5574e20c0503674e5f5954e994444fa5fd85fa0",
+    "canonical_scorer": "34a3ef28cbf115342c4903883924bd5ca832c3e8d291b4e54ab401891e855cf7",
+    "scoring_contracts": "998d23ea2430468803e691047cac3f82723a0abae731b206f00410f90cf73cae"
+  },
+  "evaluator_scorer_version_string": "mai-07-r3n.scorer.1.0.0",
+  "evaluator_version": "mai-07-r3n.scorer.1.0.0",
+  "finding": "After Attempt 001 observed INVALID_REQUIRED_POPULATION for authorized_code_corrective on HOLDOUT, scorer requiredness was changed so empty populations on non-DEVELOPMENT splits become NOT_APPLICABLE. Threshold JSON hash alone does not prove unchanged gate semantics.",
+  "metric_required_when_empty_present_in_contracts": true,
+  "note_threshold_hash_does_not_bind_scorer": true,
+  "population_manifest_hash": null,
+  "population_manifest_note": "No separate population-manifest artifact existed; requiredness lived in scorer/contracts only.",
+  "population_requiredness_and_empty_behavior": {
+    "acronym_identity_top1": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "authorized_code_corrective": {
+      "applicability_changed": true,
+      "rc001": {
+        "applicability": "INVALID_REQUIRED_POPULATION",
+        "denominator": 0,
+        "numerator": 0,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "numerator": 0,
+        "required_hint": null
+      }
+    },
+    "caps_ok": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "english_identity_top1": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "false_devanagari_on_english": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 0,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 0,
+        "required_hint": null
+      }
+    },
+    "identifier_identity_top1": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 0,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "identity_retention": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "protected_identity": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "raw_ok_all": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    },
+    "romanized_script_at_5": {
+      "applicability_changed": false,
+      "rc001": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 0,
+        "required_hint": null
+      },
+      "rc002": {
+        "applicability": "APPLICABLE",
+        "denominator": 1,
+        "numerator": 1,
+        "required_hint": null
+      }
+    }
+  },
+  "rc_locks_bind_population_requiredness": false,
+  "rc_locks_bind_scorer_hashes": false,
+  "schema_version": "mai07_r3n_gate_semantics_audit_v2",
+  "scorer_version_string_unchanged": "mai-07-r3n.scorer.1.0.0",
+  "threshold_hash_unchanged_vs_expected": true,
+  "threshold_manifest_raw_sha256": "afda869b4b1ea7ced66a98a3a927586d34b07b820e6c4049fb0dd849e38ae044",
+  "unchanged_threshold_json_does_not_override_scorer_or_population_semantics": true
+}

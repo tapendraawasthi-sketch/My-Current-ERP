@@ -1,0 +1,71 @@
+{
+  "leakage_audit": {
+    "exact_duplicate_count": 0,
+    "exact_full_input_duplicates": [],
+    "legitimate_vocab_overlap_count": 244,
+    "legitimate_vocab_overlap_sample": [
+      "aaja",
+      "aamdani",
+      "aath",
+      "aaunu",
+      "aayo",
+      "aba",
+      "advance",
+      "aile",
+      "aja",
+      "amdani",
+      "amount",
+      "ani",
+      "baaki",
+      "bakaya",
+      "balance",
+      "bank",
+      "basnu",
+      "bata",
+      "bech",
+      "beche",
+      "bechye",
+      "bechyo",
+      "bhaada",
+      "bhada",
+      "bhadaa",
+      "bhaneko",
+      "bhatta",
+      "bhayo",
+      "bho",
+      "bholi"
+    ],
+    "near_duplicate_count": 0,
+    "near_duplicate_template_ids": [],
+    "ok": true
+  },
+  "linguist_approved": false,
+  "manifest_id": "MAI_07R2_RANKER_DEV_V1",
+  "prohibited_for_training": true,
+  "seed": 20260716,
+  "splits": {
+    "DEVELOPMENT": {
+      "case_count": 600,
+      "path": "evals/mai07_ranker_r2/splits/development.jsonl",
+      "sha256": "2a03f5b80f94085e6682cfe9dfad85e988c62d233eb90c680919f8d4aec9f245"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 303,
+      "path": "evals/mai07_ranker_r2/splits/holdout_validation.jsonl",
+      "sha256": "51d2162a6e78e231e3cdaab00902eba906a3c990e0a15146b0e6f7c4bdcc9171"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 200,
+      "path": "evals/mai07_ranker_r2/splits/safety_challenge.jsonl",
+      "sha256": "2c8f2764ac049e8dd62d862114e423a413e925370c6021dc1fe57b5def36fdb8"
+    }
+  },
+  "structure_stats": {
+    "dev_holdout_multi_token_count": 783,
+    "dev_holdout_multi_token_pct": 0.8671,
+    "holdout_identity_first_target_behind_base_count": 100,
+    "holdout_identity_first_target_behind_base_goal_met": true,
+    "identity_first_pool_size": 32
+  },
+  "total_cases": 1103
+}

@@ -1,0 +1,13 @@
+{
+  "candidates_searched": [
+    "erp_bot/.../transliteration/resources",
+    "evals/mai07_r3f_seal_restore/forensics/copies/resources",
+    "repo-wide mai-07.1.2-r3f manifests",
+    "zip archives (R3B/KB only; no R3F resource archive)"
+  ],
+  "exact_match_found": false,
+  "lf_normalized_match_found": false,
+  "observed_lf": "61d709fb2bb422d58751a6e012a9208de97e84f3ac59b7c65afcbf346d042745",
+  "observed_raw": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "target_resource_pack": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a"
+}

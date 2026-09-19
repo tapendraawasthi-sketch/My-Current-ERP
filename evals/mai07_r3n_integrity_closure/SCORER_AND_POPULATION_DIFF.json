@@ -1,0 +1,37 @@
+{
+  "POST_OBSERVATION_GATE_SEMANTICS_CHANGE": true,
+  "audit_scorer_source_changed_after_attempt001": true,
+  "authorized_code_corrective": {
+    "classification": "POST_OBSERVATION_GATE_SEMANTICS_CHANGE",
+    "question_changed_required_empty_failure_to_0_0_not_applicable_after_attempt001": true,
+    "rc001": {
+      "applicability": "INVALID_REQUIRED_POPULATION",
+      "denominator": 0,
+      "notes": "required population empty",
+      "numerator": 0,
+      "population_id": "AUTHORIZED_CODE_CORRECTIVE"
+    },
+    "rc002": {
+      "applicability": "NOT_APPLICABLE",
+      "denominator": 0,
+      "notes": "optional population empty",
+      "numerator": 0,
+      "population_id": "AUTHORIZED_CODE_CORRECTIVE"
+    },
+    "transition_empty_required_to_not_applicable": true
+  },
+  "current_source_hashes": {
+    "audit_scorer": "6101a1baac5a4afe31d2f440c5574e20c0503674e5f5954e994444fa5fd85fa0",
+    "canonical_scorer": "34a3ef28cbf115342c4903883924bd5ca832c3e8d291b4e54ab401891e855cf7",
+    "scoring_contracts": "998d23ea2430468803e691047cac3f82723a0abae731b206f00410f90cf73cae"
+  },
+  "note": "Unchanged threshold JSON hash does not override changed scorer/population semantics.",
+  "population_manifest_hash": null,
+  "population_requiredness_changed_after_attempt001": true,
+  "schema_version": "mai07_r3n_scorer_and_population_diff_v2",
+  "scorer_source_changed_after_attempt001": true,
+  "scorer_version_string_rc001_and_rc002": "mai-07-r3n.scorer.1.0.0",
+  "scoring_contract_changed_after_attempt001": true,
+  "threshold_json_hash_stable": true,
+  "threshold_manifest_raw_sha256": "afda869b4b1ea7ced66a98a3a927586d34b07b820e6c4049fb0dd849e38ae044"
+}

@@ -1,0 +1,11 @@
+{
+  "consumed": true,
+  "holdout_attempt_path": "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_HOLDOUT_ATTEMPT_001.json",
+  "lock_record_path": "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCK_RECORD.json",
+  "locked_not_run_path": "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+  "locked_raw_sha256": "743c34b9f7235c6fb6e32990ee413be89f76c4ee6508df1f220d9e94773dcb07",
+  "locked_semantic_sha256": "80bb914f01cc365582177592516ec2bb9e519f4f17a3456b1a2bd48d053af907",
+  "qualification_path": "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+  "rc_id": "MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "verdict": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC"
+}

@@ -1,0 +1,769 @@
+{
+  "locked_at_utc": "2026-07-18T11:52:26.753701+00:00",
+  "locked_body_path": "C:/Users/Acer/Documents/My-Current-ERP/evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+  "locked_rc_body": {
+    "ENABLE_PROMOTION_OVERLAY": false,
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "active_default_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "active_default_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+    "all_verdict_outputs_attempt_time_bound": true,
+    "attempt_intent_written_before_holdout": true,
+    "audit_observations_persisted": true,
+    "candidate_policy_version": "mai-07-r3n6.1.0.0",
+    "candidate_promoted": false,
+    "candidate_resource_content_sha256": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+    "candidate_resource_pack_evidence": {
+      "content_hash": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "errors": [],
+      "manifest_path": "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.11-r3n6-chaincomplete/manifest.json",
+      "manifest_raw_sha256": "a89d83aed86c06867d11213a76b71532df3ebe3de943bd273de6112f685b3902",
+      "manifest_semantic_sha256": "79910ede3f4e6576ddee9b0e090721871234690f04305a8ceeb380e34a223ebb",
+      "ok": true,
+      "pack_version": "mai-07.1.11-r3n6-chaincomplete"
+    },
+    "candidate_resource_pack_version": "mai-07.1.11-r3n6-chaincomplete",
+    "candidate_runtime_version": "mai-07.1.11-r3n6-chaincomplete",
+    "complete_metric_gate_comparison_required": true,
+    "correction_scope": "COMPLETE_INDEPENDENT_SCORING_AND_OUTPUT_BINDING",
+    "dataset_manifest": {
+      "builder_version": "mai-07-r3n6-dataset.1.0.0",
+      "development_holdout_context_templates_disjoint": true,
+      "development_holdout_target_behavior_pairs_disjoint": true,
+      "development_holdout_target_surfaces_disjoint": true,
+      "expected_behavior_enum": [
+        "ACRONYM_IDENTITY_TOP1",
+        "IDENTITY_RETAINED",
+        "IDENTITY_TOP1",
+        "PROTECTED_IDENTITY",
+        "ROMANIZED_SCRIPT_AT_5"
+      ],
+      "parent_prediction_jsonl_opened": false,
+      "parent_score_report_opened": false,
+      "prohibited_for_training": true,
+      "r3n5_freshness_dimensions": [
+        "case_id",
+        "input_text",
+        "target_source_text_sha256",
+        "template_family",
+        "target_raw_surface_sha256"
+      ],
+      "r3n5_input_splits_used_for_one_way_freshness_only": true,
+      "schema_version": "mai07_r3n6_dataset_manifest_v1",
+      "seeds": {
+        "development": 20260730,
+        "holdout": 20260731
+      },
+      "splits": {
+        "CONTEXT_COUNTERFACTUAL": {
+          "count": 300,
+          "filename": "context_counterfactual.jsonl",
+          "population_counts": {
+            "CONTEXT_COUNTERFACTUAL": 300
+          },
+          "sha256": "ae997355b775876cb24431bd1cc91d5a9930aebb0b052c7bb8881e3786874fec"
+        },
+        "DEVELOPMENT": {
+          "count": 900,
+          "filename": "development.jsonl",
+          "population_counts": {
+            "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+            "ACRONYM_IDENTITY_REQUIRED": 100,
+            "AUTHORIZED_CODE_CORRECTIVE": 9,
+            "CANDIDATE_CAP_PRESSURE": 350,
+            "COALESCED_SPAN_IDENTITY": 200,
+            "ENGLISH_GUARD_ANALOGUE": 100,
+            "ENGLISH_IDENTITY_REQUIRED": 200,
+            "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+            "EXACT_RAW_IDENTITY_REQUIRED": 850,
+            "FINALIZER_IDEMPOTENCE_REQUIRED": 900,
+            "IDENTIFIER_PROTECTION_REQUIRED": 100,
+            "IDENTITY_INVARIANT_ANALOGUE": 350,
+            "IDENTITY_RETENTION_REQUIRED": 850,
+            "MULTI_TOKEN_IDENTITY": 300,
+            "PROTECTED_IDENTITY_REQUIRED": 100,
+            "REFINED_SPAN_IDENTITY": 200,
+            "ROMANIZED_NEPALI_REQUIRED": 200,
+            "SERIALIZATION_ROUNDTRIP": 500,
+            "SHARED_OR_AMBIGUOUS": 50,
+            "UNICODE_IDENTITY": 150
+          },
+          "sha256": "3136dde9bf0a737b40f5594d2597fa7874edf8f0a33fb2cddcf0a8eb877dc258"
+        },
+        "HOLDOUT_VALIDATION": {
+          "count": 2475,
+          "filename": "holdout_validation.jsonl",
+          "population_counts": {
+            "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+            "ACRONYM_IDENTITY_REQUIRED": 100,
+            "CANDIDATE_CAP_PRESSURE": 350,
+            "COALESCED_SPAN_IDENTITY": 200,
+            "ENGLISH_GUARD_ANALOGUE": 100,
+            "ENGLISH_IDENTITY_REQUIRED": 200,
+            "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+            "EXACT_RAW_IDENTITY_REQUIRED": 850,
+            "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+            "IDENTIFIER_PROTECTION_REQUIRED": 100,
+            "IDENTITY_INVARIANT_ANALOGUE": 350,
+            "IDENTITY_RETENTION_REQUIRED": 850,
+            "MULTI_TOKEN_IDENTITY": 300,
+            "PROTECTED_IDENTITY_REQUIRED": 100,
+            "REFINED_SPAN_IDENTITY": 200,
+            "ROMANIZED_NEPALI_REQUIRED": 200,
+            "SERIALIZATION_ROUNDTRIP": 500,
+            "SHARED_OR_AMBIGUOUS": 150,
+            "UNICODE_IDENTITY": 150
+          },
+          "sha256": "9ca02352a37ff3721d14e404f742562d08d80707de63863d734cf841b2994d8b"
+        },
+        "IDENTITY_ANCHOR_CHALLENGE": {
+          "count": 500,
+          "filename": "identity_anchor_challenge.jsonl",
+          "population_counts": {
+            "CANDIDATE_CAP_PRESSURE": 500,
+            "IDENTITY_ANCHOR_CHALLENGE": 500
+          },
+          "sha256": "00a875bffa09c1f223ce152f824206c2ddcea8637833e4a4c073d290e06dfa14"
+        },
+        "MONOTONIC_REGRESSION": {
+          "count": 400,
+          "filename": "monotonic_regression.jsonl",
+          "population_counts": {
+            "MONOTONIC_PARENT_CORRECT": 400
+          },
+          "sha256": "5bf4c244b470afed431c15b5caefde7b1e6916645c3d415e8eb5fd0387cd16c5"
+        },
+        "OOV_CHALLENGE": {
+          "count": 100,
+          "filename": "oov_challenge.jsonl",
+          "population_counts": {
+            "OOV": 100
+          },
+          "sha256": "07fcbb0c2ffe79a1df08f12d05c2139e4d378092885d2240f909e3df0d00ff87"
+        },
+        "SAFETY_CHALLENGE": {
+          "count": 400,
+          "filename": "safety_challenge.jsonl",
+          "population_counts": {
+            "PROTECTED_IDENTITY_REQUIRED": 400
+          },
+          "sha256": "d9f52dfed923fe26b50bc3145638140d8ba5f03ac2579b4dd58ac59da8ec8635"
+        }
+      },
+      "template_family_version": "r3n6_targetspan_v1"
+    },
+    "dataset_manifest_sha256": "add8f91fc6ecc288e09a9279dd6becb9e4bb93884e21e720715267c3f7a53ec3",
+    "default_active": false,
+    "development_all_required_pass": true,
+    "development_canonical_audit_agreement": true,
+    "development_case_agreement": true,
+    "development_report_raw_sha256": "7783ab151d326bed562763ad90c2520821da81131dfec95568a78228ec9c7cc1",
+    "development_report_semantic_sha256": "7dcedc945694bbd4b43c7b3e2005f27fae4ee1a3fd4c24602d804a132538fc76",
+    "development_split_expected_pass": true,
+    "expected_behavior_enum": [
+      "ACRONYM_IDENTITY_TOP1",
+      "CAP_OK",
+      "IDENTITY_RETAINED",
+      "IDENTITY_TOP1",
+      "NO_RAW_MUTATION",
+      "PROTECTED_IDENTITY",
+      "ROMANIZED_SCRIPT_AT_5",
+      "SHARED_CONSERVATIVE"
+    ],
+    "governance_protocol": {
+      "path": "docs/mokxya-ai/decisions/ADR_0020_R3N5_INVALIDATION_AND_R3N6_COMPLETE_EVIDENCE_PROTOCOL.md",
+      "raw_sha256": "45c5daee04afa279b071c1f9ad534cf4518d1c36fa27b9249aceff934e717ca7",
+      "status": "ACCEPTED_BEFORE_R3N6_LOCK"
+    },
+    "holdout_not_run": true,
+    "language_resource_pack_evidence": {
+      "content_hash": "6d72204f681ae89aba25dcab5902760398aa5ac51b5c426abaea972a7a960c6b",
+      "errors": [],
+      "files": [
+        "ambiguous_latin.json",
+        "high_confidence_english_accounting.json",
+        "high_confidence_romanized_nepali.json",
+        "named_entity_candidates.json",
+        "protected_prefixes.json"
+      ],
+      "label": "MAI05_LANGUAGE_RESOURCES",
+      "manifest_path": "erp_bot/src/oip/modules/language_runtime/resources/manifest.json",
+      "manifest_raw_sha256": "a8593bab22ee6dee10d25335d949e015f4b80f20d335564411b72c4e2a8f760a",
+      "manifest_semantic_sha256": "299415135b786524e7752fa485df84472a3af74cff8f39b8fb8927f6d504b057",
+      "ok": true,
+      "resource_id": "mai05_language_pack_v1",
+      "resource_pack_version": "mai-05.1.0",
+      "resource_raw_sha256": {
+        "ambiguous_latin.json": "3084605aaea24a60f33dc2d4bee3fbbe6a51a9949b62e982e937e312488ee0b9",
+        "high_confidence_english_accounting.json": "73a6b4702ffeb14b146ca4df2528b2ebf4a4dcbba89eb739029b7411c6899918",
+        "high_confidence_romanized_nepali.json": "ce84384084282c9c83d3b95871894845b03ff0aaa225ba5f23a6862785045988",
+        "named_entity_candidates.json": "4a258855a174de9a70aa95658e88fee6d8c0bdc8220516386beb614255e47849",
+        "protected_prefixes.json": "603313d6803f6832d0acfb88c3f478844fb44f461c7d49105bce93224d7a19c7"
+      },
+      "schema_version": "1.0.0"
+    },
+    "linguist_approved": false,
+    "locked": true,
+    "locked_before_holdout": true,
+    "manifest_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002",
+    "manifest_sha256": "011c7833a4030892b70e125d41a18be378b8f9b79cb2dc1db0175ee2b94e5b34",
+    "minimum_denominator_policy": {
+      "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+      "ACRONYM_IDENTITY_REQUIRED": 100,
+      "CANDIDATE_CAP_PRESSURE": 350,
+      "COALESCED_SPAN_IDENTITY": 200,
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "ENGLISH_GUARD_ANALOGUE": 100,
+      "ENGLISH_IDENTITY_REQUIRED": 200,
+      "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+      "EXACT_RAW_IDENTITY_REQUIRED": 850,
+      "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+      "IDENTIFIER_PROTECTION_REQUIRED": 100,
+      "IDENTITY_ANCHOR_CHALLENGE": 500,
+      "IDENTITY_INVARIANT_ANALOGUE": 350,
+      "IDENTITY_RETENTION_REQUIRED": 850,
+      "MONOTONIC_PARENT_CORRECT": 400,
+      "MULTI_TOKEN_IDENTITY": 300,
+      "OOV": 100,
+      "PROTECTED_IDENTITY_REQUIRED": 100,
+      "REFINED_SPAN_IDENTITY": 200,
+      "ROMANIZED_NEPALI_REQUIRED": 200,
+      "SERIALIZATION_ROUNDTRIP": 500,
+      "SHARED_OR_AMBIGUOUS": 150,
+      "UNICODE_IDENTITY": 150
+    },
+    "normalization_resource_pack_evidence": {
+      "content_hash": "7542ec927437f611552c2953141d6f36fef08c902c97955a6f0893f4e41ceaf3",
+      "errors": [],
+      "files": [
+        "abbreviation_candidates.json",
+        "digit_equivalence.json",
+        "punctuation_candidates.json",
+        "repetition_thresholds.json",
+        "security_categories.json",
+        "whitespace_equivalence.json"
+      ],
+      "label": "MAI06_NORMALIZATION_RESOURCES",
+      "manifest_path": "erp_bot/src/oip/modules/language_runtime/normalization/resources/manifest.json",
+      "manifest_raw_sha256": "9b2e2c7e6b5cada34c3925bc19dd38839d0805de2492c14d1ede937b3cf8fbdb",
+      "manifest_semantic_sha256": "b8a814f5343c6777618f71b4a37751fa9199c90e50ec18ee4559c29e8b1fd05e",
+      "ok": true,
+      "resource_id": "mai06_normalization_pack_v1",
+      "resource_pack_version": "mai-06.1.0",
+      "resource_raw_sha256": {
+        "abbreviation_candidates.json": "3da4a340c41150bce0d7b37ef5d2d7ad07768756f407056dcf657e1ff0fba297",
+        "digit_equivalence.json": "5428fcead1cc2d0415bba90f1c364a07dae00c9f2fbe294036bb768a3cd6d65a",
+        "punctuation_candidates.json": "10ed20cba2ae95861710e560aec84c70af3cc4ecd63d37ef853c51512ddf366a",
+        "repetition_thresholds.json": "6f4937d28a3bed6c34be825e16d4a099140f0efe75721532095de314e7ec5e9b",
+        "security_categories.json": "2452c39eeac1cdc39ed9198e07f9bc3d8c0667853fe22ce862c527328aa98aa5",
+        "whitespace_equivalence.json": "1647e25e526c3b545548f16d89ba67e7f27c7f6d3cdc5c7a86bc023dce4886c8"
+      },
+      "schema_version": "1.0.0"
+    },
+    "output_binding_schema_version": "mai07_r3n6_output_binding_v1",
+    "overlay_enabled": false,
+    "parent_invalidated_r3n5_lineage": {
+      "artifact_path": "evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_INTEGRITY_INVALIDATION.json",
+      "artifact_raw_sha256": "8d7b26bbcd813c79d8a4568acf096dfe7455ef1e1b1df3ab7367c811a293a1e2",
+      "artifact_semantic_sha256": "204665a84c076c5193038b11ae058b746b66101c2fb33332d32716d7dc2d5353",
+      "attempt_id": "MAI_07R3N5_HOLDOUT_ATTEMPT_001",
+      "candidate_promoted": false,
+      "lock_raw_sha256": "743c34b9f7235c6fb6e32990ee413be89f76c4ee6508df1f220d9e94773dcb07",
+      "lock_semantic_sha256": "80bb914f01cc365582177592516ec2bb9e519f4f17a3456b1a2bd48d053af907",
+      "ok": true,
+      "rc_id": "MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+      "runtime_version": "mai-07.1.10-r3n5-targetspan",
+      "verdict": "INVALIDATED_INCOMPLETE_INDEPENDENT_SCORING_AND_OUTPUT_BINDING_NEW_RC_REQUIRED"
+    },
+    "population_definition_hash": "5c227e7081766b476b01b91ba3d8bd1cd9b651a431963f64c558d88880b81aeb",
+    "production_approved": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "r3n5_predictions_used_for_candidate_or_dataset": false,
+    "rc_lineage": {
+      "attempt_id": "MAI_07R3N6_HOLDOUT_ATTEMPT_002",
+      "harness_fix": "attested_attempt_inputs_5tuple_unpack_and_compact_resource_pass_through",
+      "prior_attempt_disposition": "CRASHED_PRE_SCORE_HARNESS_UNPACK",
+      "prior_attempt_id": "MAI_07R3N6_HOLDOUT_ATTEMPT_001",
+      "prior_predictions_written": false,
+      "prior_rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+      "prior_scores_written": false,
+      "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002",
+      "threshold_or_runtime_behavior_changed": false
+    },
+    "rc_manifest_raw_sha256": "33b614ff747521907540f16d8970dca7b2af5a19e33aba8a3b0e577a71554fc4",
+    "rc_manifest_semantic_sha256": "011c7833a4030892b70e125d41a18be378b8f9b79cb2dc1db0175ee2b94e5b34",
+    "required_output_artifact_names": [
+      "attempt_intent",
+      "attempt_result",
+      "context_counterfactual_predictions",
+      "context_counterfactual_score_report",
+      "holdout_validation_predictions",
+      "holdout_validation_score_report",
+      "identity_anchor_challenge_predictions",
+      "identity_anchor_challenge_score_report",
+      "monotonic_regression_predictions",
+      "monotonic_regression_score_report",
+      "oov_challenge_predictions",
+      "oov_challenge_score_report",
+      "qualification",
+      "safety_challenge_predictions",
+      "safety_challenge_score_report"
+    ],
+    "required_report_gate_keys": [
+      "acronym_identifier_analogue",
+      "acronym_identity_top1",
+      "anchor_validity",
+      "authorized_code_corrective",
+      "cap_pressure_identity_retention",
+      "caps_ok",
+      "coalesced_span_identity",
+      "english_guard_analogue",
+      "english_identity_top1",
+      "exact_raw_identity",
+      "exact_raw_identity_required",
+      "exactly_one_identity",
+      "exactly_one_identity_required",
+      "false_devanagari_on_english",
+      "finalizer_idempotence",
+      "identifier_identity_top1",
+      "identity_invariant_analogue",
+      "identity_retention",
+      "multi_token_identity",
+      "path_finalization_coverage",
+      "protected_identity",
+      "raw_ok_all",
+      "refined_span_identity",
+      "romanized_script_at_5",
+      "serialization_roundtrip",
+      "unicode_identity"
+    ],
+    "required_report_metric_keys": [
+      "acronym_identifier_analogue",
+      "acronym_identity_top1",
+      "anchor_validity",
+      "authorized_code_corrective",
+      "cap_pressure_identity_retention",
+      "caps_ok",
+      "coalesced_span_identity",
+      "english_guard_analogue",
+      "english_identity_top1",
+      "exact_raw_identity",
+      "exact_raw_identity_required",
+      "exactly_one_identity",
+      "exactly_one_identity_required",
+      "false_devanagari_on_english",
+      "finalizer_idempotence",
+      "identifier_identity_top1",
+      "identity_invariant_analogue",
+      "identity_retention",
+      "multi_token_identity",
+      "path_finalization_coverage",
+      "protected_identity",
+      "raw_ok_all",
+      "refined_span_identity",
+      "romanized_script_at_5",
+      "serialization_roundtrip",
+      "split_expected_pass",
+      "unicode_identity"
+    ],
+    "required_threshold_gate_spec": {
+      "acronym_identifier_analogue": {
+        "op": "==",
+        "value": 1.0
+      },
+      "acronym_identity_top1": {
+        "op": "==",
+        "value": 1.0
+      },
+      "anchor_validity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "authorized_code_corrective": {
+        "op": "==",
+        "value": 1.0
+      },
+      "cap_pressure_identity_retention": {
+        "op": "==",
+        "value": 1.0
+      },
+      "caps_ok": {
+        "op": "==",
+        "value": 1.0
+      },
+      "coalesced_span_identity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "english_guard_analogue": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "english_identity_top1": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "exact_raw_identity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "exactly_one_identity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "op": "<=",
+        "value": 0.02
+      },
+      "finalizer_idempotence": {
+        "op": "==",
+        "value": 1.0
+      },
+      "identifier_identity_top1": {
+        "op": "==",
+        "value": 1.0
+      },
+      "identity_invariant_analogue": {
+        "op": "==",
+        "value": 1.0
+      },
+      "identity_retention": {
+        "op": "==",
+        "value": 1.0
+      },
+      "multi_token_identity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "path_finalization_coverage": {
+        "op": "==",
+        "value": 1.0
+      },
+      "protected_identity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "raw_ok_all": {
+        "op": "==",
+        "value": 1.0
+      },
+      "refined_span_identity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "romanized_script_at_5": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "serialization_roundtrip": {
+        "op": "==",
+        "value": 1.0
+      },
+      "unicode_identity": {
+        "op": "==",
+        "value": 1.0
+      }
+    },
+    "runtime_environment": {
+      "distributions": {
+        "pydantic": "2.13.4",
+        "pydantic-core": "2.46.4"
+      },
+      "errors": [],
+      "ok": true,
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python_cache_tag": "cpython-312",
+      "python_implementation": "cpython",
+      "python_implementation_version": "3.12.10",
+      "python_version": "3.12.10",
+      "requirements_path": "erp_bot/requirements.txt",
+      "requirements_raw_sha256": "045befc1701646890eb8d80e9d6e3bfd2c19d265313ede26dc92b5eb8ed760e2",
+      "sys_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+    },
+    "schema_version": "2.0.0",
+    "scorer_version": "mai-07-r3n6.scorer.1.0.0",
+    "scoring_contract_version": "mai-07-r3n6.contract.1.0.0",
+    "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+    "source_hashes": {
+      "erp_bot/src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "erp_bot/src/oip/__init__.py": "18521c5b520a8b8b36a55ed7f60ff84cbff5bc17a30bbe2609f50b2697051b7f",
+      "erp_bot/src/oip/application/__init__.py": "9ce501b4bbea7a174f8f90f5aa3346da4c07b1c31dadaefcd9058723836f9e72",
+      "erp_bot/src/oip/application/bus/__init__.py": "ec1d879b0a91330476c4267a5d81e83369403546db55d080c72575c7411c7e53",
+      "erp_bot/src/oip/application/bus/command_bus.py": "263d5eb6f4ea9c269f2095228cf4eb4c6ce797d6282f79d0514ffc3247ba338e",
+      "erp_bot/src/oip/application/bus/event_bus.py": "0d938bd8051b525fe06bb84366f7df46e17092283141785c24998a9733501f79",
+      "erp_bot/src/oip/application/bus/query_bus.py": "14233e6419d53e9b320c7095d9a31a56981c5320fa151a2c5cbaf616560df85e",
+      "erp_bot/src/oip/application/commands/__init__.py": "89e1b8dacfc0db1f8610b22f693e46105f1fc9d824158371c1c7045014620f0e",
+      "erp_bot/src/oip/application/dto/__init__.py": "89ec9b2dddf1f9f106349fc8d9c757deb55bd62d443619542edfeb49b2e915cc",
+      "erp_bot/src/oip/application/dto/intelligence_request.py": "64aeb123b2f4c67d8713d7cafbec99e97be4f60ef9479b9e6c27aeec49c2df28",
+      "erp_bot/src/oip/application/dto/intelligence_response.py": "0319a6a26a4429f2512c113a697c69378da876a2bd359d9dade7dbf722db8491",
+      "erp_bot/src/oip/application/ports/__init__.py": "47ab3bf8d9d2b942051f53f27c0c9c368cfde014456b16f7c5ee11bee9fd5f0e",
+      "erp_bot/src/oip/application/ports/inbound/__init__.py": "7b72b97ab1056376db9c6ba484a70eb22a741a8b25c920be473bf09280274e0d",
+      "erp_bot/src/oip/application/ports/inbound/intelligence_ingress_port.py": "0fe49711362698089929e5d415ba2dae3f8842154b1ed3097b000cacabe334b7",
+      "erp_bot/src/oip/application/ports/outbound/__init__.py": "7c97149d180a8a0fe267faa9525bd12af12de5cda2a200cf2ba33b9a78c7210e",
+      "erp_bot/src/oip/application/ports/outbound/audit_sink_port.py": "c124adaf3c283be210a0b7ae4e9d5e028f16f6d836b48a8226131faf7a802306",
+      "erp_bot/src/oip/application/ports/outbound/erp_gateway_port.py": "b2fa70fc9a9f33dc875498f1e25d8a471430dc10c7422068b5d99bc4ff28b5a5",
+      "erp_bot/src/oip/application/ports/outbound/event_publisher_port.py": "d3e02bce12abe4929ff08e75e549819c01d57a5ff295fdad083a7b00938b63ab",
+      "erp_bot/src/oip/application/ports/outbound/inbox_port.py": "ab1bc5206ac1ea95ffd0dc307b29b94ef733b4e91fca68f9ca2bac2fdf8739c6",
+      "erp_bot/src/oip/application/ports/outbound/lineage_repository_port.py": "d21adeaa1bb29b0a71fe826b4ec95e7dd9a222e17353409d819890e468ed49bf",
+      "erp_bot/src/oip/application/ports/outbound/outbox_port.py": "368ac41f4b91677739bbc849cc066250c214fcb4d9f7401234ece7712133298f",
+      "erp_bot/src/oip/application/services/__init__.py": "86123fca0088ef7c9e50e1d747091f65643fbb3d280594872e337a4174aac2c8",
+      "erp_bot/src/oip/application/services/audit_service.py": "9f728d3e1e81e3ec5dfad48d871f4dd29345d4917b3285b9bfcea63ca3f0f3f2",
+      "erp_bot/src/oip/application/services/lineage_service.py": "5bf34140551f9cc0ff4a8003ebf243b03036e1d4f2e4d48b243df2c4ed478a9e",
+      "erp_bot/src/oip/config/__init__.py": "dea25a95f1d87d7b13ae32539b5aa38d534fa2534661906c738f4bdbd43ded7e",
+      "erp_bot/src/oip/config/settings.py": "57e9ba5d67503b4ad9cd1ef1d2e768f8cbc7d0d5c3cf83d36952ed2f06e23c10",
+      "erp_bot/src/oip/contracts/__init__.py": "3542001fd9957cb5d0167e88a1576ea28cb0a6e2e561ff5d9db5760d45db2285",
+      "erp_bot/src/oip/contracts/common.py": "23d5cfeeb0b9911460bf22d638d500f1805a06c538e11b86f20daacfe0036544",
+      "erp_bot/src/oip/contracts/dialogue.py": "8702bffe313d8e9cfa7eb347d3e15139d052a241576d494219264fa4fb53cf6c",
+      "erp_bot/src/oip/contracts/draft_preview.py": "a0be019c0af5b0479e3377e453aad28aed6d7ec3ec761367a8e70cc71d3bfa50",
+      "erp_bot/src/oip/contracts/errors.py": "0c15be323d0560efb761287b6c53042e30d70f0b79b109367e6c25ecf32cc848",
+      "erp_bot/src/oip/contracts/event_frame.py": "668332e019ca70d0a57b5abd51232f56be090607b758b60bfe719d3e6b8606da",
+      "erp_bot/src/oip/contracts/evidence.py": "08fbd1b1c06f12b8705ee948ed915b3135e4be88076d96753f6560b991b3c108",
+      "erp_bot/src/oip/contracts/language.py": "35a66fbfe54a601da5f1e64c8c596dfe1464012badc02541727c423bf58af6ac",
+      "erp_bot/src/oip/contracts/normalization.py": "b77fa819eacf74160cbcb8f3d7de9a1416d6d13160aa5fd7234019a634563f5b",
+      "erp_bot/src/oip/contracts/plan_tools.py": "c78976c87df4ca88768d73aa6de11332a0103bcb26ed734a38b4ee96dbcd6979",
+      "erp_bot/src/oip/contracts/registry.py": "6844bd4d3fa5e3b6880df72da9e8d9ae6e3a6f1014e67bce4e6adef21c3da27b",
+      "erp_bot/src/oip/contracts/request.py": "0e9c8abcbeb2701afcf9c13a450cbb79456a59b534ac049f05bfc354aa543a69",
+      "erp_bot/src/oip/contracts/response.py": "c49464de1953a7243e2ba6673283b3ce034e610c0034c6b74bf636b8167d62d1",
+      "erp_bot/src/oip/contracts/sse.py": "58f7ddfee3749cfa06d9e5c379236dc14ce86cff755eb5cf9d0f7e268c877e36",
+      "erp_bot/src/oip/contracts/transliteration.py": "c929f89ea698d89200f127cd2a87edcbca2126f305740ffca184751892296242",
+      "erp_bot/src/oip/domain/__init__.py": "5da491b53a3729cdcb9290edcef328b5450af254d0c2b39b07b2ab18989d5222",
+      "erp_bot/src/oip/domain/constitution/__init__.py": "53e5c186a0fa4b8239553eb29530f4006f79f9cbf4a79c479c53928634a334c1",
+      "erp_bot/src/oip/domain/constitution/config_guard.py": "4ba7a8f7fa9944166df1669292f1f18e1d4abd8160bea68527627198ab221a3f",
+      "erp_bot/src/oip/domain/events.py": "b59c050eba0b5710d411a9be16d614938109f882cf208a13633381fb87c1f692",
+      "erp_bot/src/oip/domain/value_objects.py": "2660804ebbc58b70d2e79d1f56e9ba7bbe43bd013d9fcd1496ea79331975830a",
+      "erp_bot/src/oip/infrastructure/__init__.py": "fed9ee05466b25bc54ecf8b9076768a01d779311db3b1e3e3c3a5cddc6fbee6a",
+      "erp_bot/src/oip/infrastructure/messaging/outbox_dispatcher.py": "ab664d7325b7614f6a852dab8bed95d8992140ff7b008ba93e9578f5383440c8",
+      "erp_bot/src/oip/infrastructure/observability/correlation.py": "7273551b65cf343768ea4fecec43f81167a2db23251afce7495f8c6b43ae658d",
+      "erp_bot/src/oip/infrastructure/observability/logging.py": "d283d020c703eac2c093e80693d91605fc87f6484d5ada8012b7d505b0c6ab6d",
+      "erp_bot/src/oip/infrastructure/observability/mai03_context.py": "9e3d2cc68a947fb4f12ee65702746e96604e34a5273c93de293488692699262d",
+      "erp_bot/src/oip/infrastructure/observability/mai03_identity.py": "4a1da513a575125b0efdd18bca144fdb36a1a469bd297d42ee78f1261bf91b7f",
+      "erp_bot/src/oip/infrastructure/observability/mai03_redaction.py": "3d3352c503fa6a7f646de8d59f4a43615f42a8c6842225ed26fee5d7ad335407",
+      "erp_bot/src/oip/infrastructure/observability/metrics.py": "cc5f4c9cff8e6a97b73550aa0eeebe8843f7c1f8ba1fa74f2f07c546642cb684",
+      "erp_bot/src/oip/infrastructure/observability/tracing.py": "6ccc12b184349e83a8ef30acf834271249b76f244b9a6ceaf750d7c57a08c1ec",
+      "erp_bot/src/oip/infrastructure/persistence/audit_sqlite.py": "c2c2f11ce644ee92d60c41687dbfa8c9a9a64b6aec5020fe171804e543f2f0c6",
+      "erp_bot/src/oip/infrastructure/persistence/outbox_sqlite.py": "bbaa028ef98744881d5b6f028bd1fd812be9f84a94eb5930a00c003e129ca7c0",
+      "erp_bot/src/oip/integration/__init__.py": "1f0372f19a0d6dc52cda10dd173d715d34ce897ac81cdbafcbcdad1a2851db87",
+      "erp_bot/src/oip/integration/contracts/__init__.py": "732457c58608046fea00899e3545abe7a4f5f3b260fbc8b19b617801ac2edcc4",
+      "erp_bot/src/oip/integration/contracts/erp_commands.py": "1af6413e2cd7d61a04198669e885290a62ae0da550225652b553025e6921de64",
+      "erp_bot/src/oip/integration/contracts/erp_events.py": "a0d909db5f493d3413943911cdc6db0a01fb28c6f2bf56f48e33230266908907",
+      "erp_bot/src/oip/integration/contracts/snapshots.py": "fe1e6e1d4d125604a63db6b26d523fca252bf42814f76a607fc2aa714dc22fd9",
+      "erp_bot/src/oip/kernel/__init__.py": "7e9c429e61745f63b8c85f1ea81806e53dc604b9c7f46e9d9dda2dcd0f6e3796",
+      "erp_bot/src/oip/kernel/facade.py": "d3de4aaf4a9b01de12bb4afb319b289585761d764fc7cf169637005e9b9be444",
+      "erp_bot/src/oip/modules/__init__.py": "b2aedb9cb45416927a69881cc5e7854461f450c1050cf0aefd2f43080aa6b959",
+      "erp_bot/src/oip/modules/language_runtime/__init__.py": "1aef6108f744f785dd43edb690175442f7d00300aceafafc5cc2f020312dc2b8",
+      "erp_bot/src/oip/modules/language_runtime/application/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "erp_bot/src/oip/modules/language_runtime/application/language_analyzer.py": "54fd3fa949e63c3a7134a0afb63269c750f0d2370bbc534c40b36411c4bbaeaa",
+      "erp_bot/src/oip/modules/language_runtime/application/language_form_classifier.py": "b2dca9b79d0dc1c009997de6c4726ef88bcdfea08d6c942be463d85bb9da9435",
+      "erp_bot/src/oip/modules/language_runtime/domain/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "erp_bot/src/oip/modules/language_runtime/domain/offsets.py": "97b0d59bc71fbcdc7a8812f2ae8cbef9e5d515b7ddaa7ed6ee6235e73357d03b",
+      "erp_bot/src/oip/modules/language_runtime/domain/protected.py": "c0078d444c7ff0964d23ea0ab5af118d918ba0f9586f886615976c45ef7e1ed2",
+      "erp_bot/src/oip/modules/language_runtime/domain/script.py": "f0712fbccdb43990cf36742fef117b96e4ccbc1038fad33842149aedce896756",
+      "erp_bot/src/oip/modules/language_runtime/domain/taxonomy.py": "a26abf4c77f1c7b28352b5678c1e73adf71d70c8998a37ee4c78935f87c4e574",
+      "erp_bot/src/oip/modules/language_runtime/infrastructure/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "erp_bot/src/oip/modules/language_runtime/infrastructure/compact_resource_repository.py": "c37b56eb2a6a4f790148b1fef59d907c150a087e1048a3e59e32f131f67891bb",
+      "erp_bot/src/oip/modules/language_runtime/normalization/__init__.py": "f7b7836834cf5ccb17cdb5cdeb075f9bf03357f1121d921cd7e50c65aea2b868",
+      "erp_bot/src/oip/modules/language_runtime/normalization/application/__init__.py": "3d8cee89a0054167e07b67bf4bf73e22d5adbc379a1d0f604235263108f45ac3",
+      "erp_bot/src/oip/modules/language_runtime/normalization/application/normalization_service.py": "fdd89969845c4de83e552ea86255682b58ea937059f7c84710c806ae420f7906",
+      "erp_bot/src/oip/modules/language_runtime/normalization/domain/__init__.py": "693e869df87c4885ec3a5c56337e1d419a997c7ad0e5441bfc0b63cd0d791d4f",
+      "erp_bot/src/oip/modules/language_runtime/normalization/domain/integrity.py": "41bd40c1f0e797cb994123ac6ec3dcce3e089a4513219b65761e491a829ce221",
+      "erp_bot/src/oip/modules/language_runtime/normalization/domain/offset_ops.py": "3e14bf1110970d4921341660c9a76eccee874e2572ba9a1d39be952cfc0e0836",
+      "erp_bot/src/oip/modules/language_runtime/normalization/domain/reconstruction.py": "17a20fd51172ef0c32f91814dc333359d4b7f7d9bddaa9bfdcc723505393680d",
+      "erp_bot/src/oip/modules/language_runtime/normalization/infrastructure/__init__.py": "b5676f39755b704f83b745d7291ed3be6c9a4653eb14a031c804d9dd5f9ed253",
+      "erp_bot/src/oip/modules/language_runtime/normalization/infrastructure/norm_resource_repository.py": "b72c76387cf24b1f613093f75c1fcdf3c73c3fa4a0135c687dcf79c6909411c0",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/__init__.py": "1911099b3f168cba37e57970f90d6100b753456387d86a20fb7ea99dd19fb99b",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3n4_pack.py": "672331784681d24d719cfbf6e24b4071732c28b21f06ed817e2f13ea68119771",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3n5_pack.py": "e4b5d747e7bcf6ba0c38af341866abe669ac08de4e8688af0038b47bb20071e8",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3n6_pack.py": "d9737e0b718b7ea8ff94a274baed3a722db7cad90b5aa40858cc86df8a105baa",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n4_audit_scorer.py": "577ec137e774a287617253aa066fbe517ade19b8a3864cb0e3302f70294be579",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n4_canonical_scorer.py": "4aca6c919b7d9e218fe7de91b82a84ebbacf57dea0fb0d01fed95ed84a99ff4e",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n6.py": "b8830fbfaba7669c1afa9bf2f658e5ae34f3f8f28f626e42d2cc3c6d65c91dc7",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n6_audit_scorer.py": "d88b50e92ba29c2cbcb0c0e4568547dee538c0f495f43f01c0f5e3abca54ea8c",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n6_canonical_scorer.py": "4fe7acf8c2f74e6b3d85f5ee48f7ab9de1582066073c8a13debb600b659ee11e",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3n6_development.py": "aca591fdecb26d318336c5ddc7793791b3d8f31f3f277f66f8e9b4eb16dc2888",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n4_candidate_runtime.py": "ade38cb227be2aa8a4841ef4a1070fcc002b4402b9deb447e4f6f2c2fb6b7fac",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n5_candidate_runtime.py": "dce2ba285d1720a33c85e69c9e9edbcd7266ed6c7d8c0d12c74b887d5b9d6c4d",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n5_integrity_invalidation.py": "4024b98f15f5d56a073a3d4659bbad861646adccac763a2155729ead9ce8f6c2",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n6_candidate_runtime.py": "e00817094e89405bd13280f8e3f11339ef22d7818b9dccdadaa2a6622813df55",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/mai07_r3n6_dataset_builder.py": "c1f5fe4f1dea821e78d6973978c199aca86770bf20438ed15679cbe9d3402ed5",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3h2_scoring_contracts.py": "a1b20bf6a3aa7c621c4b19c49f22ca765398e399c81ce76cb383209dfcacc78a",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_candidate_finalization.py": "0da9a1671e3ef62f8ba9891d381b6e99844357904411c3bd5670f94ece9efffc",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_finalization_path_registry.py": "05fcc27287168da00a0196fd8715d5b0a2e3b50ae5d21e7a6742fcf1057b1161",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_identity_anchor.py": "3c9d01d8681fa4e48cda23358e417344f5832cde2d16e90cf7bde1be8067f280",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_scoring_contracts.py": "d0bd7a96a30e3340cc0a01a53df46ad2381752f79e08e491e2277152a37ea377",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n5_target_span_contract.py": "7e6a045b04b41368226798c1099ae313f6358b4febc9a4447f829599e4121145",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n6_output_binding.py": "f3d92c54b1aa6854e40c92251ce2b74f81d556f884164c9739f3a4e13e9e5094",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n6_scoring_contracts.py": "445ae6a979759fa70517c8506be9195f279f94fcf7fc84fb08c42ac8f8b1821b",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/rc_lock_chain.py": "9893021d0585227055a226a9c68e142eb815e07673ed150f13192203771f0db8",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/application/transliteration_service.py": "bb72510f7b3645e6ea2c649a23e07f8166ba412b509b8a023dc1fbdceafacc54",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/domain/alignment.py": "5996ee7ce0fcdc989dff58321b43e383fc3dc6427983338b156de6453b8639e0",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/deterministic_generator.py": "3b626e2794ab20ef782d3f29f54b753046bd239530a6ed273d6b6def10c2847d",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/deterministic_ranker.py": "5fde9a19810e451392536d356e18d7dd0da4f5073fe342a29f74daed560cff0a",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/english_identity_guard.py": "fd14a448c666c27e230bbeca84f08eb7e47d2c43edff1a066fbb4771922a3740",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/r3d_safety_gate.py": "f1ce4f967784cb18992dac3da1f3f2c461039a67ff58e63727035c815f1d41a8",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/resource_repository.py": "3d7396763ca7e7aee07694d0debbd66fe301aba1e1730d188f423d3f885216cd",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/seal_contract_v2.py": "3affc56b7cc526ece459a03d926e85e546176e6e8025b8909e8a6a4dbaf05985",
+      "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/target_promotion_overlay.py": "27d51cc24eff1195bc7ef6dfa37836df3a5a4b7bf80972678d22e33361efeec1",
+      "erp_bot/src/oip/modules/orchestrator/__init__.py": "10fa47d1b03b2f923d885b0acfc173a0f7cca154a667f28781b826eda7c2fe72",
+      "erp_bot/src/oip/modules/orchestrator/application/dto/workflow_context.py": "f9da0d4489c539b41f5492eda0547065854073803d18c39595db16e0a4b5d853",
+      "erp_bot/src/oip/modules/orchestrator/application/ports/orchestrator_port.py": "4930848b8846c8f4c6ad082d35946afe8fa52307e66789fd9cae09d3d3f64aa3",
+      "erp_bot/src/oip/modules/orchestrator/application/ports/workflow_engine_port.py": "f2d29f97e02de0f0c6f3424785e274e166d1e994f7090944b9e9aacbd4928695",
+      "erp_bot/src/oip/modules/orchestrator/application/ports/workflow_repository_port.py": "3107e15467d3d4ab5cdafc4039a8c933f4cfabfebb6211d9e0edb03941dca8c0",
+      "erp_bot/src/oip/modules/orchestrator/application/projectors/orchestrator_projectors.py": "56aa54e68a0444bc137040f698b179958dc316255ec8d0860d2767a9b6ff1243",
+      "erp_bot/src/oip/modules/orchestrator/application/read_models/orchestrator_read_models.py": "9ef6fb9b9b41215064aac400469a54657f14c939d0a114e8a2d670659b2ed7a5",
+      "erp_bot/src/oip/modules/orchestrator/application/services/orchestrator_service.py": "5e91eed675585d658ebb29698508a4c2f917833062dd9ed06a4540295906eb28",
+      "erp_bot/src/oip/modules/orchestrator/domain/entities.py": "f8a771456e19b3bd023be7720bc9bb07894ce9fc19afc43a82672b74551d7159",
+      "erp_bot/src/oip/modules/orchestrator/domain/events.py": "4af487dff1c3adbf69742b3a06fa605eff8d9275a401d306b68b0accc5f0c2ef",
+      "erp_bot/src/oip/modules/orchestrator/domain/value_objects.py": "e369eec3e2763e8bfbdca2d33c169ad3d85c978a0bfb21dc3b767ded6f1c76e6",
+      "erp_bot/src/oip/shared/__init__.py": "e2929c60c36f25c7a6d1bbb7f7a15e467233235bd6661131476ad8b3b56eb1d2",
+      "erp_bot/src/oip/shared/edition.py": "b100fd2af518285dbd0dbdd143d905ca9769cd9102c6cfd02cb5b5d1cf1c48c6",
+      "erp_bot/src/oip/shared/exceptions.py": "115df68e94d9d95d43e9dd66677d5057a95c69153ecf073c67c21f677e154a72",
+      "erp_bot/src/oip/shared/ids.py": "efe9a5b8b11c5ad1f23f1ec8c96f441b34be7bba949486e7a6dc149f91684855"
+    },
+    "split_expected_pass_independently_scored": true,
+    "status": "LOCKED_NOT_RUN",
+    "target_authority": {
+      "offset_unit": "UNICODE_CODE_POINT",
+      "schema_version": "mai07_r3n5_target_span_v1",
+      "source_sha256": "7e6a045b04b41368226798c1099ae313f6358b4febc9a4447f829599e4121145"
+    },
+    "threshold_manifest": {
+      "gates": {
+        "acronym_identifier_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "acronym_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "anchor_validity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "authorized_code_corrective": {
+          "op": "==",
+          "value": 1.0
+        },
+        "cap_pressure_identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "caps_ok": {
+          "op": "==",
+          "value": 1.0
+        },
+        "coalesced_span_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "english_guard_analogue": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "english_identity_top1": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "exact_raw_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "exactly_one_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "false_devanagari_on_english": {
+          "op": "<=",
+          "value": 0.02
+        },
+        "finalizer_idempotence": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identifier_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_invariant_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "multi_token_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "path_finalization_coverage": {
+          "op": "==",
+          "value": 1.0
+        },
+        "protected_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "raw_ok_all": {
+          "op": "==",
+          "value": 1.0
+        },
+        "refined_span_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "romanized_script_at_5": {
+          "op": ">=",
+          "value": 0.95
+        },
+        "serialization_roundtrip": {
+          "op": "==",
+          "value": 1.0
+        },
+        "unicode_identity": {
+          "op": "==",
+          "value": 1.0
+        }
+      },
+      "locked_before_holdout": true,
+      "minimum_denominators": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+        "ACRONYM_IDENTITY_REQUIRED": 100,
+        "CANDIDATE_CAP_PRESSURE": 350,
+        "COALESCED_SPAN_IDENTITY": 200,
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "ENGLISH_GUARD_ANALOGUE": 100,
+        "ENGLISH_IDENTITY_REQUIRED": 200,
+        "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+        "EXACT_RAW_IDENTITY_REQUIRED": 850,
+        "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+        "IDENTIFIER_PROTECTION_REQUIRED": 100,
+        "IDENTITY_ANCHOR_CHALLENGE": 500,
+        "IDENTITY_INVARIANT_ANALOGUE": 350,
+        "IDENTITY_RETENTION_REQUIRED": 850,
+        "MONOTONIC_PARENT_CORRECT": 400,
+        "MULTI_TOKEN_IDENTITY": 300,
+        "OOV": 100,
+        "PROTECTED_IDENTITY_REQUIRED": 100,
+        "REFINED_SPAN_IDENTITY": 200,
+        "ROMANIZED_NEPALI_REQUIRED": 200,
+        "SERIALIZATION_ROUNDTRIP": 500,
+        "SHARED_OR_AMBIGUOUS": 150,
+        "UNICODE_IDENTITY": 150
+      },
+      "notes": "R3N6 thresholds preserve R3N5 numerical minima while requiring independently scored expected behavior and complete attempt-time output binding. Immutable after RC lock.",
+      "prohibited_for_training": true,
+      "threshold_id": "MAI_07R3N6_THRESHOLDS_V1"
+    },
+    "threshold_manifest_sha256": "f62390a76fc7ebc29c83f510040495cb2e4e55255d3a1f0480cceb3046084b5c"
+  },
+  "parent_lock_semantic_sha256": "883b808b67049041a801650297abb9fd151d8c206da3700ee966f00ea03e61fa",
+  "provenance": "MAI_07R3N6_APPEND_ONLY_COMPLETE_OUTPUT_CHAIN_RC_002_AFTER_ATTEMPT_001_PRE_SCORE_CRASH",
+  "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002",
+  "rc_manifest_raw_sha256": "062b4f1147b4bc036e2ef13dd8dfdc2eb075498e974afcd7199eff4af3d8d251",
+  "rc_manifest_semantic_sha256": "011c7833a4030892b70e125d41a18be378b8f9b79cb2dc1db0175ee2b94e5b34",
+  "record_type": "LOCK_RECORD",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+}

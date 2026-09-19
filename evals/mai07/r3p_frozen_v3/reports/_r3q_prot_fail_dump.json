@@ -1,0 +1,602 @@
+[
+  {
+    "case_id": "V3SRC-prot-3dbd627d1120",
+    "span": "EMAIL-user.syn@example.test-R095",
+    "top": "Do",
+    "input": "Do not mutate protected token EMAIL-user.syn@example.test-R095 inside the posting draft case 95 (synthetic email token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-3f005d73a0f6",
+    "span": "URL-https://example.test/eval/v3-R096",
+    "top": "Do",
+    "input": "Do not mutate protected token URL-https://example.test/eval/v3-R096 inside the posting draft case 96 (synthetic url token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-500aaeee3ead",
+    "span": "EMAIL-user.syn@example.test-R055",
+    "top": "Do",
+    "input": "Do not mutate protected token EMAIL-user.syn@example.test-R055 inside the posting draft case 55 (synthetic email token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-7c84e7287d18",
+    "span": "PAN-A1B2C3D4E5-R080",
+    "top": "Do",
+    "input": "Do not mutate protected token PAN-A1B2C3D4E5-R080 inside the posting draft case 80 (synthetic taxpayer id token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-8ac39d01a83a",
+    "span": "URL-https://example.test/eval/v3-R066",
+    "top": "Do",
+    "input": "Do not mutate protected token URL-https://example.test/eval/v3-R066 inside the posting draft case 66 (synthetic url token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-8e32239b780b",
+    "span": "PAN-A1B2C3D4E5-R020",
+    "top": "Do",
+    "input": "Do not mutate protected token PAN-A1B2C3D4E5-R020 inside the posting draft case 20 (synthetic taxpayer id token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-927ceaeda1fe",
+    "span": "PAN-A1B2C3D4E5-R060",
+    "top": "Do",
+    "input": "Do not mutate protected token PAN-A1B2C3D4E5-R060 inside the posting draft case 60 (synthetic taxpayer id token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-92fb92004c08",
+    "span": "URL-https://example.test/eval/v3-R086",
+    "top": "Do",
+    "input": "Do not mutate protected token URL-https://example.test/eval/v3-R086 inside the posting draft case 86 (synthetic url token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-ca6ba808a04f",
+    "span": "PAN-A1B2C3D4E5-R000",
+    "top": "Do",
+    "input": "Do not mutate protected token PAN-A1B2C3D4E5-R000 inside the posting draft case 0 (synthetic taxpayer id token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-dc63adf2d9af",
+    "span": "EMAIL-user.syn@example.test-R075",
+    "top": "Do",
+    "input": "Do not mutate protected token EMAIL-user.syn@example.test-R075 inside the posting draft case 75 (synthetic email token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-e8aa4e5f2479",
+    "span": "URL-https://example.test/eval/v3-R036",
+    "top": "Do",
+    "input": "Do not mutate protected token URL-https://example.test/eval/v3-R036 inside the posting draft case 36 (synthetic url token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-ed0155749b95",
+    "span": "EMAIL-user.syn@example.test-R005",
+    "top": "Do",
+    "input": "Do not mutate protected token EMAIL-user.syn@example.test-R005 inside the posting draft case 5 (synthetic email token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-prot-f375533ac8a4",
+    "span": "PAN-A1B2C3D4E5-R010",
+    "top": "Do",
+    "input": "Do not mutate protected token PAN-A1B2C3D4E5-R010 inside the posting draft case 10 (synthetic taxpayer id token)",
+    "ranked": [
+      {
+        "surface": "Do",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-0343f3385ef2",
+    "span": "café",
+    "top": "alignment",
+    "input": "alignment challenge 0: keep surface [café] intact (combining acute)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-1f0afa11d992",
+    "span": "a​aja",
+    "top": "alignment",
+    "input": "alignment challenge 23: keep surface [a​aja] intact (zero-width space)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-20e342225d52",
+    "span": "“hisab”",
+    "top": "alignment",
+    "input": "alignment challenge 15: keep surface [“hisab”] intact (smart quotes)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-32c47622b0b4",
+    "span": "ñepali",
+    "top": "alignment",
+    "input": "alignment challenge 21: keep surface [ñepali] intact (combining tilde)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-3e083d8ed169",
+    "span": "a​aja",
+    "top": "alignment",
+    "input": "alignment challenge 43: keep surface [a​aja] intact (zero-width space)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-3eea27bd7785",
+    "span": "½",
+    "top": "alignment",
+    "input": "alignment challenge 18: keep surface [½] intact (vulgar fraction)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-3faf08c07498",
+    "span": "“hisab”",
+    "top": "alignment",
+    "input": "alignment challenge 5: keep surface [“hisab”] intact (smart quotes)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-5861b57233f7",
+    "span": "a​aja",
+    "top": "alignment",
+    "input": "alignment challenge 13: keep surface [a​aja] intact (zero-width space)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-5a848ec0a181",
+    "span": "﻿opening",
+    "top": "alignment",
+    "input": "alignment challenge 2: keep surface [﻿opening] intact (BOM prefix)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-5e90be2a703c",
+    "span": "㎡",
+    "top": "alignment",
+    "input": "alignment challenge 9: keep surface [㎡] intact (square metre symbol)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-606be649c5f0",
+    "span": "ñepali",
+    "top": "alignment",
+    "input": "alignment challenge 1: keep surface [ñepali] intact (combining tilde)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-68b0e916a024",
+    "span": "½",
+    "top": "alignment",
+    "input": "alignment challenge 48: keep surface [½] intact (vulgar fraction)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-6ac1bb632c89",
+    "span": "paisa…",
+    "top": "alignment",
+    "input": "alignment challenge 46: keep surface [paisa…] intact (ellipsis)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-82214b2ad06f",
+    "span": "“hisab”",
+    "top": "alignment",
+    "input": "alignment challenge 25: keep surface [“hisab”] intact (smart quotes)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-852caca2fa86",
+    "span": "a​aja",
+    "top": "alignment",
+    "input": "alignment challenge 33: keep surface [a​aja] intact (zero-width space)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-912662301c27",
+    "span": "½",
+    "top": "alignment",
+    "input": "alignment challenge 28: keep surface [½] intact (vulgar fraction)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-9eebe97db810",
+    "span": "﻿opening",
+    "top": "alignment",
+    "input": "alignment challenge 22: keep surface [﻿opening] intact (BOM prefix)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-a42b7c2b6a2e",
+    "span": "café",
+    "top": "alignment",
+    "input": "alignment challenge 20: keep surface [café] intact (combining acute)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-acf0ba766f00",
+    "span": "kharcha baaki",
+    "top": "alignment",
+    "input": "alignment challenge 24: keep surface [kharcha baaki] intact (nbsp)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-ad61c277298a",
+    "span": "ñepali",
+    "top": "alignment",
+    "input": "alignment challenge 31: keep surface [ñepali] intact (combining tilde)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-b88deb54794c",
+    "span": "㎡",
+    "top": "alignment",
+    "input": "alignment challenge 49: keep surface [㎡] intact (square metre symbol)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-ba32537fc7a7",
+    "span": "ñepali",
+    "top": "alignment",
+    "input": "alignment challenge 11: keep surface [ñepali] intact (combining tilde)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-baf451499e82",
+    "span": "㎡",
+    "top": "alignment",
+    "input": "alignment challenge 39: keep surface [㎡] intact (square metre symbol)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-e0ad6b9ecc46",
+    "span": "“hisab”",
+    "top": "alignment",
+    "input": "alignment challenge 45: keep surface [“hisab”] intact (smart quotes)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-e488accf65ab",
+    "span": "“hisab”",
+    "top": "alignment",
+    "input": "alignment challenge 35: keep surface [“hisab”] intact (smart quotes)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-e869e382f153",
+    "span": "café",
+    "top": "alignment",
+    "input": "alignment challenge 10: keep surface [café] intact (combining acute)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  },
+  {
+    "case_id": "V3SRC-uni-ecc4edcfb8da",
+    "span": "kharcha baaki",
+    "top": "alignment",
+    "input": "alignment challenge 34: keep surface [kharcha baaki] intact (nbsp)",
+    "ranked": [
+      {
+        "surface": "alignment",
+        "kind": "IDENTITY",
+        "is_identity": true,
+        "score": null
+      }
+    ],
+    "meta": {}
+  }
+]

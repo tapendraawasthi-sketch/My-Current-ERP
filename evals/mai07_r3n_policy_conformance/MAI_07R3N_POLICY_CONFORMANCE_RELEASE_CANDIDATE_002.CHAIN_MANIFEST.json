@@ -1,0 +1,11 @@
+{
+  "consumed": true,
+  "holdout_attempt_path": "evals/mai07_r3n_policy_conformance/MAI_07R3N_HOLDOUT_ATTEMPT_002.json",
+  "lock_record_path": "evals/mai07_r3n_policy_conformance/MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002.LOCK_RECORD.json",
+  "locked_not_run_path": "evals/mai07_r3n_policy_conformance/MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+  "locked_raw_sha256": "80eb427180f2463c474440a6924d82fdbbb7b2686753016a2d19f5e294a3713d",
+  "locked_semantic_sha256": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+  "qualification_path": "evals/mai07_r3n_policy_conformance/MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002.QUALIFICATION_RESULT.json",
+  "rc_id": "MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002",
+  "verdict": "PASSED_CORRECTIVE_RC"
+}

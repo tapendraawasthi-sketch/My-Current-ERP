@@ -1,0 +1,51 @@
+{
+  "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT": true,
+  "MINIMUM_DENOMINATOR_POLICY_MISSING": true,
+  "all_three_531_lanes_had_independent_holdout_analogues": false,
+  "authorized_code_corrective_denominator_on_holdout": 0,
+  "classification_missing_policy": "MINIMUM_DENOMINATOR_POLICY_MISSING",
+  "corrective_lane_coverage_classification": "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT",
+  "corrective_lane_holdout_analogue_counts": {
+    "ACRONYM_OR_IDENTIFIER_PROTECTION_analogue": 2,
+    "ENGLISH_IDENTITY_GUARD_analogue": 1,
+    "IDENTITY_CANDIDATE_INVARIANT_analogue": 1
+  },
+  "exact_minimums_explicitly_accepted_before_execution": false,
+  "holdout_metric_denominators": {
+    "acronym_identity_top1": 1,
+    "authorized_code_corrective": 0,
+    "caps_ok": 1,
+    "english_identity_top1": 1,
+    "false_devanagari_on_english": 1,
+    "identifier_identity_top1": 1,
+    "identity_retention": 1,
+    "protected_identity": 1,
+    "raw_ok_all": 1,
+    "romanized_script_at_5": 1
+  },
+  "holdout_satisfies_original_sufficient_nonempty_denominators": false,
+  "minimum_denominators_value": null,
+  "note": "1/1 denominators may be technically non-empty but were not predeclared as adequate corrective-RC authority. AUTHORIZED_CODE_CORRECTIVE remained 0/0 on holdout.",
+  "one_case_populations": [
+    "acronym_identity_top1",
+    "caps_ok",
+    "english_identity_top1",
+    "false_devanagari_on_english",
+    "identifier_identity_top1",
+    "identity_retention",
+    "protected_identity",
+    "raw_ok_all",
+    "romanized_script_at_5"
+  ],
+  "reported_denominators": {
+    "acronym_identity_top1": 1,
+    "authorized_code_corrective": 0,
+    "english_identity_top1": 1,
+    "identifier_identity_top1": 1,
+    "protected_identity": 1,
+    "romanized_script_at_5": 1
+  },
+  "schema_version": "mai07_r3n_denominator_adequacy_audit_v2",
+  "threshold_declares_minimum_denominators": false,
+  "zero_zero_not_applicable_authorized_before_attempt001": false
+}

@@ -1,0 +1,127 @@
+{
+  "gates": {
+    "acronym_identifier_identity_top1": {
+      "op": "==",
+      "value": 1.0
+    },
+    "ambiguous_optional_target_generation_recall": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "ambiguous_optional_target_retention_at_5": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "candidate_duplication": {
+      "op": "==",
+      "value": 0
+    },
+    "canonical_audit_agreement": {
+      "op": "==",
+      "value": 1.0
+    },
+    "caps_respected": {
+      "op": "==",
+      "value": 1.0
+    },
+    "clear_romanized_cases_harmed": {
+      "op": "==",
+      "value": 0
+    },
+    "clear_romanized_target_generation_recall": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "clear_romanized_target_missing_from_top5_rate": {
+      "op": "<=",
+      "value": 0.02
+    },
+    "clear_romanized_target_recall_at_5": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "complete_counterfactual_triple_accuracy": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "deterministic_output": {
+      "op": "==",
+      "value": 1.0
+    },
+    "english_cases_harmed": {
+      "op": "==",
+      "value": 0
+    },
+    "english_context_identity_accuracy": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "false_devanagari_on_clear_english": {
+      "op": "<=",
+      "value": 0.01
+    },
+    "measured_candidate_set_preservation": {
+      "op": "==",
+      "value": 1.0
+    },
+    "measured_cross_path_parity": {
+      "op": "==",
+      "value": 1.0
+    },
+    "name_identity_top1": {
+      "op": "==",
+      "value": 1.0
+    },
+    "nepali_context_target_accuracy": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "overall_english_identity_top1": {
+      "op": ">=",
+      "value": 0.99
+    },
+    "policy_invocation_coverage": {
+      "op": "==",
+      "value": 1.0
+    },
+    "protected_cases_harmed": {
+      "op": "==",
+      "value": 0
+    },
+    "protected_span_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "raw_view_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "review_reason_code_completeness": {
+      "op": "==",
+      "value": 1.0
+    },
+    "shared_nepali_context_target_generation_recall": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "shared_nepali_context_target_recall_at_5": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "target_dropped_by_cap_rate": {
+      "op": "<=",
+      "value": 0.01
+    },
+    "technical_english_identity_top1": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "unresolved_shared_identity_review_accuracy": {
+      "op": ">=",
+      "value": 0.98
+    }
+  },
+  "locked_before_holdout_observation": true,
+  "schema_version": "1.0.0",
+  "threshold_id": "MAI_07R3H2_THRESHOLDS_V1"
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "threshold_id": "MAI_07_R3P_THRESHOLDS_V3",
+  "locked_before_runtime_observation": true,
+  "scorer_versions": {
+    "canonical": "mai-07.r3p.canonical.1.0.0",
+    "audit": "mai-07.r3p.audit.1.0.0"
+  },
+  "gates": {
+    "target_candidate_top1_accuracy": {
+      "op": ">=",
+      "value": 0.88
+    },
+    "target_candidate_recall_at_5": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "target_candidate_mrr": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "core_target_recall_at_5": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "unambiguous_target_top1": {
+      "op": ">=",
+      "value": 0.92
+    },
+    "english_identity_top1": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "false_devanagari_on_english": {
+      "op": "<=",
+      "value": 0.02
+    },
+    "protected_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "raw_view_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "deterministic_output_rate": {
+      "op": "==",
+      "value": 1.0
+    },
+    "candidate_caps_respected": {
+      "op": "==",
+      "value": 1.0
+    },
+    "unresolved_review_accuracy": {
+      "op": ">=",
+      "value": 0.9
+    }
+  },
+  "note": "Copied from pre-declared V3 metric intent / R3C gate shape; not fitted to candidate scores."
+}

@@ -1,0 +1,193 @@
+{
+  "created_utc": "2026-07-15T17:34:07.630606+00:00",
+  "holdout": {
+    "canonical_report_sha256": "bc2441723090b73dc8e0ca342ecb237ba7861a981dd96ed3267915b300c47890",
+    "command_note": "python -m ...eval_mai07_r3d --split HOLDOUT_VALIDATION (one-shot after RC lock)",
+    "gates": {
+      "caps_respected": {
+        "denominator": 477,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 477,
+        "op": "==",
+        "pass": true,
+        "population": 477,
+        "threshold": 1.0
+      },
+      "core_recall_at_5": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 210,
+        "numerator": 212,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.99
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 76,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 76,
+        "numerator": 76,
+        "op": ">=",
+        "pass": true,
+        "population": 76,
+        "threshold": 0.99
+      },
+      "false_devanagari_on_english": {
+        "denominator": 76,
+        "exact_value": 0.0,
+        "integer_pass_requirement": 0,
+        "numerator": 0,
+        "op": "<=",
+        "pass": true,
+        "population": 76,
+        "threshold": 0.01
+      },
+      "harm_count": {
+        "denominator": 1,
+        "exact_value": 0,
+        "integer_pass_requirement": 0,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "proper_name_identity_top1": {
+        "denominator": 8,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 8,
+        "numerator": 8,
+        "op": ">=",
+        "pass": true,
+        "population": 8,
+        "threshold": 0.95
+      },
+      "protected_span_mutations": {
+        "denominator": 153,
+        "exact_value": 0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 153,
+        "threshold": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 477,
+        "exact_value": 0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 477,
+        "threshold": 0
+      },
+      "target_mrr": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": null,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.92
+      },
+      "target_recall_at_5": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 209,
+        "numerator": 212,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.985
+      },
+      "target_top1": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 191,
+        "numerator": 212,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.9
+      },
+      "unambiguous_target_top1": {
+        "denominator": 53,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 50,
+        "numerator": 53,
+        "op": ">=",
+        "pass": true,
+        "population": 53,
+        "threshold": 0.94
+      }
+    },
+    "holdout_dataset_sha256": "f60d19b851dd05b7be27fb8c3c908e77ed5c8f34ed1d5dbfbf326eaa99aa5d7a",
+    "independent_audit_metrics_sha256": "1dfb1a39e692e72cc5c49f98643f30143bb93642b8ae580084099ffe5032d504",
+    "missing": [],
+    "ok": true,
+    "pred_mtime_utc": "2026-07-15T16:57:22.122549+00:00",
+    "predictions_sha256": "1d3b04d60d6621af4ffe3c46c2776a85630043ba4194269c31b2604fa8c0b4b5",
+    "rc_locked_before_holdout": true,
+    "rc_mtime_utc": "2026-07-15T16:57:19.177731+00:00",
+    "safety_dataset_sha256": "993a065146b4fc2ede0f1fe12a4f8b0dc9171d0efbb64e73f389bee4926533c6",
+    "threshold_sha256": "5c8345f44350034b6dc68217a1df4c8f52a0e9ec3d37f250c1afa4f63407e5b6"
+  },
+  "immutability": {
+    "core_target_denominator": 272,
+    "errors": [],
+    "hashes": {
+      "audit_scorer": "c0d7799b5d54057ea768b8c67f9516edefc713d8ebd2d59120f16df3bc102450",
+      "canonical_scorer": "6e8e30c9c6e2c38d3ea61243e0a22a72e8eb3e17e3d854a0a9a3467b130e9336",
+      "pop": "a8461f62acac98561605e5b2ffb2475bb73a3d15cf0f32ef7b98f1247de85632",
+      "r3c_pred": "88016f847678fefcd2b8545659ca03f8c4bf6849525d64855d563e9a95fd0c5a",
+      "rc_content": "2ebe29fac17b836849e3c3e1054c704a03d762bc5f28879a9a0de2f5a62d2c26",
+      "resource": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+      "runner_r3c": "0635071711a3b1e18e8be5da4f2e70a1826bb33e8430100d023e6942d1a53fc7",
+      "thr": "aa4b5d68852edbed7cdc5f025b8051b3235078a65fb78bb0aca3a342fcdf04ef",
+      "v1": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+      "v2": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+      "v2_man": "17331e4d0c703977b80ca893eb5261bb126aa52a6813fe8b4f548b1178c716be"
+    },
+    "ok": true,
+    "overlay": false,
+    "population_counts": {
+      "HUMAN_REVIEW_REQUIRED": 41,
+      "IDENTITY_REQUIRED": 340,
+      "LEGACY_V1_INFORMATIONAL": 27,
+      "TRANSLITERATION_REQUIRED": 288
+    },
+    "resource_pack_version": "mai-07.1.1-r3d",
+    "runtime_version": "mai-07.1.1-r3d",
+    "total_cases": 696,
+    "unambiguous_target_denominator": 255
+  },
+  "scorer_compatibility": {
+    "audit_scorer_version": "mai-07.r3c.audit.1.0.0",
+    "audit_target_denominator": 288,
+    "canonical_scorer_version": "mai-07.r3c.canonical.1.0.0",
+    "no_accounting_mutation": true,
+    "note": "Scorer smoke used sealed R3C predictions only; R3E one-shot uses R3D runtime separately.",
+    "ok": true,
+    "r3c_saved_predictions_scored": 696,
+    "roles_seen": [
+      "DEVANAGARI_TARGET",
+      "IDENTITY"
+    ],
+    "synthetic_envelopes": 3
+  },
+  "status": "PREFLIGHT_OK"
+}

@@ -1,0 +1,41 @@
+{
+  "branch": "A",
+  "branch_b_required": false,
+  "reconstruction": {
+    "exact_match": true,
+    "expected_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+    "note": "Recovered exact historical LOCKED_NOT_RUN body from immutable preserved artifact.",
+    "provenance": "RECONSTRUCTED_FROM_PREEXISTING_HASH_COMMITMENT",
+    "reconstructed_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+    "reconstruction_attempted": true
+  },
+  "search": {
+    "expected_lock_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+    "immutable_hits": [
+      {
+        "path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+        "raw_file_sha256": "b95e908aee316e4cf0d4b326e24e3fd2903ccb27dc1d89625e8f3994c42705ec",
+        "rc_manifest_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff"
+      }
+    ],
+    "narrative_refs_only": [
+      "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+      "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.LOCK_RECORD.json",
+      "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_SEAL_LOCK_CHAIN_DATASET_MANIFEST.json",
+      "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+      "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+      "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCK_RECORD.json",
+      "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+      "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_CANDIDATE_SELECTION.json",
+      "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_002_PREFLIGHT_REPORT.json",
+      "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_PREFLIGHT_REPORT.json",
+      "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_PREFLIGHT_REPORT.json",
+      "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_SEAL_LOCK_CHAIN_BRANCH_A_DISCOVERY.json",
+      "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_SEAL_LOCK_CHAIN_PREFLIGHT_REPORT.json",
+      "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_ATTEMPT.json",
+      "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_SCORE_REPORT.json"
+    ],
+    "ok": true
+  },
+  "status": "PASSED_RECOVERED_LOCK_CHAIN"
+}

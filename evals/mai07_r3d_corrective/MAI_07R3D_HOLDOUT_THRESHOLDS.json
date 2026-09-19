@@ -1,0 +1,59 @@
+{
+  "gates": {
+    "caps_respected": {
+      "op": "==",
+      "value": 1.0
+    },
+    "core_recall_at_5": {
+      "op": ">=",
+      "value": 0.99
+    },
+    "deterministic_output": {
+      "op": "==",
+      "value": 1.0
+    },
+    "english_identity_top1": {
+      "op": ">=",
+      "value": 0.99
+    },
+    "false_devanagari_on_english": {
+      "op": "<=",
+      "value": 0.01
+    },
+    "harm_count": {
+      "op": "==",
+      "value": 0
+    },
+    "proper_name_identity_top1": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "protected_span_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "raw_view_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "target_mrr": {
+      "op": ">=",
+      "value": 0.92
+    },
+    "target_recall_at_5": {
+      "op": ">=",
+      "value": 0.985
+    },
+    "target_top1": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "unambiguous_target_top1": {
+      "op": ">=",
+      "value": 0.94
+    }
+  },
+  "locked_before_holdout_observation": true,
+  "schema_version": "1.0.0",
+  "threshold_id": "MAI_07R3D_HOLDOUT_THRESHOLDS_V1"
+}

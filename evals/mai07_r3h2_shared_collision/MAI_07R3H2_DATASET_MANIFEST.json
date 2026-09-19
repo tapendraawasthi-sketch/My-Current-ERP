@@ -1,0 +1,86 @@
+{
+  "builder_version": "mai-07-r3h2-dataset.1.0.0",
+  "coverage": {
+    "acronym_identifier_cases": 192,
+    "ambiguous_review_cases": 352,
+    "clear_english_cases": 864,
+    "clear_romanized_control_cases": 768,
+    "counterfactual_pairs": 248,
+    "monotonic_parent_comparison_cases": 152,
+    "multi_token_cases": 3074,
+    "name_identity_cases": 12,
+    "names_acronyms_identifiers": 384,
+    "oov_cases": 220,
+    "optional_target_retention_cases": 352,
+    "protected_cases": 360,
+    "shared_english_context_cases": 378,
+    "shared_nepali_context_cases": 352,
+    "technical_english_cases": 210
+  },
+  "frozen_predictions_not_used": true,
+  "frozen_v2_case_bodies_not_used": true,
+  "gold_labels_generated_from_runtime_predictions": false,
+  "manifest_id": "MAI_07R3H2_DATASET_MANIFEST",
+  "minimums": {
+    "acronym_identifier_cases": 100,
+    "ambiguous_review_cases": 200,
+    "clear_english_cases": 400,
+    "clear_romanized_control_cases": 300,
+    "counterfactual_pairs": 200,
+    "multi_token_case_ratio": 0.8,
+    "name_identity_cases": 100,
+    "names_acronyms_identifiers": 200,
+    "oov_cases": 150,
+    "optional_target_retention_cases": 200,
+    "protected_cases": 200,
+    "shared_english_context_cases": 250,
+    "shared_nepali_context_cases": 250,
+    "technical_english_cases": 150
+  },
+  "minimums_met": true,
+  "pack_version": "mai-07.1.5-r3h2-shared",
+  "parent_pack_version": "mai-07.1.4-r3h-englishid",
+  "prohibited_for_training": true,
+  "r3h_holdout_family_not_used": true,
+  "schema_version": "1.0.0",
+  "splits": {
+    "CONTEXT_COUNTERFACTUAL": {
+      "case_count": 692,
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3h2_shared_collision\\context_counterfactual.jsonl",
+      "sha256": "110946793521cb39cfeed7c61d72e256ee5a363fa01e94fa39f4d86755ad9b5a"
+    },
+    "DEVELOPMENT": {
+      "case_count": 885,
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3h2_shared_collision\\development.jsonl",
+      "sha256": "1c9955cb16383f719a86be1d9b3b883b75a7492e10700a4442e677cbcd6619f4"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 653,
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3h2_shared_collision\\holdout_validation.jsonl",
+      "sha256": "e6ab941bafd339ef8993401449d43a7eadd433b11a765ddf0b3c8b2b197cb7d8"
+    },
+    "MONOTONIC_PARENT_COMPARISON": {
+      "case_count": 152,
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3h2_shared_collision\\monotonic_parent_comparison.jsonl",
+      "sha256": "c7753f5523f12bc7410314eefc2e0e096ba3facde7cb5009c83194a4c023e08d"
+    },
+    "OOV_GENERALIZATION": {
+      "case_count": 110,
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3h2_shared_collision\\oov_generalization.jsonl",
+      "sha256": "cda70ba18c396a78c630eb797d07e2cebc9231d41c4bbb39eb438bba020f95dc"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 582,
+      "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3h2_shared_collision\\safety_challenge.jsonl",
+      "sha256": "9f0e0a6a2829d4011b7701c75878988660893cf32ad7ee81d7dad895cdade35c"
+    }
+  },
+  "totals": {
+    "CONTEXT_COUNTERFACTUAL": 692,
+    "DEVELOPMENT": 885,
+    "HOLDOUT_VALIDATION": 653,
+    "MONOTONIC_PARENT_COMPARISON": 152,
+    "OOV_GENERALIZATION": 110,
+    "SAFETY_CHALLENGE": 582
+  }
+}

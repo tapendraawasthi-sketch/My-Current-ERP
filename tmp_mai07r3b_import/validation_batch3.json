@@ -1,0 +1,27 @@
+[
+  {
+    "name": "mai05_eval",
+    "exit": 0,
+    "tail": "{\n  \"all_gates_passed\": true,\n  \"path\": \"C:\\\\Users\\\\Acer\\\\Documents\\\\My-Current-ERP\\\\evals\\\\mai05\\\\baselines\\\\MAI_05_eval_report.json\",\n  \"script_char_accuracy\": 1.0,\n  \"protected_span_exact_f1\": 1.0,\n  \"language_form_macro_f1\": 0.9622222222222223,\n  \"romanized_precision\": 1.0,\n  \"ambiguous_latin_accuracy\": 1.0,\n  \"url_email_precision\": 1.0,\n  \"gates\": {\n    \"raw_mutations_ok\": true,\n    \"offset_ok\": true,\n    \"script_ok\": true,\n    \"protected_ok\": true,\n    \"url_email_ok\": true,\n    \"macro_f1_ok\": true,\n    \"romanized_ok\": true,\n    \"ambiguous_ok\": true\n  }\n}"
+  },
+  {
+    "name": "mai05_tests",
+    "exit": 0,
+    "tail": "...............                                                          [100%]\n15 passed in 5.28s"
+  },
+  {
+    "name": "mai06_eval",
+    "exit": 0,
+    "tail": "    \"preservation_ok\": true,\n    \"structural_ok\": true,\n    \"valid_recon_ok\": true,\n    \"structural_corrupt_ok\": true,\n    \"same_len_ok\": true,\n    \"cross_ok\": true,\n    \"false_reject_ok\": true,\n    \"protected_ok\": true,\n    \"protected_identity_ok\": true,\n    \"gaps_ok\": true,\n    \"map_validator_ok\": true,\n    \"idemp_ok\": true,\n    \"cand_ok\": true,\n    \"prohibited_ok\": true,\n    \"security_ok\": true,\n    \"unicode_ok\": true,\n    \"digit_ok\": true,\n    \"safe_auto_ok\": true,\n    \"float_ok\": true,\n    \"corrupt_silent_ok\": true,\n    \"leak_ok\": true,\n    \"exceptions_ok\": true,\n    \"shortcut_ok\": true\n  }\n}"
+  },
+  {
+    "name": "mai06_tests",
+    "exit": 4,
+    "tail": "\nno tests ran in 0.00s\nERROR: file or directory not found: tests/oip/language_runtime/test_mai06_resources.py\n"
+  },
+  {
+    "name": "mai07_semantic_prer1",
+    "exit": 0,
+    "tail": "{'resource': '18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566', 'resource_ok': True, 'semantic': 'b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849', 'semantic_ok': True, 'top1': 261}"
+  }
+]

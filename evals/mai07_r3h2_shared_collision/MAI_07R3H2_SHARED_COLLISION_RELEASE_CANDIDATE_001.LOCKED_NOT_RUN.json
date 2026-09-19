@@ -1,0 +1,162 @@
+{
+  "active_default_pack_version_unchanged": "mai-07.1.3-r3f-sealnew",
+  "dataset_manifest_sha256": "1789bc7b4f254256b93807e88e17547d1c9776f1f116e354b1db5dc8caa34573",
+  "development_predictions_canonical_list_sha256": "815e7e319b1c91314cf2d4b30c6304a47bc4e66525b53a042671f33636451f2a",
+  "development_score_all_required_pass": true,
+  "fresh_counterfactual_dataset_sha256": "110946793521cb39cfeed7c61d72e256ee5a363fa01e94fa39f4d86755ad9b5a",
+  "fresh_development_dataset_sha256": "1c9955cb16383f719a86be1d9b3b883b75a7492e10700a4442e677cbcd6619f4",
+  "fresh_holdout_dataset_sha256": "e6ab941bafd339ef8993401449d43a7eadd433b11a765ddf0b3c8b2b197cb7d8",
+  "fresh_monotonic_parent_comparison_dataset_sha256": "c7753f5523f12bc7410314eefc2e0e096ba3facde7cb5009c83194a4c023e08d",
+  "fresh_oov_dataset_sha256": "cda70ba18c396a78c630eb797d07e2cebc9231d41c4bbb39eb438bba020f95dc",
+  "fresh_safety_dataset_sha256": "9f0e0a6a2829d4011b7701c75878988660893cf32ad7ee81d7dad895cdade35c",
+  "guard_version": "mai-07-r3h2.1.0.0",
+  "linguist_approved": false,
+  "locked": true,
+  "locked_before_holdout": true,
+  "manifest_id": "MAI_07R3H2_SHARED_COLLISION_RELEASE_CANDIDATE_001",
+  "manifest_sha256": "bec4b8662a5ba9973253b05555151d71366a329f0425fa382a35a5916364d03c",
+  "no_frozen_prediction_use": true,
+  "no_frozen_v2_run": true,
+  "parent_pack_version": "mai-07.1.4-r3h-englishid",
+  "policy_version": "mai-07-r3h2.1.0.0",
+  "production_approved": false,
+  "quality_gates_passed": false,
+  "rc_manifest_raw_sha256": "2bce87e7ec4e684fa0b5d6f04aaa040a17d1d0d3b9941dd6a9c97d71312ee87c",
+  "rc_manifest_semantic_sha256": "bec4b8662a5ba9973253b05555151d71366a329f0425fa382a35a5916364d03c",
+  "resource_content_sha256": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+  "resource_pack_path": "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.5-r3h2-shared",
+  "resource_pack_version": "mai-07.1.5-r3h2-shared",
+  "runtime_claim": "mai-07.1.5-r3h2-shared",
+  "runtime_version": "mai-07.1.3-r3f-sealnew",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "status": "LOCKED_NOT_RUN",
+  "threshold_manifest": {
+    "gates": {
+      "acronym_identifier_identity_top1": {
+        "op": "==",
+        "value": 1.0
+      },
+      "ambiguous_optional_target_generation_recall": {
+        "op": ">=",
+        "value": 0.9
+      },
+      "ambiguous_optional_target_retention_at_5": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "candidate_duplication": {
+        "op": "==",
+        "value": 0
+      },
+      "canonical_audit_agreement": {
+        "op": "==",
+        "value": 1.0
+      },
+      "caps_respected": {
+        "op": "==",
+        "value": 1.0
+      },
+      "clear_romanized_cases_harmed": {
+        "op": "==",
+        "value": 0
+      },
+      "clear_romanized_target_generation_recall": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "clear_romanized_target_missing_from_top5_rate": {
+        "op": "<=",
+        "value": 0.02
+      },
+      "clear_romanized_target_recall_at_5": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "complete_counterfactual_triple_accuracy": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "deterministic_output": {
+        "op": "==",
+        "value": 1.0
+      },
+      "english_cases_harmed": {
+        "op": "==",
+        "value": 0
+      },
+      "english_context_identity_accuracy": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "false_devanagari_on_clear_english": {
+        "op": "<=",
+        "value": 0.01
+      },
+      "measured_candidate_set_preservation": {
+        "op": "==",
+        "value": 1.0
+      },
+      "measured_cross_path_parity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "name_identity_top1": {
+        "op": "==",
+        "value": 1.0
+      },
+      "nepali_context_target_accuracy": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "overall_english_identity_top1": {
+        "op": ">=",
+        "value": 0.99
+      },
+      "policy_invocation_coverage": {
+        "op": "==",
+        "value": 1.0
+      },
+      "protected_cases_harmed": {
+        "op": "==",
+        "value": 0
+      },
+      "protected_span_mutations": {
+        "op": "==",
+        "value": 0
+      },
+      "raw_view_mutations": {
+        "op": "==",
+        "value": 0
+      },
+      "review_reason_code_completeness": {
+        "op": "==",
+        "value": 1.0
+      },
+      "shared_nepali_context_target_generation_recall": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "shared_nepali_context_target_recall_at_5": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "target_dropped_by_cap_rate": {
+        "op": "<=",
+        "value": 0.01
+      },
+      "technical_english_identity_top1": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "unresolved_shared_identity_review_accuracy": {
+        "op": ">=",
+        "value": 0.98
+      }
+    },
+    "locked_before_holdout_observation": true,
+    "schema_version": "1.0.0",
+    "threshold_id": "MAI_07R3H2_THRESHOLDS_V1"
+  },
+  "threshold_manifest_sha256": "c79c77ecbe0494b567c9c99c9856fbd7c0cabe459241a472bc8131a66492c88e"
+}

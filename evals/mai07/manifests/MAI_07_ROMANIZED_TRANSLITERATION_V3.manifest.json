@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "MAI_07_ROMANIZED_TRANSLITERATION_V3",
+  "dataset_hash": "6ad2a824a6fe0cb1248d7640692f8c45635b4290ee33647d5cbe4b82af2bdde8",
+  "builder": "build_mai07r3p_dataset_v3.py",
+  "builder_schema_version": "mai07r3p_dataset_v3_1.0.0",
+  "canonical_scorer_version": "mai-07.r3p.canonical.1.0.0",
+  "audit_scorer_version": "mai-07.r3p.audit.1.0.0",
+  "parent_freeze_manifest": "docs/mokxya-ai/reviews/mai07_v3/MAI_07_V3_HUMAN_REVIEW_FREEZE_MANIFEST.json",
+  "parent_freeze_sha256": "adcee2904dc34df8e305d0de9e0a12f61c20b130da86d20ec1f225678587397c",
+  "authority": "ADR_0022",
+  "prohibited_for_training": true,
+  "option_a_mechanical_remap": true,
+  "total_cases": 1111,
+  "files": [
+    {
+      "suite_id": "v3_context_dependent_english__frozen_evaluation",
+      "path": "evals/mai07/frozen_v3/v3_context_dependent_english__frozen_evaluation.jsonl",
+      "case_count": 113,
+      "sha256": "7794497402c5ccf7438b1a50c55e571135427f4c707856bd218171ea778f871e"
+    },
+    {
+      "suite_id": "v3_context_dependent_english__policy_development",
+      "path": "evals/mai07/frozen_v3/v3_context_dependent_english__policy_development.jsonl",
+      "case_count": 85,
+      "sha256": "b42b2cbe66bdbbec06be540085fd7c8c3291d96c616e21fb0fa063e3fb081a6c"
+    },
+    {
+      "suite_id": "v3_identity_required__frozen_evaluation",
+      "path": "evals/mai07/frozen_v3/v3_identity_required__frozen_evaluation.jsonl",
+      "case_count": 91,
+      "sha256": "93ffe5e6631638ab07e4f4d420083ce3dc300d36f115655cec5cf96aecbf2a71"
+    },
+    {
+      "suite_id": "v3_identity_required__policy_development",
+      "path": "evals/mai07/frozen_v3/v3_identity_required__policy_development.jsonl",
+      "case_count": 77,
+      "sha256": "4d9e50afd6a7189b7c7da8edc20097e4b8b5d88420a842f42088c734e5184a33"
+    },
+    {
+      "suite_id": "v3_no_transliteration_allowed__frozen_evaluation",
+      "path": "evals/mai07/frozen_v3/v3_no_transliteration_allowed__frozen_evaluation.jsonl",
+      "case_count": 11,
+      "sha256": "9d8d438da734a8fe94a4d2f87fb82b2402165e9b8eadbb1dac7e04219e2d097a"
+    },
+    {
+      "suite_id": "v3_no_transliteration_allowed__policy_development",
+      "path": "evals/mai07/frozen_v3/v3_no_transliteration_allowed__policy_development.jsonl",
+      "case_count": 7,
+      "sha256": "585ce8f4d520019be926f6679547f1c8ae49d4d4b1a98f2b93eb713132c7fda5"
+    },
+    {
+      "suite_id": "v3_protected_identity__frozen_evaluation",
+      "path": "evals/mai07/frozen_v3/v3_protected_identity__frozen_evaluation.jsonl",
+      "case_count": 144,
+      "sha256": "63539f788fd42c39054f8a7d3858ebe99a22cf61f84b52ee4d6370d7d68909ae"
+    },
+    {
+      "suite_id": "v3_protected_identity__policy_development",
+      "path": "evals/mai07/frozen_v3/v3_protected_identity__policy_development.jsonl",
+      "case_count": 133,
+      "sha256": "aa847df025c0da48c95b7ebbaa20af717cc3b4d5949760cae426f2c7a544c0d0"
+    },
+    {
+      "suite_id": "v3_transliteration_optional__frozen_evaluation",
+      "path": "evals/mai07/frozen_v3/v3_transliteration_optional__frozen_evaluation.jsonl",
+      "case_count": 146,
+      "sha256": "5aa57a253016804de331bbcdc13bee1fbaa5ded8ac1f4540dea1da07429ce30a"
+    },
+    {
+      "suite_id": "v3_transliteration_optional__policy_development",
+      "path": "evals/mai07/frozen_v3/v3_transliteration_optional__policy_development.jsonl",
+      "case_count": 135,
+      "sha256": "906c1795278bb37773e9badcd74b941c35896dcd0caa1702d81f2d6a3b493cc1"
+    },
+    {
+      "suite_id": "v3_transliteration_required__frozen_evaluation",
+      "path": "evals/mai07/frozen_v3/v3_transliteration_required__frozen_evaluation.jsonl",
+      "case_count": 78,
+      "sha256": "d15f73f9813979f2a2116c0800beacdd18006b4c4b6956e6b00c5e6bf02a1640"
+    },
+    {
+      "suite_id": "v3_transliteration_required__policy_development",
+      "path": "evals/mai07/frozen_v3/v3_transliteration_required__policy_development.jsonl",
+      "case_count": 91,
+      "sha256": "2bf765765aae36b4e89b6d52006ba33fc7fb2eacd775b540da7eb66fe2d20ffc"
+    }
+  ],
+  "population_manifest_sha256": "185a3470fc207fbb14c4701423ce244ea3876ef10b3825f7595753924a874fc1",
+  "threshold_manifest_sha256": "943784a43b36e8962ba8b0e8999c48e0bc465bd993134e0fda90aafd97f3be63",
+  "reconciliation": {
+    "total_cases": 1111,
+    "unique_source_items": 1111,
+    "disposition_mismatch_fluent_vs_linguist": 0,
+    "population_counts": {
+      "CONTEXT_DEPENDENT_ENGLISH": 198,
+      "IDENTITY_REQUIRED": 168,
+      "NO_TRANSLITERATION_ALLOWED": 18,
+      "PROTECTED_IDENTITY": 277,
+      "TRANSLITERATION_OPTIONAL": 281,
+      "TRANSLITERATION_REQUIRED": 169
+    },
+    "pool_counts": {
+      "FROZEN_EVALUATION": 583,
+      "POLICY_DEVELOPMENT": 528
+    },
+    "round_b_label_counts_fluent_a": {
+      "ACCEPTABLE_PREFERRED": 1111,
+      "INCORRECT": 2151
+    },
+    "freeze_manifest_sha256": "adcee2904dc34df8e305d0de9e0a12f61c20b130da86d20ec1f225678587397c",
+    "option_a_mechanical_remap": true,
+    "parent_freeze_status": "V3_HUMAN_REVIEW_FREEZE_SEALED",
+    "blind_mapping_sha256": "d0875db79185b034b080e69f77f1220417cdc24dae5a6fb755a56b472af414f1"
+  },
+  "QUALITY_GATES_PASSED": false,
+  "PRODUCTION_APPROVED": false,
+  "runtime_evaluation_performed": false,
+  "note": "V3 dataset frozen from human-review freeze. No model predictions observed. Ready for separately authorized one-shot eval."
+}

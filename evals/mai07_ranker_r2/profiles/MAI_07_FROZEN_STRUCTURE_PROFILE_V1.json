@@ -1,0 +1,97 @@
+{
+  "case_count": 696,
+  "histograms": {
+    "case_boolean_flags": {
+      "abstention_expected": 40,
+      "context_challenge": 64,
+      "has_protected_spans": 48,
+      "identity_expected": 696
+    },
+    "case_eligible_span_count_bucket": {
+      "0": 204,
+      "1": 394,
+      "2-3": 86,
+      "4-5": 12
+    },
+    "case_span_count_bucket": {
+      "1": 478,
+      "2-3": 78,
+      "4-5": 116,
+      "6+": 24
+    },
+    "case_total_candidate_count_bucket": {
+      "1": 145,
+      "2-3": 328,
+      "4-5": 93,
+      "6+": 130
+    },
+    "input_token_count_bucket": {
+      "1": 488,
+      "2": 41,
+      "3-4": 164,
+      "5-6": 3
+    },
+    "span_ambiguous_flag": {
+      "ambiguous": 103,
+      "not_ambiguous": 1357
+    },
+    "span_candidate_count_bucket": {
+      "1": 791,
+      "2-3": 588,
+      "4-5": 81
+    },
+    "span_eligibility_decision": {
+      "ABSTAIN": 103,
+      "GENERATE": 669,
+      "IDENTITY_ONLY": 221,
+      "SKIPPED_PROTECTED": 65,
+      "SKIPPED_TOO_LONG": 10,
+      "SKIPPED_UNSUPPORTED": 392
+    },
+    "span_language_form": {
+      "ENGLISH": 307,
+      "IDENTIFIER_OR_CODE": 53,
+      "NEPALI_DEVANAGARI": 30,
+      "NUMERIC": 12,
+      "PUNCTUATION_OR_SYMBOL": 10,
+      "ROMANIZED_NEPALI": 286,
+      "SHARED_OR_AMBIGUOUS_LATIN": 193,
+      "TECHNICAL_ACCOUNTING_ENGLISH": 177,
+      "UNKNOWN": 392
+    },
+    "span_name_like_flag": {
+      "name_like": 26,
+      "not_name_like": 1434
+    },
+    "span_protected_flag": {
+      "not_protected": 1395,
+      "protected": 65
+    },
+    "suite_id": {
+      "ambiguous_latin_v1": 40,
+      "code_mix_v1": 48,
+      "context_challenge_v1": 64,
+      "devanagari_identity_v1": 30,
+      "domain_terms_v1": 44,
+      "english_identity_v1": 67,
+      "grapheme_ambiguity_v1": 45,
+      "names_entities_v1": 12,
+      "phrase_morph_v1": 13,
+      "protected_spans_v1": 48,
+      "punct_ws_emoji_v1": 50,
+      "romanized_common_v1": 58,
+      "romanized_core_v1": 147,
+      "security_adversarial_v1": 30
+    }
+  },
+  "privacy": {
+    "contains_candidate_surfaces": false,
+    "contains_case_ids": false,
+    "contains_input_text": false
+  },
+  "profile_id": "MAI_07_FROZEN_STRUCTURE_PROFILE_V1",
+  "resource_content_hash": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+  "resource_pack_version": "mai-07.3.0",
+  "source_dataset_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+  "source_manifest_id": "MAI_07_ROMANIZED_TRANSLITERATION_V1"
+}

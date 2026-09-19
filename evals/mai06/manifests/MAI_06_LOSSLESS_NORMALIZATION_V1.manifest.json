@@ -1,0 +1,73 @@
+{
+  "dataset_hash": "abe90267a94479f58be9fa7caf353fcd069ea3e2f77145a3fe68c884fcc23bc5",
+  "dataset_version": "mai06-lossless-normalization-v1",
+  "files": [
+    {
+      "case_count": 20,
+      "path": "evals/mai06/frozen/abbreviation_candidates_v1.jsonl",
+      "sha256": "df28219e11788f18bed4994d84e786271f6a7d72ee940de271c0c82360d2cdee",
+      "suite_id": "abbreviation_candidates_v1"
+    },
+    {
+      "case_count": 20,
+      "path": "evals/mai06/frozen/adversarial_v1.jsonl",
+      "sha256": "0656c3db893a5c2dbd3cd978be02bffbe6dbbe6014461e3ccba948a0abf909a8",
+      "suite_id": "adversarial_v1"
+    },
+    {
+      "case_count": 50,
+      "path": "evals/mai06/frozen/digit_equivalence_v1.jsonl",
+      "sha256": "d0f1557a1b6847c4b3ddcb3a66f96e5a717290526528ab54c0862a039dd6da42",
+      "suite_id": "digit_equivalence_v1"
+    },
+    {
+      "case_count": 60,
+      "path": "evals/mai06/frozen/offset_mapping_v1.jsonl",
+      "sha256": "bfe15279b6556627f98b2fca49addc5f0626655a6086de7f74be3dc56a663882",
+      "suite_id": "offset_mapping_v1"
+    },
+    {
+      "case_count": 100,
+      "path": "evals/mai06/frozen/protected_no_change_v1.jsonl",
+      "sha256": "c41bd47cf26477cc5c4f262db088cdfd8d8af3e614143b65647cbf26ce3fe969",
+      "suite_id": "protected_no_change_v1"
+    },
+    {
+      "case_count": 50,
+      "path": "evals/mai06/frozen/punctuation_candidates_v1.jsonl",
+      "sha256": "b67be59f27c4df5bd7d6b5ae1697dec91884949c67804e225ba9371f30efcc1c",
+      "suite_id": "punctuation_candidates_v1"
+    },
+    {
+      "case_count": 20,
+      "path": "evals/mai06/frozen/repetition_candidates_v1.jsonl",
+      "sha256": "6fb8f095dbb702a815c61f1734c80b67091af3f6377ad29aeb5215122a2d4f66",
+      "suite_id": "repetition_candidates_v1"
+    },
+    {
+      "case_count": 70,
+      "path": "evals/mai06/frozen/unicode_canonical_v1.jsonl",
+      "sha256": "96abddd42d6efd3da4cd05b67cda22a992b119471371f2cc79d4b4825fb22f68",
+      "suite_id": "unicode_canonical_v1"
+    },
+    {
+      "case_count": 30,
+      "path": "evals/mai06/frozen/unicode_security_v1.jsonl",
+      "sha256": "a78872f352abf48cd52fb40b08efa02872a5328abcc6a8c1e011988c660cf9af",
+      "suite_id": "unicode_security_v1"
+    },
+    {
+      "case_count": 50,
+      "path": "evals/mai06/frozen/whitespace_v1.jsonl",
+      "sha256": "fd935d68663fda0f01de666f7da06022341193d39923958c9c429fdb3dca39dd",
+      "suite_id": "whitespace_v1"
+    }
+  ],
+  "frozen": true,
+  "manifest_id": "MAI_06_LOSSLESS_NORMALIZATION_V1",
+  "prohibited_for_training": true,
+  "related_mai04_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+  "related_mai05_hash": "2eb4f0d8edd5544fb8266fd8eebf6eceffd40f13db1f37b6892eb48ea61dbe7c",
+  "schema_version": "1.0.0",
+  "total_cases": 470
+}

@@ -1,0 +1,313 @@
+{
+  "locked_at_utc": "2026-07-18T06:14:47.894380+00:00",
+  "locked_body_path": "C:/Users/Acer/Documents/My-Current-ERP/evals/mai07_r3n3_fresh_holdout/MAI_07R3N3_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+  "locked_rc_body": {
+    "active_default_pack_version_unchanged": "mai-07.1.3-r3f-sealnew",
+    "candidate_policy_version": "mai-07-r3n3.1.0.0",
+    "candidate_promoted": false,
+    "dataset_manifest": {
+      "builder_version": "mai-07-r3n3-dataset.1.0.0",
+      "candidate_policy_version": "mai-07-r3n3.1.0.0",
+      "frozen_v2_unused": true,
+      "manifest_id": "MANIFEST",
+      "multi_token_coverage": {
+        "multi_token_case_count": 3300,
+        "multi_token_coverage_pct": 100.0,
+        "total_cases": 3300
+      },
+      "parent_active_runtime": "mai-07.1.3-r3f-sealnew",
+      "parent_failed_r3n2_runtime": "mai-07.1.7-r3n2-freshholdout",
+      "population_counts": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 124,
+        "ACRONYM_IDENTITY_REQUIRED": 249,
+        "AUTHORIZED_CODE_CORRECTIVE": 9,
+        "CANDIDATE_CAP_PRESSURE": 299,
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "ENGLISH_GUARD_ANALOGUE": 149,
+        "ENGLISH_IDENTITY_REQUIRED": 625,
+        "IDENTIFIER_PROTECTION_REQUIRED": 249,
+        "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+        "IDENTITY_INVARIANT_ANALOGUE": 299,
+        "IDENTITY_RETENTION_REQUIRED": 350,
+        "MONOTONIC_PARENT_CORRECT": 300,
+        "MONOTONIC_PARENT_INCORRECT": 49,
+        "OOV": 100,
+        "PROTECTED_IDENTITY_REQUIRED": 249,
+        "ROMANIZED_NEPALI_REQUIRED": 400,
+        "SHARED_OR_AMBIGUOUS": 199
+      },
+      "prohibited_for_training": true,
+      "r3l_synthetic_overlap_blocked": true,
+      "schema_version": "mai07_r3n3_manifest_v1",
+      "seeds": {
+        "DEVELOPMENT": 20260722,
+        "HOLDOUT_FAMILY": 20260723
+      },
+      "splits": {
+        "CONTEXT_COUNTERFACTUAL": {
+          "case_count": 300,
+          "filename": "context_counterfactual.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\context_counterfactual.jsonl",
+          "seed": 20260723,
+          "sha256": "20528702b3e8e7fe3c17e8b1cdf6c68484c2c336147bf38ee94c84fc417aa5b3"
+        },
+        "DEVELOPMENT": {
+          "case_count": 600,
+          "filename": "development.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\development.jsonl",
+          "seed": 20260722,
+          "sha256": "63a34a605c3f67ed963eb4c13533ef0ccc038f77e4d785c80b79eaa01d41a11c"
+        },
+        "HOLDOUT_VALIDATION": {
+          "case_count": 1200,
+          "filename": "holdout_validation.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\holdout_validation.jsonl",
+          "seed": 20260723,
+          "sha256": "27a266c0724b542741f09005c00a9f405aa0744351fb7f5a6a50f84a0c0aa27b"
+        },
+        "IDENTITY_CAP_PRESSURE_CHALLENGE": {
+          "case_count": 400,
+          "filename": "identity_cap_pressure_challenge.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\identity_cap_pressure_challenge.jsonl",
+          "seed": 20260723,
+          "sha256": "4bbf1ff7dc42f02c78f82eb4e37b859a70373c0744a810707704a92796dd9619"
+        },
+        "MONOTONIC_REGRESSION": {
+          "case_count": 300,
+          "filename": "monotonic_regression.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\monotonic_regression.jsonl",
+          "seed": 20260723,
+          "sha256": "f9844e06e497c0660054ab7c1a1b745c355ec264e2bd630f38206f259a4a23b0"
+        },
+        "OOV_CHALLENGE": {
+          "case_count": 100,
+          "filename": "oov_challenge.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\oov_challenge.jsonl",
+          "seed": 20260723,
+          "sha256": "ad9115dbb94eef9f681ce457a23bdcff0fac7c199e333275ff9d6644919e4ee7"
+        },
+        "SAFETY_CHALLENGE": {
+          "case_count": 400,
+          "filename": "safety_challenge.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n3_fresh_holdout\\safety_challenge.jsonl",
+          "seed": 20260723,
+          "sha256": "dd19486bc63e39a25ab0364f2b25197a73f353ca1a4f81d6252b9e95d54fa495"
+        }
+      },
+      "total_cases": 3300,
+      "totals": {
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "DEVELOPMENT": 600,
+        "HOLDOUT_VALIDATION": 1200,
+        "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+        "MONOTONIC_REGRESSION": 300,
+        "OOV_CHALLENGE": 100,
+        "SAFETY_CHALLENGE": 400
+      }
+    },
+    "dataset_manifest_sha256": "223241436a15e58765daddc8e87b301f22f05c0ad2a3044426b485c592390965",
+    "default_active": false,
+    "development_predictions_canonical_list_sha256": "2e20c4f07510c1085e3c7a66dc90eba9831fad237b3fb32c6cbd4cb3a77e7c41",
+    "development_predictions_raw_sha256": "6ebddd75700953aafde7af29af49d040a0f63e12288ea8c251eeafd2bbb29e4c",
+    "development_score_all_required_pass": true,
+    "evaluator_source_sha256": "e27dfb51e7ad80fc1d7beb22091654354d21f6e445cd9c4e89d8a80b0214e3cb",
+    "finalizer_source_sha256": "6d04329930026a666da9ed4bf36d26b217af90591e257994ad4b0f7b71cdcc30",
+    "finalizer_version": "mai-07-r3n3.finalizer.1.0.0",
+    "invalidated_r3n_lineage": {
+      "reason": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+      "runtime_version": "mai-07.1.6-r3n-policyconf"
+    },
+    "linguist_approved": false,
+    "locked": true,
+    "locked_before_holdout": true,
+    "manifest_id": "MAI_07R3N3_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+    "manifest_sha256": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+    "minimum_denominator_policy": {
+      "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+      "ACRONYM_IDENTITY_REQUIRED": 100,
+      "CANDIDATE_CAP_PRESSURE": 250,
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "ENGLISH_GUARD_ANALOGUE": 100,
+      "ENGLISH_IDENTITY_REQUIRED": 200,
+      "IDENTIFIER_PROTECTION_REQUIRED": 100,
+      "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+      "IDENTITY_INVARIANT_ANALOGUE": 250,
+      "IDENTITY_RETENTION_REQUIRED": 300,
+      "MONOTONIC_PARENT_CORRECT": 300,
+      "OOV": 100,
+      "PROTECTED_IDENTITY_REQUIRED": 100,
+      "ROMANIZED_NEPALI_REQUIRED": 200,
+      "SHARED_OR_AMBIGUOUS": 150
+    },
+    "no_frozen_prediction_use": true,
+    "no_frozen_v2_run": true,
+    "no_r3n2_prediction_use": true,
+    "overlay_enabled": false,
+    "parent_failed_r3n2_lineage": {
+      "candidate_promoted": false,
+      "consumed": true,
+      "lock_semantic_sha256": "25f9eac74b8c9331a474c54ef2bb723157789aba00cab7bb8194dbb6b999c710",
+      "pack_hash": "170610284993061dd93efc3150f09f03ac2f1e3d69052c964cbe7c3aab61c1f3",
+      "runtime_semantic_sha256": "c1777bdff80680069398244d0941adb2c3baca79c37da43edeed0d54b7e3e998",
+      "runtime_version": "mai-07.1.7-r3n2-freshholdout",
+      "verdict": "FAILED_HOLDOUT_QUALITY"
+    },
+    "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "parent_runtime_version": "mai-07.1.3-r3f-sealnew",
+    "policy_config_sha256": "455bda176f53b26d758e84568553c52d2b60f3101106a97cd5e8560c72cbb1aa",
+    "population_definition_hash": "0cda066273826c5eeed01810a7088f2a131b38f295d9843e79eab21b746058aa",
+    "production_approved": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "r3n_integrity_closure_semantic": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+    "rc_manifest_raw_sha256": "98bf40b6af45ef967d400ce78f242b627993e3105fe6162e63004bcaf8134eb8",
+    "rc_manifest_semantic_sha256": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+    "resource_content_sha256": "1268527c5c5d99e036628dc104340dafe297afadf9938a310a099a38f825c0e7",
+    "resource_pack_version": "mai-07.1.8-r3n3-identityinv",
+    "runtime_claim": "mai-07.1.8-r3n3-identityinv",
+    "runtime_semantic_hash": "1775e1b365e3f6fb5642634edc84b616db5d4cbe977988f0338ea41e0d46aa46",
+    "runtime_version": "mai-07.1.3-r3f-sealnew",
+    "schema_version": "2.0.0",
+    "scorer_audit_source_sha256": "81f2ff3c77a74149e2323e76ec8fe4e8c082cced7828f2bd6ac5e77535e2128f",
+    "scorer_canonical_source_sha256": "76fe2eab12cd7e68c5967bcd04a1d2fb40df2ca7cbf92cbc1466eaa819610506",
+    "scorer_version": "mai-07-r3n3.scorer.1.0.0",
+    "scoring_contract_sha256": "39fdc9889260f41413b57f74623b84be652e87bc127da8ca219149108c7e4e94",
+    "scoring_contract_version": "mai-07-r3n3.contract.1.0.0",
+    "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+    "status": "LOCKED_NOT_RUN",
+    "threshold_manifest": {
+      "gates": {
+        "accounting_mutation_attempts": {
+          "op": "==",
+          "value": 0
+        },
+        "acronym_identifier_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "acronym_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "authorized_code_corrective": {
+          "op": "==",
+          "value": 1.0
+        },
+        "canonical_audit_agreement": {
+          "op": "==",
+          "value": 1.0
+        },
+        "cap_pressure_identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "caps_ok": {
+          "op": "==",
+          "value": 1.0
+        },
+        "deterministic_output": {
+          "op": "==",
+          "value": 1.0
+        },
+        "english_guard_analogue": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "english_identity_top1": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "exact_raw_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "exactly_one_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "false_devanagari_on_english": {
+          "op": "<=",
+          "value": 0.02
+        },
+        "finalizer_idempotence": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identifier_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_invariant_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "monotonic_harm_parent_correct": {
+          "op": "==",
+          "value": 0
+        },
+        "protected_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "raw_mutation_count": {
+          "op": "==",
+          "value": 0
+        },
+        "raw_ok_all": {
+          "op": "==",
+          "value": 1.0
+        },
+        "romanized_script_at_5": {
+          "op": ">=",
+          "value": 0.95
+        },
+        "shared_forced_devanagari_harm": {
+          "op": "==",
+          "value": 0
+        },
+        "shared_forced_english_harm": {
+          "op": "==",
+          "value": 0
+        },
+        "target_candidate_loss": {
+          "op": "==",
+          "value": 0
+        }
+      },
+      "locked_before_holdout": true,
+      "minimum_denominators": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+        "ACRONYM_IDENTITY_REQUIRED": 100,
+        "CANDIDATE_CAP_PRESSURE": 250,
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "ENGLISH_GUARD_ANALOGUE": 100,
+        "ENGLISH_IDENTITY_REQUIRED": 200,
+        "IDENTIFIER_PROTECTION_REQUIRED": 100,
+        "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+        "IDENTITY_INVARIANT_ANALOGUE": 250,
+        "IDENTITY_RETENTION_REQUIRED": 300,
+        "MONOTONIC_PARENT_CORRECT": 300,
+        "OOV": 100,
+        "PROTECTED_IDENTITY_REQUIRED": 100,
+        "ROMANIZED_NEPALI_REQUIRED": 200,
+        "SHARED_OR_AMBIGUOUS": 150
+      },
+      "notes": "R3N3 identity gates require exact raw surface identity after reserved finalization. Thresholds immutable after lock.",
+      "prohibited_for_training": true,
+      "threshold_id": "MAI_07R3N3_THRESHOLDS_V1"
+    },
+    "threshold_manifest_sha256": "bf581e2a0ce4cc338877a724dfcd6845ff996f6b0081c3439874187c33557bfe"
+  },
+  "parent_lock_semantic_sha256": null,
+  "provenance": "MAI_07R3N3",
+  "rc_id": "MAI_07R3N3_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "rc_manifest_raw_sha256": "1e34ebe644bf267320cfb904cb895bdcda53ce8c42615a1ee01c6349bf7c0a09",
+  "rc_manifest_semantic_sha256": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+  "record_type": "LOCK_RECORD",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+}

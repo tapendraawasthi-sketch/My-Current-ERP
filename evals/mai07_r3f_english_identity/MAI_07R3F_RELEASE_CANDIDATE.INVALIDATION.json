@@ -1,0 +1,18 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "invalidation_sha256": "53bf3d1a9518427fa09a398d562ec1b15c633458f3628812bda011ea7ddd8eb1",
+  "parent_rc_hash_contract_note": "manifest_sha256 is SHA-256 of pretty JSON without the manifest_sha256 field; raw file bytes differ once the field is written.",
+  "parent_rc_id": "MAI_07R3F_RELEASE_CANDIDATE",
+  "parent_rc_manifest_path": "evals/mai07_r3f_english_identity/MAI_07R3F_RELEASE_CANDIDATE.manifest.json",
+  "parent_rc_manifest_raw_sha256": "7d05ab3ed2ee93e2ea9b30f88c4bc236ee6cfa1e0ace94aaf85b038d8d40130d",
+  "parent_rc_manifest_sha256": "37e551f29126fea63f77b9cb6b3bc4e867185b61a620b5686ed8471bf10396dd",
+  "parent_rc_status": "INVALIDATED_BY_SEAL_DRIFT",
+  "parent_resource_content_hash_claim": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+  "prohibited_for_frozen_evaluation": true,
+  "rc_file_bytes_unchanged": true,
+  "reason": "Sealed resource pack bytes for e94cc8c… unrestorable; canonical claim drifted under mutation-prone tooling. RC file bytes preserved unchanged; do not use for frozen evaluation.",
+  "schema_version": "1.0.0",
+  "superseded_by_phase": "MAI-07R3F-SEAL-NEW"
+}

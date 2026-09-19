@@ -1,0 +1,126 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_id": "MAI_07R3H_HOLDOUT_ATTEMPT_001",
+  "created_utc": "2026-07-16T09:09:27.273474+00:00",
+  "gate_all_pass": false,
+  "metrics_summary": {
+    "acronym_identifier_identity_top1": {
+      "denominator": 190,
+      "numerator": 190,
+      "value": 1.0
+    },
+    "candidate_duplication_after_reordering": {
+      "denominator": 599,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "candidate_set_preservation": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "caps_respected": {
+      "denominator": 599,
+      "numerator": 599,
+      "value": 1.0
+    },
+    "clear_romanized_target_recall_at_5": {
+      "denominator": 229,
+      "numerator": 229,
+      "value": 1.0
+    },
+    "clear_romanized_target_top1": {
+      "denominator": 229,
+      "numerator": 229,
+      "value": 1.0
+    },
+    "cross_path_parity": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "deterministic_output": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "english_context_identity_accuracy": {
+      "denominator": 10,
+      "numerator": 10,
+      "value": 1.0
+    },
+    "false_devanagari_on_clear_english": {
+      "denominator": 356,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "harm_count_clearly_romanized": {
+      "denominator": 1,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "name_identity_top1": {
+      "denominator": 6,
+      "numerator": 6,
+      "value": 1.0
+    },
+    "nepali_context_target_accuracy": {
+      "denominator": 229,
+      "numerator": 229,
+      "value": 1.0
+    },
+    "overall_english_identity_top1": {
+      "denominator": 356,
+      "numerator": 356,
+      "value": 1.0
+    },
+    "paired_counterfactual_accuracy": {
+      "denominator": 0,
+      "numerator": 0,
+      "value": 1.0
+    },
+    "policy_invocation_coverage": {
+      "denominator": 599,
+      "numerator": 599,
+      "value": 1.0
+    },
+    "protected_span_mutations": {
+      "denominator": 599,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "raw_view_mutations": {
+      "denominator": 599,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "shared_collision_english_identity_top1": {
+      "denominator": 10,
+      "numerator": 10,
+      "value": 1.0
+    },
+    "target_missing_from_top5_rate": {
+      "denominator": 229,
+      "numerator": 43,
+      "value": 0.18777292576419213
+    },
+    "technical_english_identity_top1": {
+      "denominator": 70,
+      "numerator": 70,
+      "value": 1.0
+    },
+    "unresolved_shared_identity_review_accuracy": {
+      "denominator": 19,
+      "numerator": 0,
+      "value": 0.0
+    }
+  },
+  "note": "Qualification is separate from LOCKED_NOT_RUN body; lock file must remain unchanged.",
+  "parent_lock_semantic_sha256": "7870e554f6b71d15d4bb93e1a1816993e441add2a00f281f44580708645ac725",
+  "rc_id": "MAI_07R3H_ENGLISH_IDENTITY_RELEASE_CANDIDATE_001",
+  "record_type": "QUALIFICATION_RESULT",
+  "schema_version": "2.0.0",
+  "status": "FAILED_HOLDOUT_QUALITY"
+}

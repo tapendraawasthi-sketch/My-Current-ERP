@@ -1,0 +1,12 @@
+{
+  "exact_case_reuse_count": 8,
+  "exact_text_reuse_count": 7,
+  "holdout_sha_rc001": "c5a472c48836fdfeec7aac2dcaa36dffbf72616ad05195b12b0a35d12f83371b",
+  "holdout_sha_rc002": "192dd0812a919e17ab3654f600ced33be9b5dc6e0ab9112da60089c75744b4d7",
+  "rc001_lock_semantic": "98822fcf9175de1f048f6e47026e568438bcd34cce588da620d97f68c1d3374b",
+  "rc002_lock_semantic": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+  "same_candidate_runtime_version": true,
+  "same_pack_hash": true,
+  "schema_version": "mai07_r3n_rc001_rc002_diff_v1",
+  "template_family_overlap_count": 8
+}

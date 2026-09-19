@@ -1,0 +1,305 @@
+{
+  "gate_decision": {
+    "all_pass": false,
+    "gates": {
+      "acronym_identifier_identity_top1": {
+        "denominator": 270,
+        "numerator": 270,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "candidate_duplication_after_reordering": {
+        "denominator": 866,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "threshold": 0,
+        "value": 0.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 866,
+        "numerator": 866,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "clear_romanized_target_recall_at_5": {
+        "denominator": 229,
+        "numerator": 229,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "clear_romanized_target_top1": {
+        "denominator": 229,
+        "numerator": 229,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.95,
+        "value": 1.0
+      },
+      "cross_path_parity": {
+        "denominator": 1,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "english_context_identity_accuracy": {
+        "denominator": 1,
+        "numerator": 0,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "false_devanagari_on_clear_english": {
+        "denominator": 637,
+        "numerator": 0,
+        "op": "<=",
+        "pass": true,
+        "threshold": 0.01,
+        "value": 0.0
+      },
+      "harm_count_clearly_romanized": {
+        "denominator": 1,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "threshold": 0,
+        "value": 0.0
+      },
+      "name_identity_top1": {
+        "denominator": 6,
+        "numerator": 6,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "nepali_context_target_accuracy": {
+        "denominator": 229,
+        "numerator": 229,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.95,
+        "value": 1.0
+      },
+      "overall_english_identity_top1": {
+        "denominator": 637,
+        "numerator": 637,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.99,
+        "value": 1.0
+      },
+      "paired_counterfactual_accuracy": {
+        "denominator": 1,
+        "numerator": 0,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.95,
+        "value": 1.0
+      },
+      "policy_invocation_coverage": {
+        "denominator": 866,
+        "numerator": 866,
+        "op": "==",
+        "pass": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 866,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "threshold": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 866,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "threshold": 0,
+        "value": 0.0
+      },
+      "shared_collision_english_identity_top1": {
+        "denominator": 1,
+        "numerator": 0,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "target_missing_from_top5_rate": {
+        "denominator": 229,
+        "numerator": 10,
+        "op": "<=",
+        "pass": false,
+        "threshold": 0.02,
+        "value": 0.043668122270742356
+      },
+      "technical_english_identity_top1": {
+        "denominator": 70,
+        "numerator": 70,
+        "op": ">=",
+        "pass": true,
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "unresolved_shared_identity_review_accuracy": {
+        "denominator": 10,
+        "numerator": 0,
+        "op": ">=",
+        "pass": false,
+        "threshold": 0.98,
+        "value": 0.0
+      }
+    }
+  },
+  "predictions_canonical_list_sha256": "3e5539392e6b31419f3c172041afa6a8201d1d3ac76a626b64d90f9f50a6e6bc",
+  "predictions_jsonl_raw_sha256": "b3f92a98e3585cd0375cda0794e51ead09f8f156b41cb9f03aa3d7ce4310f6e7",
+  "report": {
+    "guard_version": "mai-07-r3h.1.0.0",
+    "metrics": {
+      "acronym_identifier_identity_top1": {
+        "denominator": 270,
+        "numerator": 270,
+        "value": 1.0
+      },
+      "candidate_duplication_after_reordering": {
+        "denominator": 866,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 866,
+        "numerator": 866,
+        "value": 1.0
+      },
+      "clear_romanized_target_recall_at_5": {
+        "denominator": 229,
+        "numerator": 229,
+        "value": 1.0
+      },
+      "clear_romanized_target_top1": {
+        "denominator": 229,
+        "numerator": 229,
+        "value": 1.0
+      },
+      "cross_path_parity": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_context_identity_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "false_devanagari_on_clear_english": {
+        "denominator": 637,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "harm_count_clearly_romanized": {
+        "denominator": 1,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "name_identity_top1": {
+        "denominator": 6,
+        "numerator": 6,
+        "value": 1.0
+      },
+      "nepali_context_target_accuracy": {
+        "denominator": 229,
+        "numerator": 229,
+        "value": 1.0
+      },
+      "overall_english_identity_top1": {
+        "denominator": 637,
+        "numerator": 637,
+        "value": 1.0
+      },
+      "paired_counterfactual_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "policy_invocation_coverage": {
+        "denominator": 866,
+        "numerator": 866,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 866,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 866,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "shared_collision_english_identity_top1": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "target_missing_from_top5_rate": {
+        "denominator": 229,
+        "numerator": 10,
+        "value": 0.043668122270742356
+      },
+      "technical_english_identity_top1": {
+        "denominator": 70,
+        "numerator": 70,
+        "value": 1.0
+      },
+      "unresolved_shared_identity_review_accuracy": {
+        "denominator": 10,
+        "numerator": 0,
+        "value": 0.0
+      }
+    },
+    "policy_version": "mai-07-r3h.1.0.0",
+    "resource_content_sha256": "2a4599fe3fccb83257130407324321b4121e5c01fe6efcdc32406ebdcacded7e",
+    "resource_version": "mai-07.1.4-r3h-englishid",
+    "runtime_version": "mai-07.1.4-r3h-englishid"
+  },
+  "split": "SAFETY_CHALLENGE"
+}

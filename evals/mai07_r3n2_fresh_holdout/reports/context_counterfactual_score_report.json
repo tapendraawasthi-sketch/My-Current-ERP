@@ -1,0 +1,5732 @@
+{
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "agreement": {
+    "mismatches": [],
+    "ok": true
+  },
+  "audit": {
+    "failed_gates": [],
+    "formula_version": "mai-07-r3n2.formula.1.0.0",
+    "gates": {
+      "acronym_identifier_analogue": {
+        "metric_id": "acronym_identifier_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "acronym_identity_top1": {
+        "metric_id": "acronym_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "authorized_code_corrective": {
+        "metric_id": "authorized_code_corrective",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "caps_ok": {
+        "metric_id": "caps_ok",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_guard_analogue": {
+        "metric_id": "english_guard_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "english_identity_top1",
+          "notes": "",
+          "numerator": 150,
+          "operation": ">=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.98,
+          "value": 1.0
+        },
+        "metric_id": "english_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "false_devanagari_on_english": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "false_devanagari_on_english",
+          "notes": "",
+          "numerator": 0,
+          "operation": "<=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.02,
+          "value": 0.0
+        },
+        "metric_id": "false_devanagari_on_english",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identifier_identity_top1": {
+        "metric_id": "identifier_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_invariant_analogue": {
+        "metric_id": "identity_invariant_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_retention": {
+        "metric_id": "identity_retention",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "protected_identity": {
+        "metric_id": "protected_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "raw_ok_all": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "raw_ok_all",
+          "notes": "",
+          "numerator": 150,
+          "operation": "==",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "raw_ok_all",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "romanized_script_at_5": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "romanized_script_at_5",
+          "notes": "",
+          "numerator": 150,
+          "operation": ">=",
+          "population_id": "ROMANIZED_NEPALI_REQUIRED",
+          "threshold": 0.95,
+          "value": 1.0
+        },
+        "metric_id": "romanized_script_at_5",
+        "outcome": "PASS",
+        "pass": true
+      }
+    },
+    "metrics": {
+      "acronym_identifier_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identifier_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTIFIER_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "acronym_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "authorized_code_corrective": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "authorized_code_corrective",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "caps_ok": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "caps_ok",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "english_guard_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_guard_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ENGLISH_GUARD_ANALOGUE",
+        "threshold": 0.98,
+        "value": null
+      },
+      "english_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_identity_top1",
+        "notes": "",
+        "numerator": 150,
+        "operation": ">=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "false_devanagari_on_english",
+        "notes": "",
+        "numerator": 0,
+        "operation": "<=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.02,
+        "value": 0.0
+      },
+      "identifier_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identifier_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_invariant_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_invariant_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_INVARIANT_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_retention": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_retention",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "protected_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "protected_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "PROTECTED_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "raw_ok_all": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "raw_ok_all",
+        "notes": "",
+        "numerator": 150,
+        "operation": "==",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "romanized_script_at_5": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "romanized_script_at_5",
+        "notes": "",
+        "numerator": 150,
+        "operation": ">=",
+        "population_id": "ROMANIZED_NEPALI_REQUIRED",
+        "threshold": 0.95,
+        "value": 1.0
+      }
+    },
+    "ok": true,
+    "scorer_id": "mai07_r3n2_audit_scorer",
+    "scorer_version": "mai-07-r3n2.scorer.1.0.0"
+  },
+  "candidate": {
+    "activation_method": "explicit_load_resources_resources_dir_plus_r3n2_factory",
+    "candidate_policy_version": "mai-07-r3n2.1.0.0",
+    "candidate_runtime_version": "mai-07.1.7-r3n2-freshholdout",
+    "default_active": false,
+    "overlay_enabled": false,
+    "pack_dir": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\oip\\modules\\language_runtime\\transliteration\\sealed_packs\\mai-07.1.7-r3n2-freshholdout",
+    "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "parent_runtime_version": "mai-07.1.3-r3f-sealnew"
+  },
+  "canonical": {
+    "canonical_audit_agreement": {
+      "mismatches": [],
+      "ok": true
+    },
+    "failed_gates": [],
+    "formula_version": "mai-07-r3n2.formula.1.0.0",
+    "gates": {
+      "acronym_identifier_analogue": {
+        "metric_id": "acronym_identifier_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "acronym_identity_top1": {
+        "metric_id": "acronym_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "authorized_code_corrective": {
+        "metric_id": "authorized_code_corrective",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "caps_ok": {
+        "metric_id": "caps_ok",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_guard_analogue": {
+        "metric_id": "english_guard_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "english_identity_top1": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "english_identity_top1",
+          "notes": "",
+          "numerator": 150,
+          "operation": ">=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.98,
+          "value": 1.0
+        },
+        "metric_id": "english_identity_top1",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "false_devanagari_on_english": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "false_devanagari_on_english",
+          "notes": "",
+          "numerator": 0,
+          "operation": "<=",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 0.02,
+          "value": 0.0
+        },
+        "metric_id": "false_devanagari_on_english",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "identifier_identity_top1": {
+        "metric_id": "identifier_identity_top1",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_invariant_analogue": {
+        "metric_id": "identity_invariant_analogue",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "identity_retention": {
+        "metric_id": "identity_retention",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "protected_identity": {
+        "metric_id": "protected_identity",
+        "outcome": "NOT_APPLICABLE",
+        "pass": true
+      },
+      "raw_ok_all": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "raw_ok_all",
+          "notes": "",
+          "numerator": 150,
+          "operation": "==",
+          "population_id": "ENGLISH_IDENTITY_REQUIRED",
+          "threshold": 1.0,
+          "value": 1.0
+        },
+        "metric_id": "raw_ok_all",
+        "outcome": "PASS",
+        "pass": true
+      },
+      "romanized_script_at_5": {
+        "metric": {
+          "applicability": "APPLICABLE",
+          "denominator": 150,
+          "formula_version": "mai-07-r3h2.formula.1.0.0",
+          "integer_required": false,
+          "metric_id": "romanized_script_at_5",
+          "notes": "",
+          "numerator": 150,
+          "operation": ">=",
+          "population_id": "ROMANIZED_NEPALI_REQUIRED",
+          "threshold": 0.95,
+          "value": 1.0
+        },
+        "metric_id": "romanized_script_at_5",
+        "outcome": "PASS",
+        "pass": true
+      }
+    },
+    "metrics": {
+      "acronym_identifier_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identifier_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTIFIER_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "acronym_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "acronym_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "ACRONYM_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "authorized_code_corrective": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "authorized_code_corrective",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "AUTHORIZED_CODE_CORRECTIVE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "caps_ok": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "caps_ok",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "CANDIDATE_CAP_PRESSURE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "english_guard_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_guard_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": ">=",
+        "population_id": "ENGLISH_GUARD_ANALOGUE",
+        "threshold": 0.98,
+        "value": null
+      },
+      "english_identity_top1": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "english_identity_top1",
+        "notes": "",
+        "numerator": 150,
+        "operation": ">=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.98,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "false_devanagari_on_english",
+        "notes": "",
+        "numerator": 0,
+        "operation": "<=",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 0.02,
+        "value": 0.0
+      },
+      "identifier_identity_top1": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identifier_identity_top1",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTIFIER_PROTECTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_invariant_analogue": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_invariant_analogue",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_INVARIANT_ANALOGUE",
+        "threshold": 1.0,
+        "value": null
+      },
+      "identity_retention": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "identity_retention",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "IDENTITY_RETENTION_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "protected_identity": {
+        "applicability": "NOT_APPLICABLE",
+        "denominator": 0,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "protected_identity",
+        "notes": "optional population empty",
+        "numerator": 0,
+        "operation": "==",
+        "population_id": "PROTECTED_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": null
+      },
+      "raw_ok_all": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "raw_ok_all",
+        "notes": "",
+        "numerator": 150,
+        "operation": "==",
+        "population_id": "ENGLISH_IDENTITY_REQUIRED",
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "romanized_script_at_5": {
+        "applicability": "APPLICABLE",
+        "denominator": 150,
+        "formula_version": "mai-07-r3h2.formula.1.0.0",
+        "integer_required": false,
+        "metric_id": "romanized_script_at_5",
+        "notes": "",
+        "numerator": 150,
+        "operation": ">=",
+        "population_id": "ROMANIZED_NEPALI_REQUIRED",
+        "threshold": 0.95,
+        "value": 1.0
+      },
+      "split_expected_pass": {
+        "denominator": 300,
+        "formula_version": "mai-07-r3n2.formula.1.0.0",
+        "metric_id": "split_expected_pass",
+        "numerator": 300,
+        "scorer_version": "mai-07-r3n2.scorer.1.0.0",
+        "value": 1.0
+      }
+    },
+    "observations": [
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0001-afdd5a85",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0002-0b6bd629",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0003-876a9634",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0004-1d2472f3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0005-7edb7ab2",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0006-4b8695e3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0007-4bd0f83d",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0008-de78b127",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0009-6b2a071e",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0010-b07c9d13",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0011-c416d0e1",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0012-f54d8364",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0013-4e8e6ae5",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0014-9c375cae",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0015-7c61f072",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0016-61b7dd5f",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0017-6a0c8222",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0018-dc398cf3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0019-52c75551",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0020-e3c64ad2",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0021-e8895197",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0022-5337564e",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0023-5f449c9a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0024-db3f82bb",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0025-6a4b2023",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0026-2eac66c2",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0027-72d5ac57",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0028-75d44755",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0029-befdc26e",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0030-61fa6c03",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0031-5484c0cf",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0032-06bd95ef",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0033-95e17403",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0034-b3ada362",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0035-fd9484f6",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0036-b63433d6",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0037-167962f6",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0038-40046411",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0039-ed72a898",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0040-fea88b43",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0041-3826ca15",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0042-adcb9ab5",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0043-ba44b8ec",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0044-5393a4b0",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 4,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0045-5ef4ce94",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 4,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0046-571118aa",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0047-32f1211c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0048-18358829",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0049-f5d1c802",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0050-569351cc",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0051-82a171cc",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0052-db0b0010",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0053-866597c8",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0054-6e0001e0",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0055-a8e7b460",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0056-4fd3a8de",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0057-087941b0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0058-bd678d0d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0059-b0366cc4",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0060-8417119e",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0061-4ff9a913",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0062-20ab273d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0063-9ed01c36",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0064-c084659f",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0065-bfd3ba2f",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0066-b8a551f9",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0067-f0f0499e",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0068-bf5ea1a6",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0069-eb34ff33",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0070-7f21ff58",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0071-5c2932ce",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0072-bdecc192",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0073-fb641dda",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0074-23fb1f44",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0075-ecd83c53",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0076-19b45dc8",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0077-d9b1bd0a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0078-6eed05a3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0079-edc959b7",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0080-2e82a5cb",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0081-2b1e5ac1",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0082-4473a28d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0083-2d654f1a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0084-420089d3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0085-3ad40fbe",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0086-e17dd13a",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0087-301fd5a0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0088-038179d1",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0089-c766195f",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0090-4e71fa55",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0091-10272494",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0092-f196fb99",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0093-9d58db18",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0094-3b76a97c",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0095-94736229",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0096-84638163",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0097-b32c2356",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0098-e1b8e9ad",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0099-7d1184e1",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0100-973d1473",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0101-748c1369",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0102-924c25b3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0103-a13344b8",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0104-0b9089cf",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0105-3a2cd6e3",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0106-77193957",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0107-7f841706",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0108-5507c0be",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0109-bbb4e763",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0110-52b666a1",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0111-4f575749",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0112-a70969a5",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0113-3089d45c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0114-1459ce24",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0115-2f269a62",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0116-50abfc8d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0117-0092ceeb",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0118-e46c3b58",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0119-13c2b251",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0120-e929cb90",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0121-390e4083",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0122-1fe6fe77",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0123-2759eb1a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0124-ab0c99ee",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0125-75d95212",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0126-7b5d0aef",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0127-a59a97b9",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0128-a0614324",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0129-4fcd3be8",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0130-962d68b5",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0131-9417873d",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0132-b6de9c38",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0133-b78f6ceb",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0134-24a31988",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0135-febea936",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0136-76d439fb",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0137-27fba4c5",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0138-f3af1d44",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0139-35176821",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0140-71b9ba8c",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0141-5a393396",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0142-a34db327",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0143-244ed3e0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0144-68ffb2ac",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0145-b2b5a6b4",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0146-afaf052f",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0147-45df812f",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0148-7c291360",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0149-e485986a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0150-94a45558",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0151-dcdc5afb",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0152-c0896dfa",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0153-064a4a2b",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0154-be8d4731",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0155-f1d15ccc",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0156-614d973b",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0157-690adf45",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0158-5a4b47cb",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0159-c6ca49c0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0160-b06e4f75",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0161-2e1a92c5",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0162-d8f2dd31",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0163-0b6c1277",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0164-9316dab5",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0165-e72fb106",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0166-665e63db",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0167-1c8b56df",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0168-18d3c093",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0169-b49b9078",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0170-ca9a946d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0171-c9f9002b",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0172-47e1c7ea",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0173-1eb2d3c5",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0174-f0a7e857",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0175-a94ae281",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0176-b9ffbc47",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0177-4c2b27f3",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0178-ea880658",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0179-269eabae",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0180-c3dea965",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0181-62f133c0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0182-344633f3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0183-f7689a20",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0184-cf82f957",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0185-3b96dbae",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0186-a6a1d55d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0187-76f11eab",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0188-d183e2dd",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0189-cf6aa11e",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0190-a878d715",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0191-91e816c2",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0192-9c1a5b5f",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0193-715c7428",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0194-55c507b8",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0195-7fdc778f",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0196-be973a1b",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0197-3eff8529",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0198-07bcb835",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0199-6de97c25",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0200-19db668b",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0201-35a43837",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0202-2bd0b150",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0203-7e93dbd5",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0204-4e60029f",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0205-68ad1c56",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0206-100a16a9",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0207-f0e03797",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0208-7afa8eb0",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0209-6446a0f7",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0210-92bc3700",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0211-c5db3287",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0212-714011c7",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0213-811fc659",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0214-cb5d2c46",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0215-bc857bff",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0216-4e8ee9a3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0217-3a98b0bd",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0218-b73570c6",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0219-958eab9c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0220-58e8da19",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0221-13a1eb38",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0222-29979743",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0223-6ce394ec",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0224-ab63b7e4",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0225-122c1e9c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0226-0a84baae",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0227-61cf26a8",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0228-898bd855",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0229-985bb94c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0230-2b2a1919",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0231-249f8c05",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0232-2ab17b5d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0233-876ccc88",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0234-31fc6ee9",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0235-fd190583",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0236-bafb8e03",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0237-4d09016c",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0238-61e4858c",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0239-45defc04",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0240-7cdaf398",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0241-28be5006",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0242-54374f29",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0243-87b723a4",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0244-90979fed",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0245-f09c32c7",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0246-6b110f7b",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0247-fcbecec0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0248-b82eb021",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0249-a111413f",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0250-c6d26e0d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0251-d374286f",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0252-02e3588e",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0253-5606d79d",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0254-77290120",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0255-597173f4",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0256-6a6aa058",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0257-0a51fa38",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0258-3a8e9980",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0259-a7b4b5d6",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0260-89da5183",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0261-a352e7f8",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0262-22fb616e",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0263-6f4826c3",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0264-2441f71d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0265-443908e2",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0266-863e6446",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0267-cdcf5cba",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0268-5b4b4ca3",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0269-ccc753fd",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0270-a2daa4fd",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0271-ddfd2b0a",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0272-c6a8c7e8",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0273-34d32e02",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0274-45d36c17",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0275-92393a1e",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0276-0e8d6c39",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0277-3b8e0efe",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0278-47084d65",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0279-4cf8e3bf",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0280-ea525d6c",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0281-413ff59b",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0282-bc06c72f",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0283-bb3116e0",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0284-8d655b9d",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0285-761d9840",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0286-6d534caa",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0287-518b28d7",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0288-e1312ddf",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0289-24917277",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0290-43d918f7",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0291-7c4d7225",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0292-9ee88daf",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0293-91e86754",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0294-9436ff06",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0295-a2aec648",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0296-10d6cbca",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0297-520f300d",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 2,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0298-ce8d03fa",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0299-ecb80892",
+        "devanagari_at_5": true,
+        "expected_behavior": "IDENTITY_TOP1",
+        "false_devanagari_top1": false,
+        "identity_retained": true,
+        "identity_top1": true,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ENGLISH_IDENTITY_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      },
+      {
+        "candidate_count": 3,
+        "caps_ok": true,
+        "case_id": "R3N2-CFX-0300-9e211b2e",
+        "devanagari_at_5": true,
+        "expected_behavior": "ROMANIZED_SCRIPT_AT_5",
+        "false_devanagari_top1": true,
+        "identity_retained": true,
+        "identity_top1": false,
+        "parent_identity_top1": null,
+        "populations": [
+          "CONTEXT_COUNTERFACTUAL",
+          "ROMANIZED_NEPALI_REQUIRED"
+        ],
+        "raw_text_unchanged": true,
+        "span_found": true
+      }
+    ],
+    "ok": true,
+    "scorer_id": "mai07_r3n2_canonical_scorer",
+    "scorer_version": "mai-07-r3n2.scorer.1.0.0"
+  },
+  "case_count": 300,
+  "include_parent": false,
+  "ok": true,
+  "overlay_enabled": false,
+  "predictions_canonical_list_sha256": "2750f501dafd3bdaae95ee86c2e840eeff3276098f368dc6880784c8f0a626bc",
+  "predictions_raw_sha256": "20b4715efca23bb984c5c21d0e0780ba5e46796da9169d02948db993abc2b600",
+  "split": "CONTEXT_COUNTERFACTUAL"
+}

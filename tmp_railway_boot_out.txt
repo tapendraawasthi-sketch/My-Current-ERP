@@ -1,0 +1,17 @@
+[CONFIG] ERP_PATH resolved to: C:\Users\Acer\Documents\My-Current-ERP
+[CONFIG] CONVERSATIONAL_MODEL: qwen3:32b
+[CONFIG] FAST_MODEL: qwen3:4b
+[CONFIG] CONTEXT_SIZE: 8192
+[CONFIG] Temperature: 0.7
+[START] Render: WARNING — OIP Provider Runtime not active; check OIP_* env vars
+[START] Listening on 0.0.0.0:8767
+[SERVER] Legacy /v2/chat/stream NOT mounted (ADR_0073 / GAP-P1-001 production strangler)
+[SERVER] NIOS v3 NOT mounted (ADR_0073 / GAP-P1-001 production strangler)
+[SERVER] R2 storage health unavailable: No module named 'backend'
+[SERVER] Knowledge pipeline unavailable: No module named 'backend'
+[SERVER] Orbix v2 NOT mounted (ADR_0073 / GAP-P1-001 production strangler)
+[SERVER] Orbix drafts router mounted at /orbix/drafts
+[SERVER] OIP unavailable: INSECURE_PRODUCTION_CONFIGURATION: OIP_AUTH_REQUIRED must be true in production (set OIP_AUTH_REQUIRED=true on Render Environment; also set a strong OIP_JWT_SECRET or API_SECRET_KEY, length>=16) (keys=OIP_AUTH_REQUIRED)
+[SERVER] Render deploy — skipping file watcher and Chroma ingest (OIP chat only)
+INFO:     127.0.0.1:64070 - "GET /livez HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64070 - "GET /health HTTP/1.1" 200 OK

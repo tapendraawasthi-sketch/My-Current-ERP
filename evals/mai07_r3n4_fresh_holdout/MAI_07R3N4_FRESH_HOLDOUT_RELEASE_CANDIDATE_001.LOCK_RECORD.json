@@ -1,0 +1,376 @@
+{
+  "locked_at_utc": "2026-07-18T07:19:47.059830+00:00",
+  "locked_body_path": "C:/Users/Acer/Documents/My-Current-ERP/evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+  "locked_rc_body": {
+    "active_default_pack_version_unchanged": "mai-07.1.3-r3f-sealnew",
+    "candidate_policy_version": "mai-07-r3n4.1.0.0",
+    "candidate_promoted": false,
+    "dataset_manifest": {
+      "builder_version": "mai-07-r3n4-dataset.1.0.0",
+      "candidate_policy_version": "mai-07-r3n4.1.0.0",
+      "frozen_v2_unused": true,
+      "manifest_id": "MANIFEST",
+      "multi_token_coverage": {
+        "multi_token_case_count": 4975,
+        "multi_token_coverage_pct": 100.0,
+        "total_cases": 4975
+      },
+      "parent_active_runtime": "mai-07.1.3-r3f-sealnew",
+      "parent_failed_r3n3_runtime": "mai-07.1.8-r3n3-identityinv",
+      "population_counts": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 121,
+        "ACRONYM_IDENTITY_REQUIRED": 247,
+        "AUTHORIZED_CODE_CORRECTIVE": 9,
+        "CANDIDATE_CAP_PRESSURE": 397,
+        "COALESCED_SPAN_IDENTITY": 246,
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "ENGLISH_GUARD_ANALOGUE": 147,
+        "ENGLISH_IDENTITY_REQUIRED": 497,
+        "EXACTLY_ONE_IDENTITY_REQUIRED": 897,
+        "EXACT_RAW_IDENTITY_REQUIRED": 897,
+        "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+        "IDENTIFIER_PROTECTION_REQUIRED": 247,
+        "IDENTITY_ANCHOR_CHALLENGE": 500,
+        "IDENTITY_INVARIANT_ANALOGUE": 396,
+        "IDENTITY_RETENTION_REQUIRED": 897,
+        "MONOTONIC_PARENT_CORRECT": 400,
+        "MONOTONIC_PARENT_INCORRECT": 46,
+        "MULTI_TOKEN_IDENTITY": 346,
+        "OOV": 100,
+        "PROTECTED_IDENTITY_REQUIRED": 247,
+        "REFINED_SPAN_IDENTITY": 246,
+        "ROMANIZED_NEPALI_REQUIRED": 397,
+        "SERIALIZATION_ROUNDTRIP": 546,
+        "SHARED_OR_AMBIGUOUS": 197,
+        "UNICODE_IDENTITY": 196
+      },
+      "prohibited_for_training": true,
+      "r3l_synthetic_overlap_blocked": true,
+      "schema_version": "mai07_r3n4_manifest_v1",
+      "seeds": {
+        "DEVELOPMENT": 20260724,
+        "HOLDOUT_FAMILY": 20260725
+      },
+      "splits": {
+        "CONTEXT_COUNTERFACTUAL": {
+          "case_count": 300,
+          "filename": "context_counterfactual.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\context_counterfactual.jsonl",
+          "seed": 20260725,
+          "sha256": "b6ed9209bc9386d9cd965268aff89019681ff4aa58d5ded775f73a97aa8d73fe"
+        },
+        "DEVELOPMENT": {
+          "case_count": 800,
+          "filename": "development.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\development.jsonl",
+          "seed": 20260724,
+          "sha256": "01ce78c7dfd6dd2b574bd75232e3f7261127b471f3c00772af1296d900ee1dd7"
+        },
+        "HOLDOUT_VALIDATION": {
+          "case_count": 2475,
+          "filename": "holdout_validation.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\holdout_validation.jsonl",
+          "seed": 20260725,
+          "sha256": "9d9b95bd53eb033d383c10b572e5ea7c69278fa778100c2078fce20298bff688"
+        },
+        "IDENTITY_ANCHOR_CHALLENGE": {
+          "case_count": 500,
+          "filename": "identity_anchor_challenge.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\identity_anchor_challenge.jsonl",
+          "seed": 20260725,
+          "sha256": "b82ba33b84dd766155fbfff9dcd42e429c964dc89062466ace577ecd6a795d2f"
+        },
+        "MONOTONIC_REGRESSION": {
+          "case_count": 400,
+          "filename": "monotonic_regression.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\monotonic_regression.jsonl",
+          "seed": 20260725,
+          "sha256": "6ea867f3fe4352eca7bd21694269bdee9632564391774ad4fe1da07ba56aede6"
+        },
+        "OOV_CHALLENGE": {
+          "case_count": 100,
+          "filename": "oov_challenge.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\oov_challenge.jsonl",
+          "seed": 20260725,
+          "sha256": "3cac7948750e2f92a0321e0b0b074bf81a2ceb568538f5846c16c0abe955839a"
+        },
+        "SAFETY_CHALLENGE": {
+          "case_count": 400,
+          "filename": "safety_challenge.jsonl",
+          "path": "C:\\Users\\Acer\\Documents\\My-Current-ERP\\evals\\mai07_r3n4_fresh_holdout\\safety_challenge.jsonl",
+          "seed": 20260725,
+          "sha256": "2e71a10c44370039095fa5e2b50ce8a92c6d5801e504bdce257b3182ed61ebca"
+        }
+      },
+      "total_cases": 4975,
+      "totals": {
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "DEVELOPMENT": 800,
+        "HOLDOUT_VALIDATION": 2475,
+        "IDENTITY_ANCHOR_CHALLENGE": 500,
+        "MONOTONIC_REGRESSION": 400,
+        "OOV_CHALLENGE": 100,
+        "SAFETY_CHALLENGE": 400
+      }
+    },
+    "dataset_manifest_sha256": "3d8b0d3f8632984000718ae7d715d62e7bc3901713364f9a818e25d6d2002a4b",
+    "default_active": false,
+    "development_predictions_canonical_list_sha256": "d6d6074e60d5868760f943fa1531430d7787ce9348adfafa455ce193b6e8d1ec",
+    "development_predictions_raw_sha256": "a0257ede0b957bff8c5e9d540428eb35f2561dd719c5dc6a0fb982231f210c98",
+    "development_score_all_required_pass": true,
+    "evaluator_source_sha256": "e2aed346afbe0b603fac2cda595c2eaeed56c8c0fe49b32d6026bb150c182bb0",
+    "finalizer_source_sha256": "9ba73225cf3a4fbbe6e60a3d98e16023dfb9c1f428bb503f1be956facaf259ab",
+    "finalizer_version": "mai-07-r3n4.finalizer.1.0.0",
+    "identity_anchor_source_sha256": "eace21c2436c5a796fcd9e9da90fb0d707325f1365f837f5aea8a529af14d814",
+    "invalidated_r3n_lineage": {
+      "reason": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+      "runtime_version": "mai-07.1.6-r3n-policyconf"
+    },
+    "linguist_approved": false,
+    "locked": true,
+    "locked_before_holdout": true,
+    "manifest_id": "MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+    "manifest_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+    "minimum_denominator_policy": {
+      "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+      "ACRONYM_IDENTITY_REQUIRED": 100,
+      "CANDIDATE_CAP_PRESSURE": 300,
+      "COALESCED_SPAN_IDENTITY": 200,
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "ENGLISH_GUARD_ANALOGUE": 100,
+      "ENGLISH_IDENTITY_REQUIRED": 200,
+      "EXACTLY_ONE_IDENTITY_REQUIRED": 500,
+      "EXACT_RAW_IDENTITY_REQUIRED": 500,
+      "FINALIZER_IDEMPOTENCE_REQUIRED": 1500,
+      "IDENTIFIER_PROTECTION_REQUIRED": 100,
+      "IDENTITY_ANCHOR_CHALLENGE": 500,
+      "IDENTITY_INVARIANT_ANALOGUE": 350,
+      "IDENTITY_RETENTION_REQUIRED": 500,
+      "MONOTONIC_PARENT_CORRECT": 300,
+      "MULTI_TOKEN_IDENTITY": 300,
+      "OOV": 100,
+      "PROTECTED_IDENTITY_REQUIRED": 100,
+      "REFINED_SPAN_IDENTITY": 200,
+      "ROMANIZED_NEPALI_REQUIRED": 200,
+      "SERIALIZATION_ROUNDTRIP": 300,
+      "SHARED_OR_AMBIGUOUS": 150,
+      "UNICODE_IDENTITY": 150
+    },
+    "no_frozen_prediction_use": true,
+    "no_frozen_v2_run": true,
+    "no_r3n2_prediction_use": true,
+    "no_r3n3_prediction_use": true,
+    "overlay_enabled": false,
+    "parent_failed_r3n3_lineage": {
+      "attempt_id": "MAI_07R3N3_HOLDOUT_ATTEMPT_001",
+      "candidate_promoted": false,
+      "consumed": true,
+      "lock_semantic_sha256": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+      "pack_hash": "1268527c5c5d99e036628dc104340dafe297afadf9938a310a099a38f825c0e7",
+      "policy_version": "mai-07-r3n3.1.0.0",
+      "runtime_semantic_sha256": "1775e1b365e3f6fb5642634edc84b616db5d4cbe977988f0338ea41e0d46aa46",
+      "runtime_version": "mai-07.1.8-r3n3-identityinv",
+      "verdict": "FAILED_HOLDOUT_QUALITY"
+    },
+    "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "parent_runtime_version": "mai-07.1.3-r3f-sealnew",
+    "path_registry_source_sha256": "d1d6eac9977f4f5badacbe82dba3e47dc23943adacee515eee9e9d72e87324e8",
+    "policy_config_sha256": "5ebe92da692747ff5cbe91d402933fdbf53215d739f5dd5674a8e55410c2a128",
+    "population_definition_hash": "c747aa670141cd9064a55ae06dc1ec235e5ef23ae7960b8baa266135778ca71d",
+    "preserved_failed_r3n2_lineage": {
+      "candidate_promoted": false,
+      "consumed": true,
+      "pack_hash": "170610284993061dd93efc3150f09f03ac2f1e3d69052c964cbe7c3aab61c1f3",
+      "runtime_version": "mai-07.1.7-r3n2-freshholdout"
+    },
+    "production_approved": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "r3n_integrity_closure_semantic": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+    "rc_manifest_raw_sha256": "5ad47ae4688a4e23b8b333855a9413afe4698871b871c51418f970760e0264c1",
+    "rc_manifest_semantic_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+    "resource_content_sha256": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+    "resource_pack_version": "mai-07.1.9-r3n4-identityanchor",
+    "runtime_claim": "mai-07.1.9-r3n4-identityanchor",
+    "runtime_semantic_hash": "b2d6dd17aa49f04e48c520c046150f9f73a169a36172d79fa7037b21e0196361",
+    "runtime_version": "mai-07.1.3-r3f-sealnew",
+    "schema_version": "2.0.0",
+    "scorer_audit_source_sha256": "577ec137e774a287617253aa066fbe517ade19b8a3864cb0e3302f70294be579",
+    "scorer_canonical_source_sha256": "4aca6c919b7d9e218fe7de91b82a84ebbacf57dea0fb0d01fed95ed84a99ff4e",
+    "scorer_version": "mai-07-r3n4.scorer.1.0.0",
+    "scoring_contract_sha256": "d0bd7a96a30e3340cc0a01a53df46ad2381752f79e08e491e2277152a37ea377",
+    "scoring_contract_version": "mai-07-r3n4.contract.1.0.0",
+    "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+    "status": "LOCKED_NOT_RUN",
+    "threshold_manifest": {
+      "gates": {
+        "accounting_mutation_attempts": {
+          "op": "==",
+          "value": 0
+        },
+        "acronym_identifier_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "acronym_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "anchor_validity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "authorized_code_corrective": {
+          "op": "==",
+          "value": 1.0
+        },
+        "canonical_audit_agreement": {
+          "op": "==",
+          "value": 1.0
+        },
+        "cap_pressure_identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "caps_ok": {
+          "op": "==",
+          "value": 1.0
+        },
+        "coalesced_span_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "deterministic_output": {
+          "op": "==",
+          "value": 1.0
+        },
+        "english_guard_analogue": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "english_identity_top1": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "exact_raw_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "exactly_one_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "false_devanagari_on_english": {
+          "op": "<=",
+          "value": 0.02
+        },
+        "finalizer_idempotence": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identifier_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_invariant_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "monotonic_harm_parent_correct": {
+          "op": "==",
+          "value": 0
+        },
+        "multi_token_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "path_finalization_coverage": {
+          "op": "==",
+          "value": 1.0
+        },
+        "protected_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "raw_mutation_count": {
+          "op": "==",
+          "value": 0
+        },
+        "raw_ok_all": {
+          "op": "==",
+          "value": 1.0
+        },
+        "refined_span_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "romanized_script_at_5": {
+          "op": ">=",
+          "value": 0.95
+        },
+        "serialization_roundtrip": {
+          "op": "==",
+          "value": 1.0
+        },
+        "shared_forced_devanagari_harm": {
+          "op": "==",
+          "value": 0
+        },
+        "shared_forced_english_harm": {
+          "op": "==",
+          "value": 0
+        },
+        "target_candidate_loss": {
+          "op": "==",
+          "value": 0
+        },
+        "unicode_identity": {
+          "op": "==",
+          "value": 1.0
+        }
+      },
+      "locked_before_holdout": true,
+      "minimum_denominators": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+        "ACRONYM_IDENTITY_REQUIRED": 100,
+        "CANDIDATE_CAP_PRESSURE": 300,
+        "COALESCED_SPAN_IDENTITY": 200,
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "ENGLISH_GUARD_ANALOGUE": 100,
+        "ENGLISH_IDENTITY_REQUIRED": 200,
+        "EXACTLY_ONE_IDENTITY_REQUIRED": 500,
+        "EXACT_RAW_IDENTITY_REQUIRED": 500,
+        "FINALIZER_IDEMPOTENCE_REQUIRED": 1500,
+        "IDENTIFIER_PROTECTION_REQUIRED": 100,
+        "IDENTITY_ANCHOR_CHALLENGE": 500,
+        "IDENTITY_INVARIANT_ANALOGUE": 350,
+        "IDENTITY_RETENTION_REQUIRED": 500,
+        "MONOTONIC_PARENT_CORRECT": 300,
+        "MULTI_TOKEN_IDENTITY": 300,
+        "OOV": 100,
+        "PROTECTED_IDENTITY_REQUIRED": 100,
+        "REFINED_SPAN_IDENTITY": 200,
+        "ROMANIZED_NEPALI_REQUIRED": 200,
+        "SERIALIZATION_ROUNDTRIP": 300,
+        "SHARED_OR_AMBIGUOUS": 150,
+        "UNICODE_IDENTITY": 150
+      },
+      "notes": "R3N4 identity-anchor gates require exact raw surface identity built only from IdentityAnchorV1, plus serialization round-trip and path-finalization coverage across every observed case. Thresholds immutable after lock.",
+      "prohibited_for_training": true,
+      "threshold_id": "MAI_07R3N4_THRESHOLDS_V1"
+    },
+    "threshold_manifest_sha256": "50ed068e8a6f7e965a69fa8a7f210722f62e635b6484711c4bfa6ea963585a04"
+  },
+  "parent_lock_semantic_sha256": null,
+  "provenance": "MAI_07R3N4",
+  "rc_id": "MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "rc_manifest_raw_sha256": "c7cea28153da035c82fa854232f654227e15df3450152a14ef6fe6068e50d574",
+  "rc_manifest_semantic_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+  "record_type": "LOCK_RECORD",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+}

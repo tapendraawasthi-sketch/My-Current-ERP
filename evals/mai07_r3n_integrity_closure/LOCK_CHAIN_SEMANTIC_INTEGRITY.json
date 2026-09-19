@@ -1,0 +1,38 @@
+{
+  "algorithm_description": "SHA-256 of pretty JSON (indent=2, sort_keys, LF) of the lock body with manifest_sha256 / rc_manifest_raw_sha256 / rc_manifest_semantic_sha256 excluded",
+  "authoritative_algorithm": "compute_rc_semantic_body_sha256",
+  "created_utc": "2026-07-18T04:58:42.209083+00:00",
+  "generic_raw_file_hashing_is_not_rc_lock_semantic_contract": true,
+  "lock_body_post_closeout_mutation": false,
+  "lock_chain_semantic_integrity": true,
+  "lock_raw_ok_false_is_known_self_referential_raw_field_quirk": true,
+  "not_post_closeout_mutation": true,
+  "raw_file_hash_is_lock_authority": false,
+  "rcs": {
+    "MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_001": {
+      "attempt_id": "MAI_07R3N_HOLDOUT_ATTEMPT_001",
+      "attempt_parent_lock_raw_sha256": "0e427c920c158082aaf9345fcda49597987cb00de16d1726af3baccdf22326e0",
+      "attempt_parent_lock_semantic_sha256": "98822fcf9175de1f048f6e47026e568438bcd34cce588da620d97f68c1d3374b",
+      "generic_semantic_equals_lock_chain_semantic": false,
+      "generic_semantic_json_hash": "5b677eff4276a4beba147c342937a111d4912d17eadb15f7e4aaed08fe8720d6",
+      "lock_chain_semantic_sha256": "98822fcf9175de1f048f6e47026e568438bcd34cce588da620d97f68c1d3374b",
+      "on_disk_raw_sha256": "5cf79c9d7fad2759e7e8556c51615cce86fecc94085d5cd9c22488a406bd4273",
+      "raw_file_hash_is_lock_authority": false,
+      "raw_matches_attempt_parent": false,
+      "semantic_matches_attempt_parent": true
+    },
+    "MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002": {
+      "attempt_id": "MAI_07R3N_HOLDOUT_ATTEMPT_002",
+      "attempt_parent_lock_raw_sha256": "80eb427180f2463c474440a6924d82fdbbb7b2686753016a2d19f5e294a3713d",
+      "attempt_parent_lock_semantic_sha256": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+      "generic_semantic_equals_lock_chain_semantic": false,
+      "generic_semantic_json_hash": "b8c6160b29aa5ffe078ad950ef087f3da3c0419ef6390187e028891cff78a377",
+      "lock_chain_semantic_sha256": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+      "on_disk_raw_sha256": "71562c9965680a8b0a216ff01c84fad253c5db5f7d278d7a198eac259ef50ada",
+      "raw_file_hash_is_lock_authority": false,
+      "raw_matches_attempt_parent": false,
+      "semantic_matches_attempt_parent": true
+    }
+  },
+  "schema_version": "mai07_r3n_lock_chain_semantic_integrity_v1"
+}

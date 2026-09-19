@@ -1,0 +1,38 @@
+{
+  "phase": "MAI-07R3N3",
+  "recorded_utc": "2026-07-18T05:47:15Z",
+  "language_runtime_suite": {
+    "passed": 676,
+    "skipped": 6,
+    "failed": 0,
+    "skips": [
+      {"test": "test_mai07_r1_ranker.py:132", "reason": "HISTORICAL_R2_OVERLAY_EXPECTATION"},
+      {"test": "test_mai07_r1_ranker.py:236", "reason": "R1 disposition superseded"},
+      {"test": "test_mai07_r1_ranker.py:241", "reason": "R1 disposition superseded"},
+      {"test": "test_mai07_r1_ranker.py:246", "reason": "R1 disposition superseded"},
+      {"test": "test_mai07_r2_overlay.py:86", "reason": "HISTORICAL_R2_OVERLAY_EXPECTATION"},
+      {"test": "test_mai07_r2_overlay.py:146", "reason": "HISTORICAL_R2_OVERLAY_EXPECTATION"}
+    ]
+  },
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "active_resource": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "overlay_enabled": false,
+  "r3n_integrity_closure": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+  "r3n2_parent": {
+    "runtime": "mai-07.1.7-r3n2-freshholdout",
+    "pack": "170610284993061dd93efc3150f09f03ac2f1e3d69052c964cbe7c3aab61c1f3",
+    "lock_semantic": "25f9eac74b8c9331a474c54ef2bb723157789aba00cab7bb8194dbb6b999c710",
+    "verdict": "FAILED_HOLDOUT_QUALITY",
+    "consumed": true,
+    "candidate_promoted": false,
+    "aggregate_only_guidance": {
+      "identity_retention": "148/150",
+      "identity_invariant_analogue": "98/100"
+    }
+  },
+  "root_cause_source_analysis": {
+    "authoritative_hook": "transliteration_service._finalize_candidates",
+    "defect": "Identity backfilled at end of cap window can be evicted when Devanagari reservation replaces the last slot",
+    "r3n3_fix": "r3n3_candidate_finalization.finalize_candidates_r3n3 reserves exact raw identity first, then target Devanagari, then fills; active R3F path unchanged"
+  }
+}

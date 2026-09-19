@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "status": "LOCKED",
+  "reviewer": "Tapendra Awasthi",
+  "review_date": "2026-07-15",
+  "product_owner_reviewed": true,
+  "nepali_fluent_reviewed": true,
+  "professional_linguist": false,
+  "policy_decision": "APPROVE_OPTION_A",
+  "case_count": 149,
+  "incomplete_count": 0,
+  "consistency_conflict_count": 0,
+  "locked_at_utc": "2026-07-15T14:22:09.770Z",
+  "csv_file": "MAI_07R3_ROUND_A_RESPONSES_LOCKED.csv",
+  "csv_sha256": "f01270e3017162259d2d305e158e86e386eb86841e4928b99546cd613d037f49",
+  "workbook_file": "MokXya_MAI_07R3_Round_A_LOCKED.xlsx",
+  "workbook_sha256": "dc0940e6dc2090e77d9fc678ac0a423e48c910d3dde69386dae73538ca55bc33",
+  "next_action": "BEGIN_ROUND_B",
+  "linguist_approved": false,
+  "production_approved": false
+}

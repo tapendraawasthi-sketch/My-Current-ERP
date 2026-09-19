@@ -1,0 +1,32 @@
+﻿[
+    {
+        "name":  "lang_runtime_suite",
+        "exit":  1,
+        "tail":  "........................................................................ [ 32%]\n..........................................................F..........sss [ 65%]\n.F....F................................................................. [ 98%]\n....                                                                     [100%]\n=========================== short test summary info ===========================\nFAILED tests\\oip\\language_runtime\\test_mai07_r1_ranker.py::test_same_token_different_disposition_by_context\nFAILED tests\\oip\\language_runtime\\test_mai07_r2_overlay.py::test_identity_first_base_may_be_promoted_without_demoting_existing_target\nFAILED tests\\oip\\language_runtime\\test_mai07_r2_overlay.py::test_romanized_lexicon_promotes_when_identity_first_at_base\n3 failed, 214 passed, 3 skipped in 48.64s\n"
+    },
+    {
+        "name":  "mai07_c2",
+        "exit":  0,
+        "tail":  ".......................................                                  [100%]\n39 passed in 0.66s\n"
+    },
+    {
+        "name":  "mai04_validate",
+        "exit":  0,
+        "tail":  "{\n  \"case_count\": 245,\n  \"duplicate_ids\": [],\n  \"errors\": [],\n  \"near_duplicates_sample\": [\n    \"mai04_crit__entry_ready_multi_02~mai04_crit__entry_ready_no_draft_01\",\n    \"mai04_ctx__yes_expired_14~mai04_ctx__yes_no_preview_13\"\n  ],\n  \"ok\": true,\n  \"split_leaks\": [],\n  \"warnings\": [\n    \"NEAR_OR_EXACT_DUP_TEXT:mai04_crit__entry_ready_multi_02,mai04_crit__entry_ready_no_draft_01,mai04_crit__entry_ready_one_draft_00\",\n    \"NEAR_OR_EXACT_DUP_TEXT:mai04_ctx__yes_expired_14,mai04_ctx__yes_no_preview_13\"\n  ]\n}\n"
+    },
+    {
+        "name":  "mai04_tests",
+        "exit":  0,
+        "tail":  "...............                                                          [100%]\n15 passed in 0.94s\n"
+    },
+    {
+        "name":  "schema_export_check",
+        "exit":  0,
+        "tail":  ""
+    },
+    {
+        "name":  "mai07_resource",
+        "exit":  0,
+        "tail":  "{\n  \"content_hash\": \"18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566\",\n  \"entry_counts\": {\n    \"ambiguity_rules.json\": 19,\n    \"context_rules.json\": 13,\n    \"domain_terms.json\": 44,\n    \"english_identity.json\": 67,\n    \"grapheme_rules.json\": 66,\n    \"morphology_rules.json\": 12,\n    \"name_like_terms.json\": 12,\n    \"romanized_lexicon.json\": 251\n  },\n  \"errors\": [],\n  \"ok\": true,\n  \"resource_pack_version\": \"mai-07.1.0\",\n  \"second_run_no_diff\": true\n}\n"
+    }
+]

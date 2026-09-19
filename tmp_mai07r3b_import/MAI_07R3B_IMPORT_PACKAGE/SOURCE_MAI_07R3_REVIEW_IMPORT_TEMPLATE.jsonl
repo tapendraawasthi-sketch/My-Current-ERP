@@ -1,0 +1,1 @@
+{"schema": "mai07r3_review_import_v1", "round_a": [{"review_id": "R3A-EXAMPLE", "span_class": "ROMANIZED_NEPALI", "preferred_rank_policy": "DEVANAGARI_TARGET_REQUIRED", "devanagari_retention": "REQUIRED", "confidence": "HIGH", "reasoning": "example only"}], "round_b": [{"review_id": "R3A-EXAMPLE", "candidate_index": 0, "acceptability": "ACCEPTABLE_PREFERRED"}]}

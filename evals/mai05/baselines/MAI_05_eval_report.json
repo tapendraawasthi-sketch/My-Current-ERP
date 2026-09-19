@@ -1,0 +1,60 @@
+{
+  "all_gates_passed": true,
+  "ambiguous_latin_accuracy": 1.0,
+  "engineering_reviewed_form_pairs": 320,
+  "gates": {
+    "ambiguous_ok": true,
+    "macro_f1_ok": true,
+    "offset_ok": true,
+    "protected_ok": true,
+    "raw_mutations_ok": true,
+    "romanized_ok": true,
+    "script_ok": true,
+    "url_email_ok": true
+  },
+  "language_form_macro_f1": 0.9622222222222223,
+  "language_form_per_class": {
+    "ENGLISH": {
+      "f1": 0.888888888888889,
+      "precision": 1.0,
+      "recall": 0.8
+    },
+    "NEPALI_DEVANAGARI": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "ROMANIZED_NEPALI": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "SHARED_OR_AMBIGUOUS_LATIN": {
+      "f1": 0.9600000000000001,
+      "precision": 0.9230769230769231,
+      "recall": 1.0
+    }
+  },
+  "offset_roundtrip_failures": 0,
+  "overlapping_base_spans": 0,
+  "protected_span_exact_f1": 1.0,
+  "quality_flag_recall": 1.0,
+  "raw_text_mutation_count": 0,
+  "romanized_precision": 1.0,
+  "script_char_accuracy": 1.0,
+  "thresholds": {
+    "ambiguous_accuracy": 0.85,
+    "macro_f1": 0.9,
+    "offset_fail": 0,
+    "overlaps": 0,
+    "protected_f1": 0.98,
+    "raw_mutations": 0,
+    "romanized_precision": 0.9,
+    "script_char_accuracy": 0.995,
+    "uncovered": 0,
+    "url_email_precision": 0.99
+  },
+  "total_cases": 470,
+  "uncovered_codepoints": 0,
+  "url_email_precision": 1.0
+}

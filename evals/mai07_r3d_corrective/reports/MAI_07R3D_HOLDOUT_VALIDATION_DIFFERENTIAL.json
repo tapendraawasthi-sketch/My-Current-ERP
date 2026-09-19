@@ -1,0 +1,192 @@
+{
+  "correct_target_harm": 0,
+  "demotions": 0,
+  "english_or_name_identity_harm": 0,
+  "harm_count": 0,
+  "note": "No frozen V2 case text; non-frozen corrective cases only.",
+  "promotions": 50,
+  "protected_harm": 0,
+  "sample_records_sanitized": [
+    {
+      "case_id": "r3d_hol_morphology_0661_5cac1fbc5a",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0671_1f8ce8c106",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0673_35f66de6eb",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0677_c372ccf70c",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0679_27b8a757a7",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0683_0a2a62096d",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0691_d63daacf35",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0693_749dad13d9",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0694_143c93d227",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0698_d79cc66ae4",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0707_0588c24345",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0716_2df7cec13a",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0718_8b0cdd1301",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0723_1481469b7b",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0725_b526845e9b",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0731_31f9750572",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0732_4fad793b9e",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0737_488f7711a9",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0745_0f954e5c7c",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    },
+    {
+      "case_id": "r3d_hol_morphology_0747_cfc07fb8eb",
+      "harm": false,
+      "prer1_target_top1": false,
+      "prer1_top_identity": true,
+      "r3d_target_top1": true,
+      "r3d_top_identity": false,
+      "suite_kind": "morphology"
+    }
+  ],
+  "split": "HOLDOUT_VALIDATION"
+}

@@ -1,0 +1,48 @@
+{
+  "active_frozen_candidate": true,
+  "candidate_selection_semantic_sha256": "73350ac500eb021e3a3f2cdd7587b1937c20b7e8fc9316734ad2cd0731dbe46f",
+  "created_utc": "2026-07-16T08:34:58.837111+00:00",
+  "eligible_for_frozen_evaluation": true,
+  "non_selected_chain_path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+  "non_selected_disposition": "HISTORICAL_RECOVERED_EQUIVALENT_NOT_SELECTED",
+  "non_selected_lock_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+  "non_selected_rc_id": "MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001",
+  "note": "Evidence-strength selection only; not quality-based.",
+  "phase": "MAI-07R3G-REAUTHORIZED-002",
+  "prohibited_candidate_switch": true,
+  "prohibited_frozen_candidate_comparison": true,
+  "record_type": "CANDIDATE_SELECTION",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "selected_chain_path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.CHAIN_MANIFEST.json",
+  "selected_chain_verdict": "PASSED_NEW_LOCK_CHAIN_RC",
+  "selected_lock_raw_sha256": "643dbf93f925ff3a8a5255cb02bfac01cdea41a0ae0ceda2bc1c6064c1fa5a83",
+  "selected_lock_semantic_sha256": "63a900a6fcb45be4e45dc059715050fa0b73b381b4f6fd3c9484a2de670ca70e",
+  "selected_rc_id": "MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002",
+  "selection_rule": "PREFER_PHYSICALLY_PRESERVED_LOCK_BEFORE_FRESH_HOLDOUT_WHEN_SEMANTICALLY_IDENTICAL",
+  "semantic_equivalence_evidence": {
+    "bindings_identical": true,
+    "rc_001_binding": {
+      "ENABLE_PROMOTION_OVERLAY": true,
+      "english_identity_guard_version": "mai-07-r3f.1.0.0",
+      "guard_config_sha256": "56f97c9a576d3b6af4462983f492852142a6dc2743cd2d3931bd8903c4bf79c3",
+      "guard_version": "mai-07-r3f.1.0.0",
+      "resource_content_sha256": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "runtime_semantic_sha256": "148deb84942452eaf7c17ac0fa3363d09473fdb857d9e9378554e4406710c6a0",
+      "runtime_source_sha256": "148deb84942452eaf7c17ac0fa3363d09473fdb857d9e9378554e4406710c6a0",
+      "runtime_version": "mai-07.1.3-r3f-sealnew",
+      "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+    },
+    "rc_002_binding": {
+      "ENABLE_PROMOTION_OVERLAY": true,
+      "english_identity_guard_version": "mai-07-r3f.1.0.0",
+      "guard_config_sha256": "56f97c9a576d3b6af4462983f492852142a6dc2743cd2d3931bd8903c4bf79c3",
+      "guard_version": "mai-07-r3f.1.0.0",
+      "resource_content_sha256": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "runtime_semantic_sha256": "148deb84942452eaf7c17ac0fa3363d09473fdb857d9e9378554e4406710c6a0",
+      "runtime_source_sha256": "148deb84942452eaf7c17ac0fa3363d09473fdb857d9e9378554e4406710c6a0",
+      "runtime_version": "mai-07.1.3-r3f-sealnew",
+      "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+    }
+  }
+}

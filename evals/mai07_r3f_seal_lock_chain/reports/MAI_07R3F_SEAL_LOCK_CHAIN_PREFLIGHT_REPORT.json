@@ -1,0 +1,124 @@
+{
+  "AUTOMATED_ENGINEERING_GATES_PASSED": true,
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "branch_a": {
+    "branch": "A",
+    "branch_b_required": false,
+    "reconstruction": {
+      "exact_match": true,
+      "expected_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+      "note": "Recovered exact historical LOCKED_NOT_RUN body from immutable preserved artifact.",
+      "provenance": "RECONSTRUCTED_FROM_PREEXISTING_HASH_COMMITMENT",
+      "reconstructed_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+      "reconstruction_attempted": true
+    },
+    "search": {
+      "expected_lock_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+      "immutable_hits": [
+        {
+          "path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+          "raw_file_sha256": "b95e908aee316e4cf0d4b326e24e3fd2903ccb27dc1d89625e8f3994c42705ec",
+          "rc_manifest_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff"
+        }
+      ],
+      "narrative_refs_only": [
+        "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+        "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.LOCK_RECORD.json",
+        "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_SEAL_LOCK_CHAIN_DATASET_MANIFEST.json",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCK_RECORD.json",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_CANDIDATE_SELECTION.json",
+        "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_002_PREFLIGHT_REPORT.json",
+        "evals/mai07/r3g_reauthorized/reports/MAI_07R3G_REAUTHORIZED_PREFLIGHT_REPORT.json",
+        "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_PREFLIGHT_REPORT.json",
+        "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_SEAL_LOCK_CHAIN_BRANCH_A_DISCOVERY.json",
+        "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_SEAL_LOCK_CHAIN_PREFLIGHT_REPORT.json",
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_ATTEMPT.json",
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_SCORE_REPORT.json"
+      ],
+      "ok": true
+    },
+    "status": "PASSED_RECOVERED_LOCK_CHAIN"
+  },
+  "branch_a_failure": null,
+  "branch_a_status": "PASSED_RECOVERED_LOCK_CHAIN",
+  "branch_selected": "A_RECOVERED",
+  "chains": [
+    {
+      "chain": {
+        "LINGUIST_APPROVED": false,
+        "PRODUCTION_APPROVED": false,
+        "QUALITY_GATES_PASSED": false,
+        "audit_report_semantic_sha256": "949399d65ce009f3a5a6d20fb664affac417aa651e31e1df6cc50aaecf26ba06",
+        "branch": "B_APPEND_ONLY_NEW_RC",
+        "canonical_report_semantic_sha256": "cb8911802ee5f0410526432289407bb776aeb9332d7b1b651cef7f1812de83ed",
+        "created_utc": "2026-07-16T06:55:54.135686+00:00",
+        "frozen_v2_opened": false,
+        "holdout_attempt_path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.HOLDOUT_ATTEMPT_001.json",
+        "lock_record_path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.LOCK_RECORD.json",
+        "locked_not_run_path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+        "locked_raw_sha256": "643dbf93f925ff3a8a5255cb02bfac01cdea41a0ae0ceda2bc1c6064c1fa5a83",
+        "locked_semantic_sha256": "63a900a6fcb45be4e45dc059715050fa0b73b381b4f6fd3c9484a2de670ca70e",
+        "phase": "MAI-07R3F-SEAL-LOCK-CHAIN",
+        "predictions_canonical_list_sha256": "36e99cce4ef2eb341aa4f237cfbdd34afbcc9db0b40e6cf9c20d0674e4d84a87",
+        "predictions_jsonl_raw_sha256": "6483be8ddeb97199ce904abeda4c10c5e8b30c261d874bf5ac5cf869ea105d07",
+        "qualification_path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.QUALIFICATION_RESULT.json",
+        "rc_id": "MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002",
+        "record_type": "CHAIN_MANIFEST",
+        "schema_version": "2.0.0",
+        "scorer_agreement": true,
+        "verdict": "PASSED_NEW_LOCK_CHAIN_RC"
+      },
+      "path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.CHAIN_MANIFEST.json",
+      "verification": {
+        "errors": [],
+        "ok": true
+      }
+    },
+    {
+      "chain": {
+        "LINGUIST_APPROVED": false,
+        "PRODUCTION_APPROVED": false,
+        "QUALITY_GATES_PASSED": false,
+        "audit_report_semantic_sha256": "76d850df480527a5809e21f4706ecb3b5e8475b070a0df9ce7165015983633ee",
+        "branch": "A_RECOVERED_LOCK_CHAIN",
+        "canonical_report_semantic_sha256": "2fa1a6b58156376138bef143e2779609629faa15ddbce183310d5c2ace2db6a6",
+        "created_utc": "2026-07-16T07:03:22.758257+00:00",
+        "frozen_v2_opened": false,
+        "holdout_attempt_path": "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_ATTEMPT.json",
+        "holdout_rerun": false,
+        "lock_record_path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCK_RECORD.json",
+        "locked_not_run_path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+        "locked_raw_sha256": "b95e908aee316e4cf0d4b326e24e3fd2903ccb27dc1d89625e8f3994c42705ec",
+        "locked_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+        "phase": "MAI-07R3F-SEAL-LOCK-CHAIN",
+        "post_holdout_manifest_path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.manifest.json",
+        "post_holdout_semantic_sha256": "530192228e7827bc33213f7ad8a3f4c2b75bdba6a01d78611617fd2d27c10e5c",
+        "predictions_canonical_list_sha256": "ba64b365718018c213c0a6955bcfb4c8b8f9c6f465e328113e662e161d26f2c4",
+        "predictions_jsonl_raw_sha256": "0f1c72f8ee38e457c7d132dc03553f4299d59f80fa956752e97660cab9a7c09c",
+        "qualification_path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.QUALIFICATION_RESULT.json",
+        "rc_id": "MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001",
+        "record_type": "CHAIN_MANIFEST",
+        "schema_version": "2.0.0",
+        "scorer_agreement": true,
+        "verdict": "PASSED_RECOVERED_LOCK_CHAIN"
+      },
+      "path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+      "verification": {
+        "errors": [],
+        "ok": true
+      }
+    }
+  ],
+  "created_utc": "2026-07-18T17:05:52.640319+00:00",
+  "expected_missing_lock_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+  "frozen_v2_opened": false,
+  "next_phase": "MAI-07R3G-REAUTHORIZED-002",
+  "phase": "MAI-07R3F-SEAL-LOCK-CHAIN",
+  "seal_new_post_holdout_semantic_sha256": "530192228e7827bc33213f7ad8a3f4c2b75bdba6a01d78611617fd2d27c10e5c",
+  "verdict": "PASSED_RECOVERED_LOCK_CHAIN"
+}

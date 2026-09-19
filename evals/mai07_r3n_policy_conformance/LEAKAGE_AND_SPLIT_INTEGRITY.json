@@ -1,0 +1,62 @@
+{
+  "authorized_code_corrective_count": 9,
+  "builder_version": "mai-07-r3n-dataset.1.0.0",
+  "counterfactual_pair_count": 6,
+  "population_counts": {
+    "ACRONYM_IDENTITY_REQUIRED": 3,
+    "AUTHORIZED_CODE_CORRECTIVE": 9,
+    "CANDIDATE_CAP_PRESSURE": 2,
+    "CONTEXT_COUNTERFACTUAL": 12,
+    "ENGLISH_IDENTITY_REQUIRED": 10,
+    "IDENTIFIER_PROTECTION_REQUIRED": 3,
+    "IDENTITY_RETENTION_REQUIRED": 2,
+    "MONOTONIC_PARENT_CORRECT": 2,
+    "MONOTONIC_PARENT_INCORRECT": 2,
+    "OOV": 3,
+    "PROTECTED_IDENTITY_REQUIRED": 3,
+    "ROMANIZED_NEPALI_REQUIRED": 9,
+    "SHARED_OR_AMBIGUOUS": 2
+  },
+  "populations_with_nonempty_denominators": true,
+  "prior_eval_sources": [
+    "evals/mai07_r3h_english_identity/context_counterfactual.jsonl",
+    "evals/mai07_r3h_english_identity/development.jsonl",
+    "evals/mai07_r3h_english_identity/holdout_validation.jsonl",
+    "evals/mai07_r3h_english_identity/oov_generalization.jsonl",
+    "evals/mai07_r3h_english_identity/safety_challenge.jsonl",
+    "evals/mai07_r3f_english_identity/context_counterfactual.jsonl",
+    "evals/mai07_r3f_english_identity/development.jsonl",
+    "evals/mai07_r3f_english_identity/holdout_validation.jsonl",
+    "evals/mai07_r3f_english_identity/safety_challenge.jsonl",
+    "evals/mai07_r3f_seal_new/context_counterfactual.jsonl",
+    "evals/mai07_r3f_seal_new/development.jsonl",
+    "evals/mai07_r3f_seal_new/holdout_validation.jsonl",
+    "evals/mai07_r3f_seal_new/safety_challenge.jsonl",
+    "evals/mai07_r3h2_shared_collision/context_counterfactual.jsonl",
+    "evals/mai07_r3h2_shared_collision/development.jsonl",
+    "evals/mai07_r3h2_shared_collision/holdout_validation.jsonl",
+    "evals/mai07_r3h2_shared_collision/monotonic_parent_comparison.jsonl",
+    "evals/mai07_r3h2_shared_collision/oov_generalization.jsonl",
+    "evals/mai07_r3h2_shared_collision/safety_challenge.jsonl"
+  ],
+  "prior_eval_texts_blocked": 15327,
+  "r3l_texts_blocked": 1111,
+  "report_id": "LEAKAGE_AND_SPLIT_INTEGRITY",
+  "schema_version": "mai07_r3n_leakage_integrity_v1",
+  "split_integrity": {
+    "case_id_intersection": [],
+    "case_id_intersection_empty": true,
+    "development_case_count": 19,
+    "holdout_family_case_count": 31,
+    "input_text_intersection_count": 0,
+    "input_text_intersection_empty": true,
+    "proof_passed": true,
+    "schema_version": "mai07_r3n_split_integrity_v1",
+    "seeds": {
+      "DEVELOPMENT": 20260718,
+      "HOLDOUT_FAMILY": 20260719
+    },
+    "template_family_disjoint_dev_holdout": true,
+    "template_family_intersection": []
+  }
+}

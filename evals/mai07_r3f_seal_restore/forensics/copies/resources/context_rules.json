@@ -1,0 +1,158 @@
+{
+  "provenance": "deterministic neighbor-based ranking boosts only",
+  "resource_id": "context_rules",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "rules": [
+    {
+      "boost": 0.55,
+      "prefer_identity": true,
+      "roman": "kar",
+      "when_neighbor_in": [
+        "english",
+        "module",
+        "please",
+        "show",
+        "ledger",
+        "invoice"
+      ]
+    },
+    {
+      "boost": 0.15,
+      "prefer": "कर",
+      "roman": "kar",
+      "when_neighbor_in": [
+        "tirnu",
+        "parchha",
+        "kharcha",
+        "paisa",
+        "tax",
+        "vat",
+        "mero"
+      ]
+    },
+    {
+      "boost": 0.55,
+      "prefer_identity": true,
+      "roman": "bill",
+      "when_neighbor_in": [
+        "show",
+        "please",
+        "english",
+        "invoice",
+        "ledger",
+        "module",
+        "the",
+        "my"
+      ]
+    },
+    {
+      "boost": 0.55,
+      "prefer_identity": true,
+      "roman": "balance",
+      "when_neighbor_in": [
+        "show",
+        "please",
+        "english",
+        "opening",
+        "ledger",
+        "report"
+      ]
+    },
+    {
+      "boost": 0.25,
+      "prefer": "राम",
+      "requires_review": true,
+      "roman": "ram",
+      "when_neighbor_in": [
+        "dai",
+        "bahini",
+        "sir",
+        "name",
+        "aayo"
+      ]
+    },
+    {
+      "boost": 0.35,
+      "prefer": "बिक्री",
+      "roman": "sale",
+      "when_neighbor_in": [
+        "bechyo",
+        "bikri",
+        "sales",
+        "aaja"
+      ]
+    },
+    {
+      "boost": 0.45,
+      "prefer_identity": true,
+      "roman": "cash",
+      "when_neighbor_in": [
+        "bank",
+        "account",
+        "deposit"
+      ]
+    },
+    {
+      "boost": 0.4,
+      "prefer_identity": true,
+      "roman": "dr",
+      "when_neighbor_in": [
+        "dr",
+        "debit",
+        "entry"
+      ]
+    },
+    {
+      "boost": 0.4,
+      "prefer_identity": true,
+      "roman": "cr",
+      "when_neighbor_in": [
+        "cr",
+        "credit",
+        "entry"
+      ]
+    },
+    {
+      "boost": 0.4,
+      "prefer_identity": true,
+      "roman": "net",
+      "when_neighbor_in": [
+        "net",
+        "profit",
+        "report"
+      ]
+    },
+    {
+      "boost": 0.4,
+      "prefer_identity": true,
+      "roman": "voucher",
+      "when_neighbor_in": [
+        "voucher",
+        "journal",
+        "entry"
+      ]
+    },
+    {
+      "boost": 0.4,
+      "prefer_identity": true,
+      "roman": "party",
+      "when_neighbor_in": [
+        "party",
+        "customer",
+        "supplier",
+        "due"
+      ]
+    },
+    {
+      "boost": 0.35,
+      "prefer": "कर",
+      "roman": "tax",
+      "when_neighbor_in": [
+        "kharcha",
+        "tirnu",
+        "paisa"
+      ]
+    }
+  ],
+  "version": "mai-07.1.0"
+}

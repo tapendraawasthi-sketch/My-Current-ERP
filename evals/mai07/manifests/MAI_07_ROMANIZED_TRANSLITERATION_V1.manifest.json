@@ -1,0 +1,96 @@
+{
+  "challenge_authored_min": 150,
+  "context_challenge_min": 60,
+  "dataset_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+  "dataset_manifest_id": "MAI_07_ROMANIZED_TRANSLITERATION_V1",
+  "dataset_version": "mai07-romanized-transliteration-v1",
+  "files": [
+    {
+      "case_count": 40,
+      "path": "evals/mai07/frozen/ambiguous_latin_v1.jsonl",
+      "sha256": "5d31c036654ae7c069ef1bae9185e692d39852866f71ba389f7e3841fb3fd7bc",
+      "suite_id": "ambiguous_latin_v1"
+    },
+    {
+      "case_count": 48,
+      "path": "evals/mai07/frozen/code_mix_v1.jsonl",
+      "sha256": "f27c104f7e259ef8fcdde0b3773ffee914ed0f29f833940f24566b4008a6b439",
+      "suite_id": "code_mix_v1"
+    },
+    {
+      "case_count": 64,
+      "path": "evals/mai07/frozen/context_challenge_v1.jsonl",
+      "sha256": "b5b0d903e56929ff1a3259ec3b27ac8ec6e0758cc63859ad2cefa0aa1b1d558d",
+      "suite_id": "context_challenge_v1"
+    },
+    {
+      "case_count": 30,
+      "path": "evals/mai07/frozen/devanagari_identity_v1.jsonl",
+      "sha256": "d402d889ffa20a7fe54d6ad77a8f0fe612ba065bbf207a189687aa4405cc190d",
+      "suite_id": "devanagari_identity_v1"
+    },
+    {
+      "case_count": 44,
+      "path": "evals/mai07/frozen/domain_terms_v1.jsonl",
+      "sha256": "16d249d7da9fa9dbda0bc856c4ec2f24fa9d599ab793dddf7b5f40a6f62b05dc",
+      "suite_id": "domain_terms_v1"
+    },
+    {
+      "case_count": 67,
+      "path": "evals/mai07/frozen/english_identity_v1.jsonl",
+      "sha256": "a828bc1bcd799d5cdae16858a4522f6ecb0af3b788cf937526a7fb2d9c101449",
+      "suite_id": "english_identity_v1"
+    },
+    {
+      "case_count": 45,
+      "path": "evals/mai07/frozen/grapheme_ambiguity_v1.jsonl",
+      "sha256": "3ac72d9a0c9abf1269b091ad69581621e34755238426b144a2bf925b549017e5",
+      "suite_id": "grapheme_ambiguity_v1"
+    },
+    {
+      "case_count": 12,
+      "path": "evals/mai07/frozen/names_entities_v1.jsonl",
+      "sha256": "8b94fc7fdb7be298531cd541e6f0165c26a3f620f15a2235fdf6b06e1948117d",
+      "suite_id": "names_entities_v1"
+    },
+    {
+      "case_count": 13,
+      "path": "evals/mai07/frozen/phrase_morph_v1.jsonl",
+      "sha256": "f1158d6e95d2a1044833df3b787ca34c5358c022458e29e89730de61c8cd5010",
+      "suite_id": "phrase_morph_v1"
+    },
+    {
+      "case_count": 48,
+      "path": "evals/mai07/frozen/protected_spans_v1.jsonl",
+      "sha256": "11f41e8e6b37614ac7855a233e79181aa7c179c724451e0d7acacd599b08aad5",
+      "suite_id": "protected_spans_v1"
+    },
+    {
+      "case_count": 50,
+      "path": "evals/mai07/frozen/punct_ws_emoji_v1.jsonl",
+      "sha256": "7a237d610e0a9304e00a8f7582b2be97e2d6583ff247611153ba9dc184306d7f",
+      "suite_id": "punct_ws_emoji_v1"
+    },
+    {
+      "case_count": 58,
+      "path": "evals/mai07/frozen/romanized_common_v1.jsonl",
+      "sha256": "6fea0b3bb5f77c2134d66cefdf41b89524b966d13a052ec28cab7ead83b1b5f0",
+      "suite_id": "romanized_common_v1"
+    },
+    {
+      "case_count": 147,
+      "path": "evals/mai07/frozen/romanized_core_v1.jsonl",
+      "sha256": "2ef93b99e6da2cb901d6c229453c84676438255d656f3acb53a653a7760b6ab9",
+      "suite_id": "romanized_core_v1"
+    },
+    {
+      "case_count": 30,
+      "path": "evals/mai07/frozen/security_adversarial_v1.jsonl",
+      "sha256": "59d6915d5fed9a41cede46ff6a8c448ccfb5a55304531eff893e7acaa4fbde8a",
+      "suite_id": "security_adversarial_v1"
+    }
+  ],
+  "linguist_approved": false,
+  "prohibited_for_training": true,
+  "total_cases": 696
+}

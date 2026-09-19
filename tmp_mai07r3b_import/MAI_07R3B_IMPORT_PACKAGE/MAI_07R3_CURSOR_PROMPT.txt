@@ -1,0 +1,168 @@
+You are implementing MAI-07R3B in the MokXya ERP repository.
+
+REPOSITORY
+- Expected root: C:/Users/Acer/Documents/My-Current-ERP
+- The user will place MokXya_MAI_07R3B_Import_Package.zip at the repository root.
+- Extract it to a temporary review-import directory. Do not overwrite existing review artifacts before verification.
+
+PHASE OBJECTIVE
+Import the completed, locked Round A and Round B human-review evidence; apply the approved Option A product policy; define non-vacuous V2 evaluation semantics; update tests/docs/ledger. This phase is governance/import work. It is NOT runtime/ranker tuning, is NOT a frozen quality run, is NOT production approval, and must NOT start MAI-08.
+
+AUTHORITATIVE USER DECISION
+The product owner explicitly authorized this mechanical Round B schema mapping:
+- ACCEPTABLE -> ACCEPTABLE_PREFERRED
+- UNACCEPTABLE -> UNNATURAL_BUT_POSSIBLE
+- CANNOT_DECIDE -> CANNOT_DECIDE
+Treat this as EXPLICIT_USER_AUTHORIZED_BULK_SCHEMA_MAPPING. Do not claim a row-by-row five-label review or professional-linguist adjudication. Round A still controls product-ranking policy. Round B is candidate-quality evidence and must never overwrite Round A automatically.
+
+MANDATORY PRE-EDIT DISCOVERY
+1. Read the repository AGENTS.md and any nested instructions that govern touched paths.
+2. Inspect existing MAI-07/R3A implementation, importer/build scripts, ADR_0008, ADR_0009, evaluation governance, phase ledger, gap register, frozen manifests, resource manifests, and tests.
+3. Locate the canonical review import path. Extend the existing authority; do not create a parallel review subsystem.
+4. Record the current worktree status. Preserve unrelated dirty files. Never use git reset --hard, git clean, or destructive checkout.
+5. Confirm active runtime is restored to pre-R1 and the failed R1/R2 overlay remains disabled. If not, STOP and report exact drift.
+
+PACKAGE INTEGRITY GATE — STOP ON ANY FAILURE
+1. Read MAI_07R3B_PACKAGE_MANIFEST.json.
+2. Recompute SHA-256 for every listed file except the manifest itself and require exact match.
+3. Verify these immutable parent facts:
+   - Round A locked CSV SHA-256: f01270e3017162259d2d305e158e86e386eb86841e4928b99546cd613d037f49
+   - Broad Round B locked CSV SHA-256: 79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61
+   - Blind mapping SHA-256: b6888bfd207d0dd225ecf2c9d403dad9a5c761eede1ddcfba4cd97d1701bcfd6
+   - Review schema SHA-256: e802be835e61c555ba7699b1bbed65ae597322b1d5c8cb075341e4d23e66e48a
+   - Frozen V1 parent dataset SHA-256: 5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208
+   - Active resource expected SHA-256: 18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566
+   - Active semantic expected SHA-256: b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849
+4. Verify 149 unique Round A review IDs, 263 unique Round B (review_id,candidate_index) records, 149 mapping entries, and 49 conflict entries.
+5. Verify every mapping review_id exists exactly once in Round A; every Round B review_id exists in Round A; each candidate_index is contiguous from zero; and each candidate count equals candidate_order_indices.length.
+6. Validate all enums against MAI_07R3_REVIEW_SCHEMA.json.
+7. Verify the completed import JSONL has exactly one object with schema mai07r3_review_import_v1, 149 round_a entries, and 263 round_b entries.
+8. Verify official Round B counts are exactly:
+   - ACCEPTABLE_PREFERRED: 223
+   - UNNATURAL_BUT_POSSIBLE: 36
+   - CANNOT_DECIDE: 4
+   - ACCEPTABLE_ALTERNATIVE: 0
+   - INCORRECT: 0
+9. Never expose MAI_07R3_BLIND_MAPPING.json to runtime, prompts, training, or reviewer-facing UI. Its use is adjudication import only.
+
+IMPLEMENTATION REQUIREMENTS
+A. Immutable import
+- Import MAI_07R3_REVIEW_IMPORT_COMPLETED.jsonl through a deterministic typed importer under the existing MAI-07 evaluation/governance authority.
+- Persist an immutable copy under the repository's canonical docs/evals review-import path (prefer the existing docs/mokxya-ai/reviews/mai07r3 structure).
+- Preserve the original locked three-label Round B CSV and lock manifest as source evidence; do not rewrite them.
+- Persist the official five-label CSV, official lock manifest, bulk mapping decision, unblinded adjudication JSONL, and report with hashes and lineage.
+- Never store the completed review as training data; mark prohibited_for_training=true where the repository contract supports it.
+
+B. Typed validation and fail-closed behavior
+- Add/extend typed contracts for the import object, Round A entry, Round B entry, mapping entry, and adjudicated case.
+- Reject: hash mismatch, missing/duplicate review ID, duplicate candidate key, non-contiguous candidate index, candidate cardinality mismatch, invalid enum, mapping use outside adjudication import, and any attempt for Round B to overwrite Round A rank policy.
+- Reject any claim that this bulk conversion is professional-linguist approval or an independent candidate-specific five-label review.
+- Error messages/logs must not leak review surfaces beyond existing review artifact boundaries; follow MAI-03 redaction policy.
+
+C. Product policy decision
+- Update ADR_0009 from PROPOSED_PENDING_HUMAN_REVIEW to PRODUCT_POLICY_APPROVED_IMPLEMENTATION_PENDING (or the nearest existing governed status).
+- Adopt Option A — Conservative Identity Policy:
+  1. English/acronyms/identifiers are Latin-first.
+  2. Proper names are Latin-first; Devanagari may be retained only as optional/review-marked.
+  3. Clear Romanized Nepali may rank reviewed Devanagari first.
+  4. Optional Devanagari does not count toward required-target top-1.
+- Keep LINGUIST_APPROVED=false and PRODUCTION_APPROVED=false.
+
+D. Evaluation semantics V2 — new version, no V1 mutation
+- Implement a new versioned semantics/population definition derived from MAI_07R3_EVALUATION_SEMANTICS_V2_DRAFT.json.
+- Do not modify the frozen MAI-07 V1 dataset, V1 labels, V1 manifest, V1 hashes, or C2 audit bytes.
+- Population authority comes from Round A:
+  - DEVANAGARI_TARGET_REQUIRED -> TRANSLITERATION_REQUIRED
+  - LATIN_IDENTITY_REQUIRED or NO_TRANSLITERATION_ALLOWED -> IDENTITY_REQUIRED / identity safety
+  - LATIN_IDENTITY_PREFERRED_TARGET_OPTIONAL -> TRANSLITERATION_OPTIONAL, reported separately
+  - BOTH_EQUAL_REVIEW_REQUIRED or CANNOT_DECIDE -> HUMAN_REVIEW_REQUIRED, excluded from automatic pass or separately reported
+- Candidate label use:
+  - ACCEPTABLE_PREFERRED: top-1 eligible only when compatible with Round A and uniquely preferred for the required role
+  - ACCEPTABLE_ALTERNATIVE: recall@k only
+  - UNNATURAL_BUT_POSSIBLE: diagnostic/review-only, not top-1 gold
+  - INCORRECT: reject
+  - CANNOT_DECIDE: human review; never infer correctness
+- Multiple bulk-mapped ACCEPTABLE_PREFERRED candidates must not be collapsed into a unique top-1 answer. Record ambiguity explicitly.
+- Build any future V2 dataset as a new artifact with a new manifest, parent lineage, deterministic hash, and prohibited_for_training=true. In this phase, only build it if the existing roadmap explicitly places V2 construction inside R3B; otherwise produce the typed plan and tests but do not create or run the quality dataset.
+
+E. Tests — write pre-fix failure tests first
+Add focused tests for at least:
+1. Exact package/source hash validation.
+2. 149/263/149/49 cardinality reconciliation.
+3. Duplicate and missing review IDs.
+4. Duplicate/non-contiguous candidate indices.
+5. Candidate count mismatch against candidate_order_indices.
+6. Every official enum and invalid enum rejection.
+7. Exact mechanical mapping counts (223/36/4).
+8. CANNOT_DECIDE preservation.
+9. Round B cannot overwrite Round A.
+10. Multiple preferred candidates do not become unique top-1 gold.
+11. Optional Devanagari excluded from required-target top-1.
+12. English/name identity safety under Option A.
+13. Mapping cannot be imported into runtime/training/reviewer-facing paths.
+14. No professional-linguist/production approval inferred.
+15. Frozen V1 files and hashes remain byte-identical.
+16. Deterministic re-import produces identical semantic hash.
+
+PROHIBITED CHANGES IN THIS PHASE
+- Do not tune transliteration candidate generation or ranking.
+- Do not enable R1/R2 promotion overlay.
+- Do not change active transliteration resources/runtime semantics.
+- Do not run the frozen MAI-07 quality evaluation as a pass attempt.
+- Do not alter MAI-04/05/06 frozen data or hashes.
+- Do not change accounting, posting, sync, OEC, Dexie, tax, legal, or UI behavior.
+- Do not start MAI-08.
+- Do not claim MAI-07 PASSED, linguist-approved, or production-approved.
+
+DOCUMENTATION / LEDGER / GAP UPDATES
+- Update MAI-07 documentation with R3B import evidence and the bulk-mapping limitation.
+- Update ADR_0009 with the product-policy decision and explicit non-linguist status.
+- Update evaluation governance/metrics with V2 non-vacuous population semantics.
+- Update MAI_PHASE_LEDGER.json: MAI-07 remains NEEDS_CORRECTIVE_WORK unless and until a later governed non-vacuous quality run passes. R3B may be PASSED only for review-import/policy-lock gates if all R3B tests pass.
+- GAP-P1-010 may be REDUCED for product-policy ambiguity, but retain a clearly named open linguist-approval/quality gap. GAP-P0-001 remains OPEN.
+- recommended_next_phase must be the roadmap's governed post-R3B MAI-07 corrective/evaluation phase, not MAI-08.
+
+VALIDATION COMMANDS
+Run the exact commands supported by the repository after discovery, including:
+- New R3B importer/policy tests.
+- Existing MAI-07 R3A/C2/runtime tests.
+- Full language_runtime focused suite.
+- MAI-04 validate + component + pipeline (mutations must remain 0 and semantic hashes unchanged).
+- MAI-05 and MAI-06 evaluations and resource checks.
+- MAI-07 resource --check-twice; active resource and semantic hashes must remain 18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566 and b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849 unless discovery proves a previously approved later authority. Stop rather than silently updating expected hashes.
+- Canonical schema export --check.
+- Orbix contract tests.
+- Node auth + correlation tests.
+- Global TypeScript and accounting baselines; distinguish unchanged known failures from new regressions.
+- Pytest collect-only; distinguish the known reasoning_filter baseline from new errors.
+
+FINAL RESPONSE FORMAT
+Return these numbered sections:
+1. MAI-07R3B verdict and flags
+2. Pre-edit authority discovery
+3. Package integrity evidence with full hashes
+4. Import counts and reconciliation
+5. Bulk mapping provenance and exact counts
+6. Unblinding/mapping validation
+7. Option A policy decision
+8. V2 evaluation semantics
+9. Ambiguity/multiple-preferred handling
+10. Tests added and pre-fix failures
+11. Full validation commands, exit codes, and counts
+12. MAI-04/05/06/V1 regression evidence
+13. Files changed
+14. Security/privacy verdict
+15. Accounting/posting/sync/OEC impact
+16. Documentation/ledger/gap updates
+17. Known limitations and professional-linguist status
+18. Rollback instructions
+19. Final MAI-07 status
+20. Confirmation MAI-08 remains NOT_STARTED
+21. Recommended next governed phase
+
+SUCCESS CONDITIONS FOR THIS CURSOR TURN
+- Review import and policy-lock gates may pass.
+- MAI-07 quality must remain false unless a separately authorized later frozen/non-vacuous quality phase runs and passes; this prompt does not authorize that run.
+- LINGUIST_APPROVED=false.
+- PRODUCTION_APPROVED=false.
+- MAI-08 NOT_STARTED.

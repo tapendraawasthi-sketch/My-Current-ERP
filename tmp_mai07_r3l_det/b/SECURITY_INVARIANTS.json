@@ -1,0 +1,13 @@
+{
+  "accounting_mutation_attempts": 0,
+  "caps_respected_rate": 1.0,
+  "critical_diagnostic_finding": false,
+  "llm_calls": 0,
+  "network_calls": 0,
+  "no_chain_of_thought": true,
+  "no_execution_authority_fields": true,
+  "no_tenant_identity_leakage": true,
+  "protected_mutations": 0,
+  "raw_mutations": 0,
+  "successful_mutations": 0
+}

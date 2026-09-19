@@ -1,0 +1,51 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "frozen_v2_case_bodies_not_used": true,
+  "leakage_vs_v1": {
+    "duplicate_case_ids": [],
+    "exact_sentence_duplicate_count": 0,
+    "vocabulary_overlap_note": "Legitimate token overlap expected; not claimed zero.",
+    "vocabulary_overlap_token_count": 297
+  },
+  "leakage_vs_v2": {
+    "duplicate_case_ids_with_v1_parent_space": [],
+    "frozen_v2_case_bodies_not_opened": true,
+    "note": "Exact sentence comparison against V2 bodies is firewalled; uniqueness via r3d tags + V1 audit.",
+    "v2_dataset_hash_acknowledged": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9"
+  },
+  "locked_before_runtime_correction": true,
+  "manifest_id": "MAI_07R3D_DATASET_MANIFEST",
+  "minimums_met": true,
+  "near_duplicate_dropped": 274,
+  "parent_frozen_v1_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+  "parent_frozen_v2_hash": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+  "prohibited_for_training": true,
+  "rebuild_note": "Rebuilt once pre-holdout to remove invoice-pattern false protected spans; no holdout scores observed yet.",
+  "schema_version": "1.0.0",
+  "seed": 20260715,
+  "splits": {
+    "DEVELOPMENT": {
+      "case_count": 930,
+      "path": "evals/mai07_r3d_corrective/development.jsonl",
+      "sha256": "4c4f2988e56ba205db532e010b068586b708ec4383a6f70b4a0a35c766ca37aa"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 477,
+      "path": "evals/mai07_r3d_corrective/holdout_validation.jsonl",
+      "sha256": "f60d19b851dd05b7be27fb8c3c908e77ed5c8f34ed1d5dbfbf326eaa99aa5d7a"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 633,
+      "path": "evals/mai07_r3d_corrective/safety_challenge.jsonl",
+      "sha256": "993a065146b4fc2ede0f1fe12a4f8b0dc9171d0efbb64e73f389bee4926533c6"
+    }
+  },
+  "total_unique_cases": 2040,
+  "totals": {
+    "DEVELOPMENT": 930,
+    "HOLDOUT_VALIDATION": 477,
+    "SAFETY_CHALLENGE": 633
+  },
+  "unique_texts": 2040
+}

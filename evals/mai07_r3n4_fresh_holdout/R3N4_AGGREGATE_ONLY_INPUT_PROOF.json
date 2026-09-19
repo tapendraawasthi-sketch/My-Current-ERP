@@ -1,0 +1,32 @@
+{
+  "allowed_aggregate_inputs": [
+    "evals/mai07_r3n_policy_conformance/*.jsonl",
+    "evals/mai07_r3n2_fresh_holdout/*.jsonl (split manifests only; excludes reports/)",
+    "evals/mai07_r3n3_fresh_holdout/*.jsonl (split manifests only; excludes reports/ and *predictions*)",
+    "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/closure/R3M_CODE_CORRECTIVE_AUTHORITY.json",
+    "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/policy_mismatch_triage/closure/R3M_CODE_CORRECTIVE_PRIVATE_CASES.jsonl",
+    "docs/mokxya-ai/reviews/mai07_v3_ai_assisted/runtime_conformance_diagnostic/BEHAVIOR_EXPECTATIONS.jsonl",
+    "evals/mai07_r3n_integrity_closure/SEMANTIC_HASH.json",
+    "evals/mai07_r3n4_fresh_holdout/PREEDIT_BASELINE.json",
+    "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_THRESHOLDS.json"
+  ],
+  "builder_version": "mai-07-r3n4-dataset.1.0.0",
+  "note": "Only one-way hashes of prior holdout texts used for freshness rejection; surfaces not persisted.",
+  "prediction_jsonl_opened": false,
+  "prohibited_patterns": [
+    "evals/mai07_r3n2_fresh_holdout/reports/*.jsonl",
+    "evals/mai07_r3n2_fresh_holdout/**/*predictions*.jsonl",
+    "evals/mai07_r3n3_fresh_holdout/reports/*.jsonl",
+    "evals/mai07_r3n3_fresh_holdout/**/*predictions*.jsonl"
+  ],
+  "r3n2_blocked_case_id_count": 2600,
+  "r3n2_blocked_row_count": 2600,
+  "r3n2_blocked_text_hash_count": 2600,
+  "r3n2_reports_opened": false,
+  "r3n3_blocked_case_id_count": 3300,
+  "r3n3_blocked_row_count": 3300,
+  "r3n3_blocked_text_hash_count": 3300,
+  "r3n3_reports_opened": false,
+  "r3n_blocked_row_count": 50,
+  "schema_version": "mai07_r3n4_aggregate_only_input_proof_v1"
+}

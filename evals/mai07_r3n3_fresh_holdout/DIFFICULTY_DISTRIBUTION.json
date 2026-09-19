@@ -1,0 +1,53 @@
+{
+  "builder_version": "mai-07-r3n3-dataset.1.0.0",
+  "by_expected_behavior": {
+    "ACRONYM_IDENTITY_TOP1": 298,
+    "CAP_OK": 399,
+    "IDENTITY_RETAINED": 482,
+    "IDENTITY_TOP1": 916,
+    "NO_RAW_MUTATION": 100,
+    "PROTECTED_IDENTITY": 323,
+    "ROMANIZED_SCRIPT_AT_5": 583,
+    "SHARED_CONSERVATIVE": 199
+  },
+  "by_population_tag_count": {
+    "1_populations": 2575,
+    "2_populations": 400,
+    "3_populations": 325
+  },
+  "by_template_family": {
+    "r3n3_dev_acronym": 49,
+    "r3n3_dev_acronym_identifier_analogue": 49,
+    "r3n3_dev_authorized_code_corrective": 9,
+    "r3n3_dev_cap_pressure": 49,
+    "r3n3_dev_english_guard_analogue": 49,
+    "r3n3_dev_english_identity": 50,
+    "r3n3_dev_identifier": 49,
+    "r3n3_dev_identity_invariant_analogue": 49,
+    "r3n3_dev_identity_retention": 50,
+    "r3n3_dev_monotonic_incorrect": 49,
+    "r3n3_dev_protected": 49,
+    "r3n3_dev_romanized_nepali": 50,
+    "r3n3_dev_shared_ambiguous": 49,
+    "r3n3_hld_acronym": 25,
+    "r3n3_hld_acronym_identifier_analogue": 75,
+    "r3n3_hld_cap_pressure": 250,
+    "r3n3_hld_cap_pressure_challenge_en": 200,
+    "r3n3_hld_cap_pressure_challenge_np": 200,
+    "r3n3_hld_counterfactual_english": 150,
+    "r3n3_hld_counterfactual_nepali": 150,
+    "r3n3_hld_english_identity": 325,
+    "r3n3_hld_identifier": 25,
+    "r3n3_hld_identity_retention": 50,
+    "r3n3_hld_monotonic_correct": 300,
+    "r3n3_hld_oov_generalization": 100,
+    "r3n3_hld_protected": 100,
+    "r3n3_hld_romanized_nepali": 200,
+    "r3n3_hld_safety_acronym": 100,
+    "r3n3_hld_safety_english": 100,
+    "r3n3_hld_safety_identifier": 100,
+    "r3n3_hld_safety_protected": 100,
+    "r3n3_hld_shared_ambiguous": 150
+  },
+  "schema_version": "mai07_r3n3_difficulty_distribution_v1"
+}

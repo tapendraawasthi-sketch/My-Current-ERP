@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "MAI_07_ROMANIZED_TRANSLITERATION_V3",
+  "populations": {
+    "CONTEXT_DEPENDENT_ENGLISH": 198,
+    "IDENTITY_REQUIRED": 168,
+    "NO_TRANSLITERATION_ALLOWED": 18,
+    "PROTECTED_IDENTITY": 277,
+    "TRANSLITERATION_OPTIONAL": 281,
+    "TRANSLITERATION_REQUIRED": 169
+  },
+  "pools": {
+    "FROZEN_EVALUATION": 583,
+    "POLICY_DEVELOPMENT": 528
+  },
+  "taxonomy_source": "docs/mokxya-ai/reviews/mai07_v3/V3_POPULATION_TAXONOMY.md"
+}

@@ -1,0 +1,236 @@
+[
+  {
+    "case_id": "mai04_num__crore_19",
+    "input": "project 1 crore capitalization",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "amount",
+        "surface": "1",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": false,
+        "candidate_id": "nr-0001",
+        "normalized_value": "10000000",
+        "raw_end": 15,
+        "raw_start": 8,
+        "reason_codes": [
+          "WORD_NUMERAL_MULTIPLIER",
+          "crore"
+        ],
+        "role": "amount",
+        "surface": "1 crore",
+        "unit": "NPR"
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__date_09",
+    "input": "on 2081-01-15 purchased goods",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "date_part",
+        "surface": "2081",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": false,
+        "candidate_id": "nr-0001",
+        "normalized_value": "2024-04-27",
+        "raw_end": 13,
+        "raw_start": 3,
+        "reason_codes": [
+          "DATE_LITERAL",
+          "CALENDAR_BS",
+          "BS_TO_AD_CONVERTED"
+        ],
+        "role": "date",
+        "surface": "2081-01-15",
+        "unit": "BS→AD"
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__fy_10",
+    "input": "FY 2080/81 trial balance",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "fiscal_year",
+        "surface": "2080",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": true,
+        "candidate_id": "nr-0001",
+        "normalized_value": "2080",
+        "raw_end": 7,
+        "raw_start": 3,
+        "reason_codes": [
+          "NO_ROLE_CUE"
+        ],
+        "role": "unknown",
+        "surface": "2080",
+        "unit": null
+      },
+      {
+        "ambiguous": true,
+        "candidate_id": "nr-0002",
+        "normalized_value": "81",
+        "raw_end": 10,
+        "raw_start": 8,
+        "reason_codes": [
+          "NO_ROLE_CUE"
+        ],
+        "role": "unknown",
+        "surface": "81",
+        "unit": null
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__hajar_18",
+    "input": "tin hajar cash bechye",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "amount",
+        "surface": "tin",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": false,
+        "candidate_id": "nr-0001",
+        "normalized_value": "3000",
+        "raw_end": 9,
+        "raw_start": 0,
+        "reason_codes": [
+          "WORD_NUMERAL_MULTIPLIER",
+          "hajar"
+        ],
+        "role": "amount",
+        "surface": "tin hajar",
+        "unit": "NPR"
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__inst_11",
+    "input": "pay in 3 installments",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "installment_count",
+        "surface": "3",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": true,
+        "candidate_id": "nr-0001",
+        "normalized_value": "3",
+        "raw_end": 8,
+        "raw_start": 7,
+        "reason_codes": [
+          "NO_ROLE_CUE"
+        ],
+        "role": "unknown",
+        "surface": "3",
+        "unit": null
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__lakh_12",
+    "input": "sale 2 lakh cash",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "amount",
+        "surface": "2",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": false,
+        "candidate_id": "nr-0001",
+        "normalized_value": "200000",
+        "raw_end": 11,
+        "raw_start": 5,
+        "reason_codes": [
+          "WORD_NUMERAL_MULTIPLIER",
+          "lakh"
+        ],
+        "role": "amount",
+        "surface": "2 lakh",
+        "unit": "NPR"
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__price_02",
+    "input": "unit price 75 for rice",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "unit_price",
+        "surface": "75",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": false,
+        "candidate_id": "nr-0001",
+        "normalized_value": "75",
+        "raw_end": 13,
+        "raw_start": 11,
+        "reason_codes": [
+          "MONEY_CONTEXT_CUE"
+        ],
+        "role": "amount",
+        "surface": "75",
+        "unit": null
+      }
+    ]
+  },
+  {
+    "case_id": "mai04_num__tax_04",
+    "input": "VAT 13% applied",
+    "expected": [
+      {
+        "normalized_value": null,
+        "role": "tax_rate",
+        "surface": "13",
+        "unit": null
+      }
+    ],
+    "actual": [
+      {
+        "ambiguous": false,
+        "candidate_id": "nr-0001",
+        "normalized_value": "13",
+        "raw_end": 6,
+        "raw_start": 4,
+        "reason_codes": [
+          "PERCENT_LITERAL"
+        ],
+        "role": "percentage",
+        "surface": "13",
+        "unit": null
+      }
+    ]
+  }
+]

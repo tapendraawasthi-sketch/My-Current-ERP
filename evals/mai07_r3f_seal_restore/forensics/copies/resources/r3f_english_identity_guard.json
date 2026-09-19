@@ -1,0 +1,41 @@
+{
+  "resource_id": "r3f_english_identity_guard",
+  "version": "mai-07-r3f.1.0.0",
+  "guard_id": "mai-07-r3f.1.0.0",
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "enable_promotion_overlay": false,
+  "evidence_hierarchy": [
+    "protected_span",
+    "acronym_identifier",
+    "high_confidence_proper_name",
+    "high_confidence_english_identity",
+    "high_confidence_romanized_nepali",
+    "shared_ambiguous_latin",
+    "unknown"
+  ],
+  "english_identity_requires_multi_signal": true,
+  "romanized_requires_positive_evidence": true,
+  "identity_always_retained": true,
+  "reorder_only": true,
+  "weights": {
+    "english_context_ratio_high": 0.5,
+    "english_context_ratio_borrow": 0.4,
+    "neighbor_english_function_min": 1,
+    "nepali_particle_block_english": 1,
+    "min_signals_for_high_confidence_english": 2
+  },
+  "english_function_words": [
+    "the", "a", "an", "and", "or", "for", "from", "with", "to", "of", "in", "on",
+    "is", "are", "was", "were", "be", "been", "please", "show", "review", "confirm",
+    "update", "export", "print", "check", "verify", "approve", "submit", "total",
+    "amount", "status", "today", "tomorrow", "yesterday", "report", "list", "entry"
+  ],
+  "nepali_context_particles": [
+    "bata", "lai", "ko", "ma", "cha", "chha", "garnu", "hernu", "pathau", "aaja",
+    "mero", "hamro", "timro", "hola", "chha", "garera", "gareko", "bhayo", "hunchha",
+    "hunu", "chahi", "pani", "ta", "ni", "ra"
+  ],
+  "provenance": "MAI-07R3F versioned English Identity Guard configuration; engineering-curated; not linguist-approved",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED"
+}

@@ -1,0 +1,44 @@
+{
+  "created_utc": "2026-07-16T08:36:28.386067+00:00",
+  "phase": "MAI-07R3G-REAUTHORIZED-002",
+  "post_run_immutability": {
+    "artifact_hashes": {
+      "attempt": "fc774ec6e9a3983cb88b32ac16818128ecc0c262994a8b756fd14d7d72011aa0",
+      "r3e_attempt": "833233e4f5ed5250a824e47dcfec000fa4d66ae20dfeec1729822e43bf81fbd2",
+      "r3e_pred": "89ee4789333bc1fd5b5ea3b1b505c0a53b7a5f7e159d5966511ead52735a7e9c",
+      "rc001_chain": "e7ddfbcad914ef9dd853a7fba48d554b62ed4e52480c3838c01de2be32ec5163",
+      "rc001_lock": "b95e908aee316e4cf0d4b326e24e3fd2903ccb27dc1d89625e8f3994c42705ec",
+      "rc002_chain": "178ec6d9d895079c0d2dcd5d607a36c3fc951b967b1bbd8a5fbdfa9df8ab5a2d",
+      "rc002_lock": "643dbf93f925ff3a8a5255cb02bfac01cdea41a0ae0ceda2bc1c6064c1fa5a83",
+      "selection": "c7e2c22de20c768280abcf8e1d13d57976b8bcc3663d3e86d3fb6278bb9a2bc8"
+    },
+    "attempt_lock_unchanged": true,
+    "immutability": {
+      "core_target_denominator": 272,
+      "errors": [],
+      "hashes": {
+        "audit_scorer": "c0d7799b5d54057ea768b8c67f9516edefc713d8ebd2d59120f16df3bc102450",
+        "canonical_scorer": "6e8e30c9c6e2c38d3ea61243e0a22a72e8eb3e17e3d854a0a9a3467b130e9336",
+        "pop": "a8461f62acac98561605e5b2ffb2475bb73a3d15cf0f32ef7b98f1247de85632",
+        "r3e_attempt": "833233e4f5ed5250a824e47dcfec000fa4d66ae20dfeec1729822e43bf81fbd2",
+        "r3e_pred": "89ee4789333bc1fd5b5ea3b1b505c0a53b7a5f7e159d5966511ead52735a7e9c",
+        "resource": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+        "thr": "aa4b5d68852edbed7cdc5f025b8051b3235078a65fb78bb0aca3a342fcdf04ef",
+        "v1": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+        "v2": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+        "v2_man": "17331e4d0c703977b80ca893eb5261bb126aa52a6813fe8b4f548b1178c716be"
+      },
+      "ok": true,
+      "population_counts": {
+        "HUMAN_REVIEW_REQUIRED": 41,
+        "IDENTITY_REQUIRED": 340,
+        "LEGACY_V1_INFORMATIONAL": 27,
+        "TRANSLITERATION_REQUIRED": 288
+      },
+      "total_cases": 696,
+      "unambiguous_target_denominator": 255
+    },
+    "ok": true
+  },
+  "verdict": "FAILED_QUALITY"
+}

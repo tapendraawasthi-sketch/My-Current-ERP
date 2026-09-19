@@ -1,0 +1,68 @@
+{
+  "builder_version": "mai-07-r3h-dataset.1.0.0",
+  "coverage": {
+    "ambiguous_cases": 377,
+    "clear_romanized_cases": 688,
+    "counterfactual_pairs": 290,
+    "english_identity_cases": 906,
+    "multi_token_cases": 3223,
+    "names_acronyms_identifiers": 472,
+    "oov_cases": 260,
+    "protected_span_cases": 440,
+    "shared_collision_cases": 319,
+    "technical_english_cases": 210
+  },
+  "frozen_predictions_not_used": true,
+  "frozen_v2_case_bodies_not_used": true,
+  "gold_labels_generated_from_runtime_predictions": false,
+  "manifest_id": "MAI_07R3H_DATASET_MANIFEST",
+  "minimums": {
+    "ambiguous_cases": 150,
+    "clear_romanized_cases": 300,
+    "counterfactual_pairs": 250,
+    "english_identity_cases": 800,
+    "multi_token_case_ratio": 0.7,
+    "names_acronyms_identifiers": 200,
+    "oov_cases": 200,
+    "protected_span_cases": 200,
+    "shared_collision_cases": 300,
+    "technical_english_cases": 200
+  },
+  "minimums_met": true,
+  "prohibited_for_training": true,
+  "schema_version": "1.0.0",
+  "splits": {
+    "CONTEXT_COUNTERFACTUAL": {
+      "case_count": 966,
+      "path": "evals/mai07_r3h_english_identity/context_counterfactual.jsonl",
+      "sha256": "875c6ab3c049e2f40e6a27a5fcf1028b6263ffb13eab80ef6f4178a00a46be6a"
+    },
+    "DEVELOPMENT": {
+      "case_count": 401,
+      "path": "evals/mai07_r3h_english_identity/development.jsonl",
+      "sha256": "d5514295aafcd2847b3c196ee254a31c9d4d948256f9f99054d94758310d4ee4"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 711,
+      "path": "evals/mai07_r3h_english_identity/holdout_validation.jsonl",
+      "sha256": "b0c83b20cb299635712cdc958d9e9b983dd9f9139439f9e25e031e87364f0fda"
+    },
+    "OOV_GENERALIZATION": {
+      "case_count": 260,
+      "path": "evals/mai07_r3h_english_identity/oov_generalization.jsonl",
+      "sha256": "fe30b98532100ba9da54020c68bcdabdec233fdfba4c899b0f1905fb3b716af4"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 885,
+      "path": "evals/mai07_r3h_english_identity/safety_challenge.jsonl",
+      "sha256": "adb7d3806489fc2dee284608491712fd2c0fa56c4cdf288c4492d8c9f6f734cd"
+    }
+  },
+  "totals": {
+    "CONTEXT_COUNTERFACTUAL": 966,
+    "DEVELOPMENT": 401,
+    "HOLDOUT_VALIDATION": 711,
+    "OOV_GENERALIZATION": 260,
+    "SAFETY_CHALLENGE": 885
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "check_command": "python -m src.oip.modules.language_runtime.transliteration.application.build_mai07r1_release_candidate --check",
+  "corrective_holdout_semantic_note": "see MAI_07R1_dev_holdout_report.json",
+  "created_at": "2026-07-15T11:17:50.947435+00:00",
+  "creation_command": "python -m src.oip.modules.language_runtime.transliteration.application.build_mai07r1_release_candidate",
+  "dev_holdout_report_sha256": "4af0adf8183b75fb1784095ef033431ff22332be1de43044f86e2809b156fe7c",
+  "evaluator_note": "mai-07.1.3 relaxes preferred context contingency hard-lock from C2 snapshot; target context invariants unchanged",
+  "evaluator_version": "mai-07.1.3",
+  "files": [
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/deterministic_ranker.py",
+      "sha256": "31c32d1a35a8a1565e8ded0cd0aff6ae26333f9f8217ec3b69dac89d9eef6daf"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/deterministic_generator.py",
+      "sha256": "2beca6d75a06bd798ed814e0de65da2885f2ef43cf16a7e8dd9b03fbfef2ab21"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/resource_repository.py",
+      "sha256": "e6edc8d39080f1959c1468e3a0a8464e49bc04d4d32dfffef1830875a859e983"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/transliteration_service.py",
+      "sha256": "63779fefcc9bfef0da2086b789f60e40add96d7725d44712d64e28125696da17"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/__init__.py",
+      "sha256": "d12afc454e7a86ca83812bc70e126922afaa5e7ab03fa77b340d8bf9034d9f4f"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/ranking_config.json",
+      "sha256": "26dc4d1acefbbe965dd54ca334a1e89b21df1aa34c74713a3cfe82f92be19995"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/english_identity.json",
+      "sha256": "5c60c552f52958ac24c87f35d45cc7d5ce07b77cfddfabd09d5206e9cf5ea807"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/name_like_terms.json",
+      "sha256": "2d96f0c37415415f8bde6e808fb6892520e7c2828b3950bb04cee500e399e7d2"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/manifest.json",
+      "sha256": "631b8d46fb540739ec5a733bbfcbd8e0ee15e59e5f3d355fa614fe33c1f563cc"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r1_ranker_dev.py",
+      "sha256": "6db1fc9cbae07d2a1d4d323ecbf7b52e032cd0ff0f74b4de7d4b24c91ef77894"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07r1_dev.py",
+      "sha256": "4d533f9f8d92c5c5c38075e5e1602f7737c9a824d42785e024717f429b1d2245"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/tests/oip/language_runtime/test_mai07_r1_ranker.py",
+      "sha256": "877c6f810d695b6a811dd0d5a0e233d6e6a80f67ee1e32c0da7b38bb736e9858"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_dev/splits/development.jsonl",
+      "sha256": "cc1f803164534acd6d11e7e58d626c0b6b4c68c0a5cc915b0b77581446aaf27c"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_dev/splits/holdout_validation.jsonl",
+      "sha256": "e89191997d703451049fcef6b39e00e240311be172f79ddf360b76ade38eb41e"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_dev/splits/safety_challenge.jsonl",
+      "sha256": "6d5afadc300452acfe99e8e28a7899e8438626e605039f559bec0bfd0672a75e"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_dev/manifests/MAI_07R1_RANKER_DEV_V1.manifest.json",
+      "sha256": "fdfe0b9bd8a34e30383139a3c3075ed5851999693cac09908b59bda566b30613"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_dev/baselines/MAI_07R1_dev_holdout_report.json",
+      "sha256": "4af0adf8183b75fb1784095ef033431ff22332be1de43044f86e2809b156fe7c"
+    }
+  ],
+  "holdout_freeze_path": "evals/mai07_ranker_dev/manifests/MAI_07R1_HOLDOUT_FREEZE.manifest.json",
+  "holdout_freeze_sha256": "4ae8313eaecf6221c82e94491d78762459ebad0ab0ba5400bc3ae42f12437175",
+  "linguist_approved": false,
+  "locks": {
+    "frozen_dataset_sha256": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+    "no_runtime_resource_edit_before_frozen_eval": true,
+    "one_shot_frozen_eval_required": true
+  },
+  "manifest_id": "MAI_07R1_RELEASE_CANDIDATE",
+  "prior_frozen_attempt": {
+    "error": "preferred_context_contingency_unexpected",
+    "note": "Pre-correction preferred table (21,0,13,30) is not a quality gate",
+    "status": "FAILED_EVALUATOR_INVARIANT"
+  },
+  "prior_resource_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "production_approved": false,
+  "ranking_config_version": "mai-07.2.0",
+  "resource_content_hash": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+  "resource_content_hash_recomputed": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+  "resource_pack_version": "mai-07.2.0",
+  "runtime_version": "mai-07.2.0"
+}

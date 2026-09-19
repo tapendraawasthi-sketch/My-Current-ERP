@@ -1,0 +1,63 @@
+{
+  "created_at": "2026-07-14T13:57:44+00:00",
+  "dataset_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+  "dataset_version": "mai04-frozen-v1",
+  "description": "Frozen engineering baseline for MokXya AI evaluation (MAI-04)",
+  "files": [
+    {
+      "case_count": 40,
+      "path": "evals/mai04/frozen/accounting_events_v1.jsonl",
+      "sha256": "06c0f58466d4589ef590578a84b9838daa81f1a224aac15f9922d0b86403df1c",
+      "suite_id": "accounting_events_v1"
+    },
+    {
+      "case_count": 35,
+      "path": "evals/mai04/frozen/context_turn_relation_v1.jsonl",
+      "sha256": "736f0cb3e86e7118965fbe34d0637c65db858595f52ba7fb8853f6c8382a18f8",
+      "suite_id": "context_turn_relation_v1"
+    },
+    {
+      "case_count": 30,
+      "path": "evals/mai04/frozen/critical_incidents_v1.jsonl",
+      "sha256": "bd9957eb9be62e09bd0f561a00d65ca201fdba850244fa98f42e2c231d5afcba",
+      "suite_id": "critical_incidents_v1"
+    },
+    {
+      "case_count": 15,
+      "path": "evals/mai04/frozen/knowledge_no_answer_v1.jsonl",
+      "sha256": "788af8719c0b6f42701720f2fd1e14f479669e8ca04c60f485160b6b12d814f6",
+      "suite_id": "knowledge_no_answer_v1"
+    },
+    {
+      "case_count": 40,
+      "path": "evals/mai04/frozen/multilingual_v1.jsonl",
+      "sha256": "130b8bc381100bd828c4c02d5d4cc1430d881ae9895b7bf5d46cb104eb49d896",
+      "suite_id": "multilingual_v1"
+    },
+    {
+      "case_count": 40,
+      "path": "evals/mai04/frozen/number_roles_v1.jsonl",
+      "sha256": "fe3282b9ac537429543aa2ef55f8af2ad1dfe7d9d1c894ea619bf3c90d22e51c",
+      "suite_id": "number_roles_v1"
+    },
+    {
+      "case_count": 15,
+      "path": "evals/mai04/frozen/response_contract_v1.jsonl",
+      "sha256": "e8422b584a2db019c2ffecb07423c447c3afd7cb5d2cc3861546935ea5f1b4d5",
+      "suite_id": "response_contract_v1"
+    },
+    {
+      "case_count": 30,
+      "path": "evals/mai04/frozen/safety_constitution_v1.jsonl",
+      "sha256": "daf57b483b190248b8d6c80b18d97c3233f7d1656613b8061eebb9bf83d81305",
+      "suite_id": "safety_constitution_v1"
+    }
+  ],
+  "frozen": true,
+  "manifest_id": "MAI_04_FROZEN_V1",
+  "runner_compatible": [
+    "mai-04.1.0"
+  ],
+  "schema_version": "1.0.0",
+  "total_cases": 245
+}

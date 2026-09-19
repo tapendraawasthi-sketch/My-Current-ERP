@@ -1,0 +1,125 @@
+{
+  "check_command": "python -m src.oip.modules.language_runtime.transliteration.application.build_mai07r2_release_candidate --check",
+  "created_at": "2026-07-15T12:19:37.040114+00:00",
+  "creation_command": "python -m src.oip.modules.language_runtime.transliteration.application.build_mai07r2_release_candidate",
+  "dev_holdout_report_sha256": "9b511b844913aa7e274d371a334228fe75b4f06ac72d2aec03634b30e64788e1",
+  "evaluator_note": "R2 overlay monotonic promotion; base ranker pre-R1 restored; frozen dataset unchanged",
+  "evaluator_version": "mai-07.1.3",
+  "files": [
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/deterministic_ranker.py",
+      "sha256": "c2fd48c3407cdb8460c86677d1a6803cbe0bfcf3570c9f1ba26a21bea67391ab"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/target_promotion_overlay.py",
+      "sha256": "93d0ed46c8f1611619b01bb13ab9f00b2bde7a35a7a1573669a94d07ee1e2722"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/deterministic_generator.py",
+      "sha256": "2beca6d75a06bd798ed814e0de65da2885f2ef43cf16a7e8dd9b03fbfef2ab21"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/infrastructure/resource_repository.py",
+      "sha256": "8a6b4a5a8d598eda65ba00768b0c32e3b17dcb66c9e3f028b4c7674c81b6f05d"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/transliteration_service.py",
+      "sha256": "c52dde1a56f8ad701b6da9bf5672456fb58d351a8e1a858d34b904228d05daf7"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/__init__.py",
+      "sha256": "db5aebfd7c92b9b2c85a989f31dd493c53bc84cf8c2e61f8d90e859395a12286"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/promotion_overlay_config.json",
+      "sha256": "714d869a59e63609ff8531b64112864d8ae851d5019aac475d5aa3e11c6b81e0"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/manifest.json",
+      "sha256": "bff7c18996440b23492cd737abd597ca557df2726143238e0b055ea0d8cc115d"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r2_ranker_dev.py",
+      "sha256": "475f1f585184100e05da6a9d84690cd8bba1053716077bb7f527548bae65e991"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r2_structure_profile.py",
+      "sha256": "bf1f2ce891e9c86ed080d45c9248118fc6739578ea6192119dd3027331339ac1"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07r2_dev.py",
+      "sha256": "05c30e4e09c37acde71c28d2d6516404660ac554b387bde0e1f57b192b4a1ef6"
+    },
+    {
+      "exists": true,
+      "path": "erp_bot/tests/oip/language_runtime/test_mai07_r2_overlay.py",
+      "sha256": "a93baa89c5fb085b774bed4cc7e9f91abd10950062b72e22d28f123d30b4380b"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_r2/splits/development.jsonl",
+      "sha256": "9c8d10a4c1412fca749afac5abb0eb587b908c35f59666bc6c67c255fca3d818"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_r2/splits/holdout_validation.jsonl",
+      "sha256": "26d8529b05cb852ca4c976c9a2d5d9b531ca6ce05d93f1c0bbe5f5f2770ad8e7"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_r2/splits/safety_challenge.jsonl",
+      "sha256": "268448cdb089f520aa214b412a55f2b42ec556239af6bf3af5d681dd3f05d86c"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_r2/manifests/MAI_07R2_RANKER_DEV_V1.manifest.json",
+      "sha256": "662e49f40a67532ed009a9e1e0fa79da82c5b6864c4dc184683e1756d1b322c2"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_r2/profiles/MAI_07_FROZEN_STRUCTURE_PROFILE_V1.json",
+      "sha256": "1378fe03dc40f4ba5fa2b01c37d0a43392a19ee11dc89475071afae1f79ca9ba"
+    },
+    {
+      "exists": true,
+      "path": "evals/mai07_ranker_r2/baselines/MAI_07R2_dev_holdout_report.json",
+      "sha256": "9b511b844913aa7e274d371a334228fe75b4f06ac72d2aec03634b30e64788e1"
+    }
+  ],
+  "holdout_freeze_path": "evals/mai07_ranker_r2/manifests/MAI_07R2_HOLDOUT_FREEZE.manifest.json",
+  "holdout_freeze_sha256": "cd186f051f849a2a972e585e2bf0b940a436d0de226b64c7f659ba56c863bc28",
+  "linguist_approved": false,
+  "locks": {
+    "frozen_dataset_sha256": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+    "no_runtime_resource_edit_before_frozen_eval": true,
+    "one_shot_frozen_eval_required": true
+  },
+  "manifest_id": "MAI_07R2_RELEASE_CANDIDATE",
+  "overlay_holdout_semantic_note": "see MAI_07R2_dev_holdout_report.json",
+  "overlay_version": "mai-07-r2.1.0",
+  "prior_attempts": [
+    {
+      "note": "Disposition ranker regressed frozen target top-1",
+      "phase": "MAI-07R1",
+      "status": "FAILED_FROZEN_EVAL"
+    }
+  ],
+  "prior_resource_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "prior_resource_content_hash_mai0720": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+  "production_approved": false,
+  "resource_content_hash": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+  "resource_content_hash_recomputed": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+  "resource_pack_version": "mai-07.3.0",
+  "runtime_version": "mai-07.3.0"
+}

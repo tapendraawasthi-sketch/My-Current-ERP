@@ -1,0 +1,46 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "created_utc": "2026-07-16T14:49:52.368768+00:00",
+  "phase": "MAI-07R3I-FROZEN-REAUTHORIZED",
+  "post_run_immutability": {
+    "artifact_hashes": {
+      "attempt": "72aa46d7334507766d07890aea7678003ef0c12523ac388c4903ce7b6815f1f7",
+      "candidate_resource": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+      "default_resource": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "r3h2_chain": "fcca1b8e9d20510414fe0f260f6cdb2590d9d3546d0dffe86f7e8033b37901b7",
+      "r3h2_lock": "ca420f759bc1b0b61e1a384b9116c928d0900ae811e981f8f441e6f8e0c66711",
+      "r3h2_qualification": "e629133a69e8b7c700896609f5943bde9d72cd3ed0e1f8854c68e56dc9f59a48",
+      "selection": "87e014a2afe59bf2f3d608a54fd5af13b8ee85f2242b44d24a8c6e4542ad6c33"
+    },
+    "attempt_lock_unchanged": true,
+    "immutability": {
+      "core_target_denominator": 272,
+      "default_pack_not_used_as_frozen_runner": true,
+      "errors": [],
+      "hashes": {
+        "audit_scorer_lf": "c0d7799b5d54057ea768b8c67f9516edefc713d8ebd2d59120f16df3bc102450",
+        "candidate_resource": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+        "canonical_scorer_lf": "6e8e30c9c6e2c38d3ea61243e0a22a72e8eb3e17e3d854a0a9a3467b130e9336",
+        "default_resource": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+        "pop": "a8461f62acac98561605e5b2ffb2475bb73a3d15cf0f32ef7b98f1247de85632",
+        "r3h2_thresholds": "c79c77ecbe0494b567c9c99c9856fbd7c0cabe459241a472bc8131a66492c88e",
+        "thr": "aa4b5d68852edbed7cdc5f025b8051b3235078a65fb78bb0aca3a342fcdf04ef",
+        "v1": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+        "v2": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+        "v2_man": "17331e4d0c703977b80ca893eb5261bb126aa52a6813fe8b4f548b1178c716be"
+      },
+      "ok": true,
+      "population_counts": {
+        "HUMAN_REVIEW_REQUIRED": 41,
+        "IDENTITY_REQUIRED": 340,
+        "LEGACY_V1_INFORMATIONAL": 27,
+        "TRANSLITERATION_REQUIRED": 288
+      },
+      "total_cases": 696,
+      "unambiguous_target_denominator": 255
+    },
+    "ok": true
+  },
+  "verdict": "FAILED_QUALITY"
+}

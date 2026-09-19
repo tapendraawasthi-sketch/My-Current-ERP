@@ -1,0 +1,30 @@
+{
+  "bundle_resource_versions": {
+    "candidate": "mai-07.1.5-r3h2-shared",
+    "default": "mai-07.1.3-r3f-sealnew"
+  },
+  "candidate_guard_version": "mai-07-r3h2.1.0.0",
+  "created_utc": "2026-07-16T14:54:53.695033+00:00",
+  "default_guard_version": "mai-07-r3f.1.0.0",
+  "default_pack_not_used": true,
+  "default_pack_version": "mai-07.1.3-r3f-sealnew",
+  "default_resource_content_sha256": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "errors": [],
+  "frozen_case_used": false,
+  "phase": "MAI-07R3I-FROZEN-REAUTHORIZED",
+  "record_type": "CANDIDATE_PACK_LOAD_PROOF",
+  "schema_version": "2.0.0",
+  "selected_candidate_pack_loaded": true,
+  "selected_policy_version": "mai-07-r3h2.1.0.0",
+  "selected_resource_content_sha256": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+  "selected_resource_pack_version": "mai-07.1.5-r3h2-shared",
+  "selected_runtime_claim": "mai-07.1.5-r3h2-shared",
+  "sentinel_artifact_sha256": "cc20e517610a756e06367906bb042ac4b54c280b58b11ad74f738f10f21cffc8",
+  "sentinel_review_metadata": {
+    "disposition": "AMBIGUOUS_IDENTITY_FIRST_REVIEW",
+    "policy_version": "mai-07-r3h2.1.0.0",
+    "review_reason_code_count": 2,
+    "review_required": true
+  },
+  "sentinel_text_kind": "synthetic_non_frozen_shared_collision_probe"
+}

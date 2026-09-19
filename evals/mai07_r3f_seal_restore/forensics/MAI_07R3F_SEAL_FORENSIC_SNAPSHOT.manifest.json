@@ -1,0 +1,146 @@
+{
+  "created_utc": "2026-07-16T03:52:15.770198+00:00",
+  "entries": [
+    {
+      "category": "resource_file",
+      "crlf_count": 76,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\ambiguity_rules.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-14T17:00:14.401453+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/ambiguity_rules.json",
+      "sha256_lf": "0afe2f521a3128f86316131a4481ed239997b43e5803b1bc721369e080a31c41",
+      "sha256_raw": "7aa5e7ab90b131231ec36acfd360fc848bd3a0a1f4d779fb5d06fc07f9fc1189",
+      "size": 1285
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 158,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\context_rules.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-14T17:06:59.153025+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/context_rules.json",
+      "sha256_lf": "d7966e618a405c177a5eb7b1a608433e1030c82c3f6c3ccefd9de42bbd07533e",
+      "sha256_raw": "88e34bd0bc15dc460d7e1c056a827afe6f4b229f36db987bc472490454051f19",
+      "size": 2990
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 142,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\domain_terms.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-14T17:00:14.402436+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/domain_terms.json",
+      "sha256_lf": "628938c09797f80d98ef304964661129a6c98fc757fd62f2f0bb27a189d31754",
+      "sha256_raw": "7c9df935bc9c893053c923621e5a798d60d686ced01e129c9eadfa8f326aca5f",
+      "size": 2475
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 75,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\english_identity.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-15T11:42:14.042629+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/english_identity.json",
+      "sha256_lf": "1200bc8ca4457cccb6326d834ece96ecdedcfc32fc6afbff10e7081513de05af",
+      "sha256_raw": "3a0c52d361fdf4f7291e6ef5f1826b36e5559aa16f14d9a804cf2c613a82db90",
+      "size": 1138
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 338,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\grapheme_rules.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-14T17:00:14.399300+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/grapheme_rules.json",
+      "sha256_lf": "c4829c2403a18b0c6db42b7f4106a9651cbf168e7df30e9109871d8b18262c93",
+      "sha256_raw": "b0e86cc653694d29b005c7c4103e8e2f56cbd8d304729b41466463dd5ccbd2db",
+      "size": 5810
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 0,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\manifest.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-16T03:34:16.142727+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/manifest.json",
+      "sha256_lf": "9819593526ff61e7c5daa10e30c595fb0020628559940c0aab1337299474b130",
+      "sha256_raw": "9819593526ff61e7c5daa10e30c595fb0020628559940c0aab1337299474b130",
+      "size": 1905
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 44,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\morphology_rules.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-14T17:00:14.401453+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/morphology_rules.json",
+      "sha256_lf": "93228b15ff751f86d21461fb08902335eea636fbad761836a5c496e21d3892ac",
+      "sha256_raw": "dee47b98a807deca6549b739d19899a79d65aadffd2d92fdf1be3f7049988e4d",
+      "size": 697
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 20,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\name_like_terms.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-15T11:42:14.042629+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/name_like_terms.json",
+      "sha256_lf": "e70eb8c1f7be5866040e26717e0a635055ee2d0ab25104fe6fc4d8c59f67bd01",
+      "sha256_raw": "2db12b34ecada8b35d5f503158b79d5a08d26f54df2348d853e72568dd65d8b3",
+      "size": 426
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 19,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\r3d_safety_disposition.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-16T03:10:14.596380+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/r3d_safety_disposition.json",
+      "sha256_lf": "e1334787ca4c48d833600d5a1a6271b5c0470c9273b074425246f0013c6e9bf3",
+      "sha256_raw": "73a11fd15e87771e00b8d90a88da862e3d4c3214b1f6507d8ee17cb82586cf07",
+      "size": 670
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 41,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\r3f_english_identity_guard.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-16T03:10:08.064246+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/r3f_english_identity_guard.json",
+      "sha256_lf": "9240a7be24937e2c03507875f2d7b3e1918132ff7d61074af2cc05883e52a076",
+      "sha256_raw": "56f97c9a576d3b6af4462983f492852142a6dc2743cd2d3931bd8903c4bf79c3",
+      "size": 1685
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 13,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\ranking_config.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-16T03:10:14.849609+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/ranking_config.json",
+      "sha256_lf": "fd56db79ab6019321728d510de44d0c8638cc95037ef8db622378a1314cadf24",
+      "sha256_raw": "10039dfaf9a59bbbb849360682f096b4594ce1b83bbc714d18b87984f2462dd7",
+      "size": 455
+    },
+    {
+      "category": "resource_file",
+      "crlf_count": 770,
+      "forensic_copy": "evals\\mai07_r3f_seal_restore\\forensics\\copies\\resources\\romanized_lexicon.json",
+      "git_status": "untracked_or_dirty_worktree",
+      "mtime_utc": "2026-07-14T17:03:44.026650+00:00",
+      "original_path": "erp_bot/src/oip/modules/language_runtime/transliteration/resources/romanized_lexicon.json",
+      "sha256_lf": "53dd46040599310447b05a1aaf26927401f319b55e657df7d352706d32d4c0cd",
+      "sha256_raw": "deda8512b32850d3ed2767f31068fbe1411fe383e9edf53a27738a8f91ef9c08",
+      "size": 12437
+    }
+  ],
+  "expected_sealed_resource": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+  "forensic_manifest_sha256": "c568464d691a7edd5797469d7209e2a6d0b92fdd1c6fd38e73ae43c3295243b5",
+  "manifest_claim": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+  "observed_pack_content_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "phase": "MAI-07R3F-SEAL-RESTORE",
+  "prediction_contract_proof_path": "evals/mai07_r3f_seal_restore/forensics/PREDICTION_HASH_CONTRACT_PROOF.json",
+  "report_reproduction_path": "evals/mai07_r3f_seal_restore/forensics/SEALED_REPORT_REPRODUCTION.json",
+  "resource_search_path": "evals/mai07_r3f_seal_restore/forensics/RESOURCE_CANDIDATE_SEARCH.json",
+  "verdict": "RESTORE_NOT_POSSIBLE_NEW_RC_REQUIRED"
+}

@@ -1,0 +1,30 @@
+{
+  "candidate_not_eligible_for_frozen_v3": true,
+  "candidate_promoted": false,
+  "continuation": "MAI-07R3N-INTEGRITY-CLOSURE-FINALIZE",
+  "created_utc": "2026-07-18T04:58:42.358324+00:00",
+  "do_not_restore_passed_corrective_rc": true,
+  "invalidation_verdict": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+  "lock_body_post_closeout_mutation": false,
+  "lock_chain_semantic_integrity": true,
+  "original_attempt_bodies_mutated": false,
+  "original_lock_body_mutated": false,
+  "original_prediction_files_mutated": false,
+  "passed_corrective_rc_withdrawn": true,
+  "prohibited_for_training": true,
+  "raw_file_hash_is_lock_authority": false,
+  "record_type": "HISTORICAL_INVALIDATION_SIDECAR",
+  "reuse_of_either_holdout_in_future_release_decision": false,
+  "schema_version": "mai07_r3n_historical_invalidation_sidecar_v2",
+  "secondary_reasons": [
+    "HOLDOUT_CONTAMINATED",
+    "POST_OBSERVATION_GATE_SEMANTICS_CHANGE",
+    "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE",
+    "MINIMUM_DENOMINATOR_POLICY_MISSING",
+    "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT"
+  ],
+  "target_lock_path": "evals/mai07_r3n_policy_conformance/MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+  "target_lock_raw_sha256": "71562c9965680a8b0a216ff01c84fad253c5db5f7d278d7a198eac259ef50ada",
+  "target_lock_semantic_sha256": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+  "target_rc_id": "MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002"
+}

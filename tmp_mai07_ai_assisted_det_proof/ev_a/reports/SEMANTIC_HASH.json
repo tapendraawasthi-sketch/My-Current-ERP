@@ -1,0 +1,7 @@
+{
+  "algorithm": "sha256(json.dumps({schema,phase,provenance,records_sorted}, sort_keys=True, separators=(',', ':')))",
+  "phase": "MAI-07R3J-AI-ASSISTED-ACCOUNTING-IMPORT",
+  "row_count": 611,
+  "schema": "mai07_v3_ai_assisted_accounting_import_v1",
+  "semantic_hash": "b96bec29e30ddcdc6dce1a5ef09a2003ee9de003a336cd98b43341c6e55e363b"
+}

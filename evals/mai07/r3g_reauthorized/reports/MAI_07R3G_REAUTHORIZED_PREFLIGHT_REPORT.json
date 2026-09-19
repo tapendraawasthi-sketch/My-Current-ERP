@@ -1,0 +1,38 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_locked": false,
+  "authorization": "EXPLICIT_USER_AUTHORIZATION_R3G_REAUTHORIZED",
+  "created_utc": "2026-07-16T05:55:00.000000+00:00",
+  "environment_fingerprint": {
+    "machine": "AMD64",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10"
+  },
+  "frozen_v2_opened": false,
+  "lineage": {
+    "errors": [
+      "lock_before_holdout_artifact_missing"
+    ],
+    "lock_chain": {
+      "immutable_hits": [],
+      "narrative_refs_only": [
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_ATTEMPT.json:rc_manifest_sha256_locked_before_holdout",
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_SCORE_REPORT.json:rc_manifest_sha256"
+      ],
+      "ok": false,
+      "reason": "No preserved immutable lock-before-holdout artifact whose body hashes to f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff. Found narrative references only.",
+      "target_hash": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff"
+    },
+    "ok": false,
+    "post_holdout_rc_manifest_sha256": "530192228e7827bc33213f7ad8a3f4c2b75bdba6a01d78611617fd2d27c10e5c",
+    "resource_content_sha256": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930"
+  },
+  "note": "Historical blocked attempt preserved. Frozen V2 not opened. Lock body missing at time of attempt.",
+  "one_shot_executed": false,
+  "phase": "MAI-07R3G-REAUTHORIZED",
+  "quality_verdict": null,
+  "recommended_next_if_blocked": "MAI-07R3F-SEAL-LOCK-CHAIN",
+  "status": "BLOCKED_PRECONDITION_FAILED"
+}

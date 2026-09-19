@@ -1,0 +1,93 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_id": "mai07-r3f-sealnew-holdout-1f60a1a4bcd1",
+  "audit_report_semantic_sha256": "76d850df480527a5809e21f4706ecb3b5e8475b070a0df9ce7165015983633ee",
+  "canonical_report_semantic_sha256": "2fa1a6b58156376138bef143e2779609629faa15ddbce183310d5c2ace2db6a6",
+  "created_utc": "2026-07-16T07:02:29.592024+00:00",
+  "gate_all_pass": true,
+  "metrics_summary": {
+    "all_pass": true,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 75,
+        "numerator": 75,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1475,
+        "numerator": 1475,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 1003,
+        "numerator": 1003,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1003,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 448,
+        "numerator": 448,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 137,
+        "numerator": 137,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 14,
+        "numerator": 14,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 134,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1475,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 448,
+        "numerator": 448,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 392,
+        "numerator": 392,
+        "value": 1.0
+      }
+    }
+  },
+  "parent_lock_semantic_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+  "predictions_canonical_list_sha256": "ba64b365718018c213c0a6955bcfb4c8b8f9c6f465e328113e662e161d26f2c4",
+  "predictions_jsonl_raw_sha256": "0f1c72f8ee38e457c7d132dc03553f4299d59f80fa956752e97660cab9a7c09c",
+  "provenance": "SAVED_HOLDOUT_EVIDENCE_ONLY_NO_RERUN",
+  "rc_id": "MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001",
+  "record_type": "QUALIFICATION_RESULT",
+  "schema_version": "2.0.0",
+  "status": "PASSED_HOLDOUT"
+}

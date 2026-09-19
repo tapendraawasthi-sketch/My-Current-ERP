@@ -1,0 +1,73 @@
+{
+  "population_schema_version": "mai07-eval-populations-v1",
+  "evaluator_version": "mai-07.1.1",
+  "frozen_before_scoring": true,
+  "populations": {
+    "CANDIDATE_RANKING_POPULATION": {
+      "suite_ids": [
+        "romanized_core_v1",
+        "romanized_common_v1",
+        "domain_terms_v1",
+        "grapheme_ambiguity_v1",
+        "phrase_morph_v1",
+        "names_entities_v1"
+      ],
+      "require_nonempty_acceptable": true,
+      "exclude_abstention_expected": true,
+      "exclude_context_challenge": true,
+      "metrics": [
+        "candidate_ranking_top1_acceptable_accuracy",
+        "candidate_ranking_recall_at_1",
+        "candidate_ranking_recall_at_3",
+        "candidate_ranking_recall_at_5",
+        "candidate_ranking_mrr"
+      ]
+    },
+    "CORE_CANDIDATE_POPULATION": {
+      "suite_ids": [
+        "romanized_core_v1",
+        "romanized_common_v1",
+        "domain_terms_v1",
+        "grapheme_ambiguity_v1",
+        "phrase_morph_v1"
+      ],
+      "metrics": ["core_recall_at_5"]
+    },
+    "UNAMBIGUOUS_ROMANIZED_POPULATION": {
+      "rule": "predeclared_preferred_rule_in_eval_populations.is_unambiguous_romanized",
+      "metrics": ["unambiguous_top1_accuracy"]
+    },
+    "IDENTITY_POPULATION": {
+      "suite_ids": [
+        "english_identity_v1",
+        "devanagari_identity_v1",
+        "protected_spans_v1"
+      ]
+    },
+    "ABSTENTION_POPULATION": {
+      "rule": "abstention_expected=true",
+      "metrics": ["abstention_precision", "abstention_recall"]
+    },
+    "CONTEXT_CHALLENGE_POPULATION": {
+      "suite_id": "context_challenge_v1",
+      "expected_size": 64,
+      "metrics": [
+        "context_free_top1",
+        "contextual_top1",
+        "contextual_top1_lift",
+        "context_free_recall_at_5",
+        "contextual_recall_at_5"
+      ]
+    }
+  },
+  "invariants": {
+    "shared_population": [
+      "0 <= top1 <= 1",
+      "0 <= MRR <= 1",
+      "0 <= recall@1 <= recall@3 <= recall@5 <= 1",
+      "top1 == recall@1",
+      "top1 <= MRR <= recall@5",
+      "MRR <= top1 + (recall@5 - top1) / 2 when K=5"
+    ]
+  }
+}

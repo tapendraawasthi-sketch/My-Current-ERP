@@ -1,0 +1,48 @@
+{
+  "phase": "MAI-07R3N2",
+  "recorded_utc": "2026-07-18T05:15:43Z",
+  "language_runtime_suite": {
+    "passed": 643,
+    "skipped": 6,
+    "failed": 0,
+    "skips": [
+      {
+        "test": "test_mai07_r1_ranker.py:132",
+        "reason": "HISTORICAL_R2_OVERLAY_EXPECTATION (english kar module under failed R2 overlay)"
+      },
+      {
+        "test": "test_mai07_r1_ranker.py:236",
+        "reason": "R1 disposition superseded by MAI-07R2 base ranker + overlay"
+      },
+      {
+        "test": "test_mai07_r1_ranker.py:241",
+        "reason": "R1 disposition superseded by MAI-07R2 base ranker + overlay"
+      },
+      {
+        "test": "test_mai07_r1_ranker.py:246",
+        "reason": "R1 disposition superseded by MAI-07R2 base ranker + overlay"
+      },
+      {
+        "test": "test_mai07_r2_overlay.py:86",
+        "reason": "HISTORICAL_R2_OVERLAY_EXPECTATION (paisako under failed R2 overlay)"
+      },
+      {
+        "test": "test_mai07_r2_overlay.py:146",
+        "reason": "HISTORICAL_R2_OVERLAY_EXPECTATION (lexicon promotion via failed R2 overlay)"
+      }
+    ]
+  },
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "active_resource": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "overlay_enabled": false,
+  "r3m_closure": "f39432c6e085c89964e2551fe27921d32c79235061fea218262f6d3093e00afd",
+  "r3n_integrity_closure": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae",
+  "lane_distribution_ok": {
+    "ENGLISH_IDENTITY_GUARD": 5,
+    "IDENTITY_CANDIDATE_INVARIANT": 3,
+    "ACRONYM_OR_IDENTIFIER_PROTECTION": 1,
+    "resource_corrections": 0
+  },
+  "r3n_candidate_status": "DEVELOPMENT_PARENT_ONLY",
+  "invalidated_r3n_version": "mai-07.1.6-r3n-policyconf"
+}

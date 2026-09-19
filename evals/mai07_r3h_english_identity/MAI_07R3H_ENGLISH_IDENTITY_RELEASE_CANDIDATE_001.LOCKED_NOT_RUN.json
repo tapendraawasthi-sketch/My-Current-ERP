@@ -1,0 +1,125 @@
+{
+  "dataset_manifest_sha256": "f00fc55e506a4913a0c3f717d6047f30db6694c6256f27b2c40bf353660730d5",
+  "fresh_counterfactual_dataset_sha256": "cebb88a5b734dccd1042dcb1a62798f862d107fbf996f4a28e68aafea7422fd9",
+  "fresh_development_dataset_sha256": "a69fa49a8390577c3700d3fe9f0856cd6e409d2a791f08fa8848ac7d6315b7a8",
+  "fresh_holdout_dataset_sha256": "8742afb262e0bedb05c09aa2c92644a3726069fc249b53509dfd8e0d8e2a4211",
+  "fresh_oov_dataset_sha256": "e24e3e0947e605d6b7f2f6a445f72704d256f91765698184459d8c89a332610a",
+  "fresh_safety_dataset_sha256": "f97997790effb74a4d79facc4d45bd1578e5cf9a48711cc082991ed1cb660561",
+  "guard_version": "mai-07-r3h.1.0.0",
+  "linguist_approved": false,
+  "locked": true,
+  "locked_before_holdout": true,
+  "manifest_id": "MAI_07R3H_ENGLISH_IDENTITY_RELEASE_CANDIDATE_001",
+  "manifest_sha256": "7870e554f6b71d15d4bb93e1a1816993e441add2a00f281f44580708645ac725",
+  "no_frozen_prediction_use": true,
+  "no_frozen_v2_run": true,
+  "overlay_disabled": true,
+  "policy_version": "mai-07-r3h.1.0.0",
+  "production_approved": false,
+  "quality_gates_passed": false,
+  "rc_manifest_raw_sha256": "44473ba9fbd64994fffbbe1a38fd0c25457f10e36f0c2f1349bba3ca17419690",
+  "rc_manifest_semantic_sha256": "7870e554f6b71d15d4bb93e1a1816993e441add2a00f281f44580708645ac725",
+  "resource_content_sha256": "2a4599fe3fccb83257130407324321b4121e5c01fe6efcdc32406ebdcacded7e",
+  "resource_pack_path": "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.4-r3h-englishid",
+  "resource_pack_version": "mai-07.1.4-r3h-englishid",
+  "runtime_version": "mai-07.1.4-r3h-englishid",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "status": "LOCKED_NOT_RUN",
+  "threshold_manifest": {
+    "gates": {
+      "acronym_identifier_identity_top1": {
+        "op": "==",
+        "value": 1.0
+      },
+      "candidate_duplication_after_reordering": {
+        "op": "==",
+        "value": 0
+      },
+      "candidate_set_preservation": {
+        "op": "==",
+        "value": 1.0
+      },
+      "caps_respected": {
+        "op": "==",
+        "value": 1.0
+      },
+      "clear_romanized_target_recall_at_5": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "clear_romanized_target_top1": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "cross_path_parity": {
+        "op": "==",
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "op": "==",
+        "value": 1.0
+      },
+      "english_context_identity_accuracy": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "false_devanagari_on_clear_english": {
+        "op": "<=",
+        "value": 0.01
+      },
+      "harm_count_clearly_romanized": {
+        "op": "==",
+        "value": 0
+      },
+      "name_identity_top1": {
+        "op": "==",
+        "value": 1.0
+      },
+      "nepali_context_target_accuracy": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "overall_english_identity_top1": {
+        "op": ">=",
+        "value": 0.99
+      },
+      "paired_counterfactual_accuracy": {
+        "op": ">=",
+        "value": 0.95
+      },
+      "policy_invocation_coverage": {
+        "op": "==",
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "op": "==",
+        "value": 0
+      },
+      "raw_view_mutations": {
+        "op": "==",
+        "value": 0
+      },
+      "shared_collision_english_identity_top1": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "target_missing_from_top5_rate": {
+        "op": "<=",
+        "value": 0.02
+      },
+      "technical_english_identity_top1": {
+        "op": ">=",
+        "value": 0.98
+      },
+      "unresolved_shared_identity_review_accuracy": {
+        "op": ">=",
+        "value": 0.98
+      }
+    },
+    "locked_before_holdout_observation": true,
+    "schema_version": "1.0.0",
+    "threshold_id": "MAI_07R3H_THRESHOLDS_V1"
+  },
+  "threshold_manifest_sha256": "76bcb3d9afacd60796f08b053b6ecc3bdc676971fd2d063fffaabfecfcb57f06"
+}

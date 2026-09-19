@@ -1,0 +1,15 @@
+{
+  "suite": "language_runtime",
+  "passed": 707,
+  "skipped": 6,
+  "failed": 0,
+  "skip_reasons": ["HISTORICAL_R2_OVERLAY_EXPECTATION / R1 disposition superseded — see MAI-07R3C"],
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "overlay": false,
+  "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "r3n3_runtime": "mai-07.1.8-r3n3-identityinv",
+  "r3n3_verdict": "FAILED_HOLDOUT_QUALITY",
+  "r3n3_attempt_consumed": true,
+  "r3n3_lock_semantic": "0aaefd824eec3b56a70f6846b29ecc603e9db85b3186e3264eee705f3d16c59b",
+  "r3n3_pack": "1268527c5c5d99e036628dc104340dafe297afadf9938a310a099a38f825c0e7"
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": "mai07-ai-assisted-human-verified-manifest-v1",
+  "generated_date": "2026-07-17",
+  "provenance": {
+    "schema_version": "mai07-ai-assisted-review-provenance-v1",
+    "status": "AI_ASSISTED_HUMAN_VERIFIED",
+    "scope": "MAI-07_V3_ACCOUNTING_DOMAIN_ROUND_A",
+    "user_confirmation": "USER_ACCEPTED_AI_SUGGESTIONS_WITHOUT_CHANGES",
+    "user_confirmation_date": "2026-07-17",
+    "independent_human_review": false,
+    "row_by_row_independent_review_performed": false,
+    "ai_autofill_used": true,
+    "professional_linguist_adjudication": false,
+    "linguist_approved": false,
+    "production_approved": false,
+    "official_round_a_lock_eligible": false,
+    "engineering_import_ready": true,
+    "declaration_completed": false,
+    "round_b_authorized": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "row_count": 611,
+    "workbook_count": 6,
+    "original_uploaded_package_sha256": "efd37a5d4864a1b57271ddeb65d5710c76518820795d77b03fc3cd6dc93df0cd",
+    "ai_draft_package_sha256": "b15a11f4420ee68c23703cbb557f1d1004f9074081da76842b84cafdbcf78dda"
+  },
+  "files": [
+    {
+      "filename": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_01_of_06__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "rows": 120,
+      "draft_sha256": "517f7d1d2a404efc39a0dbd20e97b3a182a5f787f9e3bb136beaa102f551670e",
+      "verified_sha256": "359b2048bc38c48fdc6b1d1f2c52b6864579f221886c3bc141e4233222cc277a",
+      "size_bytes": 16681,
+      "declaration_blank": true,
+      "round_b_not_completed": true
+    },
+    {
+      "filename": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_02_of_06__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "rows": 120,
+      "draft_sha256": "d8a16f21d17004cda33601a2037f96f3108e358615e7417b9d9b8282aee61d2b",
+      "verified_sha256": "8cc6b9f3c157706b9371ac0a354535d46062ce7afab458bfe3e228309dfcd65b",
+      "size_bytes": 16604,
+      "declaration_blank": true,
+      "round_b_not_completed": true
+    },
+    {
+      "filename": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_03_of_06__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "rows": 120,
+      "draft_sha256": "66c44e530bf80827721eaa1aac1eda8391b0344fc31e1784657e66e962b0a01e",
+      "verified_sha256": "956b201b166872405ba5c8bbed61b51ad84138ddc330e411900f0ec7430da203",
+      "size_bytes": 16741,
+      "declaration_blank": true,
+      "round_b_not_completed": true
+    },
+    {
+      "filename": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_04_of_06__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "rows": 120,
+      "draft_sha256": "09a2d5474305f48ee06e3efabb8aa7174c1902783bc103582f72d3666d529271",
+      "verified_sha256": "81863b9d5c7ccc3191f6af77092daa639e0d32788e72622bdd022a7a761b734c",
+      "size_bytes": 16818,
+      "declaration_blank": true,
+      "round_b_not_completed": true
+    },
+    {
+      "filename": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_05_of_06__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "rows": 120,
+      "draft_sha256": "2e2102d636a146e4b7a37f24ff1e61237369b2b4f33056728b681a42c8e25458",
+      "verified_sha256": "c6df10e1a45231b576e5d29c9cad41300cbee1b89e9a993a887acbe2ae45ff1d",
+      "size_bytes": 16836,
+      "declaration_blank": true,
+      "round_b_not_completed": true
+    },
+    {
+      "filename": "MokXya_MAI07_V3__ACCOUNTING_DOMAIN__ROUND_A__BATCH_06_of_06__AI_ASSISTED_HUMAN_VERIFIED.xlsx",
+      "rows": 11,
+      "draft_sha256": "3580d4cc7505e12cf2ec46d0dde2a3f277043001366b75e1a63a6ad1bcd78b6a",
+      "verified_sha256": "d97f0cdd09af94dbc16b788f908ce666ebda2b7b959cb37a063db58b4c9eb647",
+      "size_bytes": 9816,
+      "declaration_blank": true,
+      "round_b_not_completed": true
+    }
+  ],
+  "all_review_ids_unique": true,
+  "all_rows_complete": true
+}

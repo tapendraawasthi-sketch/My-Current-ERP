@@ -1,0 +1,126 @@
+{
+  "builder_version": "mai-07-r3n6-dataset.1.0.0",
+  "development_holdout_context_templates_disjoint": true,
+  "development_holdout_target_behavior_pairs_disjoint": true,
+  "development_holdout_target_surfaces_disjoint": true,
+  "expected_behavior_enum": [
+    "ACRONYM_IDENTITY_TOP1",
+    "IDENTITY_RETAINED",
+    "IDENTITY_TOP1",
+    "PROTECTED_IDENTITY",
+    "ROMANIZED_SCRIPT_AT_5"
+  ],
+  "parent_prediction_jsonl_opened": false,
+  "parent_score_report_opened": false,
+  "prohibited_for_training": true,
+  "r3n5_freshness_dimensions": [
+    "case_id",
+    "input_text",
+    "target_source_text_sha256",
+    "template_family",
+    "target_raw_surface_sha256"
+  ],
+  "r3n5_input_splits_used_for_one_way_freshness_only": true,
+  "schema_version": "mai07_r3n6_dataset_manifest_v1",
+  "seeds": {
+    "development": 20260730,
+    "holdout": 20260731
+  },
+  "splits": {
+    "CONTEXT_COUNTERFACTUAL": {
+      "count": 300,
+      "filename": "context_counterfactual.jsonl",
+      "population_counts": {
+        "CONTEXT_COUNTERFACTUAL": 300
+      },
+      "sha256": "ae997355b775876cb24431bd1cc91d5a9930aebb0b052c7bb8881e3786874fec"
+    },
+    "DEVELOPMENT": {
+      "count": 900,
+      "filename": "development.jsonl",
+      "population_counts": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+        "ACRONYM_IDENTITY_REQUIRED": 100,
+        "AUTHORIZED_CODE_CORRECTIVE": 9,
+        "CANDIDATE_CAP_PRESSURE": 350,
+        "COALESCED_SPAN_IDENTITY": 200,
+        "ENGLISH_GUARD_ANALOGUE": 100,
+        "ENGLISH_IDENTITY_REQUIRED": 200,
+        "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+        "EXACT_RAW_IDENTITY_REQUIRED": 850,
+        "FINALIZER_IDEMPOTENCE_REQUIRED": 900,
+        "IDENTIFIER_PROTECTION_REQUIRED": 100,
+        "IDENTITY_INVARIANT_ANALOGUE": 350,
+        "IDENTITY_RETENTION_REQUIRED": 850,
+        "MULTI_TOKEN_IDENTITY": 300,
+        "PROTECTED_IDENTITY_REQUIRED": 100,
+        "REFINED_SPAN_IDENTITY": 200,
+        "ROMANIZED_NEPALI_REQUIRED": 200,
+        "SERIALIZATION_ROUNDTRIP": 500,
+        "SHARED_OR_AMBIGUOUS": 50,
+        "UNICODE_IDENTITY": 150
+      },
+      "sha256": "3136dde9bf0a737b40f5594d2597fa7874edf8f0a33fb2cddcf0a8eb877dc258"
+    },
+    "HOLDOUT_VALIDATION": {
+      "count": 2475,
+      "filename": "holdout_validation.jsonl",
+      "population_counts": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+        "ACRONYM_IDENTITY_REQUIRED": 100,
+        "CANDIDATE_CAP_PRESSURE": 350,
+        "COALESCED_SPAN_IDENTITY": 200,
+        "ENGLISH_GUARD_ANALOGUE": 100,
+        "ENGLISH_IDENTITY_REQUIRED": 200,
+        "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+        "EXACT_RAW_IDENTITY_REQUIRED": 850,
+        "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+        "IDENTIFIER_PROTECTION_REQUIRED": 100,
+        "IDENTITY_INVARIANT_ANALOGUE": 350,
+        "IDENTITY_RETENTION_REQUIRED": 850,
+        "MULTI_TOKEN_IDENTITY": 300,
+        "PROTECTED_IDENTITY_REQUIRED": 100,
+        "REFINED_SPAN_IDENTITY": 200,
+        "ROMANIZED_NEPALI_REQUIRED": 200,
+        "SERIALIZATION_ROUNDTRIP": 500,
+        "SHARED_OR_AMBIGUOUS": 150,
+        "UNICODE_IDENTITY": 150
+      },
+      "sha256": "9ca02352a37ff3721d14e404f742562d08d80707de63863d734cf841b2994d8b"
+    },
+    "IDENTITY_ANCHOR_CHALLENGE": {
+      "count": 500,
+      "filename": "identity_anchor_challenge.jsonl",
+      "population_counts": {
+        "CANDIDATE_CAP_PRESSURE": 500,
+        "IDENTITY_ANCHOR_CHALLENGE": 500
+      },
+      "sha256": "00a875bffa09c1f223ce152f824206c2ddcea8637833e4a4c073d290e06dfa14"
+    },
+    "MONOTONIC_REGRESSION": {
+      "count": 400,
+      "filename": "monotonic_regression.jsonl",
+      "population_counts": {
+        "MONOTONIC_PARENT_CORRECT": 400
+      },
+      "sha256": "5bf4c244b470afed431c15b5caefde7b1e6916645c3d415e8eb5fd0387cd16c5"
+    },
+    "OOV_CHALLENGE": {
+      "count": 100,
+      "filename": "oov_challenge.jsonl",
+      "population_counts": {
+        "OOV": 100
+      },
+      "sha256": "07fcbb0c2ffe79a1df08f12d05c2139e4d378092885d2240f909e3df0d00ff87"
+    },
+    "SAFETY_CHALLENGE": {
+      "count": 400,
+      "filename": "safety_challenge.jsonl",
+      "population_counts": {
+        "PROTECTED_IDENTITY_REQUIRED": 400
+      },
+      "sha256": "d9f52dfed923fe26b50bc3145638140d8ba5f03ac2579b4dd58ac59da8ec8635"
+    }
+  },
+  "template_family_version": "r3n6_targetspan_v1"
+}

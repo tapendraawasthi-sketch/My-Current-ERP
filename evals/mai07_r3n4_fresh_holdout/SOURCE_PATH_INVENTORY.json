@@ -1,0 +1,91 @@
+{
+  "schema_version": "mai07_r3n4_source_path_inventory_v1",
+  "builder_version": "mai-07-r3n4-dataset.1.0.0",
+  "authoritative_finalizer": "apply_r3n4_finalize_bundle",
+  "authoritative_finalizer_module": "erp_bot/src/oip/modules/language_runtime/transliteration/application/r3n4_candidate_finalization.py",
+  "invariant": "Every span in every path family below is finalized exactly once via apply_r3n4_finalize_bundle, which derives identity only from an IdentityAnchorV1 built from raw offsets (never from prior candidate_id, normalized text, or ranker output).",
+  "path_family_classifier": "classify_path_family (r3n4_candidate_finalization.py)",
+  "path_family_registry": "r3n4_finalization_path_registry.py (REQUIRED_PATH_FAMILIES / record_path_finalization / path_coverage_report)",
+  "span_construction_routes": {
+    "protected": {
+      "origin": "language_analyzer span_annotations flagged protected_reason (PROTECTED_SPAN / UNKNOWN_IDENTIFIER / r3d_protected_hard_gate)",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "skipped_english": {
+      "origin": "english_identity_guard classify_disposition marks span ENGLISH-eligible and skips transliteration",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "english_guard_reorder": {
+      "origin": "english_identity_guard reorder-only disposition (REORDER/GUARD reason codes) — candidates reordered but not regenerated",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "abstention": {
+      "origin": "ranker abstains (ABSTAIN eligibility) — no confident candidate above threshold",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "acronym": {
+      "origin": "language_analyzer / english_identity_guard acronym disposition (ACRONYM_IDENTITY reason code or IDENTIFIER_OR_CODE form with acronym shape)",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "structural_identifier": {
+      "origin": "language_analyzer IDENTIFIER_OR_CODE form (letter+digit token, e.g. SKU-44102)",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "refined_identifier": {
+      "origin": "mai07_r3n4_candidate_runtime.refine_overmerged_identifier_spans — splits a spurious space-containing identifier/protected span (no digit evidence) back into per-token spans before generation",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets (post-refine)",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "coalesced_identifier": {
+      "origin": "mai07_r3n4_candidate_runtime.coalesce_structural_identifiers — merges abutting fragments into one identifier span when letter+digit+separator evidence exists; a COALESCED_SPAN identity anchor is also created at coalesce time for provenance",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets (post-coalesce); coalesce_anchor available for anchor-lineage reconstruction",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "multi_token_phrase": {
+      "origin": "raw_span surface contains multiple whitespace-separated tokens that survived analysis as one annotation (ambiguous/shared phrase spans)",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "optional_ambiguous": {
+      "origin": "shared/ambiguous disposition (OPTIONAL reason code or is_ambiguous flag) — conservative identity-preferred policy",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    },
+    "cap_pressure": {
+      "origin": "generator/ranker produced more than 5 raw alternatives (or span.truncated already set) before finalization",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle (identity reserved first, then target Devanagari, then fill by rank, hard-capped at MAX_CANDIDATES_PER_SPAN)"
+    },
+    "failure_fallback": {
+      "origin": "eligibility in {SKIPPED_UNSUPPORTED, SKIPPED_SECURITY, SKIPPED_TOO_LONG}",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets, or FAIL_CLOSED synthetic anchor when raw offsets are invalid",
+      "finalized_via": "apply_r3n4_finalize_bundle (fail-closed branch when create_identity_anchor raises IdentityAnchorError)"
+    },
+    "empty_generator_result": {
+      "origin": "no candidates produced by generation (NO_CANDIDATES reason code or empty candidate tuple)",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle (identity-only single-candidate output)"
+    },
+    "ordinary_romanized_generation": {
+      "origin": "default path — normal romanized/Devanagari candidate generation and ranking with no special disposition",
+      "identity_source": "IdentityAnchorV1 from raw_span offsets",
+      "finalized_via": "apply_r3n4_finalize_bundle"
+    }
+  },
+  "anchor_lineage_helpers": {
+    "create_identity_anchor": "raw-slice anchor from (raw_text, raw_start, raw_end_exclusive); validates bounds and digests",
+    "refine_anchor": "child anchor strictly contained within a parent anchor's span (used by refine_overmerged_identifier_spans lineage)",
+    "coalesce_anchor": "anchor spanning multiple non-overlapping parent anchors (used by coalesce_structural_identifiers lineage)",
+    "split_anchors": "ordered non-overlapping child anchors carved out of one parent anchor",
+    "anchor_from_source_span": "convenience wrapper for SOURCE_SPAN-kind anchors"
+  },
+  "fail_closed_policy": "If create_identity_anchor raises IdentityAnchorError on the primary raw offsets, apply_r3n4_finalize_bundle falls back to a synthetic single-candidate identity-only anchor built from the existing raw_span.original_text and tags decision_reason_codes with R3N4_FAIL_CLOSED_FINALIZE; the span is still recorded in the path registry (ok=True, reason=fail_closed) so the coverage report distinguishes fail-closed finalizations from anchor_unrecoverable failures.",
+  "single_finalization_guarantee": "record_path_finalization is invoked exactly once per span_results entry inside apply_r3n4_finalize_bundle; no other code path calls finalize_candidates_r3n4 directly for production candidate output. Unit/property tests may call finalize_candidates_r3n4/finalize_idempotent directly on synthetic anchors for verification only.",
+  "note": "This inventory documents source-derived routing logic (grep of mai07_r3n4_candidate_runtime.py and r3n4_candidate_finalization.py); per-case empirical path_coverage_report() output is only available once a holdout attempt has been run (out of scope for this infra-adaptation phase)."
+}

@@ -1,0 +1,127 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_locked": false,
+  "authorization": "EXPLICIT_USER_AUTHORIZATION_R3G_REAUTHORIZED",
+  "created_utc": "2026-07-18T17:05:57.115311+00:00",
+  "environment_fingerprint": {
+    "machine": "AMD64",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10"
+  },
+  "frozen_v2_opened": false,
+  "lineage": {
+    "blocked_r3g_preflight_sha256": "88b3b896407cf1184efd187fdf0795f220cd4c22e922c89820cb6480ceaa70f7",
+    "contract_metadata": {
+      "canonical_serialization_contract": "json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(',', ':'))",
+      "field_catalogue": {
+        "audit_report_raw_sha256": "pretty-printed audit file raw bytes",
+        "audit_report_semantic_sha256": "canonical_json(audit object)",
+        "canonical_report_raw_sha256": "pretty-printed report file raw bytes",
+        "canonical_report_semantic_sha256": "canonical_json(report object)",
+        "predictions_canonical_list_sha256": "canonical_json(sorted prediction list)",
+        "predictions_jsonl_raw_sha256": "raw JSONL file bytes",
+        "predictions_semantic_sha256": "same as predictions_canonical_list_sha256",
+        "rc_manifest_raw_sha256": "pretty-printed RC manifest file raw bytes",
+        "rc_manifest_semantic_sha256": "canonical_json(RC object)",
+        "resource_content_sha256": "sorted filename+NUL+raw file bytes; excludes manifest.json",
+        "resource_manifest_raw_sha256": "raw manifest.json file bytes",
+        "resource_manifest_semantic_sha256": "canonical_json(manifest object)",
+        "runtime_config_sha256": "raw guard/config file bytes (single file or concatenated per builder)",
+        "runtime_semantic_sha256": "alias of code_semantic_hash over decision-logic sources",
+        "runtime_source_sha256": "sorted source filenames + NUL + raw bytes"
+      },
+      "known_vectors": {
+        "canonical_empty_list": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sha256_abc": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "sha256_empty": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "prediction_ordering_contract": "sorted_by_case_id_ascending",
+      "report_serialization_contract": "json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + '\\n' (LF)",
+      "resource_hash_algorithm": "SHA-256",
+      "resource_hash_domain": "mai07.resource_pack.v1_files_nul_raw",
+      "seal_contract_schema": "2.0.0",
+      "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+    },
+    "errors": [
+      "runtime:mai-07.1.13-r3s-active",
+      "pack_version:mai-07.1.11-r3n6-chaincomplete",
+      "active_resources_dir:C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\oip\\modules\\language_runtime\\transliteration\\sealed_packs\\mai-07.1.11-r3n6-chaincomplete",
+      "resource_content:8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "seal_v2_content_mismatch"
+    ],
+    "forensic_cited_historical": "c568464d691a7edd5797469d7209e2a6d0b92fdd1c6fd38e73ae43c3295243b5",
+    "forensic_discrepancy": true,
+    "forensic_snapshot_raw_sha256": "094d2d00f044abc03013f9aea7ae6ed202c9ec1fe36b93a358aadb68f464a782",
+    "fresh_holdout_threshold_sha256": "22adc027af3083b93076b2d2f5300588397328e2dd9613762f75299d9c4112fa",
+    "fresh_predictions_canonical": "ba64b365718018c213c0a6955bcfb4c8b8f9c6f465e328113e662e161d26f2c4",
+    "fresh_predictions_raw": "0f1c72f8ee38e457c7d132dc03553f4299d59f80fa956752e97660cab9a7c09c",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "historical_resources_dir": "erp_bot/src/oip/modules/language_runtime/transliteration/resources",
+    "invalidated_parent_rc": "37e551f29126fea63f77b9cb6b3bc4e867185b61a620b5686ed8471bf10396dd",
+    "invalidated_parent_status": "INVALIDATED_BY_SEAL_DRIFT",
+    "lock_chain": {
+      "immutable_hits": [
+        {
+          "match": "immutable_locked_not_run_file",
+          "path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+          "sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff"
+        },
+        {
+          "match": "append_only_lock_record",
+          "path": "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCK_RECORD.json",
+          "sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff"
+        }
+      ],
+      "narrative_refs_only": [
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json:manifest_sha256",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json:rc_manifest_semantic_sha256",
+        "evals/mai07_r3f_seal_new/MAI_07R3F_SEAL_NEW_RELEASE_CANDIDATE_001.LOCK_RECORD.json:rc_manifest_semantic_sha256",
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_ATTEMPT.json:rc_manifest_sha256_locked_before_holdout",
+        "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_SCORE_REPORT.json:rc_manifest_sha256"
+      ],
+      "ok": true,
+      "reason": null,
+      "target_hash": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff"
+    },
+    "ok": false,
+    "overlay": false,
+    "post_holdout_rc_file_raw_sha256": "01700e0128d839abb6e2a2ee8bed10f949e26e5c5ba05d8fdc9706b0c13b4507",
+    "post_holdout_rc_manifest_sha256": "530192228e7827bc33213f7ad8a3f4c2b75bdba6a01d78611617fd2d27c10e5c",
+    "r3e_attempt": "833233e4f5ed5250a824e47dcfec000fa4d66ae20dfeec1729822e43bf81fbd2",
+    "resource_content_sha256": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+    "resource_pack_version": "mai-07.1.11-r3n6-chaincomplete",
+    "resources_dir": "erp_bot/src/oip/modules/language_runtime/transliteration/sealed_packs/mai-07.1.11-r3n6-chaincomplete",
+    "runtime_version": "mai-07.1.13-r3s-active",
+    "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+    "seal_v2": {
+      "resource_content_sha256": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "resource_file_count": 11,
+      "resource_file_hashes": {
+        "ambiguity_rules.json": "7aa5e7ab90b131231ec36acfd360fc848bd3a0a1f4d779fb5d06fc07f9fc1189",
+        "context_rules.json": "88e34bd0bc15dc460d7e1c056a827afe6f4b229f36db987bc472490454051f19",
+        "domain_terms.json": "7c9df935bc9c893053c923621e5a798d60d686ced01e129c9eadfa8f326aca5f",
+        "english_identity.json": "3a0c52d361fdf4f7291e6ef5f1826b36e5559aa16f14d9a804cf2c613a82db90",
+        "grapheme_rules.json": "b0e86cc653694d29b005c7c4103e8e2f56cbd8d304729b41466463dd5ccbd2db",
+        "morphology_rules.json": "dee47b98a807deca6549b739d19899a79d65aadffd2d92fdf1be3f7049988e4d",
+        "name_like_terms.json": "2db12b34ecada8b35d5f503158b79d5a08d26f54df2348d853e72568dd65d8b3",
+        "r3d_safety_disposition.json": "73a11fd15e87771e00b8d90a88da862e3d4c3214b1f6507d8ee17cb82586cf07",
+        "r3f_english_identity_guard.json": "5ebe92da692747ff5cbe91d402933fdbf53215d739f5dd5674a8e55410c2a128",
+        "ranking_config.json": "10039dfaf9a59bbbb849360682f096b4594ce1b83bbc714d18b87984f2462dd7",
+        "romanized_lexicon.json": "deda8512b32850d3ed2767f31068fbe1411fe383e9edf53a27738a8f91ef9c08"
+      },
+      "resource_hash_algorithm": "SHA-256",
+      "resource_hash_domain": "mai07.resource_pack.v1_files_nul_raw",
+      "resource_manifest_raw_sha256": "a89d83aed86c06867d11213a76b71532df3ebe3de943bd273de6112f685b3902",
+      "resource_manifest_semantic_sha256": "79910ede3f4e6576ddee9b0e090721871234690f04305a8ceeb380e34a223ebb",
+      "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+    }
+  },
+  "note": "Frozen V2 must not be opened when status != PREFLIGHT_OK. Lock-before-holdout requires preserved immutable RC body (hash f4c07e24…) or append-only lock record containing that body — narrative hash fields are insufficient.",
+  "one_shot_executed": false,
+  "phase": "MAI-07R3G-REAUTHORIZED",
+  "quality_verdict": null,
+  "recommended_next_if_blocked": "MAI-07R3F-SEAL-LOCK-CHAIN",
+  "status": "BLOCKED_PRECONDITION_FAILED"
+}

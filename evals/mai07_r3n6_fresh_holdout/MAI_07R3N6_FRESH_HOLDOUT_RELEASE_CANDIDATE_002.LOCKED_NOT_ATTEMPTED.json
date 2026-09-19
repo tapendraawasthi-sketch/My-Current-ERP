@@ -1,0 +1,16 @@
+{
+  "attempt_intent_written": false,
+  "disposition": "LOCKED_NOT_ATTEMPTED_LOCK_RECORD_AUTHORITY_MISMATCH",
+  "lock_record_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002.LOCK_RECORD.json",
+  "lock_record_raw_sha256": "c5084bcc6e287341d440df36edee77472e7ffc73ec9ab4cba681066b14782676",
+  "locked_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002.LOCKED_NOT_RUN.json",
+  "locked_raw_sha256": "062b4f1147b4bc036e2ef13dd8dfdc2eb075498e974afcd7199eff4af3d8d251",
+  "locked_semantic_sha256": "011c7833a4030892b70e125d41a18be378b8f9b79cb2dc1db0175ee2b94e5b34",
+  "next_governed_action": "RC_003_RELOCK_WITH_CANONICAL_LOCK_RECORD_FIELDS_THEN_ATTEMPT_003",
+  "predictions_written": false,
+  "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_002",
+  "reason": "lock_record parent/provenance diverged from verifier expectations before any attempt",
+  "record_type": "LOCKED_NOT_ATTEMPTED",
+  "schema_version": "mai07_r3n6_locked_not_attempted_v1",
+  "scores_written": false
+}

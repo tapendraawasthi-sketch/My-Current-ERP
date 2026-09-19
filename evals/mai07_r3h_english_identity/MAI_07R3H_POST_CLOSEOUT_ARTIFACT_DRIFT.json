@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "record_id": "MAI_07R3H_POST_CLOSEOUT_ARTIFACT_DRIFT",
+  "discovery_timestamp_utc": "2026-07-16T13:06:00+00:00",
+  "phase_recording": "MAI-07R3H2-SHARED-COLLISION-CORRECTIVE",
+  "historical_result_reinterpreted": false,
+  "historical_holdout_reusable": false,
+  "authority_decision": "CHAIN/QUALIFICATION/ATTEMPT/LOCKED_NOT_RUN remain the consumed R3H historical authority; drifted on-disk dataset/report files are non-authoritative regenerations.",
+  "known_mutation_writers": [
+    "erp_bot/tests/oip/language_runtime/test_mai07_r3h_corrective.py::_prepare_r3h_artifacts → write_datasets()",
+    "erp_bot/tests/oip/language_runtime/test_mai07_r3h_corrective.py::test_clear_english_identity → run_split('HOLDOUT_VALIDATION')",
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/build_mai07r3h_english_identity_datasets.py::write_datasets (canonical OUT)",
+    "erp_bot/src/oip/modules/language_runtime/transliteration/application/eval_mai07_r3h.py::run_split (canonical REPORTS)"
+  ],
+  "locked_dataset_hashes": {
+    "dataset_manifest_sha256": "f00fc55e506a4913a0c3f717d6047f30db6694c6256f27b2c40bf353660730d5",
+    "fresh_development_dataset_sha256": "a69fa49a8390577c3700d3fe9f0856cd6e409d2a791f08fa8848ac7d6315b7a8",
+    "fresh_holdout_dataset_sha256": "8742afb262e0bedb05c09aa2c92644a3726069fc249b53509dfd8e0d8e2a4211",
+    "fresh_safety_dataset_sha256": "f97997790effb74a4d79facc4d45bd1578e5cf9a48711cc082991ed1cb660561",
+    "fresh_counterfactual_dataset_sha256": "cebb88a5b734dccd1042dcb1a62798f862d107fbf996f4a28e68aafea7422fd9",
+    "fresh_oov_dataset_sha256": "e24e3e0947e605d6b7f2f6a445f72704d256f91765698184459d8c89a332610a",
+    "threshold_manifest_sha256": "76bcb3d9afacd60796f08b053b6ecc3bdc676971fd2d063fffaabfecfcb57f06"
+  },
+  "current_drifted_dataset_hashes": {
+    "MAI_07R3H_DATASET_MANIFEST.json": "fd9401ba4951c96e83a269fe41424e72d68204c12bbb9fb3c5a6113ff2f08d09",
+    "development.jsonl": "d5514295aafcd2847b3c196ee254a31c9d4d948256f9f99054d94758310d4ee4",
+    "holdout_validation.jsonl": "b0c83b20cb299635712cdc958d9e9b983dd9f9139439f9e25e031e87364f0fda",
+    "safety_challenge.jsonl": "adb7d3806489fc2dee284608491712fd2c0fa56c4cdf288c4492d8c9f6f734cd",
+    "context_counterfactual.jsonl": "875c6ab3c049e2f40e6a27a5fcf1028b6263ffb13eab80ef6f4178a00a46be6a",
+    "oov_generalization.jsonl": "fe30b98532100ba9da54020c68bcdabdec233fdfba4c899b0f1905fb3b716af4",
+    "MAI_07R3H_THRESHOLDS.json": "76bcb3d9afacd60796f08b053b6ecc3bdc676971fd2d063fffaabfecfcb57f06"
+  },
+  "locked_prediction_hashes": {
+    "predictions_jsonl_raw_sha256": "7f5540770d68a5e04522ffbe600504519f5c21b75c0ed3a97e51528c2665a27c",
+    "predictions_canonical_list_sha256": "3dcd1c54bf1c449699e4135706285b18ce70e87ed35ab77159db19a843f7bea7"
+  },
+  "current_drifted_prediction_hashes": {
+    "reports/MAI_07R3H_HOLDOUT_VALIDATION_PREDICTIONS.jsonl": "5979adf25f677b4118bac6f6903b561dfa48fa4ab4a4753cb17beea505d63fff",
+    "reports/MAI_07R3H_HOLDOUT_VALIDATION_SCORE_REPORT.json": "379aa5b31a3482d5a86c93b13c14b2b01119e1724c355d283851fa0daf17f5f8"
+  },
+  "lock_attempt_chain_qualification_hashes": {
+    "LOCKED_NOT_RUN.json_raw": "de7eddc57e67a1c0631f6d144966e9b59430cf562bdeecd0f2465f5301bc0c1e",
+    "LOCKED_NOT_RUN.semantic": "7870e554f6b71d15d4bb93e1a1816993e441add2a00f281f44580708645ac725",
+    "LOCK_RECORD.json": "6fcd24e08b7e3731333215ecf4ffd99c79ff7f84707372a5fe36ecafc40c8e2e",
+    "CHAIN_MANIFEST.json": "fc1fb30d92419822450192e307b03ec6dfafdaf7640d370c02541b785df20877",
+    "QUALIFICATION_RESULT.json": "153a38a73ccd1b23201098dd7e1fb7b51d9a4ea2b3c169cb27e2acb7a643ca99",
+    "HOLDOUT_ATTEMPT_001.json": "c0e272a97cca6c13080e45006888722e6dffb8451e7279af4e0fa99be1063e7a"
+  },
+  "notes": [
+    "Threshold file hash still matches lock.",
+    "Dataset JSONL bodies and holdout prediction/score reports drifted after closeout test runs.",
+    "Do not restore or rewrite consumed R3H lock/attempt/chain/qualification.",
+    "Do not reuse consumed R3H holdout for R3H2 tuning."
+  ]
+}

@@ -1,0 +1,341 @@
+{
+  "locked_at_utc": "2026-07-18T09:24:03.671384+00:00",
+  "locked_body_path": "C:/Users/Acer/Documents/My-Current-ERP/evals/mai07_r3n5_fresh_holdout/MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+  "locked_rc_body": {
+    "ENABLE_PROMOTION_OVERLAY": false,
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "active_default_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "active_default_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+    "candidate_policy_version": "mai-07-r3n5.1.0.0",
+    "candidate_promoted": false,
+    "candidate_resource_content_sha256": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+    "candidate_resource_pack_version": "mai-07.1.10-r3n5-targetspan",
+    "candidate_runtime_version": "mai-07.1.10-r3n5-targetspan",
+    "correction_scope": "TARGET_SPAN_AND_EVALUATION_PATH_AUTHORITY",
+    "dataset_manifest": {
+      "builder_version": "mai-07-r3n5-dataset.1.0.0",
+      "parent_prediction_jsonl_opened": false,
+      "prohibited_for_training": true,
+      "r3n4_input_splits_used_for_one_way_freshness_only": true,
+      "schema_version": "mai07_r3n5_dataset_manifest_v1",
+      "seeds": {
+        "development": 20260728,
+        "holdout": 20260729
+      },
+      "splits": {
+        "CONTEXT_COUNTERFACTUAL": {
+          "count": 300,
+          "filename": "context_counterfactual.jsonl",
+          "population_counts": {
+            "CONTEXT_COUNTERFACTUAL": 300
+          },
+          "sha256": "cb2cd594280b68169b6cdc65e3283ca3602ae23915c166f17a43e140abb0b06f"
+        },
+        "DEVELOPMENT": {
+          "count": 900,
+          "filename": "development.jsonl",
+          "population_counts": {
+            "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+            "ACRONYM_IDENTITY_REQUIRED": 100,
+            "AUTHORIZED_CODE_CORRECTIVE": 9,
+            "CANDIDATE_CAP_PRESSURE": 350,
+            "COALESCED_SPAN_IDENTITY": 200,
+            "ENGLISH_GUARD_ANALOGUE": 100,
+            "ENGLISH_IDENTITY_REQUIRED": 200,
+            "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+            "EXACT_RAW_IDENTITY_REQUIRED": 850,
+            "FINALIZER_IDEMPOTENCE_REQUIRED": 900,
+            "IDENTIFIER_PROTECTION_REQUIRED": 100,
+            "IDENTITY_INVARIANT_ANALOGUE": 350,
+            "IDENTITY_RETENTION_REQUIRED": 850,
+            "MULTI_TOKEN_IDENTITY": 300,
+            "PROTECTED_IDENTITY_REQUIRED": 100,
+            "REFINED_SPAN_IDENTITY": 200,
+            "ROMANIZED_NEPALI_REQUIRED": 200,
+            "SERIALIZATION_ROUNDTRIP": 500,
+            "SHARED_OR_AMBIGUOUS": 50,
+            "UNICODE_IDENTITY": 150
+          },
+          "sha256": "69356df94502401273877c8f0614a1369804f5f9bb13bb955c1cb0b67a4e27de"
+        },
+        "HOLDOUT_VALIDATION": {
+          "count": 2475,
+          "filename": "holdout_validation.jsonl",
+          "population_counts": {
+            "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+            "ACRONYM_IDENTITY_REQUIRED": 100,
+            "CANDIDATE_CAP_PRESSURE": 350,
+            "COALESCED_SPAN_IDENTITY": 200,
+            "ENGLISH_GUARD_ANALOGUE": 100,
+            "ENGLISH_IDENTITY_REQUIRED": 200,
+            "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+            "EXACT_RAW_IDENTITY_REQUIRED": 850,
+            "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+            "IDENTIFIER_PROTECTION_REQUIRED": 100,
+            "IDENTITY_INVARIANT_ANALOGUE": 350,
+            "IDENTITY_RETENTION_REQUIRED": 850,
+            "MULTI_TOKEN_IDENTITY": 300,
+            "PROTECTED_IDENTITY_REQUIRED": 100,
+            "REFINED_SPAN_IDENTITY": 200,
+            "ROMANIZED_NEPALI_REQUIRED": 200,
+            "SERIALIZATION_ROUNDTRIP": 500,
+            "SHARED_OR_AMBIGUOUS": 150,
+            "UNICODE_IDENTITY": 150
+          },
+          "sha256": "a22c8a67210cdd59b67d5129957e083bff1c4e4d2221c987bc9f6c6b1a04e1a0"
+        },
+        "IDENTITY_ANCHOR_CHALLENGE": {
+          "count": 500,
+          "filename": "identity_anchor_challenge.jsonl",
+          "population_counts": {
+            "CANDIDATE_CAP_PRESSURE": 500,
+            "IDENTITY_ANCHOR_CHALLENGE": 500
+          },
+          "sha256": "ace27cdd01132c050eebd48bf738f6542891bec1caeeb2781dc196d27e548013"
+        },
+        "MONOTONIC_REGRESSION": {
+          "count": 400,
+          "filename": "monotonic_regression.jsonl",
+          "population_counts": {
+            "MONOTONIC_PARENT_CORRECT": 400
+          },
+          "sha256": "17750cde4ca554f0047dd3d118d125f203868038986d3f5065bbf6c6c24241ab"
+        },
+        "OOV_CHALLENGE": {
+          "count": 100,
+          "filename": "oov_challenge.jsonl",
+          "population_counts": {
+            "OOV": 100
+          },
+          "sha256": "5057c89c4eae0f14a13c4d5d39b9838f8f2628f603cf77bf12122a7c9bc65d88"
+        },
+        "SAFETY_CHALLENGE": {
+          "count": 400,
+          "filename": "safety_challenge.jsonl",
+          "population_counts": {
+            "PROTECTED_IDENTITY_REQUIRED": 400
+          },
+          "sha256": "f82158ed7f09004e78de25bb6d60b3e1daac982da24978379d5e6c5d398c7791"
+        }
+      }
+    },
+    "dataset_manifest_sha256": "83c808f1129dfee429581d5bc3927ce31ff3634c6c4a8b933babb313279afb9a",
+    "default_active": false,
+    "development_all_required_pass": true,
+    "development_canonical_audit_agreement": true,
+    "development_case_agreement": true,
+    "development_report_raw_sha256": "f7eefe66332ff2934df11f7ef7d4b426191882dad5025cbaee3fbefad036a4c1",
+    "development_report_semantic_sha256": "522a22e2262332d28b2e38fdbb8b9b95af2555b7393a7bd6dd9dc614a76abc90",
+    "holdout_not_run": true,
+    "linguist_approved": false,
+    "locked": true,
+    "locked_before_holdout": true,
+    "manifest_id": "MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+    "manifest_sha256": "80bb914f01cc365582177592516ec2bb9e519f4f17a3456b1a2bd48d053af907",
+    "minimum_denominator_policy": {
+      "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+      "ACRONYM_IDENTITY_REQUIRED": 100,
+      "CANDIDATE_CAP_PRESSURE": 350,
+      "COALESCED_SPAN_IDENTITY": 200,
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "ENGLISH_GUARD_ANALOGUE": 100,
+      "ENGLISH_IDENTITY_REQUIRED": 200,
+      "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+      "EXACT_RAW_IDENTITY_REQUIRED": 850,
+      "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+      "IDENTIFIER_PROTECTION_REQUIRED": 100,
+      "IDENTITY_ANCHOR_CHALLENGE": 500,
+      "IDENTITY_INVARIANT_ANALOGUE": 350,
+      "IDENTITY_RETENTION_REQUIRED": 850,
+      "MONOTONIC_PARENT_CORRECT": 400,
+      "MULTI_TOKEN_IDENTITY": 300,
+      "OOV": 100,
+      "PROTECTED_IDENTITY_REQUIRED": 100,
+      "REFINED_SPAN_IDENTITY": 200,
+      "ROMANIZED_NEPALI_REQUIRED": 200,
+      "SERIALIZATION_ROUNDTRIP": 500,
+      "SHARED_OR_AMBIGUOUS": 150,
+      "UNICODE_IDENTITY": 150
+    },
+    "overlay_enabled": false,
+    "parent_failed_r3n4_lineage": {
+      "attempt_id": "MAI_07R3N4_HOLDOUT_ATTEMPT_001",
+      "candidate_promoted": false,
+      "chain_path": "evals/mai07_r3n4_fresh_holdout/MAI_07R3N4_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.CHAIN_MANIFEST.json",
+      "consumed": true,
+      "lock_semantic_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+      "ok": true,
+      "runtime_version": "mai-07.1.9-r3n4-identityanchor",
+      "verdict": "FAILED_HOLDOUT_QUALITY"
+    },
+    "parent_prediction_jsonl_opened": false,
+    "population_definition_hash": "5c227e7081766b476b01b91ba3d8bd1cd9b651a431963f64c558d88880b81aeb",
+    "production_approved": false,
+    "prohibited_for_training": true,
+    "quality_gates_passed": false,
+    "rc_manifest_raw_sha256": "7871748fa10e1dddf8e9f0ce3df4686094752d0c56ecdf4f442833adea3d63fd",
+    "rc_manifest_semantic_sha256": "80bb914f01cc365582177592516ec2bb9e519f4f17a3456b1a2bd48d053af907",
+    "schema_version": "2.0.0",
+    "scorer_version": "mai-07-r3n5.scorer.1.0.0",
+    "scoring_contract_version": "mai-07-r3n5.contract.1.0.0",
+    "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+    "source_hashes": {
+      "build_mai07r3n5_pack.py": "e4b5d747e7bcf6ba0c38af341866abe669ac08de4e8688af0038b47bb20071e8",
+      "eval_mai07_r3n5.py": "742c49d28ad8cca9f0d8950af3457a09b0d19e57ed860401fe552b16c70cf59f",
+      "eval_mai07_r3n5_audit_scorer.py": "08e77277dcd7139db459db978ced17bddf501f7ebeb033fc216fc1cc7b1d3c03",
+      "eval_mai07_r3n5_canonical_scorer.py": "3a4d6b9d2f610ebf0204ff80f9b4ea40c83ec32b8db41d0d000498c85000fef8",
+      "mai07_r3n5_candidate_runtime.py": "58135526a1e5c2e8ed65141dab3e6ac51bf50ab37cfd78f522ca39aec8a430b5",
+      "mai07_r3n5_dataset_builder.py": "f02f9d95f781c94e544ab086be99dd0cd90070eefc2f70ab3bdd5e2a4f99660b",
+      "r3n4_candidate_finalization.py": "0da9a1671e3ef62f8ba9891d381b6e99844357904411c3bd5670f94ece9efffc",
+      "r3n4_finalization_path_registry.py": "05fcc27287168da00a0196fd8715d5b0a2e3b50ae5d21e7a6742fcf1057b1161",
+      "r3n4_identity_anchor.py": "3c9d01d8681fa4e48cda23358e417344f5832cde2d16e90cf7bde1be8067f280",
+      "r3n5_scoring_contracts.py": "2ff5364f51f90154108726ac49ea62ac3ab398af667f3caa20019abf7b321523",
+      "r3n5_target_span_contract.py": "7e6a045b04b41368226798c1099ae313f6358b4febc9a4447f829599e4121145"
+    },
+    "status": "LOCKED_NOT_RUN",
+    "target_authority": {
+      "offset_unit": "UNICODE_CODE_POINT",
+      "schema_version": "mai07_r3n5_target_span_v1",
+      "source_sha256": "7e6a045b04b41368226798c1099ae313f6358b4febc9a4447f829599e4121145"
+    },
+    "threshold_manifest": {
+      "gates": {
+        "acronym_identifier_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "acronym_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "anchor_validity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "authorized_code_corrective": {
+          "op": "==",
+          "value": 1.0
+        },
+        "cap_pressure_identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "caps_ok": {
+          "op": "==",
+          "value": 1.0
+        },
+        "coalesced_span_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "english_guard_analogue": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "english_identity_top1": {
+          "op": ">=",
+          "value": 0.98
+        },
+        "exact_raw_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "exactly_one_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "false_devanagari_on_english": {
+          "op": "<=",
+          "value": 0.02
+        },
+        "finalizer_idempotence": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identifier_identity_top1": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_invariant_analogue": {
+          "op": "==",
+          "value": 1.0
+        },
+        "identity_retention": {
+          "op": "==",
+          "value": 1.0
+        },
+        "multi_token_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "path_finalization_coverage": {
+          "op": "==",
+          "value": 1.0
+        },
+        "protected_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "raw_ok_all": {
+          "op": "==",
+          "value": 1.0
+        },
+        "refined_span_identity": {
+          "op": "==",
+          "value": 1.0
+        },
+        "romanized_script_at_5": {
+          "op": ">=",
+          "value": 0.95
+        },
+        "serialization_roundtrip": {
+          "op": "==",
+          "value": 1.0
+        },
+        "unicode_identity": {
+          "op": "==",
+          "value": 1.0
+        }
+      },
+      "locked_before_holdout": true,
+      "minimum_denominators": {
+        "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+        "ACRONYM_IDENTITY_REQUIRED": 100,
+        "CANDIDATE_CAP_PRESSURE": 350,
+        "COALESCED_SPAN_IDENTITY": 200,
+        "CONTEXT_COUNTERFACTUAL": 300,
+        "ENGLISH_GUARD_ANALOGUE": 100,
+        "ENGLISH_IDENTITY_REQUIRED": 200,
+        "EXACTLY_ONE_IDENTITY_REQUIRED": 850,
+        "EXACT_RAW_IDENTITY_REQUIRED": 850,
+        "FINALIZER_IDEMPOTENCE_REQUIRED": 2475,
+        "IDENTIFIER_PROTECTION_REQUIRED": 100,
+        "IDENTITY_ANCHOR_CHALLENGE": 500,
+        "IDENTITY_INVARIANT_ANALOGUE": 350,
+        "IDENTITY_RETENTION_REQUIRED": 850,
+        "MONOTONIC_PARENT_CORRECT": 400,
+        "MULTI_TOKEN_IDENTITY": 300,
+        "OOV": 100,
+        "PROTECTED_IDENTITY_REQUIRED": 100,
+        "REFINED_SPAN_IDENTITY": 200,
+        "ROMANIZED_NEPALI_REQUIRED": 200,
+        "SERIALIZATION_ROUNDTRIP": 500,
+        "SHARED_OR_AMBIGUOUS": 150,
+        "UNICODE_IDENTITY": 150
+      },
+      "notes": "R3N5 thresholds bind evaluation to immutable raw target offsets. Immutable after RC lock.",
+      "prohibited_for_training": true,
+      "threshold_id": "MAI_07R3N5_THRESHOLDS_V1"
+    },
+    "threshold_manifest_sha256": "419506e2dfb4500acc11f8c3aa06f56bf13fb91cf1f4d450c5b2be95d6154e61"
+  },
+  "parent_lock_semantic_sha256": "4e80b55ae8338e5b281b72c54311a1dca25c7f97e79a4d5dc1b0ba5ae7165d51",
+  "provenance": "MAI_07R3N5_APPEND_ONLY_LOCK_CHAIN",
+  "rc_id": "MAI_07R3N5_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "rc_manifest_raw_sha256": "743c34b9f7235c6fb6e32990ee413be89f76c4ee6508df1f220d9e94773dcb07",
+  "rc_manifest_semantic_sha256": "80bb914f01cc365582177592516ec2bb9e519f4f17a3456b1a2bd48d053af907",
+  "record_type": "LOCK_RECORD",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+}

@@ -1,0 +1,90 @@
+{
+  "FORBIDDEN_FROZEN_PATH_TOKENS": [
+    "frozen_v2",
+    "evals/mai07/frozen_v2",
+    "MAI_07R3C_V2_ONE_SHOT_PREDICTIONS",
+    "MAI_07R3C_V2_PER_CASE_AUDIT",
+    "MAI_07R3E_V2_ONE_SHOT_PREDICTIONS",
+    "MAI_07R3E_V2_PER_CASE_AUDIT",
+    "MAI_07R3_BLIND_MAPPING",
+    "REVIEW_IMPORT_COMPLETED"
+  ],
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "builder_version": "mai-07-r3f-sealnew-dataset.1.0.0",
+  "category_counts": {
+    "context_counterfactual_cases": 735,
+    "english_identity_expected": 3431,
+    "holdout_english_identity": 1003,
+    "proper_name_acronym_identifier": 696,
+    "protected_cases": 560,
+    "romanized_negative_controls": 1212
+  },
+  "complete_counterfactual_pairs": 290,
+  "fresh_vs_old_r3f": {
+    "duplicate_case_ids_vs_old_r3f": [],
+    "exact_sentence_duplicates_vs_old_r3f": 0,
+    "old_holdout_reused": false
+  },
+  "frozen_v2_case_bodies_not_used": true,
+  "leakage_vs_v1": {
+    "duplicate_case_ids": [],
+    "exact_sentence_duplicate_count": 0,
+    "vocabulary_overlap_note": "Legitimate token overlap expected; not claimed zero.",
+    "vocabulary_overlap_token_count": 275
+  },
+  "leakage_vs_v2": {
+    "duplicate_case_ids_with_v1_parent_space": [],
+    "frozen_v2_case_bodies_not_opened": true,
+    "note": "Exact sentence comparison against V2 bodies is firewalled; uniqueness via r3f tags + V1 audit.",
+    "v2_dataset_hash_acknowledged": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9"
+  },
+  "locked_before_runtime_correction": true,
+  "manifest_id": "MAI_07R3F_SEAL_NEW_DATASET_MANIFEST",
+  "minimums": {
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "DEVELOPMENT": 900,
+    "HOLDOUT_VALIDATION": 1000,
+    "SAFETY_CHALLENGE": 500
+  },
+  "minimums_met": true,
+  "near_duplicate_dropped": 17,
+  "parent_frozen_v1_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+  "parent_frozen_v2_hash": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+  "parent_r3d_rc_hash": "2ebe29fac17b836849e3c3e1054c704a03d762bc5f28879a9a0de2f5a62d2c26",
+  "parent_r3e_attempt_hash": "833233e4f5ed5250a824e47dcfec000fa4d66ae20dfeec1729822e43bf81fbd2",
+  "prohibited_for_training": true,
+  "r3e_predictions_not_used": true,
+  "schema_version": "1.0.0",
+  "seed": 20260717,
+  "splits": {
+    "CONTEXT_COUNTERFACTUAL": {
+      "case_count": 735,
+      "path": "evals/mai07_r3f_seal_new/context_counterfactual.jsonl",
+      "sha256": "d09cdab52d31ea50bcdfa01b0352f2ed5928598b3b5ee6f6a84e1c57c99c900c"
+    },
+    "DEVELOPMENT": {
+      "case_count": 1314,
+      "path": "evals/mai07_r3f_seal_new/development.jsonl",
+      "sha256": "a1a6138228e89b43ce7b60f950e4f778b3dfde5e897808d44fef616916970951"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 1475,
+      "path": "evals/mai07_r3f_seal_new/holdout_validation.jsonl",
+      "sha256": "b361b0c4b013183cb3b72aa7f9147c93d0e5b416897ce5672a832f5a99a99b27"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 1004,
+      "path": "evals/mai07_r3f_seal_new/safety_challenge.jsonl",
+      "sha256": "ba8ebdf88b63459f4d4d8a641c6ff09900742aa32cdc77a2982ca77a4b292f7a"
+    }
+  },
+  "total_unique_cases": 4528,
+  "totals": {
+    "CONTEXT_COUNTERFACTUAL": 735,
+    "DEVELOPMENT": 1314,
+    "HOLDOUT_VALIDATION": 1475,
+    "SAFETY_CHALLENGE": 1004
+  },
+  "unique_texts": 4528
+}

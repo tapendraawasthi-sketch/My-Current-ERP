@@ -1,0 +1,54 @@
+{
+  "dataset_hash": "2eb4f0d8edd5544fb8266fd8eebf6eceffd40f13db1f37b6892eb48ea61dbe7c",
+  "dataset_version": "mai05-language-spans-v1",
+  "files": [
+    {
+      "case_count": 40,
+      "path": "evals/mai05/frozen/ambiguous_latin_v1.jsonl",
+      "sha256": "92ea670c4761864b68eb814abe5b184b9f2268a831506f3ea2d9204124faf525",
+      "suite_id": "ambiguous_latin_v1"
+    },
+    {
+      "case_count": 80,
+      "path": "evals/mai05/frozen/code_mix_spans_v1.jsonl",
+      "sha256": "7f87a552eba1191b877b7b63e02317e5cc19719807bf30cef6dbf61bef644f52",
+      "suite_id": "code_mix_spans_v1"
+    },
+    {
+      "case_count": 60,
+      "path": "evals/mai05/frozen/devanagari_nepali_spans_v1.jsonl",
+      "sha256": "921b605e7429a90b6926efdbce2c788768decb4151afa84b4e72088fc934b234",
+      "suite_id": "devanagari_nepali_spans_v1"
+    },
+    {
+      "case_count": 50,
+      "path": "evals/mai05/frozen/english_spans_v1.jsonl",
+      "sha256": "f408ba80d8575ad4467829fc3760e7cf4d51ee80c7b75ae8bb2225c14f1880db",
+      "suite_id": "english_spans_v1"
+    },
+    {
+      "case_count": 120,
+      "path": "evals/mai05/frozen/protected_spans_v1.jsonl",
+      "sha256": "b4c23085d08c41b18cc7afa6660f9bf2dfd7b8fcd16da904270484417b83f56e",
+      "suite_id": "protected_spans_v1"
+    },
+    {
+      "case_count": 90,
+      "path": "evals/mai05/frozen/romanized_nepali_spans_v1.jsonl",
+      "sha256": "ecaddf4b9f7b91a56c60b69702642bd16ed62ec6e755a9bf0dcd841e19af49e5",
+      "suite_id": "romanized_nepali_spans_v1"
+    },
+    {
+      "case_count": 30,
+      "path": "evals/mai05/frozen/unicode_security_v1.jsonl",
+      "sha256": "d24778ca93935eb463227e613886d39e4d9dbd81f8592c54bf977c5c5cb7f002",
+      "suite_id": "unicode_security_v1"
+    }
+  ],
+  "frozen": true,
+  "manifest_id": "MAI_05_LANGUAGE_SPANS_V1",
+  "prohibited_for_training": true,
+  "related_mai04_hash": "1fe463dc302b7e990b8e3bb0abcd5a0cbf4e05fcab4eaec30a27ed3b4a1b6fac",
+  "schema_version": "1.0.0",
+  "total_cases": 470
+}

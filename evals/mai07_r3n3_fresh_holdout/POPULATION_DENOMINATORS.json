@@ -1,0 +1,122 @@
+{
+  "builder_version": "mai-07-r3n3-dataset.1.0.0",
+  "minima_check": {
+    "minimum_denominators": {
+      "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+      "ACRONYM_IDENTITY_REQUIRED": 100,
+      "CANDIDATE_CAP_PRESSURE": 250,
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "ENGLISH_GUARD_ANALOGUE": 100,
+      "ENGLISH_IDENTITY_REQUIRED": 200,
+      "IDENTIFIER_PROTECTION_REQUIRED": 100,
+      "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+      "IDENTITY_INVARIANT_ANALOGUE": 250,
+      "IDENTITY_RETENTION_REQUIRED": 300,
+      "MONOTONIC_PARENT_CORRECT": 300,
+      "OOV": 100,
+      "PROTECTED_IDENTITY_REQUIRED": 100,
+      "ROMANIZED_NEPALI_REQUIRED": 200,
+      "SHARED_OR_AMBIGUOUS": 150
+    },
+    "ok": true,
+    "population_checks": {
+      "CONTEXT_COUNTERFACTUAL": {
+        "failures": [],
+        "ok": true,
+        "split": "CONTEXT_COUNTERFACTUAL",
+        "verdict": null
+      },
+      "HOLDOUT_VALIDATION": {
+        "failures": [],
+        "ok": true,
+        "split": "HOLDOUT_VALIDATION",
+        "verdict": null
+      },
+      "IDENTITY_CAP_PRESSURE_CHALLENGE": {
+        "failures": [],
+        "ok": true,
+        "split": "IDENTITY_CAP_PRESSURE_CHALLENGE",
+        "verdict": null
+      },
+      "MONOTONIC_REGRESSION": {
+        "failures": [],
+        "ok": true,
+        "split": "MONOTONIC_REGRESSION",
+        "verdict": null
+      },
+      "OOV_CHALLENGE": {
+        "failures": [],
+        "ok": true,
+        "split": "OOV_CHALLENGE",
+        "verdict": null
+      }
+    },
+    "population_failures": [],
+    "split_size_failures": [],
+    "split_size_minima": {
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "DEVELOPMENT": 600,
+      "HOLDOUT_VALIDATION": 1200,
+      "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+      "MONOTONIC_REGRESSION": 300,
+      "OOV_CHALLENGE": 100,
+      "SAFETY_CHALLENGE": 400
+    },
+    "verdict": null
+  },
+  "minimum_denominators": {
+    "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+    "ACRONYM_IDENTITY_REQUIRED": 100,
+    "CANDIDATE_CAP_PRESSURE": 250,
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "ENGLISH_GUARD_ANALOGUE": 100,
+    "ENGLISH_IDENTITY_REQUIRED": 200,
+    "IDENTIFIER_PROTECTION_REQUIRED": 100,
+    "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+    "IDENTITY_INVARIANT_ANALOGUE": 250,
+    "IDENTITY_RETENTION_REQUIRED": 300,
+    "MONOTONIC_PARENT_CORRECT": 300,
+    "OOV": 100,
+    "PROTECTED_IDENTITY_REQUIRED": 100,
+    "ROMANIZED_NEPALI_REQUIRED": 200,
+    "SHARED_OR_AMBIGUOUS": 150
+  },
+  "observed_population_counts": {
+    "ACRONYM_IDENTIFIER_ANALOGUE": 124,
+    "ACRONYM_IDENTITY_REQUIRED": 249,
+    "AUTHORIZED_CODE_CORRECTIVE": 9,
+    "CANDIDATE_CAP_PRESSURE": 299,
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "ENGLISH_GUARD_ANALOGUE": 149,
+    "ENGLISH_IDENTITY_REQUIRED": 625,
+    "IDENTIFIER_PROTECTION_REQUIRED": 249,
+    "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+    "IDENTITY_INVARIANT_ANALOGUE": 299,
+    "IDENTITY_RETENTION_REQUIRED": 350,
+    "MONOTONIC_PARENT_CORRECT": 300,
+    "MONOTONIC_PARENT_INCORRECT": 49,
+    "OOV": 100,
+    "PROTECTED_IDENTITY_REQUIRED": 249,
+    "ROMANIZED_NEPALI_REQUIRED": 400,
+    "SHARED_OR_AMBIGUOUS": 199
+  },
+  "observed_split_counts": {
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "DEVELOPMENT": 600,
+    "HOLDOUT_VALIDATION": 1200,
+    "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+    "MONOTONIC_REGRESSION": 300,
+    "OOV_CHALLENGE": 100,
+    "SAFETY_CHALLENGE": 400
+  },
+  "schema_version": "mai07_r3n3_population_denominators_v1",
+  "split_size_minima": {
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "DEVELOPMENT": 600,
+    "HOLDOUT_VALIDATION": 1200,
+    "IDENTITY_CAP_PRESSURE_CHALLENGE": 400,
+    "MONOTONIC_REGRESSION": 300,
+    "OOV_CHALLENGE": 100,
+    "SAFETY_CHALLENGE": 400
+  }
+}

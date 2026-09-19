@@ -1,0 +1,404 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "audit": {
+    "case_count": 1475,
+    "evaluator_version": "mai-07-r3f-eval.1.0.0",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "latency_ms_mean": 0.44209783050847457,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 75,
+        "numerator": 75,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1475,
+        "numerator": 1475,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 1003,
+        "numerator": 1003,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1003,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 448,
+        "numerator": 448,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 137,
+        "numerator": 137,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 14,
+        "numerator": 14,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 134,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1475,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 448,
+        "numerator": 448,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 392,
+        "numerator": 392,
+        "value": 1.0
+      }
+    },
+    "overlay_disabled": true,
+    "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "resource_version": "mai-07.1.3-r3f-sealnew",
+    "runtime_version": "mai-07.1.3-r3f-sealnew",
+    "scorer_version": "mai-07.r3f.sealnew.audit.1.0.0"
+  },
+  "audit_report_raw_sha256": "9bcf0a34aa5dc7d08dd6ec65ef134cff491b6d389200aac1d0f1968ac5dd9852",
+  "audit_report_semantic_sha256": "76d850df480527a5809e21f4706ecb3b5e8475b070a0df9ce7165015983633ee",
+  "canonical_report_raw_sha256": "5f39e0667bd5ec026d0935dcb886e94930cba852f7dba7a5e5ab1c013a4949a4",
+  "canonical_report_semantic_sha256": "2fa1a6b58156376138bef143e2779609629faa15ddbce183310d5c2ace2db6a6",
+  "canonical_serialization_contract": "json.dumps(sort_keys,separators)",
+  "evaluator_version": "mai-07-r3f-eval.1.0.0",
+  "gate_decision": {
+    "all_pass": true,
+    "gates": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 75,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 74,
+        "numerator": 75,
+        "op": ">=",
+        "pass": true,
+        "population": 75,
+        "threshold": 0.98
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1475,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1475,
+        "op": "==",
+        "pass": true,
+        "population": 1475,
+        "threshold": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": ">=",
+        "pass": true,
+        "population": 0,
+        "threshold": 0.97
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "english_identity_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "english_identity_top1": {
+        "denominator": 1003,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 998,
+        "numerator": 1003,
+        "op": ">=",
+        "pass": true,
+        "population": 1003,
+        "threshold": 0.995
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1003,
+        "exact_value": 0.0,
+        "integer_pass_requirement": 5,
+        "numerator": 0,
+        "op": "<=",
+        "pass": true,
+        "population": 1003,
+        "threshold": 0.005
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 448,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 426,
+        "numerator": 448,
+        "op": ">=",
+        "pass": true,
+        "population": 448,
+        "threshold": 0.95
+      },
+      "ordinary_english_identity": {
+        "denominator": 137,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 137,
+        "numerator": 137,
+        "op": ">=",
+        "pass": true,
+        "population": 137,
+        "threshold": 0.995
+      },
+      "proper_name_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "proper_name_identity": {
+        "denominator": 14,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 14,
+        "numerator": 14,
+        "op": ">=",
+        "pass": true,
+        "population": 14,
+        "threshold": 0.98
+      },
+      "protected_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "protected_span_mutations": {
+        "denominator": 134,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 134,
+        "threshold": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 1475,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1475,
+        "threshold": 0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 448,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 442,
+        "numerator": 448,
+        "op": ">=",
+        "pass": true,
+        "population": 448,
+        "threshold": 0.985
+      },
+      "romanized_target_top1_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "target_recall_at_5_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "technical_english_identity": {
+        "denominator": 392,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 389,
+        "numerator": 392,
+        "op": ">=",
+        "pass": true,
+        "population": 392,
+        "threshold": 0.99
+      }
+    }
+  },
+  "guard_version": "mai-07-r3f.1.0.0",
+  "overlay_disabled": true,
+  "per_case_audit_raw_sha256": "719b827c34769f5058e218309b196ac4db0a09a90d1321598e1b48aed78da3ae",
+  "prediction_count": 1475,
+  "prediction_ordering_contract": "sorted_by_case_id_ascending",
+  "prediction_path": "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_PREDICTIONS.jsonl",
+  "predictions_canonical_list_sha256": "ba64b365718018c213c0a6955bcfb4c8b8f9c6f465e328113e662e161d26f2c4",
+  "predictions_jsonl_raw_sha256": "0f1c72f8ee38e457c7d132dc03553f4299d59f80fa956752e97660cab9a7c09c",
+  "predictions_semantic_sha256": "ba64b365718018c213c0a6955bcfb4c8b8f9c6f465e328113e662e161d26f2c4",
+  "rc_manifest_sha256": "f4c07e24cb78550496720881fbc2b6019650006f8bd39eedd716fd046b6107ff",
+  "report": {
+    "case_count": 1475,
+    "differential": {
+      "candidate_set_preservation": 1.0,
+      "english_identity_harm": 0,
+      "note": "Differential compares English Identity Guard reorder vs unguarded R3D generate+rank on non-frozen cases only.",
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "evaluator_version": "mai-07-r3f-eval.1.0.0",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "harm": {
+      "english_identity_harm": 0,
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "latency_ms_mean": 0.44209783050847457,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 75,
+        "numerator": 75,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1475,
+        "numerator": 1475,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 1003,
+        "numerator": 1003,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1003,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 448,
+        "numerator": 448,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 137,
+        "numerator": 137,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 14,
+        "numerator": 14,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 134,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1475,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 448,
+        "numerator": 448,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 392,
+        "numerator": 392,
+        "value": 1.0
+      }
+    },
+    "overlay_disabled": true,
+    "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "resource_version": "mai-07.1.3-r3f-sealnew",
+    "runtime_version": "mai-07.1.3-r3f-sealnew",
+    "scorer_version": "mai-07.r3f.sealnew.canonical.1.0.0"
+  },
+  "report_path": "evals/mai07_r3f_seal_new/reports/MAI_07R3F_SEAL_NEW_HOLDOUT_VALIDATION_SCORE_REPORT.json",
+  "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "resource_version": "mai-07.1.3-r3f-sealnew",
+  "runtime_version": "mai-07.1.3-r3f-sealnew",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "split": "HOLDOUT_VALIDATION"
+}

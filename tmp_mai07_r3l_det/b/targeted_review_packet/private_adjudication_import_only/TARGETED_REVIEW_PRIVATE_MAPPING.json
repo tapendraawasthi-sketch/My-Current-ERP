@@ -1,0 +1,962 @@
+{
+  "items": [
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-08393369d53e",
+      "opaque_review_id": "R3L-6986c60fabade020",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "ABSTAIN_FORCE_TRANSLITERATED",
+        "FALSE_FORCED_DEVANAGARI_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-acc-71d32eb0ce59",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-b3e815efb1ce",
+      "opaque_review_id": "R3L-fa77931340064c71",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "FALSE_FORCED_DEVANAGARI_TOP1",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-eng-255b77066823",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-290f5b287579",
+      "opaque_review_id": "R3L-3b61609d8d3f0e2e",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "FALSE_FORCED_DEVANAGARI_TOP1",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-eng-629c6c8ce9c3",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-aa0367f162ad",
+      "opaque_review_id": "R3L-6c0f02d36c90e16e",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "FALSE_FORCED_DEVANAGARI_TOP1",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-eng-64452c05715a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-74b062be04e2",
+      "opaque_review_id": "R3L-290f0bd4a3d2ebba",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "FALSE_FORCED_DEVANAGARI_TOP1",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-eng-c0b2bb23040a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-5cae481d1a9d",
+      "opaque_review_id": "R3L-b55a4485df1e04f4",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "FALSE_FORCED_DEVANAGARI_TOP1",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-eng-f8b0028f66a2",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-8e8f2249cce5",
+      "opaque_review_id": "R3L-7964087871056707",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "ABSTAIN_FORCE_TRANSLITERATED",
+        "FALSE_FORCED_DEVANAGARI_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-rom-0b290042a4a5",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-f09182a58ebe",
+      "opaque_review_id": "R3L-d6844aa9613f7692",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "ABSTAIN_FORCE_TRANSLITERATED",
+        "FALSE_FORCED_DEVANAGARI_TOP1"
+      ],
+      "residual_tier": "TIER_1_CRITICAL",
+      "source_item_id": "V3SRC-rom-250208cca70e",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-189cbbbc44b1",
+      "opaque_review_id": "R3L-276151d4e53829b4",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-04da49efad68",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-1a0c910e7068",
+      "opaque_review_id": "R3L-57fe3b723d78b295",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-1a71cb108126",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-b1d541e54e67",
+      "opaque_review_id": "R3L-7edd80514bdea1cf",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-1e2fc7a58b49",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-e0ace7843072",
+      "opaque_review_id": "R3L-fcd8241bc5efa3b6",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-373f72d74721",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-195fea58f00f",
+      "opaque_review_id": "R3L-2f7edac8df370a1b",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-450c705cb79b",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-8ff08b9f62f8",
+      "opaque_review_id": "R3L-b4f640335de155b0",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-6167f239620b",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-9b07bce00608",
+      "opaque_review_id": "R3L-a5b4055c731be1d7",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-73957c75654b",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-99a67f04188b",
+      "opaque_review_id": "R3L-c569eac82d7f1168",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-7cd9057ab89c",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-65447038834a",
+      "opaque_review_id": "R3L-15f38472612d6fea",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-88ee1519703d",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-7fcc5aa870e0",
+      "opaque_review_id": "R3L-dbcc72eeed962d61",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-8f448aa9f652",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-afe5189c557c",
+      "opaque_review_id": "R3L-2efd9b1fb8832009",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "DEVANAGARI_CANDIDATE_MISSING"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-8fdc83b82014",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "OPTIONAL",
+      "diagnostic_case_id": "V3DX-fa90b30cd04e",
+      "opaque_review_id": "R3L-ec5c12234bb716bb",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-acc-ec568e2c99ff",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-1f1a88b654c0",
+      "opaque_review_id": "R3L-26b74849a4a5734e",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-cf-6953520378a1",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "IDENTITY_FIRST",
+      "diagnostic_case_id": "V3DX-0d478ad495a0",
+      "opaque_review_id": "R3L-69261a81e02afb96",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-cf-a8c648fc7e2a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "IDENTITY_FIRST",
+      "diagnostic_case_id": "V3DX-eef60ff691a3",
+      "opaque_review_id": "R3L-5f29e1d3885bb215",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-cf-c8797b16ce0c",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "IDENTITY_FIRST",
+      "diagnostic_case_id": "V3DX-d4de7be3232b",
+      "opaque_review_id": "R3L-0bec29f0310d9ffe",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-cf-d4e4c452b65d",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-7c54455f0b71",
+      "opaque_review_id": "R3L-2ebfa476770bb8f6",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-cf-e93de7f36e6a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ENGLISH_IDENTITY",
+      "diagnostic_case_id": "V3DX-60d0109cf8ec",
+      "opaque_review_id": "R3L-ab2529b5838feb54",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-eng-7ddb43e45283",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "PROTECTED_OR_IDENTIFIER",
+      "diagnostic_case_id": "V3DX-00d211847ad3",
+      "opaque_review_id": "R3L-49611a11c8c7aaf0",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-prot-00337c3b232a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "PROTECTED_OR_IDENTIFIER",
+      "diagnostic_case_id": "V3DX-a3a4b585501a",
+      "opaque_review_id": "R3L-79015312a057865d",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-prot-0063d4122c47",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "PROTECTED_OR_IDENTIFIER",
+      "diagnostic_case_id": "V3DX-65ec22df9dc6",
+      "opaque_review_id": "R3L-3a938b5dec77fd2f",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-prot-05b3cc3ddaf0",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "PROTECTED_OR_IDENTIFIER",
+      "diagnostic_case_id": "V3DX-0b1c0d9e2692",
+      "opaque_review_id": "R3L-89a8c6ca849671fd",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-prot-06d5be4a531e",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "PROTECTED_OR_IDENTIFIER",
+      "diagnostic_case_id": "V3DX-84146acf80ce",
+      "opaque_review_id": "R3L-154b79e0da4bdae4",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_RETAINED_AT_5",
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-prot-08bff8fb098d",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-e2f73df673d0",
+      "opaque_review_id": "R3L-45cc5788513c7fb3",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-rom-05544715f50f",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "IDENTITY_FIRST",
+      "diagnostic_case_id": "V3DX-571ddb84e590",
+      "opaque_review_id": "R3L-39cfdc200e965c7b",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-rom-0cdfda7317bf",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "IDENTITY_FIRST",
+      "diagnostic_case_id": "V3DX-280df338b123",
+      "opaque_review_id": "R3L-38f33b66869b0019",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "IDENTITY_NOT_TOP1"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-rom-1137f7cb71f7",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "DEVANAGARI_TRANSLITERATION",
+      "diagnostic_case_id": "V3DX-d395deed4eef",
+      "opaque_review_id": "R3L-6eba9b6908067bd4",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "SPAN_AMBIGUOUS"
+      ],
+      "residual_tier": "TIER_2_HIGH",
+      "source_item_id": "V3SRC-rom-3807adae306c",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "OPTIONAL",
+      "diagnostic_case_id": "V3DX-2ad0d907b5ed",
+      "opaque_review_id": "R3L-836cb84afeafa40c",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acc-07615e823607",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "OPTIONAL",
+      "diagnostic_case_id": "V3DX-3dbb8100558d",
+      "opaque_review_id": "R3L-913016f7cf7460c8",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acc-0c821ca80bce",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "OPTIONAL",
+      "diagnostic_case_id": "V3DX-10b075f5480d",
+      "opaque_review_id": "R3L-be17ee490e8bcd8f",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acc-117d2b881e8c",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "OPTIONAL",
+      "diagnostic_case_id": "V3DX-403bba2fe70a",
+      "opaque_review_id": "R3L-9bc525b00d553ec7",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acc-15bca54d54af",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-e2f057b43986",
+      "opaque_review_id": "R3L-3fc3eba3258588ac",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-0c8bd3b6ebe7",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-259c6c457067",
+      "opaque_review_id": "R3L-6bb1fe9a486a3115",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-11b8fbd15381",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-5f7e7dfcc321",
+      "opaque_review_id": "R3L-eddac74369d3fc15",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-1504705c7363",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-df00aaff4077",
+      "opaque_review_id": "R3L-2db6bbf51942d759",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-1633ba55bdd1",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-31363a521804",
+      "opaque_review_id": "R3L-14428378b32fe173",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-188d64bc4c3b",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-d2debaca27f1",
+      "opaque_review_id": "R3L-2e5f786235362a5c",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-24604575af55",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-20827954db56",
+      "opaque_review_id": "R3L-0a45d0c41b3f1014",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-25d1db13730e",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-1c3b4b70fc74",
+      "opaque_review_id": "R3L-1f6ecb204224a618",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-267277f11757",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ACRONYM",
+      "diagnostic_case_id": "V3DX-f9d83287952c",
+      "opaque_review_id": "R3L-c9d07456eae12ae8",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "HEURISTIC_V1_SAFETY_SENSITIVE"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-acr-35a15f3f4982",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-854b7de897b3",
+      "opaque_review_id": "R3L-bf3c825fbd6cf24b",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-amb-020ccce4ffd6",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-c6334c4bca6f",
+      "opaque_review_id": "R3L-73a55a22f10d1ce3",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-amb-0350ad683256",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-961b1a2dae38",
+      "opaque_review_id": "R3L-105cef3a7d5b1b2c",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-amb-09c1988654af",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-1c43280bfa9c",
+      "opaque_review_id": "R3L-30320be365a51175",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-amb-15f299d4088c",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "ABSTAIN",
+      "diagnostic_case_id": "V3DX-935bbaa8fe59",
+      "opaque_review_id": "R3L-8fc1b60b446a7373",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "HEURISTIC_V1",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-amb-1c1ef51d3bfa",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-a62ee66a62b2",
+      "opaque_review_id": "R3L-98273a822aea2bb1",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-030ebdf0aa79",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-4e109c9f7df5",
+      "opaque_review_id": "R3L-e663134ab6bd84bf",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-22d737e00a26",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-dee4225c416d",
+      "opaque_review_id": "R3L-684c541813381213",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-2a1607c65ef9",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-855c218c790a",
+      "opaque_review_id": "R3L-21aab0788d2210a6",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-331aa3f64f23",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-5d900640bfea",
+      "opaque_review_id": "R3L-cb03103d84d29dbd",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-36b6e6fde31e",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-e238f63fb5e2",
+      "opaque_review_id": "R3L-9d35d67899e34d61",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-4f6860515a8a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-644921adf6e8",
+      "opaque_review_id": "R3L-0277c4cd75d02e92",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-5196e7a3886e",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-41ea292ea303",
+      "opaque_review_id": "R3L-d34bc7d7529e4b15",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-66fd1622474a",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-e36cc5817f8a",
+      "opaque_review_id": "R3L-6810eaf8833e30a4",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-8010d3ac53ad",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-ff39961b2b45",
+      "opaque_review_id": "R3L-b63b19ad9a156b0e",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_NO_DIVERSITY_OR_REVIEW_SIGNAL",
+        "LOW_OR_MEDIUM_CONFIDENCE",
+        "SUSPECTED_AMBIGUITY"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-902234804b5b",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-3af152047e8c",
+      "opaque_review_id": "R3L-e97d43f74fde96b7",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_IDENTITY_MISSING",
+        "IDENTITY_NOT_RETAINED_AT_5"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-acd3e6876359",
+      "use": "adjudication_import_only"
+    },
+    {
+      "behavior_class": "CONTEXT_DEPENDENT",
+      "diagnostic_case_id": "V3DX-f6da3b9a553a",
+      "opaque_review_id": "R3L-a616d6dd6caa45a2",
+      "prohibited_for_runtime": true,
+      "prohibited_for_training": true,
+      "provenance_bucket": "ACCOUNTING_CONTENT_MAP",
+      "reason_codes": [
+        "CONTEXT_IDENTITY_MISSING",
+        "IDENTITY_NOT_RETAINED_AT_5"
+      ],
+      "residual_tier": "TIER_3_MEDIUM",
+      "source_item_id": "V3SRC-sh-b9336d859eb9",
+      "use": "adjudication_import_only"
+    }
+  ],
+  "prohibited_for_runtime": true,
+  "prohibited_for_training": true,
+  "use": "adjudication_import_only"
+}

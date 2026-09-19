@@ -1,0 +1,18 @@
+{
+  "attempt_consumed": true,
+  "attempt_id": "MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT_001",
+  "case_count_completed": 696,
+  "case_count_submitted": 696,
+  "elapsed_seconds": 0.1981,
+  "end_utc": "2026-07-16T08:36:28.316148+00:00",
+  "exceptions": [],
+  "frozen_v2_opened": true,
+  "mutation_attempts": 0,
+  "predictions_canonical_list_sha256": "8c071d494a77b3580a7d94e7874120c76da1445df0c74a73166eb96127db3153",
+  "predictions_jsonl_raw_sha256": "4e8e0f8c12da0f48a2063a97fb895f322195b3da627dd71dfde8ba7c99c5a4a4",
+  "predictions_path": "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_V2_ONE_SHOT_PREDICTIONS.jsonl",
+  "start_utc": "2026-07-16T08:36:28.118323+00:00",
+  "status": "COMPLETED",
+  "successful_mutations": 0,
+  "timeouts": 0
+}

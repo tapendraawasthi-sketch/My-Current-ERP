@@ -1,0 +1,1468 @@
+{
+  "created_at": "2026-07-15T12:44:43.483297+00:00",
+  "entries": [
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_advance",
+      "is_conflict": true,
+      "review_id": "R3A-CDED5E4068C3"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1,
+        2
+      ],
+      "case_id": "mai07_domain_terms_v1_balance",
+      "is_conflict": true,
+      "review_id": "R3A-C55159DEA9B4"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        2,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_bank",
+      "is_conflict": true,
+      "review_id": "R3A-F4643880A9BC"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_cash",
+      "is_conflict": true,
+      "review_id": "R3A-35D8AB1646F4"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_closing",
+      "is_conflict": true,
+      "review_id": "R3A-03590AA81D78"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_commission",
+      "is_conflict": true,
+      "review_id": "R3A-3D948BB91CB2"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_credit",
+      "is_conflict": true,
+      "review_id": "R3A-9F9619436CA3"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_customer",
+      "is_conflict": true,
+      "review_id": "R3A-DBE3D2111C87"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_debit",
+      "is_conflict": true,
+      "review_id": "R3A-E4A4DA896D92"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_discount",
+      "is_conflict": true,
+      "review_id": "R3A-7874572285AD"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_ledger",
+      "is_conflict": true,
+      "review_id": "R3A-19BD164EF09F"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_opening",
+      "is_conflict": true,
+      "review_id": "R3A-85EA52AECC70"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_party",
+      "is_conflict": true,
+      "review_id": "R3A-0F7FBD8EB910"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_payment",
+      "is_conflict": true,
+      "review_id": "R3A-BF4FDB7BF4E3"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_purchase",
+      "is_conflict": true,
+      "review_id": "R3A-57E415379DE6"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_domain_terms_v1_receipt",
+      "is_conflict": true,
+      "review_id": "R3A-91E0F15B74E7"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_report",
+      "is_conflict": true,
+      "review_id": "R3A-CBCF674A4003"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        2,
+        3,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_sale",
+      "is_conflict": true,
+      "review_id": "R3A-9FB89CF5EB2E"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_stock",
+      "is_conflict": true,
+      "review_id": "R3A-D41A31C71C46"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_supplier",
+      "is_conflict": true,
+      "review_id": "R3A-B4C60C073F8C"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        2,
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_tax",
+      "is_conflict": true,
+      "review_id": "R3A-D93DC8E227F5"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_domain_terms_v1_voucher",
+      "is_conflict": true,
+      "review_id": "R3A-910CA16A8201"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_names_v1_000",
+      "is_conflict": true,
+      "review_id": "R3A-52B1B116547F"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        2,
+        1,
+        0
+      ],
+      "case_id": "mai07_names_v1_001",
+      "is_conflict": true,
+      "review_id": "R3A-E835A1D01157"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        2,
+        0
+      ],
+      "case_id": "mai07_names_v1_002",
+      "is_conflict": true,
+      "review_id": "R3A-87A3E123EEB2"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_names_v1_004",
+      "is_conflict": true,
+      "review_id": "R3A-EB0C046F2CA3"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_names_v1_006",
+      "is_conflict": true,
+      "review_id": "R3A-8C7D6F3ED27B"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_names_v1_007",
+      "is_conflict": true,
+      "review_id": "R3A-59A86236B8E1"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        2,
+        0
+      ],
+      "case_id": "mai07_names_v1_008",
+      "is_conflict": true,
+      "review_id": "R3A-DEC366606C62"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0,
+        2
+      ],
+      "case_id": "mai07_names_v1_009",
+      "is_conflict": true,
+      "review_id": "R3A-ECF297173878"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        2,
+        0,
+        1
+      ],
+      "case_id": "mai07_names_v1_010",
+      "is_conflict": true,
+      "review_id": "R3A-6001D63FAD3E"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_preeti",
+      "is_conflict": true,
+      "review_id": "R3A-5F4340339B0A"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_profit",
+      "is_conflict": true,
+      "review_id": "R3A-46B32A27444A"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_rajeev",
+      "is_conflict": true,
+      "review_id": "R3A-A2E3A7DCE3D0"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0,
+        2
+      ],
+      "case_id": "mai07_romanized_common_v1_ram",
+      "is_conflict": true,
+      "review_id": "R3A-9ECEADADD41F"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_sales",
+      "is_conflict": true,
+      "review_id": "R3A-44D26D6634B0"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        2,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_shyam",
+      "is_conflict": true,
+      "review_id": "R3A-DB48C68438C8"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1,
+        2
+      ],
+      "case_id": "mai07_romanized_common_v1_sita",
+      "is_conflict": true,
+      "review_id": "R3A-ACB9FB792070"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_total",
+      "is_conflict": true,
+      "review_id": "R3A-2CAD17A31352"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_unit",
+      "is_conflict": true,
+      "review_id": "R3A-458970948EDF"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_anita",
+      "is_conflict": true,
+      "review_id": "R3A-48A9DED65168"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        2,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_bill",
+      "is_conflict": true,
+      "review_id": "R3A-81D90B95625F"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_due",
+      "is_conflict": true,
+      "review_id": "R3A-D81C5B5C3197"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        2,
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_gita",
+      "is_conflict": true,
+      "review_id": "R3A-92AFC696170A"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_gross",
+      "is_conflict": true,
+      "review_id": "R3A-E466FA9B2BF3"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        0,
+        2,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_hari",
+      "is_conflict": true,
+      "review_id": "R3A-ABF06A06C71E"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_krishna",
+      "is_conflict": true,
+      "review_id": "R3A-E6C27DD9EB4E"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_loss",
+      "is_conflict": true,
+      "review_id": "R3A-11C576A29373"
+    },
+    {
+      "bucket": "conflict",
+      "candidate_order_indices": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_net",
+      "is_conflict": true,
+      "review_id": "R3A-F1423F7ECCBC"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_tijori",
+      "is_conflict": false,
+      "review_id": "R3A-3D44EBBA4A60"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_kineko",
+      "is_conflict": false,
+      "review_id": "R3A-F16AFA9E4AC3"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_bikriyat",
+      "is_conflict": false,
+      "review_id": "R3A-A3337AE882EF"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_hajar",
+      "is_conflict": false,
+      "review_id": "R3A-3C51844C067F"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_rakhnu",
+      "is_conflict": false,
+      "review_id": "R3A-4F0FB37A553F"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_sabai",
+      "is_conflict": false,
+      "review_id": "R3A-79B012C03064"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_namaste",
+      "is_conflict": false,
+      "review_id": "R3A-5F1F96BF1D8A"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_dherai",
+      "is_conflict": false,
+      "review_id": "R3A-433EDC9F6C5E"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_aaja",
+      "is_conflict": false,
+      "review_id": "R3A-DDB46BE83E59"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_nepal",
+      "is_conflict": false,
+      "review_id": "R3A-AC9E3AA78D9B"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_haru",
+      "is_conflict": false,
+      "review_id": "R3A-8C4F698FCD49"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_pokhara",
+      "is_conflict": false,
+      "review_id": "R3A-49A02088DC63"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_kine",
+      "is_conflict": false,
+      "review_id": "R3A-A547FA55FAA3"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_saya",
+      "is_conflict": false,
+      "review_id": "R3A-6F62469204B0"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_aja",
+      "is_conflict": false,
+      "review_id": "R3A-CFE4B5AA9EC9"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_sunnu",
+      "is_conflict": false,
+      "review_id": "R3A-2573D516AAC5"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_bholi",
+      "is_conflict": false,
+      "review_id": "R3A-473762AA5C8F"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_paani",
+      "is_conflict": false,
+      "review_id": "R3A-844DB568325C"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_dokaan",
+      "is_conflict": false,
+      "review_id": "R3A-710A7D0167DC"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_xu",
+      "is_conflict": false,
+      "review_id": "R3A-2DC856D4D6FF"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_usle",
+      "is_conflict": false,
+      "review_id": "R3A-7F4E9C760597"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_nau",
+      "is_conflict": false,
+      "review_id": "R3A-6B5C3F4B79C1"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_ghata",
+      "is_conflict": false,
+      "review_id": "R3A-4B43CD1650FC"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_cheque",
+      "is_conflict": false,
+      "review_id": "R3A-EAE133036C15"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_thana",
+      "is_conflict": false,
+      "review_id": "R3A-9DD5A68A1E47"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_dhanyabad",
+      "is_conflict": false,
+      "review_id": "R3A-347C5BF89E23"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_owner",
+      "is_conflict": false,
+      "review_id": "R3A-BA4616E7C135"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_pcs",
+      "is_conflict": false,
+      "review_id": "R3A-BD31D1068C43"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_dekhau",
+      "is_conflict": false,
+      "review_id": "R3A-746D07D2BE40"
+    },
+    {
+      "bucket": "romanized_target_required",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_lekh",
+      "is_conflict": false,
+      "review_id": "R3A-6D65C017CF24"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_today",
+      "is_conflict": false,
+      "review_id": "R3A-DEBF4EE37F6D"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_purchase",
+      "is_conflict": false,
+      "review_id": "R3A-39EB0539DAC9"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_amount",
+      "is_conflict": false,
+      "review_id": "R3A-249ADDBC500F"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_voucher",
+      "is_conflict": false,
+      "review_id": "R3A-589DC1F8F577"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_on",
+      "is_conflict": false,
+      "review_id": "R3A-52168F6474CC"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_was",
+      "is_conflict": false,
+      "review_id": "R3A-1FCB214AAFF8"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_my",
+      "is_conflict": false,
+      "review_id": "R3A-CD170900DCD2"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_due",
+      "is_conflict": false,
+      "review_id": "R3A-81797ACEEE9A"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_closing",
+      "is_conflict": false,
+      "review_id": "R3A-46CD1830FE9D"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_sale",
+      "is_conflict": false,
+      "review_id": "R3A-CC3C5545DFF2"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_ok",
+      "is_conflict": false,
+      "review_id": "R3A-81E39CBCED53"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_report",
+      "is_conflict": false,
+      "review_id": "R3A-1788E7D5D0A1"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_opening",
+      "is_conflict": false,
+      "review_id": "R3A-6A1AF337B21B"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_you",
+      "is_conflict": false,
+      "review_id": "R3A-91DE04624709"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_please",
+      "is_conflict": false,
+      "review_id": "R3A-825BB747601C"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_yes",
+      "is_conflict": false,
+      "review_id": "R3A-E11303FC4AF9"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_bill",
+      "is_conflict": false,
+      "review_id": "R3A-1A54988625B4"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_in",
+      "is_conflict": false,
+      "review_id": "R3A-96D266DDD445"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_of",
+      "is_conflict": false,
+      "review_id": "R3A-2D51C4838C53"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_for",
+      "is_conflict": false,
+      "review_id": "R3A-89B7DB4A1A4A"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_stock",
+      "is_conflict": false,
+      "review_id": "R3A-02AB46A9C72F"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_is",
+      "is_conflict": false,
+      "review_id": "R3A-E5A7E27F52DC"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_party",
+      "is_conflict": false,
+      "review_id": "R3A-473E29CACC82"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_tomorrow",
+      "is_conflict": false,
+      "review_id": "R3A-5AB19BC3D6C1"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_net",
+      "is_conflict": false,
+      "review_id": "R3A-AB46E3F8600E"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_by",
+      "is_conflict": false,
+      "review_id": "R3A-39CE6CDF4E01"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_to",
+      "is_conflict": false,
+      "review_id": "R3A-A5AB853CA40E"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_bank",
+      "is_conflict": false,
+      "review_id": "R3A-9ED02F13AB81"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_were",
+      "is_conflict": false,
+      "review_id": "R3A-3A26ACACC361"
+    },
+    {
+      "bucket": "english_identity_required",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_english_identity_v1_customer",
+      "is_conflict": false,
+      "review_id": "R3A-229898769D5B"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_context_challenge_v1_017",
+      "is_conflict": false,
+      "review_id": "R3A-A86B407317B4"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_names_v1_003",
+      "is_conflict": false,
+      "review_id": "R3A-C632964AAC91"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_context_challenge_v1_062",
+      "is_conflict": false,
+      "review_id": "R3A-1C07AF58CC39"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_names_v1_005",
+      "is_conflict": false,
+      "review_id": "R3A-1E521567ADDA"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_context_challenge_v1_047",
+      "is_conflict": false,
+      "review_id": "R3A-CBAC4A22C534"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_names_v1_011",
+      "is_conflict": false,
+      "review_id": "R3A-BB51DD6E9ED0"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_context_challenge_v1_002",
+      "is_conflict": false,
+      "review_id": "R3A-A22962BC478A"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_context_challenge_v1_032",
+      "is_conflict": false,
+      "review_id": "R3A-D7ABD644B593"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_chaina",
+      "is_conflict": false,
+      "review_id": "R3A-88C773037682"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_xaina",
+      "is_conflict": false,
+      "review_id": "R3A-19AF235F1D07"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_common_v1_usko",
+      "is_conflict": false,
+      "review_id": "R3A-B21EA865A670"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_thulo",
+      "is_conflict": false,
+      "review_id": "R3A-61C16981C721"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_plan",
+      "is_conflict": false,
+      "review_id": "R3A-D741A2C87671"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_common_v1_rupiya",
+      "is_conflict": false,
+      "review_id": "R3A-6E81B0F59A7C"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_garidim",
+      "is_conflict": false,
+      "review_id": "R3A-DD00E9658A07"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_jabaj",
+      "is_conflict": false,
+      "review_id": "R3A-69A9687F4AF6"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_byapar",
+      "is_conflict": false,
+      "review_id": "R3A-1B5DC8515B6B"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_malai",
+      "is_conflict": false,
+      "review_id": "R3A-1955993A8F69"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        1,
+        0
+      ],
+      "case_id": "mai07_romanized_core_v1_jaanu",
+      "is_conflict": false,
+      "review_id": "R3A-A5F31D8C84CB"
+    },
+    {
+      "bucket": "name_like",
+      "candidate_order_indices": [
+        0,
+        1
+      ],
+      "case_id": "mai07_romanized_core_v1_lai",
+      "is_conflict": false,
+      "review_id": "R3A-C79C78C6A996"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_027",
+      "is_conflict": false,
+      "review_id": "R3A-FBD090E9B85F"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_036",
+      "is_conflict": false,
+      "review_id": "R3A-3E876C1291B7"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_015",
+      "is_conflict": false,
+      "review_id": "R3A-66F68104288C"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_016",
+      "is_conflict": false,
+      "review_id": "R3A-309B3CEE3117"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_020",
+      "is_conflict": false,
+      "review_id": "R3A-FA58072CA297"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_006",
+      "is_conflict": false,
+      "review_id": "R3A-70E44521539E"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_017",
+      "is_conflict": false,
+      "review_id": "R3A-D928292459B8"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_014",
+      "is_conflict": false,
+      "review_id": "R3A-C7D45E4B6625"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_004",
+      "is_conflict": false,
+      "review_id": "R3A-626435F340E3"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_005",
+      "is_conflict": false,
+      "review_id": "R3A-FD1643D2A572"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_032",
+      "is_conflict": false,
+      "review_id": "R3A-08D2D9E18C3E"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_010",
+      "is_conflict": false,
+      "review_id": "R3A-A2958A737E24"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_025",
+      "is_conflict": false,
+      "review_id": "R3A-F3D8DE0BFE22"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_000",
+      "is_conflict": false,
+      "review_id": "R3A-2777FD563D44"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_018",
+      "is_conflict": false,
+      "review_id": "R3A-8BA19C672CD8"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_023",
+      "is_conflict": false,
+      "review_id": "R3A-1ECE91757DA9"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_028",
+      "is_conflict": false,
+      "review_id": "R3A-F5CF1B72BF07"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_026",
+      "is_conflict": false,
+      "review_id": "R3A-0179AF09253F"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_021",
+      "is_conflict": false,
+      "review_id": "R3A-AD5C57F911FF"
+    },
+    {
+      "bucket": "ambiguous_optional",
+      "candidate_order_indices": [
+        0
+      ],
+      "case_id": "mai07_ambiguous_latin_v1_029",
+      "is_conflict": false,
+      "review_id": "R3A-0A1601A427F9"
+    }
+  ],
+  "mapping_id": "MAI_07R3_BLIND_MAPPING",
+  "prohibited_use": [
+    "reviewer_facing",
+    "runtime",
+    "training"
+  ],
+  "seed": 20260715,
+  "use": "adjudication_import_only"
+}

@@ -1,0 +1,11 @@
+{
+  "active_ok": true,
+  "active_runtime": "mai-07.1.3-r3f-sealnew",
+  "active_runtime_expected": "mai-07.1.3-r3f-sealnew",
+  "candidate_promoted": false,
+  "candidate_runtime": "mai-07.1.8-r3n3-identityinv",
+  "overlay_disabled": true,
+  "parent_failed_r3n2_runtime_version": "mai-07.1.7-r3n2-freshholdout",
+  "parent_resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "r3n_integrity_closure_semantic": "fccbbcfbb7fbf9d816cbdc9278c8754964b5b7efcd6e499469e6e1701873ffae"
+}

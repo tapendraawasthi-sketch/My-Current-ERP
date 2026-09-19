@@ -1,0 +1,32 @@
+{
+  "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE": true,
+  "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT": true,
+  "HOLDOUT_CONTAMINATED": true,
+  "LINGUIST_APPROVED": false,
+  "MAI-07": "NEEDS_CORRECTIVE_WORK",
+  "MAI-08": "NOT_STARTED",
+  "MINIMUM_DENOMINATOR_POLICY_MISSING": true,
+  "POST_OBSERVATION_GATE_SEMANTICS_CHANGE": true,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt002_holdout_genuinely_fresh": false,
+  "candidate_not_eligible_for_frozen_v3": true,
+  "candidate_promoted": false,
+  "do_not_restore_passed_corrective_rc": true,
+  "lock_body_post_closeout_mutation": false,
+  "lock_chain_semantic_integrity": true,
+  "next_governed_phase": "MAI-07R3N2-FRESH-HOLDOUT-POLICY-CONFORMANCE-CORRECTIVE",
+  "passed_corrective_rc_remains_valid": false,
+  "primary_verdict": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+  "rationale": "Attempt 001 exposed individual holdout failures (identifier coalesce gap, weak romanized synthetic, empty-required gate). Runtime/scorer/dataset were then changed and Attempt 002 reran the same case-ID set / template-family set / seed family (exact_case_reuse=8, template_family_overlap=8, exact_text_reuse=7). Candidate version string mai-07.1.6-r3n-policyconf was reused after semantic runtime change. authorized_code_corrective transitioned EMPTY_REQUIRED→NOT_APPLICABLE after observation. Minimum denominators were not predeclared; lane analogues are 1-case populations.",
+  "raw_file_hash_is_lock_authority": false,
+  "rc002_historical_status": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+  "schema_version": "mai07_r3n_rc002_validity_decision_v2",
+  "secondary_reasons": [
+    "HOLDOUT_CONTAMINATED",
+    "POST_OBSERVATION_GATE_SEMANTICS_CHANGE",
+    "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE",
+    "MINIMUM_DENOMINATOR_POLICY_MISSING",
+    "CORRECTIVE_LANE_HOLDOUT_COVERAGE_INSUFFICIENT"
+  ]
+}

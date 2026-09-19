@@ -1,0 +1,152 @@
+{
+  "artifact_count": 15,
+  "artifacts": {
+    "attempt_intent": {
+      "byte_count": 6974,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_HOLDOUT_ATTEMPT_003.ATTEMPT_INTENT.json",
+      "raw_sha256": "8f39561e8a5e916e7f6db65853e2feb570c7f40728198796ba3b91018732f388",
+      "record_count": 1,
+      "semantic_sha256": "7b4539930abd13e87bc8072e5e8c1fdf5bdff17e2c8f907e359396728780e70a"
+    },
+    "attempt_result": {
+      "byte_count": 8066,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_HOLDOUT_ATTEMPT_003.ATTEMPT_RESULT.json",
+      "raw_sha256": "43db31570133bae8935974906993eb3ad73ce6a80c8d9b0533e4631702832e96",
+      "record_count": 1,
+      "semantic_sha256": "33d2de8f556fe15508a472208a7d844eea83785ab7dfca70400200f892f4266e"
+    },
+    "context_counterfactual_predictions": {
+      "byte_count": 2377375,
+      "kind": "JSONL",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/context_counterfactual_predictions.jsonl",
+      "raw_sha256": "d2ef4384f36911ac7e328bc438c47dedda3f835ec94826dd41b8040ba49a1134",
+      "record_count": 300,
+      "semantic_sha256": "eea0a8d0e54372c44d3576aecc500119d1931e40b5500c25151cf8a7ea457bce"
+    },
+    "context_counterfactual_score_report": {
+      "byte_count": 8838864,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/context_counterfactual_score_report.json",
+      "raw_sha256": "fa2ff0a51bbe77eb45908c2efc5ec4c8b3e404b507eb42f466c4500ca7ec4d5a",
+      "record_count": 1,
+      "semantic_sha256": "91b7be90f17f5abd5c206ea0ab7f18bbfc4462cfb9ff0564562001daadaeecda"
+    },
+    "holdout_validation_predictions": {
+      "byte_count": 19261495,
+      "kind": "JSONL",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/holdout_validation_predictions.jsonl",
+      "raw_sha256": "590299be5a2febf5cf24f26fd2cb53115f5e07a9c3ef2ffa7a9120c9b1d0a8cc",
+      "record_count": 2475,
+      "semantic_sha256": "697b6d3352a8eaeb1ff67d6126d492bce26c72cf1dd3a7efb21613f6b1787e3d"
+    },
+    "holdout_validation_score_report": {
+      "byte_count": 70918868,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/holdout_validation_score_report.json",
+      "raw_sha256": "2f55473adf1b4db24b50d768f7defd4a83978010bc675c939c9d630f41f7335f",
+      "record_count": 1,
+      "semantic_sha256": "725076281c639e85de2b17220c8e7b9713ea991a3dc52f6034cb510f0dc3b8bc"
+    },
+    "identity_anchor_challenge_predictions": {
+      "byte_count": 3803000,
+      "kind": "JSONL",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/identity_anchor_challenge_predictions.jsonl",
+      "raw_sha256": "db6ce5a7bd7f2246374cb82870f561f0335f9b58a8ca5a93ffc530c7deb8acc0",
+      "record_count": 500,
+      "semantic_sha256": "6ebfbf3bc8fec328dabcae5990b6fbfacebcc29831dcdfffa4c5a96a1ae38e34"
+    },
+    "identity_anchor_challenge_score_report": {
+      "byte_count": 14055617,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/identity_anchor_challenge_score_report.json",
+      "raw_sha256": "f49ec4ec7f636bff227cf4804199a7de3d59fde194e84fea34e4b5685c368d7d",
+      "record_count": 1,
+      "semantic_sha256": "607a82474b3670e505552e4f41744c81be495d9fa6fc29c6d3ed327207ec3a50"
+    },
+    "monotonic_regression_predictions": {
+      "byte_count": 3172645,
+      "kind": "JSONL",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/monotonic_regression_predictions.jsonl",
+      "raw_sha256": "c8a3a44a3ff1c7d8e942b75b3da2728175eb5474961532c9b75281dbb5afada4",
+      "record_count": 400,
+      "semantic_sha256": "ac598e12b2d42b97160158d7107b41bbd9b60d62a8df515294abf44c636e1f3a"
+    },
+    "monotonic_regression_score_report": {
+      "byte_count": 11771078,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/monotonic_regression_score_report.json",
+      "raw_sha256": "6eb3d927210761af806d96f61b4f2223fcc5f47c01f97940d33e48e88c055e93",
+      "record_count": 1,
+      "semantic_sha256": "9dd3841d7fb077335ae692e90a12da522b9206be60b3adeb130c0bf3cb51a4b1"
+    },
+    "oov_challenge_predictions": {
+      "byte_count": 753548,
+      "kind": "JSONL",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/oov_challenge_predictions.jsonl",
+      "raw_sha256": "c94fcf81792c33b3528a7f47da228064cfba16b501ae68243c5673a6713ee665",
+      "record_count": 100,
+      "semantic_sha256": "24cc8376ebe3809881b08c3b22a67134268177a53333aaba7117e96f91029fa6"
+    },
+    "oov_challenge_score_report": {
+      "byte_count": 2860193,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/oov_challenge_score_report.json",
+      "raw_sha256": "13513cdaa19127b4f65905d1d4fe921ad70e4eae14d2b7084c7a94cfd404c13f",
+      "record_count": 1,
+      "semantic_sha256": "ad9f68806c20524f5d3ceb86884a078ac3fb70423a3cc8a55b16709477f6367b"
+    },
+    "qualification": {
+      "byte_count": 21505,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_003.QUALIFICATION_RESULT.json",
+      "raw_sha256": "66654aebdfce27a7f613631dcdce66ccf975b3faff1f1a0cfe682447eb22b6eb",
+      "record_count": 1,
+      "semantic_sha256": "1160dd9e6700bc61ab843bf1b47776345dd44286e7f8c2929a5419b064ea8e29"
+    },
+    "safety_challenge_predictions": {
+      "byte_count": 3027340,
+      "kind": "JSONL",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/safety_challenge_predictions.jsonl",
+      "raw_sha256": "9af17e7c835cf9b923d8599fc886c1019f54104216131fb16dd744c4dd6cf00b",
+      "record_count": 400,
+      "semantic_sha256": "fb9669654d559075ab4cdcacc417c41cf6174f9a9f13c60f15b3d43f32d0bcf0"
+    },
+    "safety_challenge_score_report": {
+      "byte_count": 11228492,
+      "kind": "JSON",
+      "path": "evals/mai07_r3n6_fresh_holdout/reports/safety_challenge_score_report.json",
+      "raw_sha256": "6d0a41062281c3f9b3a0fb90e2a218af5253df183d037fa89037aa554a81eb9e",
+      "record_count": 1,
+      "semantic_sha256": "97d0fab5a67b0c38bc7be731a8909a5bf38f26c843f2b72751e67f166fb29754"
+    }
+  },
+  "attempt_id": "MAI_07R3N6_HOLDOUT_ATTEMPT_003",
+  "attempt_time_binding": true,
+  "binding_scope": "ALL_VERDICT_BEARING_POST_LOCK_OUTPUTS",
+  "manifest_semantic_sha256": "9d0099f9776f93681adf15935d9aaf0eb2eb9ed586951bc564d2823373ea5caa",
+  "parent_lock_raw_sha256": "d016d46973e59fe6409c9b4ce0f9eef62b8bebd94b19c699d8d2e2c7cfbe1f1f",
+  "parent_lock_semantic_sha256": "ecd950fb123cffb5866b04f67b502d6efbaa63d0db5e488009280425dadf1fe9",
+  "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_003",
+  "record_type": "ATTEMPT_OUTPUT_BINDING_MANIFEST",
+  "required_artifact_names": [
+    "attempt_intent",
+    "attempt_result",
+    "context_counterfactual_predictions",
+    "context_counterfactual_score_report",
+    "holdout_validation_predictions",
+    "holdout_validation_score_report",
+    "identity_anchor_challenge_predictions",
+    "identity_anchor_challenge_score_report",
+    "monotonic_regression_predictions",
+    "monotonic_regression_score_report",
+    "oov_challenge_predictions",
+    "oov_challenge_score_report",
+    "qualification",
+    "safety_challenge_predictions",
+    "safety_challenge_score_report"
+  ],
+  "schema_version": "mai07_r3n6_output_binding_v1",
+  "verdict": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC"
+}

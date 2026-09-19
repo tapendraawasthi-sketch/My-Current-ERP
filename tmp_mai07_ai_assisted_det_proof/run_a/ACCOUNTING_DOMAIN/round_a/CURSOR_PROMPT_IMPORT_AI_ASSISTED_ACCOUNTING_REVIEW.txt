@@ -1,0 +1,131 @@
+You are implementing a narrowly governed evidence-import phase in the existing MokXya repository.
+
+PHASE NAME
+MAI-07R3J-AI-ASSISTED-ACCOUNTING-IMPORT
+
+INPUT PACKAGE
+MokXya_MAI07_V3_ACCOUNTING_DOMAIN_ROUND_A_AI_ASSISTED_HUMAN_VERIFIED_READY.zip
+
+PRIMARY OUTCOME
+Import the six ACCOUNTING_DOMAIN Round A workbooks as an AI-assisted, user-accepted ENGINEERING review artifact. Do not represent them as independent blinded human review, professional-linguist review, official Round A lock evidence, or production approval.
+
+NON-NEGOTIABLE GOVERNANCE FACTS
+- status = AI_ASSISTED_HUMAN_VERIFIED
+- user_confirmation = USER_ACCEPTED_AI_SUGGESTIONS_WITHOUT_CHANGES
+- independent_human_review = false
+- row_by_row_independent_review_performed = false
+- ai_autofill_used = true
+- professional_linguist_adjudication = false
+- linguist_approved = false
+- production_approved = false
+- official_round_a_lock_eligible = false
+- round_b_authorized = false
+- frozen_v3_quality_gate_authorized = false
+- MAI-07 remains NEEDS_CORRECTIVE_WORK
+- MAI-08 remains NOT_STARTED
+
+DO NOT
+1. Do not put these files into the official independent round_a_inbox.
+2. Do not set ROUND_A_LOCKED=true or ROUND_B_READY=true.
+3. Do not release or populate Round B.
+4. Do not complete or fabricate reviewer declarations, names, signatures, qualifications, or credentials.
+5. Do not claim that declaration_no_ai_autofill is true.
+6. Do not update LINGUIST_APPROVED or PRODUCTION_APPROVED to true.
+7. Do not modify V1, retired V2, proposed V3 frozen pools, sealed predictions, prior attempt manifests, runtime resources, transliteration rankers, posting, accounting, sync, OEC, auth, or UI behavior.
+8. Do not mine this evidence as independent gold or use it for training.
+9. Do not use git reset --hard, git clean, or destructive commands. Preserve unrelated dirty work.
+
+PRE-EDIT DISCOVERY
+1. Read all applicable AGENTS.md files.
+2. Inspect the current MAI phase ledger, gap register, evaluation governance, ADRs, R3J-A packet authority, official review operations, and existing import/evaluation modules.
+3. Inventory existing review import authorities. Extend the nearest existing authority; do not create a competing subsystem.
+4. Record the pre-edit git status and relevant focused test baseline.
+5. Confirm the active runtime/resource pack remains unchanged.
+
+PACKAGE INTEGRITY GATE
+1. Extract the ZIP into a temporary directory outside authoritative review paths.
+2. Read README_FIRST.txt first.
+3. Validate AI_ASSISTED_HUMAN_VERIFICATION_PROVENANCE.json.
+4. Validate AI_ASSISTED_HUMAN_VERIFIED_MANIFEST.json.
+5. Require exactly six XLSX workbooks and 611 total rows.
+6. Recompute every workbook SHA-256 and require exact equality with verified_sha256 in the manifest.
+7. Require all 611 review_id values to be unique and to reconcile with SOURCE_BATCH_MANIFEST.json.
+8. Verify all workbooks reopen successfully, contain the expected sheet names, retain the D/E dropdown validations, and contain no macros.
+9. Require every Round A row to have nonempty disposition, confidence, reason_category, natural_context_ok, suspected_ambiguity, and reviewer_notes.
+10. Require disposition to be one of the ten source-enum values and confidence to be HIGH, MEDIUM, or LOW.
+11. Require REVIEWER_DECLARATION user-entered fields to remain blank and ROUND_B_CANDIDATES to remain uncompleted.
+12. Fail closed on any mismatch, duplicate, missing row, unknown enum, changed authority text/span, populated declaration, Round B answer, or hash failure.
+
+CANONICAL IMPORT TARGET
+Create or extend a clearly separate, non-authoritative path such as:
+docs/mokxya-ai/reviews/mai07_v3_ai_assisted/accounting_domain/
+
+Do not copy the package into the official independent-review inbox. Preserve the input workbooks byte-for-byte under the separate path or under an append-only evidence subdirectory.
+
+IMPLEMENTATION REQUIREMENTS
+1. Add a typed, deterministic importer under the existing transliteration/review application authority.
+2. The importer must read the six workbooks, validate package integrity, and emit a canonical JSONL evidence artifact with one object per review_id.
+3. Every canonical object must carry explicit provenance fields:
+   - review_method: AI_ASSISTED_HUMAN_VERIFIED
+   - independent_human_review: false
+   - ai_autofill_used: true
+   - user_accepted: true
+   - professional_linguist_adjudication: false
+   - prohibited_for_training: true
+   - eligible_for_frozen_quality_gold: false
+4. Preserve input_text, highlighted_span, disposition, confidence, reason_category, natural_context_ok, suspected_ambiguity, reviewer_notes, workbook name, and source row number.
+5. Emit a deterministic import report containing counts, enum distributions, confidence distributions, ambiguity counts, hashes, and validation results.
+6. Emit a semantic hash over canonical sorted objects and prove deterministic re-import.
+7. The importer and validators must be read-only with respect to the input package and official review packet.
+8. Do not feed these labels into runtime ranking, prompts, UI, posting, RAG, or production resources in this phase.
+
+REQUIRED TESTS
+Add focused tests proving at least:
+1. six workbooks / 611 rows reconcile;
+2. all review IDs are unique;
+3. source manifest reconciliation;
+4. verified SHA-256 enforcement;
+5. unknown disposition rejection;
+6. unknown confidence rejection;
+7. missing supporting field rejection;
+8. duplicate review ID rejection;
+9. changed input_text/highlighted_span rejection;
+10. populated reviewer declaration rejection;
+11. populated Round B rejection;
+12. macro-enabled file rejection;
+13. deterministic import and semantic hash;
+14. explicit false governance flags cannot be upgraded by workbook content;
+15. official round_a_inbox remains untouched;
+16. runtime/resources/frozen datasets remain unchanged;
+17. no accounting mutation path can be invoked.
+
+DOCUMENTATION AND GOVERNANCE
+1. Create a phase report named for MAI-07R3J-AI-ASSISTED-ACCOUNTING-IMPORT.
+2. Create or update the next appropriate ADR documenting the boundary between independent human evidence and AI-assisted user-accepted engineering evidence.
+3. Update evaluation governance/metrics so this artifact may be used for engineering diagnostics only, not independent frozen-quality proof.
+4. Update MAI_PHASE_LEDGER.json with a truthful phase entry. Use PASSED_ENGINEERING_IMPORT only if all import gates pass.
+5. Keep QUALITY_GATES_PASSED=false, LINGUIST_APPROVED=false, PRODUCTION_APPROVED=false, and MAI-08=NOT_STARTED.
+6. Do not close gaps requiring independent or professional-linguist review. At most reduce a new/appropriate engineering-evidence gap.
+
+VALIDATION
+Run the focused importer tests, the complete language_runtime suite, schema export --check, existing resource read-only checks, MAI-04/05/06 focused regressions, Orbix contracts, and known TypeScript/accounting baselines where available. Report exact commands, exit codes, counts, and baseline-only failures separately.
+
+FINAL REPORT FORMAT
+Return:
+1. verdict and flags;
+2. pre-edit discovery;
+3. package hashes/integrity;
+4. import counts and distributions;
+5. deterministic semantic hash;
+6. canonical artifact paths;
+7. tests and validation evidence;
+8. files changed;
+9. security/privacy verdict;
+10. accounting/posting/sync/OEC impact;
+11. documentation/ledger/gap updates;
+12. limitations;
+13. rollback;
+14. explicit confirmation that no independent-review, linguist, production, Round B, frozen-V3, or MAI-08 claim was made.
+
+STOP CONDITIONS
+Stop without importing if any manifest/hash/count/schema/authority check fails, if the official review inbox would be overwritten, or if implementation would require fabricating human identity/credentials/declarations.

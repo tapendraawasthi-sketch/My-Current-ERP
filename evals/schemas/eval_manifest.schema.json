@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "EvalManifestFileV1": {
+      "additionalProperties": false,
+      "properties": {
+        "case_count": {
+          "title": "Case Count",
+          "type": "integer"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        },
+        "suite_id": {
+          "title": "Suite Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "case_count",
+        "suite_id"
+      ],
+      "title": "EvalManifestFileV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "dataset_hash": {
+      "default": "",
+      "title": "Dataset Hash",
+      "type": "string"
+    },
+    "dataset_version": {
+      "title": "Dataset Version",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/EvalManifestFileV1"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "frozen": {
+      "default": true,
+      "title": "Frozen",
+      "type": "boolean"
+    },
+    "manifest_id": {
+      "title": "Manifest Id",
+      "type": "string"
+    },
+    "runner_compatible": {
+      "default": [
+        "mai-04.1.0"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Runner Compatible",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "total_cases": {
+      "title": "Total Cases",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "manifest_id",
+    "dataset_version",
+    "files",
+    "total_cases",
+    "created_at"
+  ],
+  "title": "EvalManifestV1",
+  "type": "object"
+}

@@ -1,0 +1,12 @@
+{
+  "phase": "MAI-07R3P-2-AUTHORIZED-FROZEN-V3-ONE-SHOT",
+  "attempt_id": "MAI_07R3P_FROZEN_V3_ATTEMPT_001",
+  "verdict": "FAILED_QUALITY",
+  "QUALITY_GATES_PASSED": false,
+  "PRODUCTION_APPROVED": false,
+  "LINGUIST_APPROVED": true,
+  "candidate_promoted": false,
+  "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+  "mai_08": "NOT_STARTED",
+  "note": "One-shot frozen V3 attempt consumed. Quality gates failed; no automatic rerun; candidate not promoted."
+}

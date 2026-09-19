@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "MAI_07R3B_IMPORT_PACKAGE",
+  "status": "LOCKED_READY_FOR_CURSOR_IMPORT",
+  "generated_on": "2026-07-15",
+  "file_count": 27,
+  "files": [
+    {
+      "file": "MAI_07R3_ADJUDICATION_REPORT.json",
+      "bytes": 4403,
+      "sha256": "96d55736855f28fe948a122d0e97376f8ef551d250ee2e5a421cf68d7d3b681a"
+    },
+    {
+      "file": "MAI_07R3_ADJUDICATION_REPORT.md",
+      "bytes": 1890,
+      "sha256": "13dfae0b3924c841eabd07d76f4ff89c5443966fa29aaa0fa1bfda4f5d988a9b"
+    },
+    {
+      "file": "MAI_07R3_BULK_SCHEMA_MAPPING_DECISION.json",
+      "bytes": 949,
+      "sha256": "4567504dc10443893f87b69fa46718722c747ee33c0384a2fac007f29362380d"
+    },
+    {
+      "file": "MAI_07R3_CURSOR_PROMPT.txt",
+      "bytes": 11469,
+      "sha256": "9320dec6a0e2ea843eac80261bdfe3d6e63a3568a3778beecdef070657726349"
+    },
+    {
+      "file": "MAI_07R3_EVALUATION_SEMANTICS_V2_DRAFT.json",
+      "bytes": 1785,
+      "sha256": "54e92c5933a55b14043eed1f2c78ec7e3ef615c7896a50092c7cea1d5c05ae24"
+    },
+    {
+      "file": "MAI_07R3_REVIEW_IMPORT_COMPLETED.jsonl",
+      "bytes": 61352,
+      "sha256": "6cfb5a7bdaacfb3a4bbe63a4d35c5e6077dadb0e620c22454413a774ef2ce9e3"
+    },
+    {
+      "file": "MAI_07R3_ROUND_B_OFFICIAL_LOCK_MANIFEST.json",
+      "bytes": 1137,
+      "sha256": "bf21bf2f39cd938fa1ba61f1f3546989119c9e936624377237c09113b972857f"
+    },
+    {
+      "file": "MAI_07R3_ROUND_B_OFFICIAL_RESPONSES_LOCKED.csv",
+      "bytes": 16644,
+      "sha256": "642bc6f39d6eb2797974e704cd32034f520abf0c5df43cb8aa9dcb06a8438021"
+    },
+    {
+      "file": "MAI_07R3_UNBLINDED_ADJUDICATION.jsonl",
+      "bytes": 180096,
+      "sha256": "6550d62c73d7deb475c6932df7445f26a355ae02b75f08d3d423b7aebcf32359"
+    },
+    {
+      "file": "MokXya_MAI_07R3_Round_A_B_Official_LOCKED.xlsx",
+      "bytes": 26333,
+      "sha256": "8f5666547705f652eff54361dbb2787f4c08189f7c4fc912ecb22a2da2cdd041"
+    },
+    {
+      "file": "README_IMPORT_PACKAGE.md",
+      "bytes": 1206,
+      "sha256": "1d8ad3a9ac47b6e6f00ad2856b5da6a1803454f7e243352e4b9d93ff7b573fa6"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_BLIND_MAPPING_IMPORT_ONLY.json",
+      "bytes": 34054,
+      "sha256": "b6888bfd207d0dd225ecf2c9d403dad9a5c761eede1ddcfba4cd97d1701bcfd6"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_CONTROL_SAMPLE_MANIFEST.json",
+      "bytes": 1668,
+      "sha256": "a88d51f92a5ec26589c473f8335e4e3d7f5b35e3cd60541288a39d99cce7344b"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ENGINEERING_CONFLICT_SUMMARY.json",
+      "bytes": 1667,
+      "sha256": "be3efca47d39cd5c28ad70c7c4f5eea4101ee1d75d31f69fe7787ecd27c89436"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_PACKET_README.md",
+      "bytes": 668,
+      "sha256": "b3a3bdf3cb6638c8f8ed817c23b78901cd7d646ccaa9e6d65328b0ea02df663c"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_POLICY_OPTIONS.md",
+      "bytes": 1123,
+      "sha256": "b7590b99df136cb82832e4eb785c76fb55cbaa5329287bf1cfd5bb290eb7e091"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_REVIEW_IMPORT_TEMPLATE.jsonl",
+      "bytes": 364,
+      "sha256": "4b9c1154b90f315194d46eb6906b17bf334c15bf3015fcac5dc303f85250b7c5"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_REVIEW_INSTRUCTIONS_EN_NP.md",
+      "bytes": 1353,
+      "sha256": "7aba97023567194573597a9f3cba8b162de84e9d21c6a7db7366f95eba72b820"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_REVIEW_SCHEMA.json",
+      "bytes": 1006,
+      "sha256": "e802be835e61c555ba7699b1bbed65ae597322b1d5c8cb075341e4d23e66e48a"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ROUND_A_LOCK_MANIFEST.json",
+      "bytes": 772,
+      "sha256": "eb019fda6a8e8cb7e3e4e4a7f89a535ee8c6f265328cbe12b9c96b214cadaf18"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ROUND_A_RESPONSES_LOCKED.csv",
+      "bytes": 22647,
+      "sha256": "f01270e3017162259d2d305e158e86e386eb86841e4928b99546cd613d037f49"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ROUND_A_REVIEW_TEMPLATE.csv",
+      "bytes": 5366,
+      "sha256": "9a656ce45b1e6bfdc14e1bc25299e7ec7cb9bc15e290406bf41d4339ba10c197"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ROUND_B_LOCK_MANIFEST.json",
+      "bytes": 1559,
+      "sha256": "fbadee2aa97d86e6a580fb3f0ed5eaf9fbe0c9f8dff44d2fe686a3fcdc097f38"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ROUND_B_RESPONSES_LOCKED.csv",
+      "bytes": 14054,
+      "sha256": "79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61"
+    },
+    {
+      "file": "SOURCE_MAI_07R3_ROUND_B_REVIEW_TEMPLATE.csv",
+      "bytes": 11340,
+      "sha256": "bb1d2b1929def4d1fc05b021bd7dcdc4238cad4fbeb23106fb1ef5d224b8b221"
+    },
+    {
+      "file": "SOURCE_MokXya_MAI_07R3_Round_A_LOCKED.xlsx",
+      "bytes": 38668,
+      "sha256": "dc0940e6dc2090e77d9fc678ac0a423e48c910d3dde69386dae73538ca55bc33"
+    },
+    {
+      "file": "SOURCE_MokXya_MAI_07R3_Round_B_LOCKED.xlsx",
+      "bytes": 37415,
+      "sha256": "6282b6a14a8a7eefcb1da4012a6a8ffa67fc076f5db287d1dd19625e81d58901"
+    }
+  ],
+  "manifest_excludes_itself": true
+}

@@ -1,0 +1,32 @@
+﻿[
+    {
+        "name":  "closure_tests",
+        "exit":  1,
+        "tail":  "...............F.                                                        [100%]\n================================== FAILURES ===================================\nC:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\oip\\modules\\language_runtime\\transliteration\\application\\mai07_r3k_hash_contract.py:79: src.oip.modules.language_runtime.transliteration.application.mai07_r3k_hash_contract.Mai07R3KHashContractError: hybrid_hash_citation_rejected:b96bec29à1cdb68\n=========================== short test summary info ===========================\nFAILED tests\\oip\\language_runtime\\test_mai07_r3k_hash_contract_closure.py::test_canonical_machine_artifacts_have_full_hashes_no_hybrid\n1 failed, 16 passed in 2.55s\n"
+    },
+    {
+        "name":  "r3k_tests",
+        "exit":  0,
+        "tail":  ".............                                                            [100%]\n13 passed in 1.84s\n"
+    },
+    {
+        "name":  "ai_assisted_import_tests",
+        "exit":  0,
+        "tail":  "........................................                                 [100%]\n40 passed in 12.56s\n"
+    },
+    {
+        "name":  "lang_runtime_suite",
+        "exit":  1,
+        "tail":  "........................................................................ [ 12%]\n..........................................................s..........sss [ 25%]\n.s....s................................................................. [ 38%]\n........................................................................ [ 51%]\n........................................................................ [ 64%]\n........................................................................ [ 77%]\n........................................................................ [ 90%]\n............................F.......................                     [100%]\n=========================== short test summary info ===========================\nFAILED tests\\oip\\language_runtime\\test_mai07_r3k_hash_contract_closure.py::test_canonical_machine_artifacts_have_full_hashes_no_hybrid\n1 failed, 549 passed, 6 skipped in 65.88s (0:01:05)\n"
+    },
+    {
+        "name":  "schema_export_check",
+        "exit":  0,
+        "tail":  ""
+    },
+    {
+        "name":  "resource_check",
+        "exit":  0,
+        "tail":  "    \"r3d_safety_disposition.json\": 0,\n    \"r3f_english_identity_guard.json\": 0,\n    \"ranking_config.json\": 0,\n    \"romanized_lexicon.json\": 251\n  },\n  \"errors\": [],\n  \"mutated_canonical\": false,\n  \"ok\": true,\n  \"resource_pack_version\": \"mai-07.1.3-r3f-sealnew\",\n  \"resources_dir\": \"C:\\\\Users\\\\Acer\\\\Documents\\\\My-Current-ERP\\\\erp_bot\\\\src\\\\oip\\\\modules\\\\language_runtime\\\\transliteration\\\\sealed_packs\\\\mai-07.1.3-r3f-sealnew\"\n}\n"
+    }
+]

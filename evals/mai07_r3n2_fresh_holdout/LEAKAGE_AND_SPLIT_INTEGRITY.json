@@ -1,0 +1,41 @@
+{
+  "builder_version": "mai-07-r3n2-dataset.1.0.0",
+  "freshness_firewall_summary": {
+    "corrective_case_ids_in_holdout_empty": true,
+    "proof_passed": true
+  },
+  "population_counts": {
+    "ACRONYM_IDENTIFIER_ANALOGUE": 116,
+    "ACRONYM_IDENTITY_REQUIRED": 241,
+    "AUTHORIZED_CODE_CORRECTIVE": 9,
+    "CANDIDATE_CAP_PRESSURE": 141,
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "ENGLISH_GUARD_ANALOGUE": 141,
+    "ENGLISH_IDENTITY_REQUIRED": 566,
+    "IDENTIFIER_PROTECTION_REQUIRED": 241,
+    "IDENTITY_INVARIANT_ANALOGUE": 141,
+    "IDENTITY_RETENTION_REQUIRED": 191,
+    "MONOTONIC_PARENT_CORRECT": 300,
+    "MONOTONIC_PARENT_INCORRECT": 40,
+    "OOV": 100,
+    "PROTECTED_IDENTITY_REQUIRED": 241,
+    "ROMANIZED_NEPALI_REQUIRED": 391,
+    "SHARED_OR_AMBIGUOUS": 191
+  },
+  "populations_with_nonempty_denominators": true,
+  "report_id": "LEAKAGE_AND_SPLIT_INTEGRITY",
+  "schema_version": "mai07_r3n2_leakage_integrity_v1",
+  "split_integrity": {
+    "case_id_intersection_empty": true,
+    "development_case_count": 500,
+    "holdout_family_case_count": 2100,
+    "input_text_intersection_empty": true,
+    "proof_passed": true,
+    "schema_version": "mai07_r3n2_split_integrity_v1",
+    "seeds": {
+      "DEVELOPMENT": 20260720,
+      "HOLDOUT_FAMILY": 20260721
+    },
+    "template_family_disjoint_dev_holdout": true
+  }
+}

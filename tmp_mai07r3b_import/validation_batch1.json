@@ -1,0 +1,27 @@
+﻿[
+    {
+        "name":  "R3B_import_cli",
+        "exit":  0,
+        "tail":  "  \"policy\": {\r\n    \"adr_status\": \"PRODUCT_POLICY_APPROVED_IMPLEMENTATION_PENDING\",\r\n    \"bulk_provenance\": \"EXPLICIT_USER_AUTHORIZED_BULK_SCHEMA_MAPPING\",\r\n    \"evaluation_semantics_policy_id\": \"MAI_07R3_EVALUATION_SEMANTICS_V2_DRAFT\",\r\n    \"linguist_approved\": false,\r\n    \"multiple_preferred_cases\": 93,\r\n    \"product_policy\": \"OPTION_A_CONSERVATIVE_IDENTITY_POLICY\",\r\n    \"production_approved\": false,\r\n    \"quality_gates_passed\": false,\r\n    \"row_by_row_five_label_review_performed\": false,\r\n    \"unique_top1_eligible_cases\": 120,\r\n    \"v2_dataset_plan_status\": \"PLANNED_NOT_BUILT_IN_R3B\"\r\n  }\r\n}\r\n"
+    },
+    {
+        "name":  "R3B_tests",
+        "exit":  0,
+        "tail":  "......................                                                   [100%]\r\n22 passed in 0.36s\r\n"
+    },
+    {
+        "name":  "R3A_tests",
+        "exit":  0,
+        "tail":  "...............                                                          [100%]\r\n15 passed in 1.66s\r\n"
+    },
+    {
+        "name":  "MAI07_lang_runtime",
+        "exit":  1,
+        "tail":  "FAILED tests\\oip\\language_runtime\\test_mai07_r2_overlay.py::test_identity_first_base_may_be_promoted_without_demoting_existing_target\r\nFAILED tests\\oip\\language_runtime\\test_mai07_r2_overlay.py::test_romanized_lexicon_promotes_when_identity_first_at_base\r\nFAILED tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_package_and_source_hashes_exact\r\nFAILED tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_duplicate_and_missing_review_ids_rejected\r\nFAILED tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_duplicate_and_noncontiguous_candidate_indices_rejected\r\nFAILED tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_candidate_count_mismatch_against_order_indices\r\nFAILED tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_mapping_cannot_enter_runtime_training_or_reviewer_ui\r\nERROR tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_cardinality_149_263_149_49\r\nERROR tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_mechanical_mapping_counts_223_36_4\r\nERROR tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_cannot_decide_preservation\r\nERROR tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_multiple_preferred_do_not_become_unique_top1_gold\r\nERROR tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_no_professional_linguist_or_production_approval_inferred\r\nERROR tests\\oip\\language_runtime\\test_mai07_r3b_import.py::test_deterministic_reimport_identical_semantic_hash\r\n8 failed, 203 passed, 3 skipped, 6 errors in 24.16s\r\n"
+    },
+    {
+        "name":  "MAI07_resource_check_twice",
+        "exit":  0,
+        "tail":  "    \"ambiguity_rules.json\": 19,\r\n    \"context_rules.json\": 13,\r\n    \"domain_terms.json\": 44,\r\n    \"english_identity.json\": 67,\r\n    \"grapheme_rules.json\": 66,\r\n    \"morphology_rules.json\": 12,\r\n    \"name_like_terms.json\": 12,\r\n    \"romanized_lexicon.json\": 251\r\n  },\r\n  \"errors\": [],\r\n  \"ok\": true,\r\n  \"resource_pack_version\": \"mai-07.1.0\",\r\n  \"second_run_no_diff\": true\r\n}\r\n"
+    }
+]

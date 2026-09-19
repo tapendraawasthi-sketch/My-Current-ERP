@@ -1,0 +1,83 @@
+{
+  "gates": {
+    "ambiguous_conservative_accuracy": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "candidate_set_preservation": {
+      "op": "==",
+      "value": 1.0
+    },
+    "caps_respected": {
+      "op": "==",
+      "value": 1.0
+    },
+    "context_counterfactual_pair_accuracy": {
+      "op": ">=",
+      "value": 0.97
+    },
+    "deterministic_output": {
+      "op": "==",
+      "value": 1.0
+    },
+    "english_identity_harm": {
+      "op": "==",
+      "value": 0
+    },
+    "english_identity_top1": {
+      "op": ">=",
+      "value": 0.995
+    },
+    "false_devanagari_on_english": {
+      "op": "<=",
+      "value": 0.005
+    },
+    "high_confidence_romanized_target_top1": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "ordinary_english_identity": {
+      "op": ">=",
+      "value": 0.995
+    },
+    "proper_name_harm": {
+      "op": "==",
+      "value": 0
+    },
+    "proper_name_identity": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "protected_harm": {
+      "op": "==",
+      "value": 0
+    },
+    "protected_span_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "raw_view_mutations": {
+      "op": "==",
+      "value": 0
+    },
+    "romanized_target_recall_at_5": {
+      "op": ">=",
+      "value": 0.985
+    },
+    "romanized_target_top1_harm": {
+      "op": "==",
+      "value": 0
+    },
+    "target_recall_at_5_harm": {
+      "op": "==",
+      "value": 0
+    },
+    "technical_english_identity": {
+      "op": ">=",
+      "value": 0.99
+    }
+  },
+  "locked_before_holdout_observation": true,
+  "schema_version": "1.0.0",
+  "threshold_id": "MAI_07R3F_HOLDOUT_THRESHOLDS_V1"
+}

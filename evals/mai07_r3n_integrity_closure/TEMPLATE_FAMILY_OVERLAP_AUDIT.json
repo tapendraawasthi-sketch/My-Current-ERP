@@ -1,0 +1,16 @@
+{
+  "full_overlap": true,
+  "overlap_count": 8,
+  "overlap_families": [
+    "r3n_hld_acronym",
+    "r3n_hld_cap_pressure",
+    "r3n_hld_english_identity",
+    "r3n_hld_identifier",
+    "r3n_hld_identity_retention",
+    "r3n_hld_protected",
+    "r3n_hld_romanized_nepali",
+    "r3n_hld_shared_ambiguous"
+  ],
+  "same_seed_family": true,
+  "schema_version": "mai07_r3n_template_family_overlap_audit_v1"
+}

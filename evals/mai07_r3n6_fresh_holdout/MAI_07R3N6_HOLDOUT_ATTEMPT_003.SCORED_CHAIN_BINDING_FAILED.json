@@ -1,0 +1,84 @@
+{
+  "archived_shared_reports": [
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/holdout_validation_score_report.json",
+      "raw_sha256": "2f55473adf1b4db24b50d768f7defd4a83978010bc675c939c9d630f41f7335f",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/holdout_validation_score_report.json"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/holdout_validation_predictions.jsonl",
+      "raw_sha256": "590299be5a2febf5cf24f26fd2cb53115f5e07a9c3ef2ffa7a9120c9b1d0a8cc",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/holdout_validation_predictions.jsonl"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/safety_challenge_score_report.json",
+      "raw_sha256": "6d0a41062281c3f9b3a0fb90e2a218af5253df183d037fa89037aa554a81eb9e",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/safety_challenge_score_report.json"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/safety_challenge_predictions.jsonl",
+      "raw_sha256": "9af17e7c835cf9b923d8599fc886c1019f54104216131fb16dd744c4dd6cf00b",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/safety_challenge_predictions.jsonl"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/context_counterfactual_score_report.json",
+      "raw_sha256": "fa2ff0a51bbe77eb45908c2efc5ec4c8b3e404b507eb42f466c4500ca7ec4d5a",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/context_counterfactual_score_report.json"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/context_counterfactual_predictions.jsonl",
+      "raw_sha256": "d2ef4384f36911ac7e328bc438c47dedda3f835ec94826dd41b8040ba49a1134",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/context_counterfactual_predictions.jsonl"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/oov_challenge_score_report.json",
+      "raw_sha256": "13513cdaa19127b4f65905d1d4fe921ad70e4eae14d2b7084c7a94cfd404c13f",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/oov_challenge_score_report.json"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/oov_challenge_predictions.jsonl",
+      "raw_sha256": "c94fcf81792c33b3528a7f47da228064cfba16b501ae68243c5673a6713ee665",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/oov_challenge_predictions.jsonl"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/monotonic_regression_score_report.json",
+      "raw_sha256": "6eb3d927210761af806d96f61b4f2223fcc5f47c01f97940d33e48e88c055e93",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/monotonic_regression_score_report.json"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/monotonic_regression_predictions.jsonl",
+      "raw_sha256": "c8a3a44a3ff1c7d8e942b75b3da2728175eb5474961532c9b75281dbb5afada4",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/monotonic_regression_predictions.jsonl"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/identity_anchor_challenge_score_report.json",
+      "raw_sha256": "f49ec4ec7f636bff227cf4804199a7de3d59fde194e84fea34e4b5685c368d7d",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/identity_anchor_challenge_score_report.json"
+    },
+    {
+      "from": "evals/mai07_r3n6_fresh_holdout/reports/identity_anchor_challenge_predictions.jsonl",
+      "raw_sha256": "db6ce5a7bd7f2246374cb82870f561f0335f9b58a8ca5a93ffc530c7deb8acc0",
+      "to": "evals/mai07_r3n6_fresh_holdout/archive/attempt_003/identity_anchor_challenge_predictions.jsonl"
+    }
+  ],
+  "attempt_id": "MAI_07R3N6_HOLDOUT_ATTEMPT_003",
+  "attempt_result_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_HOLDOUT_ATTEMPT_003.ATTEMPT_RESULT.json",
+  "attempt_result_raw_sha256": "43db31570133bae8935974906993eb3ad73ce6a80c8d9b0533e4631702832e96",
+  "chain_written": false,
+  "disposition": "SCORED_COMPLETE_CHAIN_BINDING_FAILED_VERIFIER_NOT_APPLICABLE",
+  "failure_modes": [
+    "verify_complete_r3n6_chain missing expected_cases_by_split at one_shot prepublication",
+    "gate outcome NOT_APPLICABLE with pass=true rejected by chain verifier"
+  ],
+  "next_governed_action": "RC_004_HARNESS_FIX_RELOCK_THEN_ATTEMPT_004",
+  "numerical_verdict_provisional": "PASSED_FRESH_HOLDOUT_CORRECTIVE_RC",
+  "output_binding_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_003.OUTPUT_BINDING_MANIFEST.json",
+  "output_binding_raw_sha256": "e595b0e0680161c901bc7017b062199019da2f8fc0402f45c274857af1af582c",
+  "qualification_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_003.QUALIFICATION_RESULT.json",
+  "qualification_raw_sha256": "66654aebdfce27a7f613631dcdce66ccf975b3faff1f1a0cfe682447eb22b6eb",
+  "qualification_status": "PASSED_HOLDOUT_PENDING_CHAIN_BINDING",
+  "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_003",
+  "record_type": "HOLDOUT_ATTEMPT_SCORED_CHAIN_BINDING_FAILED",
+  "release_authority": false,
+  "schema_version": "mai07_r3n6_scored_chain_binding_failed_v1"
+}

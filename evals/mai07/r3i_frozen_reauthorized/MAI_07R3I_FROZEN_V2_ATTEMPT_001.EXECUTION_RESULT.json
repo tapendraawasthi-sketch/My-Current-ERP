@@ -1,0 +1,24 @@
+{
+  "attempt_consumed": true,
+  "attempt_id": "MAI_07R3I_FROZEN_V2_ATTEMPT_001",
+  "candidate_resource_content_sha256": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+  "candidate_resource_pack_version": "mai-07.1.5-r3h2-shared",
+  "case_count_completed": 696,
+  "case_count_submitted": 696,
+  "default_pack_not_used": true,
+  "elapsed_seconds": 0.0318,
+  "end_utc": "2026-07-16T14:49:52.308873+00:00",
+  "exceptions": [
+    "RECOVERED_FROM_EXISTING_ONE_SHOT_PREDICTIONS:prior_mid_score_technical_failure"
+  ],
+  "frozen_v2_opened": true,
+  "mutation_attempts": 0,
+  "predictions_canonical_list_sha256": "38864d9e4097248804e65271400a65047a652a991abb2ce92c27107bd83836c2",
+  "predictions_jsonl_raw_sha256": "15f6ba5537d52682e57647eebc225e655f17d61c29c26f82a65c56967beb4e92",
+  "predictions_path": "evals/mai07/r3i_frozen_reauthorized/reports/MAI_07R3I_V2_ONE_SHOT_PREDICTIONS.jsonl",
+  "reused_existing_one_shot_predictions": true,
+  "start_utc": "2026-07-16T14:49:52.276475+00:00",
+  "status": "COMPLETED",
+  "successful_mutations": 0,
+  "timeouts": 0
+}

@@ -1,0 +1,108 @@
+{
+  "builder_version": "mai-07-r3n2-dataset.1.0.0",
+  "minima_check": {
+    "minimum_denominators": {
+      "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+      "ACRONYM_IDENTITY_REQUIRED": 100,
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "ENGLISH_GUARD_ANALOGUE": 100,
+      "ENGLISH_IDENTITY_REQUIRED": 200,
+      "IDENTIFIER_PROTECTION_REQUIRED": 100,
+      "IDENTITY_INVARIANT_ANALOGUE": 100,
+      "IDENTITY_RETENTION_REQUIRED": 150,
+      "MONOTONIC_PARENT_CORRECT": 300,
+      "OOV": 100,
+      "PROTECTED_IDENTITY_REQUIRED": 100,
+      "ROMANIZED_NEPALI_REQUIRED": 200,
+      "SHARED_OR_AMBIGUOUS": 150
+    },
+    "ok": true,
+    "population_checks": {
+      "CONTEXT_COUNTERFACTUAL": {
+        "failures": [],
+        "ok": true,
+        "split": "CONTEXT_COUNTERFACTUAL",
+        "verdict": null
+      },
+      "HOLDOUT_VALIDATION": {
+        "failures": [],
+        "ok": true,
+        "split": "HOLDOUT_VALIDATION",
+        "verdict": null
+      },
+      "MONOTONIC_REGRESSION": {
+        "failures": [],
+        "ok": true,
+        "split": "MONOTONIC_REGRESSION",
+        "verdict": null
+      },
+      "OOV_CHALLENGE": {
+        "failures": [],
+        "ok": true,
+        "split": "OOV_CHALLENGE",
+        "verdict": null
+      }
+    },
+    "population_failures": [],
+    "split_size_failures": [],
+    "split_size_minima": {
+      "CONTEXT_COUNTERFACTUAL": 300,
+      "DEVELOPMENT": 500,
+      "HOLDOUT_VALIDATION": 1000,
+      "MONOTONIC_REGRESSION": 300,
+      "OOV_CHALLENGE": 100,
+      "SAFETY_CHALLENGE": 400
+    },
+    "verdict": null
+  },
+  "minimum_denominators": {
+    "ACRONYM_IDENTIFIER_ANALOGUE": 75,
+    "ACRONYM_IDENTITY_REQUIRED": 100,
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "ENGLISH_GUARD_ANALOGUE": 100,
+    "ENGLISH_IDENTITY_REQUIRED": 200,
+    "IDENTIFIER_PROTECTION_REQUIRED": 100,
+    "IDENTITY_INVARIANT_ANALOGUE": 100,
+    "IDENTITY_RETENTION_REQUIRED": 150,
+    "MONOTONIC_PARENT_CORRECT": 300,
+    "OOV": 100,
+    "PROTECTED_IDENTITY_REQUIRED": 100,
+    "ROMANIZED_NEPALI_REQUIRED": 200,
+    "SHARED_OR_AMBIGUOUS": 150
+  },
+  "observed_population_counts": {
+    "ACRONYM_IDENTIFIER_ANALOGUE": 116,
+    "ACRONYM_IDENTITY_REQUIRED": 241,
+    "AUTHORIZED_CODE_CORRECTIVE": 9,
+    "CANDIDATE_CAP_PRESSURE": 141,
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "ENGLISH_GUARD_ANALOGUE": 141,
+    "ENGLISH_IDENTITY_REQUIRED": 566,
+    "IDENTIFIER_PROTECTION_REQUIRED": 241,
+    "IDENTITY_INVARIANT_ANALOGUE": 141,
+    "IDENTITY_RETENTION_REQUIRED": 191,
+    "MONOTONIC_PARENT_CORRECT": 300,
+    "MONOTONIC_PARENT_INCORRECT": 40,
+    "OOV": 100,
+    "PROTECTED_IDENTITY_REQUIRED": 241,
+    "ROMANIZED_NEPALI_REQUIRED": 391,
+    "SHARED_OR_AMBIGUOUS": 191
+  },
+  "observed_split_counts": {
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "DEVELOPMENT": 500,
+    "HOLDOUT_VALIDATION": 1000,
+    "MONOTONIC_REGRESSION": 300,
+    "OOV_CHALLENGE": 100,
+    "SAFETY_CHALLENGE": 400
+  },
+  "schema_version": "mai07_r3n2_population_denominators_v1",
+  "split_size_minima": {
+    "CONTEXT_COUNTERFACTUAL": 300,
+    "DEVELOPMENT": 500,
+    "HOLDOUT_VALIDATION": 1000,
+    "MONOTONIC_REGRESSION": 300,
+    "OOV_CHALLENGE": 100,
+    "SAFETY_CHALLENGE": 400
+  }
+}

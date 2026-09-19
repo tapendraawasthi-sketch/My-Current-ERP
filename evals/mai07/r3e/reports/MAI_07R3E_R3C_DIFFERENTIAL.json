@@ -1,0 +1,81 @@
+{
+  "identity_corrected_count": 4,
+  "identity_harmed_count": 4,
+  "new_protected_mutations_vs_baseline": 0,
+  "note": "Diagnostic only; no frozen case surfaces in this report.",
+  "protected_mutations_eliminated_vs_baseline": 6,
+  "r3c_baseline_aggregates": {
+    "CORE_RECALL_AT_5": "263/272",
+    "TARGET_MRR": 0.9219,
+    "TARGET_RECALL_AT_5": "277/288",
+    "TARGET_TOP1": "254/288",
+    "UNAMBIGUOUS_TOP1": "246/255",
+    "caps_respected": "696/696",
+    "english_identity": "98/102",
+    "false_devanagari_on_english": "4/102",
+    "protected_mutations": 6,
+    "raw_view_mutations": 0
+  },
+  "r3e_aggregates": {
+    "core_recall_at_5": {
+      "denominator": 272,
+      "numerator": 267,
+      "value_float": 0.9816176470588235,
+      "value_unrounded": "267/272"
+    },
+    "safety": {
+      "candidate_caps_respected": {
+        "denominator": 696,
+        "numerator": 696,
+        "value_float": 1.0,
+        "value_unrounded": "1"
+      },
+      "english_identity_top1": {
+        "denominator": 102,
+        "numerator": 98,
+        "value_float": 0.9607843137254902,
+        "value_unrounded": "49/51"
+      },
+      "false_devanagari_on_english": {
+        "denominator": 102,
+        "numerator": 4,
+        "value_float": 0.0392156862745098,
+        "value_unrounded": "2/51"
+      },
+      "proper_name_identity_top1": {
+        "denominator": 14,
+        "numerator": 12,
+        "value_float": 0.8571428571428571,
+        "value_unrounded": "6/7"
+      },
+      "protected_span_mutations": 0,
+      "raw_view_mutations": 0
+    },
+    "target_mrr": {
+      "denominator": 288,
+      "numerator_sum": "539/2",
+      "value_float": 0.9357638888888888,
+      "value_unrounded": "539/576"
+    },
+    "target_recall_at_5": {
+      "denominator": 288,
+      "numerator": 281,
+      "value_float": 0.9756944444444444,
+      "value_unrounded": "281/288"
+    },
+    "target_top1": {
+      "denominator": 288,
+      "numerator": 258,
+      "value_float": 0.8958333333333334,
+      "value_unrounded": "43/48"
+    },
+    "unambiguous_top1": {
+      "denominator": 255,
+      "numerator": 246,
+      "value_float": 0.9647058823529412,
+      "value_unrounded": "82/85"
+    }
+  },
+  "target_demoted_top1_count": 4,
+  "target_promoted_top1_count": 4
+}

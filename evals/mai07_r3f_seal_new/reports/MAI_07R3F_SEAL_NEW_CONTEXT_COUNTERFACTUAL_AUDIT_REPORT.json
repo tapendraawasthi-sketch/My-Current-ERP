@@ -1,0 +1,76 @@
+{
+  "metrics": {
+    "ambiguous_conservative_accuracy": {
+      "denominator": 271,
+      "numerator": 271,
+      "value": 1.0
+    },
+    "candidate_set_preservation": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "caps_respected": {
+      "denominator": 735,
+      "numerator": 735,
+      "value": 1.0
+    },
+    "context_counterfactual_pair_accuracy": {
+      "denominator": 211,
+      "numerator": 211,
+      "value": 1.0
+    },
+    "deterministic_output": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "english_identity_top1": {
+      "denominator": 635,
+      "numerator": 635,
+      "value": 1.0
+    },
+    "false_devanagari_on_english": {
+      "denominator": 635,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "high_confidence_romanized_target_top1": {
+      "denominator": 100,
+      "numerator": 100,
+      "value": 1.0
+    },
+    "ordinary_english_identity": {
+      "denominator": 0,
+      "numerator": 0,
+      "value": 1.0
+    },
+    "proper_name_identity": {
+      "denominator": 0,
+      "numerator": 0,
+      "value": 1.0
+    },
+    "protected_span_mutations": {
+      "denominator": 735,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "raw_view_mutations": {
+      "denominator": 735,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "romanized_target_recall_at_5": {
+      "denominator": 100,
+      "numerator": 100,
+      "value": 1.0
+    },
+    "technical_english_identity": {
+      "denominator": 0,
+      "numerator": 0,
+      "value": 1.0
+    }
+  },
+  "scorer_version": "mai-07.r3f.sealnew.audit.1.0.0",
+  "split": "CONTEXT_COUNTERFACTUAL"
+}

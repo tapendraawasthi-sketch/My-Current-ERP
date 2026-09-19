@@ -1,0 +1,299 @@
+{
+  "audit": {
+    "case_count": 477,
+    "latency_ms_mean": 0.3496182389937107,
+    "metrics": {
+      "caps_respected": {
+        "denominator": 477,
+        "numerator": 477,
+        "value": 1.0
+      },
+      "core_recall_at_5": {
+        "denominator": 212,
+        "numerator": 212,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 76,
+        "numerator": 76,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 76,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "identity_retained": {
+        "denominator": 477,
+        "numerator": 477,
+        "value": 1.0
+      },
+      "proper_name_identity_top1": {
+        "denominator": 8,
+        "numerator": 8,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 153,
+        "numerator": 0,
+        "value": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 477,
+        "numerator": 0,
+        "value": 0
+      },
+      "target_mrr": {
+        "denominator": 212,
+        "numerator": null,
+        "value": 1.0
+      },
+      "target_recall_at_5": {
+        "denominator": 212,
+        "numerator": 212,
+        "value": 1.0
+      },
+      "target_top1": {
+        "denominator": 212,
+        "numerator": 212,
+        "value": 1.0
+      },
+      "unambiguous_target_top1": {
+        "denominator": 53,
+        "numerator": 53,
+        "value": 1.0
+      }
+    },
+    "resource_hash": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+    "resource_version": "mai-07.1.1-r3d",
+    "runtime_version": "mai-07.1.1-r3d",
+    "scorer_version": "mai-07.r3d.audit.1.0.0"
+  },
+  "gate_decision": {
+    "aggregation_note": "all_pass repaired post-hoc; individual gates were all pass; harm_count filled after differential",
+    "all_pass": true,
+    "gates": {
+      "caps_respected": {
+        "denominator": 477,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 477,
+        "op": "==",
+        "pass": true,
+        "population": 477,
+        "threshold": 1.0
+      },
+      "core_recall_at_5": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 210,
+        "numerator": 212,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.99
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 76,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 76,
+        "numerator": 76,
+        "op": ">=",
+        "pass": true,
+        "population": 76,
+        "threshold": 0.99
+      },
+      "false_devanagari_on_english": {
+        "denominator": 76,
+        "exact_value": 0.0,
+        "integer_pass_requirement": 0,
+        "numerator": 0,
+        "op": "<=",
+        "pass": true,
+        "population": 76,
+        "threshold": 0.01
+      },
+      "harm_count": {
+        "denominator": 1,
+        "exact_value": 0,
+        "integer_pass_requirement": 0,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "proper_name_identity_top1": {
+        "denominator": 8,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 8,
+        "numerator": 8,
+        "op": ">=",
+        "pass": true,
+        "population": 8,
+        "threshold": 0.95
+      },
+      "protected_span_mutations": {
+        "denominator": 153,
+        "exact_value": 0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 153,
+        "threshold": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 477,
+        "exact_value": 0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 477,
+        "threshold": 0
+      },
+      "target_mrr": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": null,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.92
+      },
+      "target_recall_at_5": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 209,
+        "numerator": 212,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.985
+      },
+      "target_top1": {
+        "denominator": 212,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 191,
+        "numerator": 212,
+        "op": ">=",
+        "pass": true,
+        "population": 212,
+        "threshold": 0.9
+      },
+      "unambiguous_target_top1": {
+        "denominator": 53,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 50,
+        "numerator": 53,
+        "op": ">=",
+        "pass": true,
+        "population": 53,
+        "threshold": 0.94
+      }
+    }
+  },
+  "overlay_disabled": true,
+  "predictions_sha256": "1d3b04d60d6621af4ffe3c46c2776a85630043ba4194269c31b2604fa8c0b4b5",
+  "report": {
+    "case_count": 477,
+    "differential": {
+      "correct_target_harm": 0,
+      "demotions": 0,
+      "english_or_name_identity_harm": 0,
+      "promotions": 50,
+      "protected_harm": 0
+    },
+    "harm_count": 0,
+    "latency_ms_mean": 0.3496182389937107,
+    "metrics": {
+      "caps_respected": {
+        "denominator": 477,
+        "numerator": 477,
+        "value": 1.0
+      },
+      "core_recall_at_5": {
+        "denominator": 212,
+        "numerator": 212,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 76,
+        "numerator": 76,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 76,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "identity_retained": {
+        "denominator": 477,
+        "numerator": 477,
+        "value": 1.0
+      },
+      "proper_name_identity_top1": {
+        "denominator": 8,
+        "numerator": 8,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 153,
+        "numerator": 0,
+        "value": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 477,
+        "numerator": 0,
+        "value": 0
+      },
+      "target_mrr": {
+        "denominator": 212,
+        "numerator": null,
+        "value": 1.0
+      },
+      "target_recall_at_5": {
+        "denominator": 212,
+        "numerator": 212,
+        "value": 1.0
+      },
+      "target_top1": {
+        "denominator": 212,
+        "numerator": 212,
+        "value": 1.0
+      },
+      "unambiguous_target_top1": {
+        "denominator": 53,
+        "numerator": 53,
+        "value": 1.0
+      }
+    },
+    "resource_hash": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+    "resource_version": "mai-07.1.1-r3d",
+    "runtime_version": "mai-07.1.1-r3d",
+    "scorer_version": "mai-07.r3d.canonical.1.0.0"
+  },
+  "split": "HOLDOUT_VALIDATION"
+}

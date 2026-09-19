@@ -1,0 +1,4 @@
+{"candidate_count":2,"caps_ok":true,"case_id":"R3N-MON-0001-4c723dc3","devanagari_at_5":true,"false_devanagari_top1":false,"identity_retained":true,"identity_top1":true,"runtime":"mai-07.1.6-r3n-policyconf","span_found":true}
+{"candidate_count":2,"caps_ok":true,"case_id":"R3N-MON-0002-eb3b8d9b","devanagari_at_5":true,"false_devanagari_top1":true,"identity_retained":true,"identity_top1":false,"runtime":"mai-07.1.6-r3n-policyconf","span_found":true}
+{"candidate_count":2,"caps_ok":true,"case_id":"R3N-MON-0003-dc9a9b2e","devanagari_at_5":true,"false_devanagari_top1":true,"identity_retained":true,"identity_top1":false,"runtime":"mai-07.1.6-r3n-policyconf","span_found":true}
+{"candidate_count":1,"caps_ok":true,"case_id":"R3N-MON-0004-baa1332e","devanagari_at_5":false,"false_devanagari_top1":false,"identity_retained":true,"identity_top1":true,"runtime":"mai-07.1.6-r3n-policyconf","span_found":true}

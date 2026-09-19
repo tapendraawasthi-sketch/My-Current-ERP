@@ -1,0 +1,30 @@
+{
+  "ENABLE_PROMOTION_OVERLAY": false,
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "code_semantic_hash": "b2651678a9e0b28359ec09df667fd9a97771fac6f1276c384ba768f45997b2b7",
+  "dataset_manifest_sha256": "ad880aacdf76d8566052ccd846be3d61651f7511572906d826247d43f14c7adf",
+  "development_dataset_sha256": "4c4f2988e56ba205db532e010b068586b708ec4383a6f70b4a0a35c766ca37aa",
+  "holdout_dataset_sha256": "f60d19b851dd05b7be27fb8c3c908e77ed5c8f34ed1d5dbfbf326eaa99aa5d7a",
+  "locked": true,
+  "locked_before_holdout": true,
+  "manifest_id": "MAI_07R3D_RELEASE_CANDIDATE",
+  "manifest_path": "evals/mai07_r3d_corrective/MAI_07R3D_RELEASE_CANDIDATE.manifest.json",
+  "manifest_sha256": "2ebe29fac17b836849e3c3e1054c704a03d762bc5f28879a9a0de2f5a62d2c26",
+  "note": "Non-frozen RC only. Frozen V2 evaluation reserved for MAI-07R3E.",
+  "parent_frozen_v1_hash": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+  "parent_frozen_v2_hash": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+  "parent_pre_r1_resource_hash": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "parent_pre_r1_runtime_version": "mai-07.1.0",
+  "resource_content_hash": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+  "resource_pack_version": "mai-07.1.1-r3d",
+  "runtime_version": "mai-07.1.1-r3d",
+  "safety_dataset_sha256": "993a065146b4fc2ede0f1fe12a4f8b0dc9171d0efbb64e73f389bee4926533c6",
+  "schema_version": "1.0.0",
+  "test_manifest": [
+    "erp_bot/tests/oip/language_runtime/test_mai07_r3d_firewall.py",
+    "erp_bot/tests/oip/language_runtime/test_mai07_r3d_corrective.py"
+  ],
+  "threshold_sha256": "5c8345f44350034b6dc68217a1df4c8f52a0e9ec3d37f250c1afa4f63407e5b6"
+}

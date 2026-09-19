@@ -1,0 +1,44 @@
+{
+  "entries": {
+    "bata": [
+      "बाट"
+    ],
+    "haru": [
+      "हरू"
+    ],
+    "ka": [
+      "का"
+    ],
+    "ki": [
+      "की"
+    ],
+    "ko": [
+      "को"
+    ],
+    "lai": [
+      "लाई"
+    ],
+    "le": [
+      "ले"
+    ],
+    "ma": [
+      "मा"
+    ],
+    "nai": [
+      "नै"
+    ],
+    "pani": [
+      "पनि"
+    ],
+    "samma": [
+      "सम्म"
+    ],
+    "sanga": [
+      "सँग"
+    ]
+  },
+  "provenance": "common Nepali clitics/suffix roman forms",
+  "resource_id": "morphology_rules",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "version": "mai-07.1.0"
+}

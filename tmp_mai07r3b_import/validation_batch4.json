@@ -1,0 +1,37 @@
+﻿[
+    {
+        "name":  "mai06_tests",
+        "exit":  0,
+        "tail":  "................................................................         [100%]\n64 passed in 8.31s\n"
+    },
+    {
+        "name":  "pytest_collect_only",
+        "exit":  2,
+        "tail":  "src\\orbix\\reasoning\\__init__.py:3: in \u003cmodule\u003e\n    from .engine import OrbixAgentEngine\nsrc\\orbix\\reasoning\\engine.py:24: in \u003cmodule\u003e\n    from ..llm.reasoning_filter import strip_reasoning\nE   ModuleNotFoundError: No module named \u0027src.orbix.llm.reasoning_filter\u0027\n============================== warnings summary ===============================\nsrc\\orbix\\config.py:27\n  C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\orbix\\config.py:27: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class OrbixConfig(BaseModel):\n\nsrc\\orbix\\tools\\registry.py:22\n  C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\orbix\\tools\\registry.py:22: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class RegisteredTool(BaseModel):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ===========================\nERROR tests\\orbix\\test_grounding.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1083 tests collected, 1 error in 13.21s\n"
+    },
+    {
+        "name":  "orbix_vitest",
+        "exit":  0,
+        "tail":  "\n Γ£ô src/__tests__/orbix/orbixPostingService.test.ts (6 tests) 8ms\nstderr | src/__tests__/orbix/noDoubleSync.test.ts \u003e Phase 6 no double-sync \u003e one sale ΓåÆ one canonical sales_posted \nevent, no syncOutbox invoice\n[SutraERP] DB version change detected ΓÇö closing connection.\nAnother connection wants to delete database \u0027SutraERPDatabase\u0027. Closing db now to resume the delete request.\n\n Γ£ô src/__tests__/orbix/noDoubleSync.test.ts (3 tests) 479ms\n\n Test Files  23 passed (23)\n      Tests  144 passed (144)\n   Start at  21:36:31\n   Duration  10.42s (transform 14.82s, setup 3.62s, collect 38.81s, tests 29.95s, environment 7ms, prepare 7.83s)\n\nnpm notice\nnpm notice New major version of npm available! 11.13.0 -\u003e 12.0.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1\nnpm notice To update run: npm install -g npm@12.0.1\nnpm notice\n"
+    },
+    {
+        "name":  "node_auth_corr",
+        "exit":  0,
+        "tail":  "cmd : npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help \nnpmrc` for supported config options.\nAt C:\\Users\\Acer\\AppData\\Local\\Temp\\ps-script-daab884f-e13f-4c69-bcba-615e9e7e4a3d.ps1:109 char:10\n+   $out = cmd /c $cmd 2\u003e\u00261 | Out-String\n+          ~~~~~~~~~~~~~~~~\n    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException\n    + FullyQualifiedErrorId : NativeCommandError\n \n\n RUN  v3.2.7 C:/Users/Acer/Documents/My-Current-ERP\n\n Γ£ô packages/backend/src/middleware/correlation.test.ts (4 tests) 3ms\n Γ£ô packages/backend/src/middleware/khataConfirmAuth.test.ts (8 tests) 16ms\n\n Test Files  2 passed (2)\n      Tests  12 passed (12)\n   Start at  21:36:44\n   Duration  1.19s (transform 112ms, setup 155ms, collect 473ms, tests 19ms, environment 0ms, prepare 376ms)\n\n"
+    },
+    {
+        "name":  "tsc_mai02",
+        "exit":  0,
+        "tail":  "cmd : npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help \nnpmrc` for supported config options.\nAt C:\\Users\\Acer\\AppData\\Local\\Temp\\ps-script-daab884f-e13f-4c69-bcba-615e9e7e4a3d.ps1:109 char:10\n+   $out = cmd /c $cmd 2\u003e\u00261 | Out-String\n+          ~~~~~~~~~~~~~~~~\n    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException\n    + FullyQualifiedErrorId : NativeCommandError\n \n"
+    },
+    {
+        "name":  "tsc_mai03",
+        "exit":  0,
+        "tail":  "cmd : npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help \nnpmrc` for supported config options.\nAt C:\\Users\\Acer\\AppData\\Local\\Temp\\ps-script-daab884f-e13f-4c69-bcba-615e9e7e4a3d.ps1:109 char:10\n+   $out = cmd /c $cmd 2\u003e\u00261 | Out-String\n+          ~~~~~~~~~~~~~~~~\n    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException\n    + FullyQualifiedErrorId : NativeCommandError\n \n"
+    },
+    {
+        "name":  "tsc_mai05",
+        "exit":  0,
+        "tail":  "cmd : npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help \nnpmrc` for supported config options.\nAt C:\\Users\\Acer\\AppData\\Local\\Temp\\ps-script-daab884f-e13f-4c69-bcba-615e9e7e4a3d.ps1:109 char:10\n+   $out = cmd /c $cmd 2\u003e\u00261 | Out-String\n+          ~~~~~~~~~~~~~~~~\n    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException\n    + FullyQualifiedErrorId : NativeCommandError\n \n"
+    }
+]

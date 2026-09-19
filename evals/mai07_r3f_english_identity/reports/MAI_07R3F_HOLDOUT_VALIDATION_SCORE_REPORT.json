@@ -1,0 +1,385 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "audit": {
+    "case_count": 1036,
+    "evaluator_version": "mai-07-r3f-eval.1.0.0",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "latency_ms_mean": 0.33978166023166023,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 67,
+        "numerator": 67,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1036,
+        "numerator": 1036,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 752,
+        "numerator": 752,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 752,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 272,
+        "numerator": 272,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 85,
+        "numerator": 85,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 12,
+        "numerator": 12,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 142,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1036,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 272,
+        "numerator": 272,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 273,
+        "numerator": 273,
+        "value": 1.0
+      }
+    },
+    "overlay_disabled": true,
+    "resource_hash": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+    "resource_version": "mai-07.1.2-r3f",
+    "runtime_version": "mai-07.1.2-r3f",
+    "scorer_version": "mai-07.r3f.audit.1.0.0"
+  },
+  "evaluator_version": "mai-07-r3f-eval.1.0.0",
+  "gate_decision": {
+    "all_pass": true,
+    "gates": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 67,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 66,
+        "numerator": 67,
+        "op": ">=",
+        "pass": true,
+        "population": 67,
+        "threshold": 0.98
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1036,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1036,
+        "op": "==",
+        "pass": true,
+        "population": 1036,
+        "threshold": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": ">=",
+        "pass": true,
+        "population": 0,
+        "threshold": 0.97
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "english_identity_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "english_identity_top1": {
+        "denominator": 752,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 749,
+        "numerator": 752,
+        "op": ">=",
+        "pass": true,
+        "population": 752,
+        "threshold": 0.995
+      },
+      "false_devanagari_on_english": {
+        "denominator": 752,
+        "exact_value": 0.0,
+        "integer_pass_requirement": 3,
+        "numerator": 0,
+        "op": "<=",
+        "pass": true,
+        "population": 752,
+        "threshold": 0.005
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 272,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 259,
+        "numerator": 272,
+        "op": ">=",
+        "pass": true,
+        "population": 272,
+        "threshold": 0.95
+      },
+      "ordinary_english_identity": {
+        "denominator": 85,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 85,
+        "numerator": 85,
+        "op": ">=",
+        "pass": true,
+        "population": 85,
+        "threshold": 0.995
+      },
+      "proper_name_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "proper_name_identity": {
+        "denominator": 12,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 12,
+        "numerator": 12,
+        "op": ">=",
+        "pass": true,
+        "population": 12,
+        "threshold": 0.98
+      },
+      "protected_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "protected_span_mutations": {
+        "denominator": 142,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 142,
+        "threshold": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 1036,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1036,
+        "threshold": 0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 272,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 268,
+        "numerator": 272,
+        "op": ">=",
+        "pass": true,
+        "population": 272,
+        "threshold": 0.985
+      },
+      "romanized_target_top1_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "target_recall_at_5_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "technical_english_identity": {
+        "denominator": 273,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 271,
+        "numerator": 273,
+        "op": ">=",
+        "pass": true,
+        "population": 273,
+        "threshold": 0.99
+      }
+    }
+  },
+  "predictions_sha256": "b5cdb56f966a84fd77c2c2727f7dd5269bc16cf90406eb386899fa1d7b5e5a6d",
+  "report": {
+    "case_count": 1036,
+    "differential": {
+      "candidate_set_preservation": 1.0,
+      "english_identity_harm": 0,
+      "note": "Differential compares English Identity Guard reorder vs unguarded R3D generate+rank on non-frozen cases only.",
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "evaluator_version": "mai-07-r3f-eval.1.0.0",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "harm": {
+      "english_identity_harm": 0,
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "latency_ms_mean": 0.33978166023166023,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 67,
+        "numerator": 67,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1036,
+        "numerator": 1036,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 752,
+        "numerator": 752,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 752,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 272,
+        "numerator": 272,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 85,
+        "numerator": 85,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 12,
+        "numerator": 12,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 142,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1036,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 272,
+        "numerator": 272,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 273,
+        "numerator": 273,
+        "value": 1.0
+      }
+    },
+    "overlay_disabled": true,
+    "resource_hash": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+    "resource_version": "mai-07.1.2-r3f",
+    "runtime_version": "mai-07.1.2-r3f",
+    "scorer_version": "mai-07.r3f.canonical.1.0.0"
+  },
+  "split": "HOLDOUT_VALIDATION"
+}

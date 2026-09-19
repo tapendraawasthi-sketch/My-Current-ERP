@@ -1,0 +1,25 @@
+{
+  "threshold_id": "MAI_07R3N_THRESHOLDS_V1",
+  "locked_before_holdout": true,
+  "gates": {
+    "english_identity_top1": {"op": ">=", "value": 0.98},
+    "false_devanagari_on_english": {"op": "<=", "value": 0.02},
+    "romanized_script_at_5": {"op": ">=", "value": 0.90},
+    "identity_retention": {"op": "==", "value": 1.0},
+    "acronym_identity_top1": {"op": "==", "value": 1.0},
+    "identifier_identity_top1": {"op": "==", "value": 1.0},
+    "protected_identity": {"op": "==", "value": 1.0},
+    "authorized_code_corrective": {"op": "==", "value": 1.0},
+    "caps_ok": {"op": "==", "value": 1.0},
+    "raw_ok_all": {"op": "==", "value": 1.0},
+    "raw_mutation_count": {"op": "==", "value": 0},
+    "accounting_mutation_attempts": {"op": "==", "value": 0},
+    "deterministic_output": {"op": "==", "value": 1.0},
+    "shared_forced_english_harm": {"op": "==", "value": 0},
+    "shared_forced_devanagari_harm": {"op": "==", "value": 0},
+    "monotonic_harm_parent_correct": {"op": "==", "value": 0},
+    "canonical_audit_agreement": {"op": "==", "value": 1.0}
+  },
+  "notes": "Fractional gates convert to integer N/D using locked split denominators at score time. Do not weaken after holdout observation.",
+  "prohibited_for_training": true
+}

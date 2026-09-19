@@ -1,0 +1,406 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "audit": {
+    "case_count": 1469,
+    "evaluator_version": "mai-07-r3f-eval.1.0.0",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "latency_ms_mean": 0.5033799183117768,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 80,
+        "numerator": 80,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1469,
+        "numerator": 1469,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 1028,
+        "numerator": 1028,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1028,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 418,
+        "numerator": 418,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 143,
+        "numerator": 143,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 24,
+        "numerator": 24,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 129,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1469,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 418,
+        "numerator": 418,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 411,
+        "numerator": 411,
+        "value": 1.0
+      }
+    },
+    "overlay_disabled": true,
+    "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "resource_version": "mai-07.1.3-r3f-sealnew",
+    "runtime_version": "mai-07.1.3-r3f-sealnew",
+    "scorer_version": "mai-07.r3f.seal-lock-chain.audit.1.0.0"
+  },
+  "audit_report_raw_sha256": "adbb05510485b2c959c4c2ff7b41e99f68b9f6e336d89d43b118b62d79743ce2",
+  "audit_report_semantic_sha256": "949399d65ce009f3a5a6d20fb664affac417aa651e31e1df6cc50aaecf26ba06",
+  "canonical_prediction_list_path": "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_LOCK_CHAIN_HOLDOUT_VALIDATION_CANONICAL_PREDICTION_LIST.json",
+  "canonical_prediction_list_sha256": "36e99cce4ef2eb341aa4f237cfbdd34afbcc9db0b40e6cf9c20d0674e4d84a87",
+  "canonical_report_raw_sha256": "d6cc9dd572ad60335678f7f214fcada81a3fc53fb0b06a4468ecf2a4ce0390fe",
+  "canonical_report_semantic_sha256": "cb8911802ee5f0410526432289407bb776aeb9332d7b1b651cef7f1812de83ed",
+  "canonical_serialization_contract": "json.dumps(sort_keys,separators)",
+  "evaluator_version": "mai-07-r3f-eval.1.0.0",
+  "gate_decision": {
+    "all_pass": true,
+    "gates": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 80,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 79,
+        "numerator": 80,
+        "op": ">=",
+        "pass": true,
+        "population": 80,
+        "threshold": 0.98
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1469,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1469,
+        "op": "==",
+        "pass": true,
+        "population": 1469,
+        "threshold": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": ">=",
+        "pass": true,
+        "population": 0,
+        "threshold": 0.97
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "exact_value": 1.0,
+        "integer_pass_requirement": null,
+        "numerator": 1,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 1.0
+      },
+      "english_identity_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "english_identity_top1": {
+        "denominator": 1028,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 1023,
+        "numerator": 1028,
+        "op": ">=",
+        "pass": true,
+        "population": 1028,
+        "threshold": 0.995
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1028,
+        "exact_value": 0.0,
+        "integer_pass_requirement": 5,
+        "numerator": 0,
+        "op": "<=",
+        "pass": true,
+        "population": 1028,
+        "threshold": 0.005
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 418,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 398,
+        "numerator": 418,
+        "op": ">=",
+        "pass": true,
+        "population": 418,
+        "threshold": 0.95
+      },
+      "ordinary_english_identity": {
+        "denominator": 143,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 143,
+        "numerator": 143,
+        "op": ">=",
+        "pass": true,
+        "population": 143,
+        "threshold": 0.995
+      },
+      "proper_name_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "proper_name_identity": {
+        "denominator": 24,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 24,
+        "numerator": 24,
+        "op": ">=",
+        "pass": true,
+        "population": 24,
+        "threshold": 0.98
+      },
+      "protected_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "protected_span_mutations": {
+        "denominator": 129,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 129,
+        "threshold": 0
+      },
+      "raw_view_mutations": {
+        "denominator": 1469,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1469,
+        "threshold": 0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 418,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 412,
+        "numerator": 418,
+        "op": ">=",
+        "pass": true,
+        "population": 418,
+        "threshold": 0.985
+      },
+      "romanized_target_top1_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "target_recall_at_5_harm": {
+        "denominator": 1,
+        "exact_value": 0.0,
+        "integer_pass_requirement": null,
+        "numerator": 0,
+        "op": "==",
+        "pass": true,
+        "population": 1,
+        "threshold": 0
+      },
+      "technical_english_identity": {
+        "denominator": 411,
+        "exact_value": 1.0,
+        "integer_pass_requirement": 407,
+        "numerator": 411,
+        "op": ">=",
+        "pass": true,
+        "population": 411,
+        "threshold": 0.99
+      }
+    }
+  },
+  "guard_version": "mai-07-r3f.1.0.0",
+  "overlay_disabled": true,
+  "parent_lock_semantic_sha256": "63a900a6fcb45be4e45dc059715050fa0b73b381b4f6fd3c9484a2de670ca70e",
+  "per_case_audit_raw_sha256": "578d34155f1039479d44449d515d384901228d033ecb230d17f2c275a4191923",
+  "prediction_count": 1469,
+  "prediction_ordering_contract": "sorted_by_case_id_ascending",
+  "prediction_path": "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_LOCK_CHAIN_HOLDOUT_VALIDATION_PREDICTIONS.jsonl",
+  "predictions_canonical_list_sha256": "36e99cce4ef2eb341aa4f237cfbdd34afbcc9db0b40e6cf9c20d0674e4d84a87",
+  "predictions_jsonl_raw_sha256": "6483be8ddeb97199ce904abeda4c10c5e8b30c261d874bf5ac5cf869ea105d07",
+  "predictions_semantic_sha256": "36e99cce4ef2eb341aa4f237cfbdd34afbcc9db0b40e6cf9c20d0674e4d84a87",
+  "report": {
+    "case_count": 1469,
+    "differential": {
+      "candidate_set_preservation": 1.0,
+      "english_identity_harm": 0,
+      "note": "Differential compares English Identity Guard reorder vs unguarded R3D generate+rank on non-frozen cases only.",
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "evaluator_version": "mai-07-r3f-eval.1.0.0",
+    "guard_version": "mai-07-r3f.1.0.0",
+    "harm": {
+      "english_identity_harm": 0,
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "latency_ms_mean": 0.5033799183117768,
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 80,
+        "numerator": 80,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1469,
+        "numerator": 1469,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 1028,
+        "numerator": 1028,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1028,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 418,
+        "numerator": 418,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 143,
+        "numerator": 143,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 24,
+        "numerator": 24,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 129,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1469,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 418,
+        "numerator": 418,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 411,
+        "numerator": 411,
+        "value": 1.0
+      }
+    },
+    "overlay_disabled": true,
+    "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "resource_version": "mai-07.1.3-r3f-sealnew",
+    "runtime_version": "mai-07.1.3-r3f-sealnew",
+    "scorer_version": "mai-07.r3f.seal-lock-chain.canonical.1.0.0"
+  },
+  "report_path": "evals/mai07_r3f_seal_lock_chain/reports/MAI_07R3F_LOCK_CHAIN_HOLDOUT_VALIDATION_SCORE_REPORT.json",
+  "resource_hash": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "resource_version": "mai-07.1.3-r3f-sealnew",
+  "runtime_version": "mai-07.1.3-r3f-sealnew",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "split": "HOLDOUT_VALIDATION"
+}

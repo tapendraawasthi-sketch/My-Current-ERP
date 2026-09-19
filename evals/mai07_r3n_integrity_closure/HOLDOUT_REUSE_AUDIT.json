@@ -1,0 +1,119 @@
+{
+  "attempt001_holdout_hashes": {
+    "canonical_semantic_sha256": "569cda92153ba75151e83367b5b4dddf99396728f62d951fb4105fab47b6c3a6",
+    "case_id_set_sha256": "0a7f3bf3e6b4988e36ccdaab815230f2fa47ba78103261dd690f0ebfd4bc5ebb",
+    "normalized_text_set_sha256": "23bad91c869a004b6cede27ed067ebff19f78ae0c32489b233d64d6d8a68a5b8",
+    "raw_sha256": "c5a472c48836fdfeec7aac2dcaa36dffbf72616ad05195b12b0a35d12f83371b",
+    "template_family_set_sha256": "15b2118d812f246b2b12f3325acb750709f786f423f5979bcf45138b0045bdd9"
+  },
+  "attempt001_holdout_raw_sha256_claimed_in_rc001_lock": "c5a472c48836fdfeec7aac2dcaa36dffbf72616ad05195b12b0a35d12f83371b",
+  "attempt001_holdout_raw_sha256_reconstructed": "c5a472c48836fdfeec7aac2dcaa36dffbf72616ad05195b12b0a35d12f83371b",
+  "attempt001_prediction_file_overwritten": true,
+  "attempt001_prediction_raw_sha256": "a6a6588ad8b5c6cd7b58e51ea8d8ccd42bb20616b31b21f5a9dc20a778df97b9",
+  "attempt001_prediction_semantic_sha256": "b6df1aa23179e5e070814b9dbdbd1fbaaecb3c81b038059f3f3d47eba516c7d9",
+  "attempt001_reconstruction_matches_rc001_lock": true,
+  "attempt002_executed_same_eight_holdout_case_ids": true,
+  "attempt002_holdout_hashes": {
+    "canonical_semantic_sha256": "7e34140fe4f9d0f1822f8b7ec530f1fe74e1e5b7bf89c2d131fd1afdb08ac951",
+    "case_id_set_sha256": "0a7f3bf3e6b4988e36ccdaab815230f2fa47ba78103261dd690f0ebfd4bc5ebb",
+    "normalized_text_set_sha256": "ee53cd2fab86a0c27cfefff91b3dcc42d1c72d1d9150f0f04f838e9dcdcb0c4e",
+    "raw_sha256": "192dd0812a919e17ab3654f600ced33be9b5dc6e0ab9112da60089c75744b4d7",
+    "template_family_set_sha256": "15b2118d812f246b2b12f3325acb750709f786f423f5979bcf45138b0045bdd9"
+  },
+  "attempt002_holdout_raw_sha256_claimed_in_rc002_lock": "192dd0812a919e17ab3654f600ced33be9b5dc6e0ab9112da60089c75744b4d7",
+  "attempt002_holdout_raw_sha256_on_disk": "192dd0812a919e17ab3654f600ced33be9b5dc6e0ab9112da60089c75744b4d7",
+  "attempt002_on_disk_matches_rc002_lock": true,
+  "attempt002_prediction_raw_sha256": "902fb36869199a7d1ace8a500f0aa8e8638b240841c22ec6fbe4543d3cbeb04a",
+  "attempt002_prediction_semantic_sha256": "7a0c3b8ca000a0a3f598a76069f01a310dc4eaca03813a5dba2b2fe7a7c33bf2",
+  "builder_version_same": true,
+  "classification": "HOLDOUT_CONTAMINATED",
+  "current_prediction_file_matches_attempt002": true,
+  "exact_case_reuse_count": 8,
+  "exact_case_union_count": 8,
+  "exact_text_only_attempt001": 1,
+  "exact_text_only_attempt002": 1,
+  "exact_text_reuse_count": 7,
+  "holdout_hash_equal": false,
+  "holdout_semantic_equal": false,
+  "notes": "Attempt 002 holdout differs by exactly one romanized sentence body (sulka→garna) under identical case IDs, template families, and seed family. Changing attempt ID does not create an independent holdout. All eight case IDs already produced Attempt 001 predictions before Attempt 002.",
+  "population_overlap": [
+    "ACRONYM_IDENTITY_REQUIRED",
+    "CANDIDATE_CAP_PRESSURE",
+    "ENGLISH_IDENTITY_REQUIRED",
+    "IDENTIFIER_PROTECTION_REQUIRED",
+    "IDENTITY_RETENTION_REQUIRED",
+    "PROTECTED_IDENTITY_REQUIRED",
+    "ROMANIZED_NEPALI_REQUIRED",
+    "SHARED_OR_AMBIGUOUS"
+  ],
+  "population_overlap_count": 8,
+  "predictions_generated_against_same_cases": true,
+  "reused_cases_already_had_attempt001_predictions": true,
+  "same_builder_seed_family": true,
+  "schema_version": "mai07_r3n_holdout_reuse_audit_v2",
+  "seeds": {
+    "rc001": {
+      "DEVELOPMENT": 20260718,
+      "HOLDOUT_FAMILY": 20260719
+    },
+    "rc002": {
+      "DEVELOPMENT": 20260718,
+      "HOLDOUT_FAMILY": 20260719
+    }
+  },
+  "shared_case_ids": [
+    "R3N-HLD-0001-528f7edc",
+    "R3N-HLD-0002-75481ef5",
+    "R3N-HLD-0003-e21ac004",
+    "R3N-HLD-0004-60255ad2",
+    "R3N-HLD-0005-767ec55a",
+    "R3N-HLD-0006-44f35934",
+    "R3N-HLD-0007-6a40f195",
+    "R3N-HLD-0008-9625ec9f"
+  ],
+  "shared_normalized_text_case_ids": [
+    "R3N-HLD-0001-528f7edc",
+    "R3N-HLD-0003-e21ac004",
+    "R3N-HLD-0004-60255ad2",
+    "R3N-HLD-0005-767ec55a",
+    "R3N-HLD-0006-44f35934",
+    "R3N-HLD-0007-6a40f195",
+    "R3N-HLD-0008-9625ec9f"
+  ],
+  "shared_normalized_text_hashes": [
+    "1c0a9c0fba07813193649583386ab0b0952879fd409b1cdb39740af8a7fec774",
+    "403e6eb66ad6b1ab3cda752794f4033b30c665891c82e3183495a8bc52fe34f0",
+    "e2971c8fb41f62cb95b4cb318f270c05b513bc49c2cf869a7525d8d5cb4d1bb9",
+    "e51a27ae41d39dccf5dd23dd8d95d4bdae8bb7797db4422b9ff43e90c604cac3",
+    "efa102d38ef33b2e2263949e6d48028bb5a4f2ef13f835cff413edaed08c72dc",
+    "f98d390f34ce6c14cbf15e40695ddf55350b39def0b461086c3d94b3e94ef56a",
+    "fe247a8eba079ffce6a52ff8d16a7e744b88c5303c7ecd616ab36f9cba6e1039"
+  ],
+  "shared_template_families": [
+    "r3n_hld_acronym",
+    "r3n_hld_cap_pressure",
+    "r3n_hld_english_identity",
+    "r3n_hld_identifier",
+    "r3n_hld_identity_retention",
+    "r3n_hld_protected",
+    "r3n_hld_romanized_nepali",
+    "r3n_hld_shared_ambiguous"
+  ],
+  "template_family_overlap": [
+    "r3n_hld_acronym",
+    "r3n_hld_cap_pressure",
+    "r3n_hld_english_identity",
+    "r3n_hld_identifier",
+    "r3n_hld_identity_retention",
+    "r3n_hld_protected",
+    "r3n_hld_romanized_nepali",
+    "r3n_hld_shared_ambiguous"
+  ],
+  "template_family_overlap_count": 8,
+  "text_only_attempt001_case_ids": [
+    "R3N-HLD-0002-75481ef5"
+  ],
+  "text_only_attempt002_case_ids": [
+    "R3N-HLD-0002-75481ef5"
+  ]
+}

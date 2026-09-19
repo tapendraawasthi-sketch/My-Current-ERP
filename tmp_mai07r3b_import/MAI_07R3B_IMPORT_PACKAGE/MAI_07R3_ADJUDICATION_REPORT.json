@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "report_id": "MAI_07R3B_REVIEW_IMPORT_AND_ADJUDICATION",
+  "generated_on": "2026-07-15",
+  "status": "READY_FOR_CURSOR_IMPORT",
+  "integrity": {
+    "all_required_hashes_verified": true,
+    "round_a_locked_sha256": "f01270e3017162259d2d305e158e86e386eb86841e4928b99546cd613d037f49",
+    "round_b_broad_locked_sha256": "79e229ebb381f76599e83c68a69fd40324a1efba196202e82afa15bfc44c8a61",
+    "round_b_official_sha256": "642bc6f39d6eb2797974e704cd32034f520abf0c5df43cb8aa9dcb06a8438021",
+    "mapping_sha256": "b6888bfd207d0dd225ecf2c9d403dad9a5c761eede1ddcfba4cd97d1701bcfd6",
+    "schema_sha256": "e802be835e61c555ba7699b1bbed65ae597322b1d5c8cb075341e4d23e66e48a",
+    "frozen_parent_dataset_sha256": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+    "active_resource_sha256_expected": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+    "active_semantic_sha256_expected": "b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849"
+  },
+  "counts": {
+    "round_a_items": 149,
+    "round_b_candidate_judgments": 263,
+    "unique_review_ids": 149,
+    "mapping_entries": 149,
+    "conflicts": 49,
+    "controls": {
+      "ambiguous_optional": 20,
+      "english_identity_required": 30,
+      "name_like": 20,
+      "romanized_target_required": 30
+    }
+  },
+  "round_a": {
+    "span_class": {
+      "ENGLISH_TERM": 66,
+      "INVALID_OR_UNCLEAR": 20,
+      "PROPER_NAME_OR_ENTITY": 2,
+      "ROMANIZED_NEPALI": 61
+    },
+    "preferred_rank_policy": {
+      "BOTH_EQUAL_REVIEW_REQUIRED": 1,
+      "CANNOT_DECIDE": 20,
+      "DEVANAGARI_TARGET_REQUIRED": 63,
+      "LATIN_IDENTITY_REQUIRED": 65
+    },
+    "devanagari_retention": {
+      "CANNOT_DECIDE": 20,
+      "OPTIONAL": 65,
+      "REQUIRED": 64
+    },
+    "confidence": {
+      "HIGH": 129,
+      "MEDIUM": 20
+    },
+    "approved_product_policy": "OPTION_A_CONSERVATIVE_IDENTITY_POLICY"
+  },
+  "round_b": {
+    "source_broad_counts": {
+      "ACCEPTABLE": 223,
+      "CANNOT_DECIDE": 4,
+      "UNACCEPTABLE": 36
+    },
+    "official_counts": {
+      "ACCEPTABLE_PREFERRED": 223,
+      "CANNOT_DECIDE": 4,
+      "UNNATURAL_BUT_POSSIBLE": 36
+    },
+    "role_by_label_counts": {
+      "LATIN_OR_SOURCE_IDENTITY": {
+        "ACCEPTABLE_PREFERRED": 125,
+        "CANNOT_DECIDE": 3,
+        "UNNATURAL_BUT_POSSIBLE": 21
+      },
+      "DEVANAGARI_CANDIDATE": {
+        "ACCEPTABLE_PREFERRED": 98,
+        "UNNATURAL_BUT_POSSIBLE": 15,
+        "CANNOT_DECIDE": 1
+      }
+    },
+    "bulk_mapping": {
+      "ACCEPTABLE": "ACCEPTABLE_PREFERRED",
+      "UNACCEPTABLE": "UNNATURAL_BUT_POSSIBLE",
+      "CANNOT_DECIDE": "CANNOT_DECIDE"
+    },
+    "row_by_row_five_label_review_performed": false
+  },
+  "adjudication": {
+    "evaluation_policy_buckets": {
+      "HUMAN_REVIEW_REQUIRED": 21,
+      "IDENTITY_REQUIRED": 65,
+      "TRANSLITERATION_REQUIRED": 63
+    },
+    "conflict_round_a_policies": {
+      "BOTH_EQUAL_REVIEW_REQUIRED": 1,
+      "DEVANAGARI_TARGET_REQUIRED": 18,
+      "LATIN_IDENTITY_REQUIRED": 30
+    },
+    "items_with_multiple_bulk_mapped_preferred_candidates": 93,
+    "items_with_cannot_decide": 21,
+    "items_with_unique_policy_compatible_top1_gold": 120,
+    "issue_counts": {
+      "CANDIDATE_CANNOT_DECIDE": 3,
+      "IDENTITY_REQUIRED_WITHOUT_PREFERRED_IDENTITY": 2,
+      "MULTIPLE_BULK_MAPPED_PREFERRED_CANDIDATES": 93,
+      "ROUND_A_POLICY_CANNOT_DECIDE": 20,
+      "TARGET_REQUIRED_WITHOUT_PREFERRED_DEVANAGARI": 5
+    }
+  },
+  "gate_verdict": {
+    "review_import_data_valid": true,
+    "product_policy_option_a_approved": true,
+    "cursor_repository_import_pending": true,
+    "mai07_quality_gates_passed": false,
+    "professional_linguist_approved": false,
+    "production_approved": false,
+    "frozen_quality_run_authorized": false,
+    "mai08_authorized": false
+  },
+  "interpretation": [
+    "Round A remains the product-ranking authority.",
+    "Round B labels are candidate-quality evidence and do not overwrite Round A automatically.",
+    "The five-label Round B output is a user-authorized mechanical schema mapping from the locked three-label review.",
+    "Because every ACCEPTABLE row became ACCEPTABLE_PREFERRED, multiple candidates may be marked preferred; those cases are not automatically unique top-1 gold.",
+    "No frozen V1 data, runtime ranker, resources, or MAI-08 implementation is changed by this package."
+  ]
+}

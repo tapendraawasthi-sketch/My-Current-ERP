@@ -1,0 +1,12 @@
+{
+  "phase": "MAI-07R3Q-PROTECTED-SPAN-ALIGNMENT-FROZEN-V3-ONE-SHOT",
+  "attempt_id": "MAI_07R3Q_FROZEN_V3_ATTEMPT_001",
+  "verdict": "PASSED_QUALITY",
+  "QUALITY_GATES_PASSED": true,
+  "PRODUCTION_APPROVED": false,
+  "LINGUIST_APPROVED": true,
+  "candidate_promoted": false,
+  "active_runtime_unchanged": "mai-07.1.3-r3f-sealnew",
+  "mai_08": "NOT_STARTED",
+  "note": "One-shot frozen V3 attempt consumed. Quality gates passed; promotion still requires separate authorization."
+}

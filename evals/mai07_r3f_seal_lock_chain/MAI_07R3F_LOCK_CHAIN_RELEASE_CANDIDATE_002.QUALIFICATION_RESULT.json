@@ -1,0 +1,100 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_id": "mai07-r3f-lock-chain-holdout-bfbca6681a3e",
+  "audit_report_semantic_sha256": "949399d65ce009f3a5a6d20fb664affac417aa651e31e1df6cc50aaecf26ba06",
+  "canonical_report_semantic_sha256": "cb8911802ee5f0410526432289407bb776aeb9332d7b1b651cef7f1812de83ed",
+  "created_utc": "2026-07-16T06:55:54.133685+00:00",
+  "gate_all_pass": true,
+  "metrics_summary": {
+    "all_pass": true,
+    "harm": {
+      "english_identity_harm": 0,
+      "proper_name_harm": 0,
+      "protected_harm": 0,
+      "romanized_target_top1_harm": 0,
+      "target_recall_at_5_harm": 0
+    },
+    "metrics": {
+      "ambiguous_conservative_accuracy": {
+        "denominator": 80,
+        "numerator": 80,
+        "value": 1.0
+      },
+      "candidate_set_preservation": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "caps_respected": {
+        "denominator": 1469,
+        "numerator": 1469,
+        "value": 1.0
+      },
+      "context_counterfactual_pair_accuracy": {
+        "denominator": 0,
+        "numerator": 0,
+        "value": 1.0
+      },
+      "deterministic_output": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "english_identity_top1": {
+        "denominator": 1028,
+        "numerator": 1028,
+        "value": 1.0
+      },
+      "false_devanagari_on_english": {
+        "denominator": 1028,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "high_confidence_romanized_target_top1": {
+        "denominator": 418,
+        "numerator": 418,
+        "value": 1.0
+      },
+      "ordinary_english_identity": {
+        "denominator": 143,
+        "numerator": 143,
+        "value": 1.0
+      },
+      "proper_name_identity": {
+        "denominator": 24,
+        "numerator": 24,
+        "value": 1.0
+      },
+      "protected_span_mutations": {
+        "denominator": 129,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "raw_view_mutations": {
+        "denominator": 1469,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "romanized_target_recall_at_5": {
+        "denominator": 418,
+        "numerator": 418,
+        "value": 1.0
+      },
+      "technical_english_identity": {
+        "denominator": 411,
+        "numerator": 411,
+        "value": 1.0
+      }
+    }
+  },
+  "note": "Qualification is separate from LOCKED_NOT_RUN body; lock file must remain unchanged.",
+  "parent_lock_semantic_sha256": "63a900a6fcb45be4e45dc059715050fa0b73b381b4f6fd3c9484a2de670ca70e",
+  "predictions_canonical_list_sha256": "36e99cce4ef2eb341aa4f237cfbdd34afbcc9db0b40e6cf9c20d0674e4d84a87",
+  "predictions_jsonl_raw_sha256": "6483be8ddeb97199ce904abeda4c10c5e8b30c261d874bf5ac5cf869ea105d07",
+  "rc_id": "MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002",
+  "record_type": "QUALIFICATION_RESULT",
+  "schema_version": "2.0.0",
+  "status": "PASSED_HOLDOUT"
+}

@@ -1,0 +1,175 @@
+{
+  "agreement": {
+    "abstention_containing_count": 43,
+    "agreement_by_confidence": {
+      "cases_all_roles_same_confidence": 1111,
+      "n": 1111,
+      "rate": 1.0
+    },
+    "agreement_by_decision_source_bucket": {
+      "ACCOUNTING_MAP_INHERITED_NO_HEURISTIC": {
+        "n": 611,
+        "three_role_exact_agree": 611
+      },
+      "HEURISTIC_V1_PRESENT": {
+        "n": 500,
+        "three_role_exact_agree": 500
+      }
+    },
+    "agreement_by_disposition": {
+      "ABSTAIN_CANNOT_DECIDE": {
+        "cases_any_role": 43,
+        "cases_unanimous_this_disposition": 43
+      },
+      "ACRONYM_OR_IDENTIFIER": {
+        "cases_any_role": 72,
+        "cases_unanimous_this_disposition": 72
+      },
+      "CONTEXT_DEPENDENT": {
+        "cases_any_role": 16,
+        "cases_unanimous_this_disposition": 16
+      },
+      "DEVANAGARI_TRANSLITERATION_REQUIRED": {
+        "cases_any_role": 324,
+        "cases_unanimous_this_disposition": 324
+      },
+      "ENGLISH_IDENTITY_REQUIRED": {
+        "cases_any_role": 244,
+        "cases_unanimous_this_disposition": 244
+      },
+      "IDENTITY_FIRST_REVIEW_REQUIRED": {
+        "cases_any_role": 218,
+        "cases_unanimous_this_disposition": 218
+      },
+      "NAME_OR_ENTITY": {
+        "cases_any_role": 0,
+        "cases_unanimous_this_disposition": 0
+      },
+      "NO_TRANSLITERATION_ALLOWED": {
+        "cases_any_role": 0,
+        "cases_unanimous_this_disposition": 0
+      },
+      "PROTECTED": {
+        "cases_any_role": 150,
+        "cases_unanimous_this_disposition": 150
+      },
+      "TRANSLITERATION_OPTIONAL": {
+        "cases_any_role": 44,
+        "cases_unanimous_this_disposition": 44
+      }
+    },
+    "ai_output_similarity_metrics_non_independent": {
+      "four_role_percent_agreement": 1.0,
+      "label": "NON_INDEPENDENT_AI_OUTPUT_SIMILARITY_ONLY",
+      "not_human_inter_rater_reliability": true,
+      "note": "Percent agreement among AI-assisted role simulations; not Cohen kappa / Krippendorff alpha as human IRR.",
+      "three_role_percent_agreement": 1.0
+    },
+    "all_different_count": 0,
+    "conflict_taxonomy_counts": {
+      "ABSTAIN_PRESENT": 43,
+      "HEURISTIC_V1_SAFETY_SENSITIVE": 500
+    },
+    "four_role_exact_disposition_agree_count": 611,
+    "four_role_exact_disposition_agreement_rate": 1.0,
+    "four_role_n": 611,
+    "majority_count": 0,
+    "natural_context_ok_agreement": {
+      "cases_all_roles_same": 1111,
+      "n": 1111,
+      "rate": 1.0
+    },
+    "pairwise_role_disposition_agreement": {
+      "NEPALI_FLUENT_A__ACCOUNTING_DOMAIN": {
+        "exact_disposition_agree": 611,
+        "n": 611,
+        "rate": 1.0
+      },
+      "NEPALI_FLUENT_A__PROFESSIONAL_LINGUIST_B": {
+        "exact_disposition_agree": 1111,
+        "n": 1111,
+        "rate": 1.0
+      },
+      "PRODUCT_POLICY__ACCOUNTING_DOMAIN": {
+        "exact_disposition_agree": 611,
+        "n": 611,
+        "rate": 1.0
+      },
+      "PRODUCT_POLICY__NEPALI_FLUENT_A": {
+        "exact_disposition_agree": 1111,
+        "n": 1111,
+        "rate": 1.0
+      },
+      "PRODUCT_POLICY__PROFESSIONAL_LINGUIST_B": {
+        "exact_disposition_agree": 1111,
+        "n": 1111,
+        "rate": 1.0
+      },
+      "PROFESSIONAL_LINGUIST_B__ACCOUNTING_DOMAIN": {
+        "exact_disposition_agree": 611,
+        "n": 611,
+        "rate": 1.0
+      }
+    },
+    "review_vs_required_conflict_count": 0,
+    "split_no_majority_count": 0,
+    "suspected_ambiguity_agreement": {
+      "cases_all_roles_same": 1111,
+      "n": 1111,
+      "rate": 1.0
+    },
+    "three_role_exact_disposition_agree_count": 1111,
+    "three_role_exact_disposition_agreement_rate": 1.0,
+    "three_role_n": 1111,
+    "unanimous_count": 1111
+  },
+  "four_role_cases": 611,
+  "governance": {
+    "LINGUIST_APPROVED": false,
+    "MAI-07": "NEEDS_CORRECTIVE_WORK",
+    "MAI-08": "NOT_STARTED",
+    "PRODUCTION_APPROVED": false,
+    "QUALITY_GATES_PASSED": false,
+    "ROUND_A_LOCKED": false,
+    "ROUND_B_READY": false,
+    "agreement_is_independent_human_irr": false,
+    "majority_voting_is_gold": false
+  },
+  "input_accounting_semantic_hash": "b96bec29e30ddcdc6dce1a5ef09a2003ee9de003a336cd98b43341c6e55e363b",
+  "input_remaining_semantic_hash": "1cc783d79cc3cc5f3f2daa288ae8b4721238fed584dbfb540597c8f883a8f4a1",
+  "ok": true,
+  "phase": "MAI-07R3K-AI-ASSISTED-CROSS-ROLE-CONSENSUS-DIAGNOSTIC",
+  "provenance": {
+    "agreement_is_independent_human_irr": false,
+    "ai_autofill_used": true,
+    "eligible_for_frozen_quality_gold": false,
+    "frozen_v3_quality_gate_authorized": false,
+    "independent_human_review": false,
+    "linguist_approved": false,
+    "majority_voting_is_gold": false,
+    "official_round_a_lock_eligible": false,
+    "production_approved": false,
+    "professional_linguist_adjudication": false,
+    "prohibited_for_training": true,
+    "round_b_authorized": false,
+    "status": "AI_ASSISTED_CROSS_ROLE_CONSENSUS_DIAGNOSTIC",
+    "user_accepted": true
+  },
+  "risk_queue_count": 700,
+  "risk_tier_counts": {
+    "TIER_2_HIGH": 501,
+    "TIER_3_MEDIUM": 199
+  },
+  "role_counts": {
+    "ACCOUNTING_DOMAIN": 611,
+    "NEPALI_FLUENT_A": 1111,
+    "PRODUCT_POLICY": 1111,
+    "PROFESSIONAL_LINGUIST_B": 1111
+  },
+  "schema": "mai07_v3_ai_assisted_cross_role_consensus_diagnostic_v1",
+  "semantic_hash": "42d1a5ffc170d201f8a4bf92e4cef4f156dde57c07e847c960835e26080ddafc",
+  "targeted_packet_item_count": 700,
+  "three_role_cases": 500,
+  "total_role_judgments": 3944,
+  "unique_source_item_ids": 1111
+}

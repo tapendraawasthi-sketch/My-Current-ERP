@@ -1,0 +1,9 @@
+{
+  "case_count": 696,
+  "evaluator_version": "mai-07.1.3",
+  "hash_unchanged_vs_pre_closure": false,
+  "note": "full ordered dump hashed; not production-traced",
+  "pre_closure_semantic_hash": "b28e8240bf0c4faa1253212c40e721f77148516fb3a2a3303582303b8a035849",
+  "schema": "mai07_runtime_semantic_v1",
+  "semantic_hash": "097d500c37392383e974c110568799e738a3989f37c5d69dc20bd6d1141c72fd"
+}

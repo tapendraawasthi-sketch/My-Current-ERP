@@ -1,0 +1,19 @@
+{
+  "attempt_id": "MAI_07R3N2_HOLDOUT_ATTEMPT_001",
+  "command": "python -m src.oip.modules.language_runtime.transliteration.application.eval_mai07_r3n2 --one-shot",
+  "created_utc": "2026-07-18T05:24:16.922920+00:00",
+  "frozen_v2_opened": false,
+  "parent_lock_raw_sha256": "e8597cd0e6893d1293c9131854a313c05611e79722839d70f5dae3def62fb0ee",
+  "parent_lock_semantic_sha256": "25f9eac74b8c9331a474c54ef2bb723157789aba00cab7bb8194dbb6b999c710",
+  "prediction_count": 1000,
+  "prediction_path": "C:/Users/Acer/Documents/My-Current-ERP/evals/mai07_r3n2_fresh_holdout/reports/holdout_validation_predictions.jsonl",
+  "predictions_canonical_list_sha256": "bfa1b051cc09400990c72d783456fe1c94e95b0e2e9992a3a54ee25f58e44ebd",
+  "predictions_jsonl_raw_sha256": "2d9ce4bcc5f6498ed818905adbc8b8fe8e45c39bc7b0f8820249ebbed936f7a2",
+  "predictions_semantic_sha256": "bfa1b051cc09400990c72d783456fe1c94e95b0e2e9992a3a54ee25f58e44ebd",
+  "prohibited_rerun": true,
+  "rc_id": "MAI_07R3N2_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "record_type": "HOLDOUT_ATTEMPT",
+  "schema_version": "2.0.0",
+  "split": "HOLDOUT_VALIDATION",
+  "status": "COMPLETED"
+}

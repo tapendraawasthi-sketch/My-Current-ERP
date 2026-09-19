@@ -1,0 +1,116 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_id": "MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT_001",
+  "attempt_manifest_raw_sha256": "69ae44d5c54ba8786b1e73e6cfb4725fd5036056e5ca6cfca810abb0b8171dc4",
+  "attempt_manifest_semantic_sha256": "1f436834b3abe445072d79f77757ea73d691277bd0fb27a96ad9752b556276ce",
+  "audit_scorer_sha256": "c0d7799b5d54057ea768b8c67f9516edefc713d8ebd2d59120f16df3bc102450",
+  "audit_scorer_version": "mai-07.r3c.audit.1.0.0",
+  "authorization": "EXPLICIT_USER_AUTHORIZATION_MAI_07R3G_REAUTHORIZED_002",
+  "candidate_selection_path": "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_CANDIDATE_SELECTION.json",
+  "candidate_selection_semantic_sha256": "73350ac500eb021e3a3f2cdd7587b1937c20b7e8fc9316734ad2cd0731dbe46f",
+  "canonical_scorer_sha256": "6e8e30c9c6e2c38d3ea61243e0a22a72e8eb3e17e3d854a0a9a3467b130e9336",
+  "canonical_scorer_version": "mai-07.r3c.canonical.1.0.0",
+  "created_utc": "2026-07-16T08:35:40.179940+00:00",
+  "deterministic_seed": 20260718,
+  "expected_case_count": 696,
+  "expected_population_counts": {
+    "HUMAN_REVIEW_REQUIRED": 41,
+    "IDENTITY_REQUIRED": 340,
+    "LEGACY_V1_INFORMATIONAL": 27,
+    "TRANSLITERATION_REQUIRED": 288
+  },
+  "frozen_case_inspection_before_lock": false,
+  "frozen_v2_dataset_hash": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+  "frozen_v2_manifest_sha256": "17331e4d0c703977b80ca893eb5261bb126aa52a6813fe8b4f548b1178c716be",
+  "guard_config_sha256": "56f97c9a576d3b6af4462983f492852142a6dc2743cd2d3931bd8903c4bf79c3",
+  "integer_gate_requirements": {
+    "CAPS_RESPECTED": {
+      "denominator": 696,
+      "integer_pass": 696,
+      "op": "==",
+      "threshold": 1.0
+    },
+    "CORE_RECALL_AT_5": {
+      "denominator": 272,
+      "integer_pass": 267,
+      "op": ">=",
+      "threshold": 0.98
+    },
+    "DETERMINISTIC_OUTPUT": {
+      "denominator": 1,
+      "integer_pass": 1,
+      "op": "==",
+      "threshold": 1.0
+    },
+    "ENGLISH_IDENTITY_TOP1": {
+      "denominator": 102,
+      "integer_pass": 100,
+      "op": ">=",
+      "threshold": 0.98
+    },
+    "FALSE_DEVANAGARI_ON_ENGLISH": {
+      "denominator": 102,
+      "integer_pass": 2,
+      "op": "<=",
+      "threshold": 0.02
+    },
+    "PROTECTED_MUTATIONS": {
+      "denominator": null,
+      "integer_pass": 0,
+      "op": "==",
+      "threshold": 0
+    },
+    "RAW_VIEW_MUTATIONS": {
+      "denominator": null,
+      "integer_pass": 0,
+      "op": "==",
+      "threshold": 0
+    },
+    "TARGET_RECALL_AT_5": {
+      "denominator": 288,
+      "integer_pass": 274,
+      "op": ">=",
+      "threshold": 0.95
+    },
+    "TARGET_TOP1": {
+      "denominator": 288,
+      "integer_pass": 254,
+      "op": ">=",
+      "threshold": 0.88
+    },
+    "UNAMBIGUOUS_TOP1": {
+      "denominator": 255,
+      "integer_pass": 235,
+      "op": ">=",
+      "threshold": 0.92
+    }
+  },
+  "mutation_allowed": false,
+  "output_paths": {
+    "audit_report": "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_V2_AUDIT_SCORE_REPORT.json",
+    "canonical_report": "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_V2_CANONICAL_SCORE_REPORT.json",
+    "differential": "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_R3E_DIFFERENTIAL.json",
+    "execution_result": "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT_001.EXECUTION_RESULT.json",
+    "per_case_audit": "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_V2_PER_CASE_AUDIT.jsonl",
+    "predictions": "evals/mai07/r3g_reauthorized_002/reports/MAI_07R3G_REAUTHORIZED_002_V2_ONE_SHOT_PREDICTIONS.jsonl",
+    "quality_result": "evals/mai07/r3g_reauthorized_002/MAI_07R3G_REAUTHORIZED_002_FROZEN_V2_ATTEMPT_001.QUALITY_RESULT.json"
+  },
+  "overlay_enabled": false,
+  "population_manifest_sha256": "a8461f62acac98561605e5b2ffb2475bb73a3d15cf0f32ef7b98f1247de85632",
+  "prohibited_rerun": true,
+  "resource_content_sha256": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+  "resource_pack_version": "mai-07.1.3-r3f-sealnew",
+  "runner_module": "eval_mai07_r3g_reauthorized_002.py",
+  "runtime_semantic_sha256": "148deb84942452eaf7c17ac0fa3363d09473fdb857d9e9378554e4406710c6a0",
+  "runtime_version": "mai-07.1.3-r3f-sealnew",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "selected_rc_chain_path": "evals/mai07_r3f_seal_lock_chain/MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002.CHAIN_MANIFEST.json",
+  "selected_rc_id": "MAI_07R3F_LOCK_CHAIN_RELEASE_CANDIDATE_002",
+  "selected_rc_lock_raw_sha256": "643dbf93f925ff3a8a5255cb02bfac01cdea41a0ae0ceda2bc1c6064c1fa5a83",
+  "selected_rc_lock_semantic_sha256": "63a900a6fcb45be4e45dc059715050fa0b73b381b4f6fd3c9484a2de670ca70e",
+  "status": "LOCKED_NOT_RUN",
+  "threshold_manifest_sha256": "aa4b5d68852edbed7cdc5f025b8051b3235078a65fb78bb0aca3a342fcdf04ef"
+}

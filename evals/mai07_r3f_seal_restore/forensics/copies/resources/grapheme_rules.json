@@ -1,0 +1,338 @@
+{
+  "provenance": "engineering-curated grapheme mappings for bounded Romanized Nepali generation",
+  "resource_id": "grapheme_rules",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "rules": [
+    {
+      "cost": 0.9,
+      "devanagari": "क्ष",
+      "roman": "ksh"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "ज्ञ",
+      "roman": "jny"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ज्ञ",
+      "roman": "gy"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "त्र",
+      "roman": "tr"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "छ",
+      "roman": "chh"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "च",
+      "roman": "ch"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "श",
+      "roman": "sh"
+    },
+    {
+      "cost": 1.1,
+      "devanagari": "ष",
+      "roman": "ss"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "थ",
+      "roman": "th"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ध",
+      "roman": "dh"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "ख",
+      "roman": "kh"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "घ",
+      "roman": "gh"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "फ",
+      "roman": "ph"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "भ",
+      "roman": "bh"
+    },
+    {
+      "cost": 0.7,
+      "devanagari": "ा",
+      "roman": "aa"
+    },
+    {
+      "cost": 0.7,
+      "devanagari": "ी",
+      "roman": "ii"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "ी",
+      "roman": "ee"
+    },
+    {
+      "cost": 0.7,
+      "devanagari": "ू",
+      "roman": "uu"
+    },
+    {
+      "cost": 0.9,
+      "devanagari": "ू",
+      "roman": "oo"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "ै",
+      "roman": "ai"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "ौ",
+      "roman": "au"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ृ",
+      "roman": "ri"
+    },
+    {
+      "cost": 1.1,
+      "devanagari": "ं",
+      "roman": "ng"
+    },
+    {
+      "cost": 1.2,
+      "devanagari": "अ",
+      "roman": "a"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "इ",
+      "roman": "i"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "उ",
+      "roman": "u"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ए",
+      "roman": "e"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ओ",
+      "roman": "o"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "क",
+      "roman": "ka"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "क",
+      "roman": "k"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "ग",
+      "roman": "ga"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ग",
+      "roman": "g"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "च",
+      "roman": "cha"
+    },
+    {
+      "cost": 0.8,
+      "devanagari": "ज",
+      "roman": "ja"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ज",
+      "roman": "j"
+    },
+    {
+      "cost": 1.2,
+      "devanagari": "ज",
+      "roman": "z"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "त",
+      "roman": "ta"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "त",
+      "roman": "t"
+    },
+    {
+      "cost": 1.05,
+      "devanagari": "ट",
+      "roman": "T"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "द",
+      "roman": "da"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "द",
+      "roman": "d"
+    },
+    {
+      "cost": 1.05,
+      "devanagari": "ड",
+      "roman": "D"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "न",
+      "roman": "na"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "न",
+      "roman": "n"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "प",
+      "roman": "pa"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "प",
+      "roman": "p"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "ब",
+      "roman": "ba"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ब",
+      "roman": "b"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "व",
+      "roman": "v"
+    },
+    {
+      "cost": 1.1,
+      "devanagari": "व",
+      "roman": "w"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "म",
+      "roman": "ma"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "म",
+      "roman": "m"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "य",
+      "roman": "ya"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "य",
+      "roman": "y"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "र",
+      "roman": "ra"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "र",
+      "roman": "r"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "ल",
+      "roman": "la"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ल",
+      "roman": "l"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "स",
+      "roman": "sa"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "स",
+      "roman": "s"
+    },
+    {
+      "cost": 0.85,
+      "devanagari": "ह",
+      "roman": "ha"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "ह",
+      "roman": "h"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "फ",
+      "roman": "fa"
+    },
+    {
+      "cost": 1.1,
+      "devanagari": "फ",
+      "roman": "f"
+    },
+    {
+      "cost": 1.3,
+      "devanagari": "क",
+      "roman": "c"
+    },
+    {
+      "cost": 1.0,
+      "devanagari": "छ",
+      "roman": "x"
+    }
+  ],
+  "version": "mai-07.1.0"
+}

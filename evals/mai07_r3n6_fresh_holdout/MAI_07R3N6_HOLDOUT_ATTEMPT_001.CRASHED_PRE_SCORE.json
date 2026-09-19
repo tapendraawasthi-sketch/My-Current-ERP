@@ -1,0 +1,19 @@
+{
+  "attempt_id": "MAI_07R3N6_HOLDOUT_ATTEMPT_001",
+  "attempt_intent_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_HOLDOUT_ATTEMPT_001.ATTEMPT_INTENT.json",
+  "attempt_intent_raw_sha256": "b43729cf3c5c40f7d21c2a060c76d49134cca7df03d1104c5e84fcb3b3844b88",
+  "authority": "ATTEMPT_001_NOT_ELIGIBLE_FOR_RERUN_OR_RECLAIM",
+  "chain_written": false,
+  "disposition": "CRASHED_PRE_SCORE_HARNESS_UNPACK",
+  "error": "ValueError: too many values to unpack (expected 3) in _load_attested_attempt_inputs",
+  "locked_path": "evals/mai07_r3n6_fresh_holdout/MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_001.LOCKED_NOT_RUN.json",
+  "locked_raw_sha256": "f722e1a153fc61fdd2bb9270a4f173150358eda5e5af3f48ba49495244d751a0",
+  "locked_semantic_sha256": "883b808b67049041a801650297abb9fd151d8c206da3700ee966f00ea03e61fa",
+  "next_governed_action": "RC_002_RELOCK_AFTER_HARNESS_FIX_THEN_ATTEMPT_002",
+  "predictions_written": false,
+  "qualification_written": false,
+  "rc_id": "MAI_07R3N6_FRESH_HOLDOUT_RELEASE_CANDIDATE_001",
+  "record_type": "HOLDOUT_ATTEMPT_CRASHED_PRE_SCORE",
+  "schema_version": "mai07_r3n6_crashed_pre_score_v1",
+  "scores_written": false
+}

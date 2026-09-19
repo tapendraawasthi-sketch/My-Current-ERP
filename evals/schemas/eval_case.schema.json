@@ -1,0 +1,701 @@
+{
+  "$defs": {
+    "ConversationTurnV1": {
+      "additionalProperties": false,
+      "properties": {
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "role": {
+          "$ref": "#/$defs/TurnRole"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "title": "ConversationTurnV1",
+      "type": "object"
+    },
+    "EvalInputV1": {
+      "additionalProperties": false,
+      "properties": {
+        "active_draft_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Active Draft Id"
+        },
+        "client_payload": {
+          "additionalProperties": true,
+          "title": "Client Payload",
+          "type": "object"
+        },
+        "erp_fixture_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Erp Fixture Ids",
+          "type": "array"
+        },
+        "knowledge_fixture_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Knowledge Fixture Ids",
+          "type": "array"
+        },
+        "provider_policy": {
+          "default": "none",
+          "enum": [
+            "none",
+            "fake",
+            "live_opt_in"
+          ],
+          "title": "Provider Policy",
+          "type": "string"
+        },
+        "seed": {
+          "default": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "turns": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ConversationTurnV1"
+          },
+          "title": "Turns",
+          "type": "array"
+        },
+        "unresolved_clarification": {
+          "default": false,
+          "title": "Unresolved Clarification",
+          "type": "boolean"
+        },
+        "user_text": {
+          "default": "",
+          "title": "User Text",
+          "type": "string"
+        }
+      },
+      "title": "EvalInputV1",
+      "type": "object"
+    },
+    "ExpectedBehaviorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_ambiguous_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Ambiguous Fields",
+          "type": "array"
+        },
+        "expected_citation_behavior": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Citation Behavior"
+        },
+        "expected_clarification_targets": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Clarification Targets",
+          "type": "array"
+        },
+        "expected_dialogue_act": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Dialogue Act"
+        },
+        "expected_event_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Event Types",
+          "type": "array"
+        },
+        "expected_evidence_classes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Evidence Classes",
+          "type": "array"
+        },
+        "expected_fields": {
+          "additionalProperties": true,
+          "title": "Expected Fields",
+          "type": "object"
+        },
+        "expected_intents": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Intents",
+          "type": "array"
+        },
+        "expected_language_form": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LanguageForm"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "expected_lifecycle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Lifecycle"
+        },
+        "expected_missing_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Missing Fields",
+          "type": "array"
+        },
+        "expected_mutation_count": {
+          "default": 0,
+          "title": "Expected Mutation Count",
+          "type": "integer"
+        },
+        "expected_number_roles": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/NumberRoleExpectationV1"
+          },
+          "title": "Expected Number Roles",
+          "type": "array"
+        },
+        "expected_policy_decision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Policy Decision"
+        },
+        "expected_receipt_count": {
+          "default": 0,
+          "title": "Expected Receipt Count",
+          "type": "integer"
+        },
+        "expected_response_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Response Types",
+          "type": "array"
+        },
+        "expected_safe_outcome": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Safe Outcome"
+        },
+        "expected_schema_validity": {
+          "default": true,
+          "title": "Expected Schema Validity",
+          "type": "boolean"
+        },
+        "expected_tool_calls": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Tool Calls",
+          "type": "array"
+        },
+        "expected_turn_relation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Turn Relation"
+        },
+        "human_review_dimensions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Human Review Dimensions",
+          "type": "array"
+        }
+      },
+      "title": "ExpectedBehaviorV1",
+      "type": "object"
+    },
+    "InteractionMode": {
+      "enum": [
+        "ask",
+        "accountant"
+      ],
+      "title": "InteractionMode",
+      "type": "string"
+    },
+    "LanguageForm": {
+      "enum": [
+        "ENGLISH",
+        "DEVANAGARI_NEPALI",
+        "ROMANIZED_NEPALI",
+        "CODE_MIXED"
+      ],
+      "title": "LanguageForm",
+      "type": "string"
+    },
+    "NumberRoleExpectationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "normalized_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalized Value"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "surface": {
+          "title": "Surface",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "surface",
+        "role"
+      ],
+      "title": "NumberRoleExpectationV1",
+      "type": "object"
+    },
+    "ProhibitedBehaviorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "critical": {
+          "default": false,
+          "title": "Critical",
+          "type": "boolean"
+        },
+        "forbidden_assumptions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Assumptions",
+          "type": "array"
+        },
+        "forbidden_citations": {
+          "default": false,
+          "title": "Forbidden Citations",
+          "type": "boolean"
+        },
+        "forbidden_default_purchase": {
+          "default": false,
+          "title": "Forbidden Default Purchase",
+          "type": "boolean"
+        },
+        "forbidden_draft_merge": {
+          "default": false,
+          "title": "Forbidden Draft Merge",
+          "type": "boolean"
+        },
+        "forbidden_event_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Event Types",
+          "type": "array"
+        },
+        "forbidden_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Fields",
+          "type": "array"
+        },
+        "forbidden_intents": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Intents",
+          "type": "array"
+        },
+        "forbidden_language_shift": {
+          "default": false,
+          "title": "Forbidden Language Shift",
+          "type": "boolean"
+        },
+        "forbidden_mutations": {
+          "default": true,
+          "title": "Forbidden Mutations",
+          "type": "boolean"
+        },
+        "forbidden_number_roles": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Number Roles",
+          "type": "array"
+        },
+        "forbidden_receipts": {
+          "default": false,
+          "title": "Forbidden Receipts",
+          "type": "boolean"
+        },
+        "forbidden_response_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Response Types",
+          "type": "array"
+        },
+        "forbidden_sensitive_output": {
+          "default": true,
+          "title": "Forbidden Sensitive Output",
+          "type": "boolean"
+        },
+        "forbidden_tool_calls": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Tool Calls",
+          "type": "array"
+        }
+      },
+      "title": "ProhibitedBehaviorV1",
+      "type": "object"
+    },
+    "ReviewStatus": {
+      "enum": [
+        "DRAFT",
+        "ENGINEERING_REVIEWED",
+        "LINGUIST_REVIEW_REQUIRED",
+        "ACCOUNTING_REVIEW_REQUIRED",
+        "SECURITY_REVIEWED",
+        "PROFESSIONAL_REVIEW_REQUIRED",
+        "FROZEN"
+      ],
+      "title": "ReviewStatus",
+      "type": "string"
+    },
+    "ScoringConfigV1": {
+      "additionalProperties": false,
+      "properties": {
+        "critical_safety_zero_tolerance": {
+          "default": true,
+          "title": "Critical Safety Zero Tolerance",
+          "type": "boolean"
+        },
+        "weigh_classification": {
+          "default": 1.0,
+          "title": "Weigh Classification",
+          "type": "number"
+        },
+        "weigh_number_roles": {
+          "default": 1.0,
+          "title": "Weigh Number Roles",
+          "type": "number"
+        },
+        "weigh_response": {
+          "default": 1.0,
+          "title": "Weigh Response",
+          "type": "number"
+        },
+        "weigh_safety": {
+          "default": 1.0,
+          "title": "Weigh Safety",
+          "type": "number"
+        },
+        "weigh_schema": {
+          "default": 1.0,
+          "title": "Weigh Schema",
+          "type": "number"
+        }
+      },
+      "title": "ScoringConfigV1",
+      "type": "object"
+    },
+    "ScriptMix": {
+      "enum": [
+        "LATIN",
+        "DEVANAGARI",
+        "MIXED",
+        "OTHER"
+      ],
+      "title": "ScriptMix",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "Split": {
+      "enum": [
+        "frozen",
+        "dev",
+        "hold"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "TrustedTestScopeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "company_id": {
+          "default": "eval-company-mai04",
+          "title": "Company Id",
+          "type": "string"
+        },
+        "permissions": {
+          "default": [
+            "oip:read",
+            "oip:draft"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Permissions",
+          "type": "array"
+        },
+        "principal_id": {
+          "default": "eval-principal-mai04",
+          "title": "Principal Id",
+          "type": "string"
+        },
+        "roles": {
+          "default": [
+            "accountant"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Roles",
+          "type": "array"
+        },
+        "tenant_id": {
+          "default": "eval-tenant-mai04",
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "title": "TrustedTestScopeV1",
+      "type": "object"
+    },
+    "TurnRole": {
+      "enum": [
+        "USER",
+        "ASSISTANT",
+        "TOOL",
+        "SYSTEM_FIXTURE"
+      ],
+      "title": "TurnRole",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "case_version": {
+      "default": "1",
+      "title": "Case Version",
+      "type": "string"
+    },
+    "content_hash": {
+      "default": "",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "domain": {
+      "default": "accounting",
+      "title": "Domain",
+      "type": "string"
+    },
+    "expected": {
+      "$ref": "#/$defs/ExpectedBehaviorV1"
+    },
+    "initial_state": {
+      "additionalProperties": true,
+      "title": "Initial State",
+      "type": "object"
+    },
+    "input": {
+      "$ref": "#/$defs/EvalInputV1"
+    },
+    "language_form": {
+      "$ref": "#/$defs/LanguageForm"
+    },
+    "mode": {
+      "$ref": "#/$defs/InteractionMode"
+    },
+    "prohibited": {
+      "$ref": "#/$defs/ProhibitedBehaviorV1"
+    },
+    "prohibited_for_training": {
+      "default": true,
+      "title": "Prohibited For Training",
+      "type": "boolean"
+    },
+    "review_status": {
+      "$ref": "#/$defs/ReviewStatus"
+    },
+    "scenario_group_id": {
+      "title": "Scenario Group Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scoring": {
+      "$ref": "#/$defs/ScoringConfigV1"
+    },
+    "script_mix": {
+      "$ref": "#/$defs/ScriptMix"
+    },
+    "severity": {
+      "$ref": "#/$defs/Severity"
+    },
+    "source_provenance": {
+      "default": "engineering_synthetic_mai04",
+      "title": "Source Provenance",
+      "type": "string"
+    },
+    "split": {
+      "$ref": "#/$defs/Split",
+      "default": "frozen"
+    },
+    "suite_id": {
+      "title": "Suite Id",
+      "type": "string"
+    },
+    "tags": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "trusted_test_scope": {
+      "$ref": "#/$defs/TrustedTestScopeV1"
+    }
+  },
+  "required": [
+    "case_id",
+    "suite_id",
+    "title",
+    "input",
+    "mode",
+    "severity",
+    "language_form",
+    "script_mix",
+    "review_status",
+    "scenario_group_id"
+  ],
+  "title": "EvalCaseV1",
+  "type": "object"
+}

@@ -1,0 +1,69 @@
+{
+  "events": [
+    {
+      "bound_lock_raw_sha256": "0e427c920c158082aaf9345fcda49597987cb00de16d1726af3baccdf22326e0",
+      "bound_lock_semantic_sha256": "98822fcf9175de1f048f6e47026e568438bcd34cce588da620d97f68c1d3374b",
+      "candidate_runtime": "mai-07.1.6-r3n-policyconf",
+      "event": "RC_001_LOCKED_NOT_RUN",
+      "holdout_dataset_sha256": "c5a472c48836fdfeec7aac2dcaa36dffbf72616ad05195b12b0a35d12f83371b",
+      "pack_hash": "4bbd3e97c99bf769e58924fc6a8d8a7de943db63700d2bdabf02b31236dd0d8c",
+      "seq": 1
+    },
+    {
+      "attempt_id": "MAI_07R3N_HOLDOUT_ATTEMPT_001",
+      "created_utc": "2026-07-18T04:10:15.251976+00:00",
+      "event": "ATTEMPT_001_EXECUTED",
+      "prediction_raw_sha256": "a6a6588ad8b5c6cd7b58e51ea8d8ccd42bb20616b31b21f5a9dc20a778df97b9",
+      "prediction_semantic_sha256": "b6df1aa23179e5e070814b9dbdbd1fbaaecb3c81b038059f3f3d47eba516c7d9",
+      "seq": 2
+    },
+    {
+      "authorized_code_corrective_applicability": "INVALID_REQUIRED_POPULATION",
+      "created_utc": "2026-07-18T04:10:15.849755+00:00",
+      "event": "ATTEMPT_001_CLOSEOUT",
+      "seq": 3,
+      "verdict": "FAILED_HOLDOUT_QUALITY"
+    },
+    {
+      "bound_evidence": "RUNTIME_SEMANTIC_DIFF.json",
+      "changes": [
+        "coalesce_structural_identifiers",
+        "metric_required_when_empty / NOT_APPLICABLE for empty non-DEV pops",
+        "holdout romanized sulka→garna",
+        "RC_ID→002 under same candidate version string"
+      ],
+      "event": "POST_ATTEMPT001_RUNTIME_AND_PROTOCOL_CHANGES",
+      "seq": 4
+    },
+    {
+      "bound_lock_raw_sha256": "80eb427180f2463c474440a6924d82fdbbb7b2686753016a2d19f5e294a3713d",
+      "bound_lock_semantic_sha256": "539ea32caa270060c9de28b35e989cb7bd6a1ade9670264b8e143977b0d3b24a",
+      "candidate_runtime": "mai-07.1.6-r3n-policyconf",
+      "event": "RC_002_LOCKED_NOT_RUN",
+      "holdout_dataset_sha256": "192dd0812a919e17ab3654f600ced33be9b5dc6e0ab9112da60089c75744b4d7",
+      "pack_hash": "4bbd3e97c99bf769e58924fc6a8d8a7de943db63700d2bdabf02b31236dd0d8c",
+      "seq": 5
+    },
+    {
+      "attempt_id": "MAI_07R3N_HOLDOUT_ATTEMPT_002",
+      "created_utc": "2026-07-18T04:14:43.026807+00:00",
+      "event": "ATTEMPT_002_EXECUTED",
+      "prediction_raw_sha256": "902fb36869199a7d1ace8a500f0aa8e8638b240841c22ec6fbe4543d3cbeb04a",
+      "prediction_semantic_sha256": "7a0c3b8ca000a0a3f598a76069f01a310dc4eaca03813a5dba2b2fe7a7c33bf2",
+      "seq": 6
+    },
+    {
+      "authorized_code_corrective_applicability": "NOT_APPLICABLE",
+      "created_utc": "2026-07-18T04:14:43.789233+00:00",
+      "event": "ATTEMPT_002_CLOSEOUT",
+      "seq": 7,
+      "verdict": "PASSED_CORRECTIVE_RC"
+    }
+  ],
+  "holdout_seed_family_unchanged": true,
+  "lock_before_attempt001": true,
+  "lock_before_attempt002": true,
+  "runtime_changed_between_attempts": true,
+  "schema_version": "mai07_r3n_attempt_timeline_v1",
+  "scorer_changed_between_attempts": true
+}

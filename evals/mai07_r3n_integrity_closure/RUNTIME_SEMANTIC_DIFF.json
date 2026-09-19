@@ -1,0 +1,72 @@
+{
+  "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE": true,
+  "attempt001_exposed": {
+    "aggregate_failures": true,
+    "empty_population_behavior": true,
+    "individual_case_predictions": true,
+    "individual_case_text_in_dataset": true,
+    "individual_failure_reasons": true,
+    "missing_coalescing_behavior": true,
+    "weak_romanized_examples": true
+  },
+  "candidate_runtime_version_rc001": "mai-07.1.6-r3n-policyconf",
+  "candidate_runtime_version_rc002": "mai-07.1.6-r3n-policyconf",
+  "candidate_version_reused": true,
+  "classification": "CANDIDATE_VERSION_REUSED_AFTER_SEMANTIC_CHANGE",
+  "lane_change_summary": {
+    "acronym_identifier_changes_post_attempt001": true,
+    "candidate_pack_content_hash_changed": false,
+    "coalescing_changes": true,
+    "configuration_changes": true,
+    "english_guard_changes_post_attempt001": false,
+    "identity_invariant_changes_post_attempt001": false,
+    "motivated_by_missing_coalesce": true,
+    "motivated_by_weak_romanized_behavior": true
+  },
+  "pack_content_hash_rc001": "4bbd3e97c99bf769e58924fc6a8d8a7de943db63700d2bdabf02b31236dd0d8c",
+  "pack_content_hash_rc002": "4bbd3e97c99bf769e58924fc6a8d8a7de943db63700d2bdabf02b31236dd0d8c",
+  "pack_hash_reused": true,
+  "post_attempt001_changes": [
+    {
+      "changes_gate_requiredness": false,
+      "changes_runtime_behavior": true,
+      "changes_scoring_behavior": false,
+      "file": "mai07_r3n_candidate_runtime.py",
+      "present_now": true,
+      "responds_to_attempt001": true,
+      "semantic_change": "Added coalesce_structural_identifiers for letter-digit-separator codes",
+      "stated_reason": "Attempt 001 identifier span_found=false (SKU-44102 / ORD/8844/X)"
+    },
+    {
+      "changes_gate_requiredness": true,
+      "changes_runtime_behavior": false,
+      "changes_scoring_behavior": true,
+      "file": "r3n_scoring_contracts.py / eval_mai07_r3n_*_scorer.py",
+      "present_now": true,
+      "responds_to_attempt001": true,
+      "semantic_change": "Empty populations optional on non-DEVELOPMENT → NOT_APPLICABLE",
+      "stated_reason": "Attempt 001 authorized_code_corrective INVALID_REQUIRED_POPULATION"
+    },
+    {
+      "changes_gate_requiredness": false,
+      "changes_holdout_body": true,
+      "changes_runtime_behavior": false,
+      "changes_scoring_behavior": false,
+      "file": "mai07_r3n_dataset_builder.py / holdout_validation.jsonl",
+      "present_now": true,
+      "responds_to_attempt001": true,
+      "semantic_change": "Romanized holdout span sulka→garna under same case_id/template_family/seed",
+      "stated_reason": "Attempt 001 romanized_script_at_5 0/1 (sulka IDENTITY_ONLY)"
+    },
+    {
+      "changes_gate_requiredness": false,
+      "changes_runtime_behavior": false,
+      "changes_scoring_behavior": false,
+      "file": "eval_mai07_r3n.py",
+      "responds_to_attempt001": true,
+      "semantic_change": "RC_ID advanced 001→002; attempt_id 001→002; same candidate version string",
+      "stated_reason": "Attempt 001 chain consumed; new lock required"
+    }
+  ],
+  "schema_version": "mai07_r3n_runtime_semantic_diff_v2"
+}

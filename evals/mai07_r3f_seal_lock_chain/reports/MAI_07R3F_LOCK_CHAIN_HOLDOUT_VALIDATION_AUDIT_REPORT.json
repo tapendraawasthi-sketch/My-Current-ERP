@@ -1,0 +1,76 @@
+{
+  "metrics": {
+    "ambiguous_conservative_accuracy": {
+      "denominator": 80,
+      "numerator": 80,
+      "value": 1.0
+    },
+    "candidate_set_preservation": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "caps_respected": {
+      "denominator": 1469,
+      "numerator": 1469,
+      "value": 1.0
+    },
+    "context_counterfactual_pair_accuracy": {
+      "denominator": 0,
+      "numerator": 0,
+      "value": 1.0
+    },
+    "deterministic_output": {
+      "denominator": 1,
+      "numerator": 1,
+      "value": 1.0
+    },
+    "english_identity_top1": {
+      "denominator": 1028,
+      "numerator": 1028,
+      "value": 1.0
+    },
+    "false_devanagari_on_english": {
+      "denominator": 1028,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "high_confidence_romanized_target_top1": {
+      "denominator": 418,
+      "numerator": 418,
+      "value": 1.0
+    },
+    "ordinary_english_identity": {
+      "denominator": 143,
+      "numerator": 143,
+      "value": 1.0
+    },
+    "proper_name_identity": {
+      "denominator": 24,
+      "numerator": 24,
+      "value": 1.0
+    },
+    "protected_span_mutations": {
+      "denominator": 129,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "raw_view_mutations": {
+      "denominator": 1469,
+      "numerator": 0,
+      "value": 0.0
+    },
+    "romanized_target_recall_at_5": {
+      "denominator": 418,
+      "numerator": 418,
+      "value": 1.0
+    },
+    "technical_english_identity": {
+      "denominator": 411,
+      "numerator": 411,
+      "value": 1.0
+    }
+  },
+  "scorer_version": "mai-07.r3f.seal-lock-chain.audit.1.0.0",
+  "split": "HOLDOUT_VALIDATION"
+}

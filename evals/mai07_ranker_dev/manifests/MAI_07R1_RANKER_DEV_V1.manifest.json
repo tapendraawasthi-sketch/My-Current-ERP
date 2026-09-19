@@ -1,0 +1,64 @@
+{
+  "leakage_audit": {
+    "exact_duplicate_count": 0,
+    "exact_full_input_duplicates": [],
+    "legitimate_vocab_overlap_count": 193,
+    "legitimate_vocab_overlap_sample": [
+      "aaja",
+      "aamdani",
+      "aath",
+      "aaunu",
+      "aayo",
+      "aba",
+      "aile",
+      "aja",
+      "amdani",
+      "amount",
+      "ani",
+      "baaki",
+      "bakaya",
+      "basnu",
+      "bata",
+      "bech",
+      "beche",
+      "bechye",
+      "bechyo",
+      "bhaada",
+      "bhada",
+      "bhadaa",
+      "bhaneko",
+      "bhatta",
+      "bhayo",
+      "bho",
+      "bholi",
+      "bijuli",
+      "bikri",
+      "bikriyat"
+    ],
+    "near_duplicate_count": 0,
+    "near_duplicate_template_ids": [],
+    "ok": true
+  },
+  "linguist_approved": false,
+  "manifest_id": "MAI_07R1_RANKER_DEV_V1",
+  "prohibited_for_training": true,
+  "seed": 20260715,
+  "splits": {
+    "DEVELOPMENT": {
+      "case_count": 500,
+      "path": "evals/mai07_ranker_dev/splits/development.jsonl",
+      "sha256": "a8859d71ffeff1b4d88af891cc2d2708781f0920ebb56967dbe2352bae6ecdc6"
+    },
+    "HOLDOUT_VALIDATION": {
+      "case_count": 200,
+      "path": "evals/mai07_ranker_dev/splits/holdout_validation.jsonl",
+      "sha256": "68e649ceaff1b733862d5221e010f16c58de039bceecef64396eaae83581cda8"
+    },
+    "SAFETY_CHALLENGE": {
+      "case_count": 100,
+      "path": "evals/mai07_ranker_dev/splits/safety_challenge.jsonl",
+      "sha256": "e55657a9c769e3cfdca7a92c827a23cfef3f3aa5b297182f4546314c3cc315d4"
+    }
+  },
+  "total_cases": 800
+}

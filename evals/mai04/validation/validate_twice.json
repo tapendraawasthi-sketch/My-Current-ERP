@@ -1,0 +1,15 @@
+{
+  "case_count": 245,
+  "duplicate_ids": [],
+  "errors": [],
+  "near_duplicates_sample": [
+    "mai04_crit__entry_ready_multi_02~mai04_crit__entry_ready_no_draft_01",
+    "mai04_ctx__yes_expired_14~mai04_ctx__yes_no_preview_13"
+  ],
+  "ok": true,
+  "split_leaks": [],
+  "warnings": [
+    "NEAR_OR_EXACT_DUP_TEXT:mai04_crit__entry_ready_multi_02,mai04_crit__entry_ready_no_draft_01,mai04_crit__entry_ready_one_draft_00",
+    "NEAR_OR_EXACT_DUP_TEXT:mai04_ctx__yes_expired_14,mai04_ctx__yes_no_preview_13"
+  ]
+}

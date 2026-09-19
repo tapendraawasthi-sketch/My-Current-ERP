@@ -1,0 +1,53 @@
+{
+  "population_schema_version": "mai07-eval-populations-v2",
+  "evaluator_version": "mai-07.1.2",
+  "supersedes": "mai07-eval-populations-v1",
+  "v1_preserved_at": "evals/mai07/baselines/MAI_07_EVAL_POPULATIONS_V1.json",
+  "note": "V2 separates identity-safety from non-identity Devanagari transliteration quality. Membership is algorithmic from frozen fields.",
+  "populations": {
+    "TRANSLITERATION_REQUIRED": {
+      "rule": "ranking_suite AND nonempty projected non-identity Devanagari targets AND not abstention AND not context_challenge",
+      "metrics": [
+        "target_candidate_top1_accuracy",
+        "target_candidate_recall_at_5",
+        "target_candidate_mrr"
+      ]
+    },
+    "CORE_TRANSLITERATION_REQUIRED": {
+      "rule": "core_suite intersect TRANSLITERATION_REQUIRED",
+      "metrics": ["core_target_recall_at_5"]
+    },
+    "UNAMBIGUOUS_TRANSLITERATION": {
+      "rule": "UNAMBIGUOUS_PREFERRED_SUITES with preferred non-identity Devanagari target",
+      "metrics": ["unambiguous_target_top1"]
+    },
+    "TRANSLITERATION_OPTIONAL_OR_AMBIGUOUS": {
+      "rule": "identity-only ranking, names, ambiguous/code-mix/punct/security, or identity-preferring cases",
+      "metrics": ["not used for required transliteration top-1 gate"]
+    },
+    "IDENTITY_REQUIRED": {
+      "suite_ids": ["english_identity_v1", "devanagari_identity_v1", "protected_spans_v1"]
+    },
+    "ABSTENTION_POPULATION": {
+      "rule": "abstention_expected=true"
+    },
+    "CONTEXT_CHALLENGE_POPULATION": {
+      "expected_size": 64,
+      "metrics": ["context target top-1/recall/MRR and preferred contingency diagnostic"]
+    }
+  },
+  "candidate_type_policy": {
+    "gold_projection": "acceptable surface != input_text AND contains Devanagari",
+    "produced_hit": "not is_identity AND kind not IDENTITY/ABSTENTION AND surface != source AND contains Devanagari AND surface in gold targets AND script != LATIN"
+  },
+  "observed_counts_at_closure": {
+    "TRANSLITERATION_REQUIRED": 316,
+    "CORE_TRANSLITERATION_REQUIRED": 307,
+    "UNAMBIGUOUS_TRANSLITERATION": 209,
+    "TRANSLITERATION_OPTIONAL_OR_AMBIGUOUS": 172,
+    "IDENTITY_REQUIRED": 145,
+    "ABSTENTION_POPULATION": 40,
+    "CONTEXT_CHALLENGE_POPULATION": 64,
+    "frozen_total": 696
+  }
+}

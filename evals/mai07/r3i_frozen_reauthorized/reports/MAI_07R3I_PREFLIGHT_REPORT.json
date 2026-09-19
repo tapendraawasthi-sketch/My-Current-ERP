@@ -1,0 +1,60 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "QUALITY_GATES_PASSED": false,
+  "attempt_consumed": true,
+  "attempt_locked": true,
+  "authorization": "EXPLICIT_USER_AUTHORIZATION_MAI_07R3I_FROZEN_REAUTHORIZED",
+  "candidate_pack_load_proof": {
+    "default_pack_not_used": true,
+    "default_resource_content_sha256": "1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "frozen_case_used": false,
+    "selected_candidate_pack_loaded": true,
+    "selected_resource_content_sha256": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+    "sentinel_artifact_sha256": "cc20e517610a756e06367906bb042ac4b54c280b58b11ad74f738f10f21cffc8"
+  },
+  "created_utc": "2026-07-18T17:06:28.645423+00:00",
+  "errors": [
+    "default_resource:8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106!=1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+    "runtime:mai-07.1.13-r3s-active",
+    "active_resource_pack:mai-07.1.11-r3n6-chaincomplete"
+  ],
+  "frozen_v2_opened": false,
+  "immutability": {
+    "errors": [
+      "default_resource:8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106!=1617425373bf525968b5af2a3b1cc8b8e5ad83e68457cfbbb47c73c78c84e930",
+      "runtime:mai-07.1.13-r3s-active",
+      "active_resource_pack:mai-07.1.11-r3n6-chaincomplete"
+    ],
+    "hashes": {
+      "audit_scorer_lf": "c0d7799b5d54057ea768b8c67f9516edefc713d8ebd2d59120f16df3bc102450",
+      "candidate_resource": "8716589a172b47c4d4b3a2419ee442b5b3c0aa170e2bb5e9aff742810878e60a",
+      "canonical_scorer_lf": "6e8e30c9c6e2c38d3ea61243e0a22a72e8eb3e17e3d854a0a9a3467b130e9336",
+      "default_resource": "8b57db0fee6e157911112b8046f44bd38b1138f821d63bdc8c0ca843c1c62106",
+      "pop": "a8461f62acac98561605e5b2ffb2475bb73a3d15cf0f32ef7b98f1247de85632",
+      "r3h2_thresholds": "c79c77ecbe0494b567c9c99c9856fbd7c0cabe459241a472bc8131a66492c88e",
+      "thr": "aa4b5d68852edbed7cdc5f025b8051b3235078a65fb78bb0aca3a342fcdf04ef",
+      "v1": "5637ccd973173edde3637ce0aeca8e8647431614940fb8a06ceb102e1c736208",
+      "v2": "0cee0c07d07430bded793e2dbe162e7b496223ecff762cdd69bca8d8d992d4b9",
+      "v2_man": "17331e4d0c703977b80ca893eb5261bb126aa52a6813fe8b4f548b1178c716be"
+    },
+    "ok": false,
+    "population_counts": {
+      "HUMAN_REVIEW_REQUIRED": 41,
+      "IDENTITY_REQUIRED": 340,
+      "LEGACY_V1_INFORMATIONAL": 27,
+      "TRANSLITERATION_REQUIRED": 288
+    },
+    "total_cases": 696
+  },
+  "phase": "MAI-07R3I-FROZEN-REAUTHORIZED",
+  "quality_verdict": null,
+  "selected_rc_chain": {
+    "errors": [],
+    "locked_semantic_sha256": "bec4b8662a5ba9973253b05555151d71366a329f0425fa382a35a5916364d03c",
+    "ok": true,
+    "overlay_module_disabled": true,
+    "selected_rc_id": "MAI_07R3H2_SHARED_COLLISION_RELEASE_CANDIDATE_001"
+  },
+  "status": "BLOCKED_PRECONDITION_FAILED"
+}

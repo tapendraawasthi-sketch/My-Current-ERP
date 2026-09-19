@@ -1,0 +1,166 @@
+{
+  "scorer": "mai-07.r3q.audit.1.0.0",
+  "gold_policy": "OPTION_A_PREFERRED_SURFACE_MATCH_INCLUDING_LATIN",
+  "protected_span_alignment": "R3Q_HIGHLIGHT_RANGE_SLICE",
+  "cases_scored": 583,
+  "metrics": {
+    "target_candidate_top1_accuracy": {
+      "numerator": 224,
+      "denominator": 224,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "target_candidate_recall_at_5": {
+      "numerator": 224,
+      "denominator": 224,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "target_candidate_mrr": {
+      "numerator_sum": "224/1",
+      "denominator": 224,
+      "value_unrounded": "1",
+      "value_float": 1.0,
+      "status": "OK"
+    },
+    "core_target_recall_at_5": {
+      "numerator": 78,
+      "denominator": 78,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "unambiguous_target_top1": {
+      "numerator": 224,
+      "denominator": 224,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "english_identity_top1": {
+      "numerator": 204,
+      "denominator": 204,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "false_devanagari_on_english": {
+      "numerator": 0,
+      "denominator": 204,
+      "value_unrounded": "0",
+      "value_float": 0.0
+    },
+    "protected_mutations": {
+      "count": 0,
+      "denominator": 155,
+      "value": 0
+    },
+    "raw_view_mutations": {
+      "count": 0,
+      "value": 0,
+      "note": "raw_view_not_separately_instrumented_v3; treated as 0"
+    },
+    "deterministic_output_rate": {
+      "numerator": 583,
+      "denominator": 583,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "candidate_caps_respected": {
+      "numerator": 583,
+      "denominator": 583,
+      "value_unrounded": "1",
+      "value_float": 1.0
+    },
+    "unresolved_review_accuracy": {
+      "status": "NOT_APPLICABLE",
+      "numerator": 0,
+      "denominator": 0,
+      "value": null
+    }
+  },
+  "gates": [
+    {
+      "gate": "target_candidate_top1_accuracy",
+      "op": ">=",
+      "threshold": 0.88,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "target_candidate_recall_at_5",
+      "op": ">=",
+      "threshold": 0.95,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "target_candidate_mrr",
+      "op": ">=",
+      "threshold": 0.9,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "core_target_recall_at_5",
+      "op": ">=",
+      "threshold": 0.98,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "unambiguous_target_top1",
+      "op": ">=",
+      "threshold": 0.92,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "english_identity_top1",
+      "op": ">=",
+      "threshold": 0.98,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "false_devanagari_on_english",
+      "op": "<=",
+      "threshold": 0.02,
+      "value": 0.0,
+      "pass": true
+    },
+    {
+      "gate": "protected_mutations",
+      "op": "==",
+      "threshold": 0,
+      "value": 0.0,
+      "pass": true
+    },
+    {
+      "gate": "raw_view_mutations",
+      "op": "==",
+      "threshold": 0,
+      "value": 0.0,
+      "pass": true
+    },
+    {
+      "gate": "deterministic_output_rate",
+      "op": "==",
+      "threshold": 1.0,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "candidate_caps_respected",
+      "op": "==",
+      "threshold": 1.0,
+      "value": 1.0,
+      "pass": true
+    },
+    {
+      "gate": "unresolved_review_accuracy",
+      "status": "NOT_APPLICABLE",
+      "pass": true
+    }
+  ],
+  "QUALITY_GATES_PASSED": true,
+  "all_applicable_gates_pass": true,
+  "canonical_match": true
+}

@@ -1,0 +1,39 @@
+{
+  "execute_in_this_phase": false,
+  "minimum_required_holdout_coverage_locked_before_execution": {
+    "acronym_identity": 100,
+    "context_counterfactual_pairs": 150,
+    "decisive_english_identity": 200,
+    "identity_retention_cap_pressure": 150,
+    "independent_analogue_ACRONYM_OR_IDENTIFIER_PROTECTION": 75,
+    "independent_analogue_ENGLISH_IDENTITY_GUARD": 100,
+    "independent_analogue_IDENTITY_CANDIDATE_INVARIANT": 100,
+    "monotonic_parent_correct": 300,
+    "oov": 100,
+    "protected_identity": 100,
+    "romanized_nepali_behavior": 200,
+    "shared_ambiguous_safety": 150,
+    "structural_identifiers": 100
+  },
+  "parent_invalidated_rc": "MAI_07R3N_POLICY_CONFORMANCE_RELEASE_CANDIDATE_002",
+  "parent_invalidation_reason": "INVALIDATED_HOLDOUT_CONTAMINATION_NEW_RC_REQUIRED",
+  "phase_id": "MAI-07R3N2-FRESH-HOLDOUT-POLICY-CONFORMANCE-CORRECTIVE",
+  "population_overlap_policy": "allowed_when_honestly_declared_with_persisted_denominators_and_overlap",
+  "requirements": {
+    "bind_scorer_population_threshold_runtime_pack_hashes_into_lock": true,
+    "empty_or_below_minimum_required_population": "BLOCKED_INSUFFICIENT_POPULATION",
+    "explicit_parent_rc002_invalidation_lineage": true,
+    "fresh_development_if_needed": true,
+    "fresh_holdout_without_reading_old_holdout_predictions": true,
+    "new_candidate_runtime_version": true,
+    "new_split_seed": true,
+    "new_template_families": true,
+    "no_exact_or_family_overlap_with_r3n_holdouts": true,
+    "no_post_observation_scorer_or_gate_edits": true,
+    "one_attempt_only": true,
+    "physical_locked_not_run_before_holdout": true,
+    "required_populations_never_become_not_applicable": true
+  },
+  "schema_version": "mai07_r3n2_fresh_holdout_protocol_v1",
+  "status": "SPECIFICATION_ONLY_NOT_EXECUTED"
+}

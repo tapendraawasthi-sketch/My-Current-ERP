@@ -1,0 +1,1330 @@
+================================================================================
+MOKXYA / SUTRA ERP
+NEPAL BUSINESS CATEGORY — IMPLEMENTATION-READY FEATURE MASTER PLAN
+================================================================================
+
+Document ID   : NEPAL_BUSINESS_CATEGORY_ERP_FEATURE_MASTER_PLAN_V2
+Filename      : NEPAL_BUSINESS_CATEGORY_ERP_FEATURE_MASTER_PLAN_V1.txt
+                (same path; content upgraded to V2 — implementation-ready)
+Version       : 2.0  (supersedes V1.0 feature-intent draft)
+Date          : 2026-07-19
+Product       : MokXya ERP / Sutra ERP / MokXya Hisab / Ask MokXya
+Status        : IMPLEMENTATION-READY MASTER PLAN
+                (product + engineering + implementation + sales single source)
+
+Related governing docs
+----------------------
+- MOKXYA_AI_PRODUCTION_READY_EXECUTION_PLAN_V1.txt
+  → AI production gates remain authoritative; this plan never overrides
+    "NL never posts", evidence-based Ask Mode, or launch capability rows.
+- AGENTS.md → UI / design-system rules for any UI delivery.
+
+How this document is used
+-------------------------
+1. Product: prioritize Waves; map SKUs to Pack IDs.
+2. Engineering: build CAP-* engines first; compose PACK-* from engines;
+   never fork 40 separate ERPs.
+3. Implementation: run Customer Playbook (Section H) per go-live.
+4. Sales: promise only packs whose Wave Exit Gate is CLOSED.
+5. Owner says "go" on a Wave/Work Package ID → execute that slice only.
+
+================================================================================
+0. EXECUTIVE VERDICT (READ FIRST)
+================================================================================
+
+Best ERP for "all Nepal business natures" is NOT 40 mega-modules.
+It is:
+
+  SHARED FINANCIAL CORE (ledger truth + Nepal tax)
+       + REUSABLE CAPABILITY ENGINES (CAP-*)
+       + INDUSTRY PACKS (PACK-*) that compose engines + COA + docs + reports
+       + NATURE ONBOARDING that enables packs without re-implementation
+
+Current product baseline (2026-07 research of this repo):
+  STRONG  — trading cycle, journals, stock, POS, VAT/TDS hooks, CBMS code,
+            cost centres, budgets, fixed assets page, payroll basics, Orbix AI
+  THIN    — BOM (shell), production (manual), serials/MCY/period-lock/CBMS
+            dashboard (orphan or weakly routed), maker-checker, year-end
+  MISSING — construction RA/retention, fund/donor accounting, project PSA,
+            metal-weight jewellery, hotel folio, fee demand, loan portfolio
+
+Governing rule for "best offering":
+  Close Wave 0 (Foundation Hardening) before any new vertical theatre.
+  Then ship capability engines that unlock MANY natures at once.
+  Vertical UI is configuration + documents + reports on top of engines.
+
+Success picture (done for a nature):
+  Company selects nature → pack enables → COA/docs/tax map ready →
+  Top-5 daily tasks trainable in one session → VAT/TDS/CBMS path clean →
+  Ask MokXya drafts only for production_approved rows of that nature →
+  Month-end close without Excel side books for that nature's core flow.
+
+================================================================================
+1. WHAT CHANGED FROM V1 (RESEARCH-DRIVEN IMPROVEMENTS)
+================================================================================
+
+V1 was a strong feature catalog. It was NOT stepwise buildable because:
+  - Features repeated across natures without shared engines
+  - No dependency order / exit gates / acceptance tests
+  - No map to what already exists in Sutra/MokXya
+  - Compliance (IRD e-billing / CBMS) treated as "evolving" instead of
+    market-table-stakes vs Tally/Busy/Niti/Lekhapal competitors
+  - No customer implementation playbook or DoD per pack
+  - Waves listed intents, not work packages
+
+V2 improvements (from ERP verticalization + Nepal market research):
+  I1. Capability-platform architecture (CAP-* → PACK-*)
+  I2. Product baseline gap map (build vs finish vs defer)
+  I3. Dependency DAG + Wave Exit Gates (cannot skip)
+  I4. MoSCoW + MVP vs Full per pack with acceptance criteria
+  I5. Nepal Compliance Program elevated to Wave 0 / Wave 1 hard gate
+  I6. "Complete thin features before inventing new ones"
+  I7. Customer Implementation Playbook (days 0–30)
+  I8. Anti-scope: what we will NOT build as fake full-CBS / full-HIS / etc.
+  I9. Metrics & demo companies per wave
+  I10. Ask MokXya capability rows tied to nature packs
+  I11. Multi-nature composition rules (no COA chaos)
+  I12. Work Package IDs (WP-*) ready for Cursor "go" execution
+
+================================================================================
+2. NON-NEGOTIABLE DESIGN PRINCIPLES
+================================================================================
+
+P1. Ledger truth first — every ops document posts deterministic journals
+    via domain engines (not LLM totals).
+P2. Nepal statutory before ops theatre — VAT 13%, sales/purchase registers,
+    TDS, fiscal FY (Shrawan–Ashadh), BS/AD dates, IRD e-billing path.
+P3. Compose, don't fork — one company, one COA; packs add accounts,
+    voucher types, reports, dashboards, validations.
+P4. Finish thin before new — wire orphan pages, close stubs, then CAP-*.
+P5. Phased rollout — finance → inventory/trade → vertical engines →
+    regulated packs. No big-bang all-40.
+P6. Standard over custom — if >30% of a nature's Must-haves need one-off
+    customization, we are missing an engine; build the engine.
+P7. Explicit AI confirm — draft → preview → edit → confirm token → post.
+P8. Honest packaging — do not sell PACK-FIN-* / PACK-NGO until gate closed.
+P9. Dual calendar — Bikram Sambat + AD everywhere fiscal matters.
+P10. Audit-proof by default — soft delete, reason codes, attachments,
+     immutable invoice numbers, period lock.
+
+================================================================================
+3. PRODUCT BASELINE — WHAT EXISTS VS WHAT TO BUILD
+================================================================================
+
+3.1 ALREADY STRONG (treat as platform; harden, don't rebuild)
+------------------------------------------------------------
+- Sales / Purchase / Returns (BillingInvoice + SalesInvoiceForm)
+- Orders, quotations, delivery challan, GRN
+- Receipt / Payment / Contra / Journal / Debit-Credit notes
+- Inventory: items, godowns, stock book/ledger/transfer/journal/physical
+- Batch/expiry config, schemes, price lists
+- POS billing
+- VAT computation + VAT reports + classification masters
+- TDS report / certificate surfaces
+- CBMS service + status badge (dashboard routing weak)
+- Cost centres, budgets, branch, fixed assets page
+- Payroll basics, employees
+- Bank recon / statement import / cheques
+- Reports: TB, P&L, BS, cash flow, aging, registers
+- F11 company feature flags (accounts/inventory/tax/payroll toggles)
+- Orbix / Ask MokXya stack (gated by AI production plan)
+- AI sector ontology (vocabulary) — NOT yet operational packs
+
+3.2 THIN / ORPHAN — Wave 0 must finish or consciously defer
+------------------------------------------------------------
+| Area              | Evidence                         | Wave 0 action          |
+|-------------------|----------------------------------|------------------------|
+| BOM master        | MiscMasters shell / empty        | Finish CAP-MFG-BOM MVP |
+| Production        | Manual lines, not BOM explode    | Wire to BOM            |
+| Serial numbers    | Page not in router               | Route + DoD or defer   |
+| Multi-currency    | Pages orphan                     | Route for Import/Export|
+| Period lock       | Page orphan                      | Route + enforce        |
+| Maker-checker     | Page orphan                      | Route for NGO/Finance  |
+| Year-end          | Page orphan                      | Route + process DoD    |
+| CBMS dashboard    | Not in renderPage                | Route + ops pack       |
+| HS codes          | Orphan                           | Route with Import pack |
+| PDC / Emp loans   | Stub "under construction"        | Finish or hide         |
+| Job work          | Registers exist                  | Harden + cost postings |
+
+3.3 MISSING ENGINES (true new build — Waves 1–4)
+------------------------------------------------
+CAP-LANDED, CAP-PROJECT, CAP-RA (construction), CAP-FUND, CAP-LOAN,
+CAP-METAL, CAP-FOLIO, CAP-FEE, CAP-RECIPE, CAP-METER, CAP-PORTFOLIO,
+CAP-SEGMENT (multi-business), CAP-NATURE (pack enablement runtime)
+
+3.4 COMPETITOR TABLE-STAKES (Nepal market research summary)
+----------------------------------------------------------
+Must match or beat for SME credibility:
+  - IRD-listed e-billing path / CBMS where required
+  - VAT 13% invoices, fiscal-year invoice series, reprint labeling
+  - Sales/purchase books + monthly reconcile discipline
+  - Dual date BS/AD, Nepal FY
+  - Trading + inventory depth (Busy/Tally parity)
+  - BOM/production for small manufacturers (Busy Enterprise parity)
+  - Project/donor add-ons (common Tally Nepal customizations)
+Differentiation (MokXya):
+  - Nature packs + guided onboarding (config in days, not months)
+  - Ask MokXya bilingual/code-mix drafts with safe confirm
+  - Web-first + sync honesty
+  - Vertical engines that Tally needs third-party for (RA, funds, metal)
+
+================================================================================
+4. TARGET ARCHITECTURE
+================================================================================
+
+                    ┌─────────────────────────────┐
+                    │  Company Nature Selector     │
+                    │  (primary + secondary)       │
+                    └──────────────┬──────────────┘
+                                   │ enables
+                    ┌──────────────▼──────────────┐
+                    │  PACK-* Industry Packs       │
+                    │  COA · Docs · Reports · UI   │
+                    │  Validations · Dashboards    │
+                    └──────────────┬──────────────┘
+                                   │ composed of
+                    ┌──────────────▼──────────────┐
+                    │  CAP-* Capability Engines    │
+                    │  (shared, versioned, tested) │
+                    └──────────────┬──────────────┘
+                                   │ posts to
+                    ┌──────────────▼──────────────┐
+                    │  SHARED CORE (Ledger + Tax)  │
+                    │  Inventory · Parties · FY    │
+                    └─────────────────────────────┘
+
+Rules:
+- Packs NEVER bypass engines to write balances.
+- Enabling two packs merges capabilities; conflicts resolved by
+  Section 7.4 Multi-Nature Composition Rules.
+- F11 / company-features becomes the runtime surface for pack flags
+  (extend existing flags; do not invent a parallel settings island).
+
+================================================================================
+5. CAPABILITY CATALOG (BUILD THESE — UNLOCK MANY NATURES)
+================================================================================
+
+Each CAP has: ID, purpose, depends_on, MVP scope, Full scope, DoD, natures.
+
+----------------------------------------------------------------------
+CAP-CORE — Shared Financial Core
+----------------------------------------------------------------------
+Depends: none
+MVP: Company setup, COA, parties, tax masters, journals, sales/purchase/
+     returns, receipt/payment/contra, TB/PL/BS, aging, audit trail,
+     period lock, FY close, attachments, roles
+Full: recurring/reversing, maker-checker, budgets, fixed asset lifecycle,
+      multi-branch consolidation lite
+DoD: New company → opening → sale/purchase/receipt/payment → TB balances;
+     period lock blocks posting; audit trail on edit
+Natures: ALL
+
+----------------------------------------------------------------------
+CAP-TAX-NP — Nepal Tax & IRD Path
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: VAT 13%/exempt/zero, sales & purchase registers, credit/debit note
+     tax linkage, TDS natures + certificates tracking, FY invoice series,
+     BS/AD dates, soft-delete/no hard delete on tax docs
+Full: CBMS real-time/scheduled sync + retry log + dashboard; IRD annex
+      export formats; Schedule-8 digital payment rebate support when
+      rules verified; e-TDS summaries; software listing evidence pack
+DoD: Sample month: registers reconcile to ledger VAT control accounts;
+     CBMS sync status honest (success/fail/retry); invoice reprint marked
+Natures: ALL commercial; mandatory for VAT-registered
+
+NOTE: IRD listing / CBMS thresholds change — Compliance Owner maintains
+verified rule pack. AI never invents current thresholds or rates.
+
+----------------------------------------------------------------------
+CAP-INV — Inventory Engine
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: Items, units/conversion, godowns, stock journal/transfer/physical,
+     valuation (WA/FIFO per policy), reorder alerts, batch/expiry optional
+Full: serial/IMEI, barcode labels, negative-stock policy, bin locations
+DoD: Purchase → stock qty/value → sale COGS → physical adjust posts clean
+Natures: Trade, Make, Healthcare pharmacy, Auto, Fuel, Jewellery, etc.
+
+----------------------------------------------------------------------
+CAP-POS — Counter / Till Engine
+----------------------------------------------------------------------
+Depends: CAP-CORE, CAP-INV (for stocked POS)
+MVP: Fast bill, barcode search, hold bill, mixed tender, cashier session
+     open/close, Z-report, returns
+Full: offline-first + sync, loyalty liability, customer display
+DoD: Shift open → 50 bills → close → cash variance report = ledger cash
+Natures: Retail, Restaurant, Pharmacy counter, Fuel pump, Jewellery retail
+
+----------------------------------------------------------------------
+CAP-TRADE — Order-to-Cash / Procure-to-Pay
+----------------------------------------------------------------------
+Depends: CAP-CORE, CAP-INV optional
+MVP: Quotation→SO→Delivery→Invoice; PO→GRN→Bill; advances; credit limit;
+     price lists; schemes; salesman/broker commission lite
+Full: claims/shortages, volume rebate accrual, route/beat lite
+DoD: Partial delivery + partial bill + advance allocation without orphans
+Natures: Wholesale, Distribution, Import/Export trade legs
+
+----------------------------------------------------------------------
+CAP-LANDED — Landed Cost / Import Costing
+----------------------------------------------------------------------
+Depends: CAP-TRADE, CAP-INV, CAP-FX (or CAP-CORE multi-currency)
+MVP: Shipment container; allocate freight/insurance/customs/clearing/bank
+     charges to item cost; in-transit status; C&F agent payable
+Full: LC/TT tracking, HS duty worksheet, container variance
+DoD: Import GRN cost = invoice + allocated charges; GP uses landed cost
+Natures: Import, Manufacturing (imported RM), Distribution of imports
+
+----------------------------------------------------------------------
+CAP-FX — Multi-Currency
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: FX masters, foreign invoices, realization, exchange gain/loss
+Full: revaluation at period end, open exposure report
+DoD: USD sale → NPR bank realization posts gain/loss correctly
+Natures: Import, Export, INGO, Tourism, IT export
+
+----------------------------------------------------------------------
+CAP-MFG — BOM / Production / Job Cost
+----------------------------------------------------------------------
+Depends: CAP-INV
+MVP: Single-level BOM; production voucher explode consume RM / produce FG;
+     scrap %; simple job cost sheet; job-work out/in with metal/qty
+Full: multi-level BOM, WIP account, overhead absorb, by-product, MRP lite
+DoD: BOM → produce 10 FG → RM down, FG up, cost sheet matches policy
+Natures: Manufacturing, Jewellery job-work, Restaurant recipe (lite),
+         Mining crushing, Franchise food
+
+----------------------------------------------------------------------
+CAP-PROJECT — Job / Project / Cost Object
+----------------------------------------------------------------------
+Depends: CAP-CORE (CAP-INV optional)
+MVP: Project/job master; tag expenses/income; budget vs actual; WIP;
+     milestone / time&material billing; retention fields (generic)
+Full: WBS lite, timesheets, change orders, utilization
+DoD: Job accumulates cost → invoice → job P&L trustworthy
+Natures: Professional, General Services, IT, Construction (base),
+         Tourism packages, Transport trips, Media/Ads campaigns,
+         Rental contracts, Advertising
+
+----------------------------------------------------------------------
+CAP-RA — Construction Contract Billing
+----------------------------------------------------------------------
+Depends: CAP-PROJECT, CAP-INV
+MVP: BOQ/work items lite; RA/IPC bill; retention %; mobilization advance
+     recovery; site material issue; subcontractor bill + TDS
+Full: % completion revenue recognition, BG register, JV projects
+DoD: RA bill posts receivable + retention; advance recovers on next RA
+Natures: Construction (primary), Public Enterprise contractors
+
+----------------------------------------------------------------------
+CAP-FUND — Fund / Donor / Restricted Accounting
+----------------------------------------------------------------------
+Depends: CAP-CORE, CAP-PROJECT
+MVP: Funds (restricted/unrestricted); donor/grant; utilization rules
+     (block cross-fund); budget vs actual; donor report export
+Full: sub-grants, in-kind, multi-currency awards, ICR allocation
+DoD: Cannot spend Fund A money on Fund B; utilization report balances
+Natures: NPO, NGO, INGO, Education (trust), Government (budget mode)
+
+----------------------------------------------------------------------
+CAP-LOAN — Loan / Deposit Portfolio (Accounting-grade)
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: Product masters; disbursement; schedule; collection sheet bulk post;
+     interest accrual; overdue/PAR aging; provision worksheet
+Full: group/centre hierarchy, write-off workflow, savings products
+DoD: Disburse → collect EMI bulk → interest + principal split to GL
+Natures: Cooperative, Microfinance (NOT full CBS replacement)
+
+ANTI-SCOPE: Do not claim NRB core-banking replacement.
+
+----------------------------------------------------------------------
+CAP-METAL — Weight / Purity Stock (Jewellery)
+----------------------------------------------------------------------
+Depends: CAP-INV, CAP-POS optional
+MVP: Metal rate master; item weight+purity; making charge; old-gold
+     exchange; stock in grams + value; karigar job-work metal balance
+Full: hallmark certs, stone separate inventory, monthly schemes liability
+DoD: Sale 10g 22K + making → metal stock grams drop; rate day locked
+Natures: Jewellery
+
+----------------------------------------------------------------------
+CAP-FOLIO — Hospitality Folio
+----------------------------------------------------------------------
+Depends: CAP-CORE, CAP-POS optional (F&B)
+MVP: Room/tariff; reservation; advance/deposit; folio charges; checkout
+     bill; OTA commission; city ledger
+Full: channel import, banquet, RevPAR MIS
+DoD: Check-in → charges → checkout → advance applied → room revenue GL
+Natures: Hospitality (+ Restaurant outlet)
+
+----------------------------------------------------------------------
+CAP-FEE — Recurring Demand / Fee Collection
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: Payer master (student); fee structure; demand register; partial
+     collect; fine/concession; deposit; due aging
+Full: online pay reconcile, transport/hostel add-ons, academic vs FY map
+DoD: Generate class demand → collect partial → dues aging correct
+Natures: Education (primary); clubs/associations optional
+
+----------------------------------------------------------------------
+CAP-RECIPE — Recipe / Food Cost
+----------------------------------------------------------------------
+Depends: CAP-MFG (single-level) or CAP-INV
+MVP: Menu item recipe; theoretical food cost; wastage/comp/staff meal
+Full: recipe versioning, price-change alerts
+DoD: Sell 1 dish → theoretical RM consume option or period wastage post
+Natures: Restaurant, Franchise food
+
+----------------------------------------------------------------------
+CAP-FLEET — Trip / Vehicle Cost
+----------------------------------------------------------------------
+Depends: CAP-PROJECT or CAP-CORE
+MVP: Vehicle master; trip/LR; freight invoice; fuel/toll/maint; driver
+     advance settle; hire vs own
+Full: POD gate, lane rates, demurrage
+DoD: Trip P&L = freight income − trip costs
+Natures: Transport & Logistics, Fuel tanker, Mining dispatch
+
+----------------------------------------------------------------------
+CAP-UNIT — Real Estate Unit Inventory
+----------------------------------------------------------------------
+Depends: CAP-PROJECT, CAP-CORE
+MVP: Project/block/unit; booking; installment schedule; receipts;
+     brokerage; unit status board
+Full: cost per saleable area, escrow tracking
+DoD: Book unit → installment demand → receipt → unit status Sold
+Natures: Real Estate
+
+----------------------------------------------------------------------
+CAP-METER — Cycle / Metered Billing
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: Connection/consumer; tariff slabs; meter reading import; bill run;
+     deposit; arrears; collection reconcile
+Full: prepaid wallet, agent collection
+DoD: Bill run 100 consumers → AR + revenue; collection clears AR
+Natures: Utility Services
+
+----------------------------------------------------------------------
+CAP-WORKSHOP — Job Card (Auto / Service)
+----------------------------------------------------------------------
+Depends: CAP-PROJECT, CAP-INV, CAP-POS optional
+MVP: Job card; parts + labour; warranty flag; insurance receivable;
+     VIN/serial on vehicle stock
+Full: AMC packages, OEM warranty claims
+DoD: Job card close → invoice → parts stock out → workshop GP
+Natures: Automobile, General Services workshops
+
+----------------------------------------------------------------------
+CAP-PORTFOLIO — Investment Holdings
+----------------------------------------------------------------------
+Depends: CAP-CORE, CAP-FX optional
+MVP: Instrument master; buy/sell cost layers; dividend/interest;
+     realized gain; MTM journal (policy)
+Full: corporate actions lite, performance MIS
+DoD: Buy → sell partial → realized gain; holdings report = GL
+Natures: Investment Company; Insurance investment desk lite
+
+----------------------------------------------------------------------
+CAP-SEGMENT — Multi-Business / Division
+----------------------------------------------------------------------
+Depends: CAP-CORE + any enabled packs
+MVP: Division/segment tag mandatory; segment P&L; inter-division
+     transfer; consolidation worksheet
+Full: management vs statutory views, shared service allocation
+DoD: Two divisions post → segment P&L + company TB still balances
+Natures: Multi-Business Enterprise, Public Enterprise, Franchise chains
+
+----------------------------------------------------------------------
+CAP-NATURE — Pack Runtime / Onboarding
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: Nature enum on company; enable PACK-* flags; apply COA template
+     delta; enable nav modules; seed tax map; Top-5 task checklist UI
+Full: secondary natures, demo data seed, Ask MokXya nature hints
+DoD: Select "Retail Trading" → POS+INV flags on → retail COA accounts
+     present → retail dashboard → checklist incomplete until openings
+Natures: ALL (meta-capability)
+
+----------------------------------------------------------------------
+CAP-PAY — Nepal Digital Payments Mapping
+----------------------------------------------------------------------
+Depends: CAP-CORE
+MVP: Map eSewa/Khalti/QR/bank to receipt modes; daily settlement import
+Full: auto-reconcile files from PSPs
+DoD: QR sale → receipt mode → bank deposit match
+Natures: Retail, Restaurant, Education fees, Utilities
+
+================================================================================
+6. INDUSTRY PACKS (COMPOSE ENGINES — ALL 40 NATURES)
+================================================================================
+
+Pack format:
+  PACK-ID | Nature | Wave | Engines (MVP) | MVP outcomes | Full adds | KPI
+
+Status legend for planning:
+  PLATFORM = mostly exists → harden
+  BUILD    = needs CAP delivery
+  SPECIAL  = regulated / partner / integrate — sell carefully
+
+----------------------------------------------------------------------
+WAVE 0 — FOUNDATION (all packs depend)
+----------------------------------------------------------------------
+PACK-CORE     All natures     CAP-CORE, CAP-TAX-NP, CAP-NATURE, CAP-PAY
+PACK-INV      Stock natures   CAP-INV
+PACK-TRADE    Trading         CAP-TRADE
+PACK-POS      Counters        CAP-POS
+
+----------------------------------------------------------------------
+WAVE 1 — SME VOLUME (ship first vertical value)
+----------------------------------------------------------------------
+
+PACK-RETAIL | Retail Trading | W1
+  Engines: PACK-CORE+INV+POS+TRADE(lite)+PAY
+  MVP: Counter billing, till close, returns, stock, VAT bills, dues
+  Full: loyalty, offline POS, serial electronics
+  KPI: Z-report to cash ledger < 15 min/day
+
+PACK-WHOLE | Wholesale Trading | W1
+  Engines: CORE+INV+TRADE+TAX
+  MVP: Price lists, credit limit, schemes, DC, broker commission, aging
+  Full: volume rebate, beat planning
+  KPI: Credit breach blocked at invoice; GP by party
+
+PACK-DIST | Distribution | W1
+  Engines: WHOLE + claims/expiry returns + territory targets lite
+  MVP: Dealer hierarchy, scheme claims, damage/expiry return
+  Full: sell-out import
+  KPI: Scheme liability visible; channel overdue aging
+
+PACK-SVC-GEN | General Services | W1
+  Engines: CORE+PROJECT(+INV)
+  MVP: Job/work order, AMC recurring bill, job cost, site P&L
+  Full: SLA penalty, checklist gate
+  KPI: Job GP known before invoice
+
+PACK-SVC-PRO | Professional Services | W1
+  Engines: CORE+PROJECT+TAX(TDS)
+  MVP: Engagement, time/expense, retainer, WIP, TDS on fees
+  Full: utilization %, proposal workflow
+  KPI: Unbilled WIP aging weekly
+
+PACK-REST | Restaurant & Food | W1
+  Engines: CORE+INV+POS+RECIPE(lite)+PAY
+  MVP: POS modes, shift close, recipe cost lite, wastage, platform
+       commission settle
+  Full: multi-outlet, tip accounting
+  KPI: Food cost % + shift variance daily
+
+PACK-TOUR | Tourism & Travel | W1
+  Engines: CORE+PROJECT+FX(opt)+TAX
+  MVP: Package/booking, advances, supplier costs, departure P&L,
+       cancel/refund
+  Full: permit costs, guide TDS
+  KPI: Advance liability = open bookings
+
+PACK-CONST-LITE | Construction (Lite) | W1→W2
+  Engines: CORE+INV+PROJECT ; CAP-RA partial (retention+advance fields)
+  MVP: Site/project, material to site, subcontractor+TDS, project P&L,
+       retention fields on invoice
+  Full: moves to PACK-CONST when CAP-RA complete
+  KPI: Site cost vs billing visible
+
+PACK-IMPORT-LITE | Import (Lite) | W1→W2
+  Engines: TRADE+INV+FX ; CAP-LANDED MVP
+  MVP: Landed cost allocation on GRN; FX purchase; attachments
+  Full: LC tracking, HS worksheets
+  KPI: Selling margin uses landed cost
+
+----------------------------------------------------------------------
+WAVE 2 — DIFFERENTIATING DEPTH
+----------------------------------------------------------------------
+
+PACK-MFG | Manufacturing | W2
+  Engines: INV+MFG+TRADE(+LANDED)
+  MVP: BOM, production explode, scrap, job cost, job-work
+  Full: WIP account, overhead, MRP lite
+  KPI: FG cost sheet trusted vs Excel
+
+PACK-IMPORT | Import Business | W2
+  Engines: LANDED+FX+TRADE+INV+TAX
+  MVP: Full landed + in-transit + C&F + duty/VAT map
+  Full: LC/TT, container variance
+  KPI: Open shipments & FX exposure report
+
+PACK-EXPORT | Export Business | W2
+  Engines: TRADE+FX+INV+PROJECT(cost sheet)
+  MVP: Export invoice terms, FX AR, realization, cost sheet
+  Full: incentive worksheets ONLY with verified rules
+  KPI: Realization pending aging
+
+PACK-JEWEL | Jewellery | W2
+  Engines: INV+POS+METAL+MFG(job-work)
+  MVP: Weight/purity/rate, making, exchange, karigar metal
+  Full: schemes liability, stones, hallmark
+  KPI: Metal grams GL-tied daily
+
+PACK-AUTO | Automobile | W2
+  Engines: INV+POS+WORKSHOP+TRADE
+  MVP: VIN vehicle stock, job card, parts, insurance claim AR
+  Full: AMC, OEM warranty
+  KPI: Workshop GP + vehicle aging
+
+PACK-EDU | Education | W2
+  Engines: CORE+FEE+PAY(+FUND if trust)
+  MVP: Fee structure, demand, collect, dues, deposit
+  Full: online pay, transport/hostel
+  KPI: Demand vs collection monthly
+
+PACK-HEALTH | Healthcare (Clinic+) | W2
+  Engines: CORE+INV+POS(+PROJECT)
+  MVP: OPD service billing, pharmacy batch/expiry, doctor payable,
+       patient advance
+  Full: IPD folio-lite, insurance cashless
+  KPI: Pharmacy expiry + daily collection
+
+PACK-HOTEL | Hospitality | W2
+  Engines: FOLIO+POS(F&B)+PAY(+FX)
+  MVP: Room folio lifecycle, deposit, OTA commission
+  Full: banquet, channel manager
+  KPI: Occupancy + advance liability
+
+PACK-IT | Information Technology | W2
+  Engines: PROJECT+FX(opt)+TAX
+  MVP: Project T&M/milestone, deferred revenue lite, utilization
+  Full: SaaS subscription engine
+  KPI: Project burn vs budget
+
+PACK-ADS | Advertising & Marketing | W2
+  Engines: PROJECT+TRADE
+  MVP: Campaign jobs, media pass-through, retainer schedules
+  Full: platform invoice import
+  KPI: Campaign P&L without leakage
+
+PACK-MEDIA | Media & Entertainment | W2
+  Engines: PROJECT+TRADE
+  MVP: Title/show cost, ad/sponsorship bill, royalty payable
+  Full: subscription deferred, barter
+  KPI: Title profitability
+
+PACK-TRANS | Transportation & Logistics | W2
+  Engines: FLEET+PROJECT+TAX
+  MVP: Trip/LR, freight bill, fuel/cost, driver advance
+  Full: POD gate, demurrage
+  KPI: Trip P&L per vehicle
+
+PACK-RENT | Rental & Leasing | W2
+  Engines: PROJECT+CORE(+INV assets)
+  MVP: Asset register, contract schedule, deposit, periodic invoice
+  Full: meter billing, residual
+  KPI: Utilization % + deposit liability
+
+PACK-AGRI | Agriculture | W2
+  Engines: INV+PROJECT(+MFG lite)
+  MVP: Season/cycle cost, inputs, harvest stock, subsidy income
+  Full: cold storage loss, contract farming advances
+  KPI: Season P&L
+
+PACK-MINE | Mining & Quarry | W2
+  Engines: INV+MFG(crush)+FLEET+PROJECT+TAX
+  MVP: Extraction qty, royalty accrual, weighbridge sales, site cost
+  Full: contractor extraction, permit calendar
+  KPI: Royalty payable + cost/ton
+
+PACK-FUEL | Fuel & Energy | W2
+  Engines: INV+POS+FLEET(opt)
+  MVP: Tank/pump volume, shift recon, variance/loss, credit control
+  Full: ATG import, LPG cylinder deposit, solar PPA mode
+  KPI: Pump variance < policy threshold
+
+PACK-RE | Real Estate | W2
+  Engines: UNIT+PROJECT
+  MVP: Unit inventory, booking, installments, brokerage
+  Full: cost/sqft, escrow
+  KPI: Collection vs demand
+
+PACK-FRAN | Franchise | W2
+  Engines: SEGMENT+POS/INV + royalty calculator on sales
+  MVP: Outlet P&L, royalty bill, brand fund
+  Full: franchisor supply rules
+  KPI: Royalty register automated
+
+----------------------------------------------------------------------
+WAVE 3 — SOCIAL / PUBLIC / SPECIALIZED
+----------------------------------------------------------------------
+
+PACK-NPO | Non-Profit | W3
+  Engines: FUND+PROJECT+TAX(as applicable)
+  MVP: Restricted funds, donor receipt, utilization, budget
+  Full: in-kind, multi-currency
+  KPI: Zero cross-fund leakage
+
+PACK-NGO | NGO | W3
+  Engines: NPO + partner advances/liquidation + procurement approvals
+  MVP: Project budget lines, advance aging, audit trail strong
+  Full: SWC worksheets (verified), indicator-MIS
+  KPI: Partner advances aged & liquidated
+
+PACK-INGO | International NGO | W3
+  Engines: NGO+FX+FUND(full)
+  MVP: HQ mapping, FX reval, strict approvals, award burn
+  Full: ICR, sub-awards
+  KPI: HQ package TB exportable
+
+PACK-GOV | Government Organization | W3 SPECIAL
+  Engines: FUND(budget mode)+PROJECT+approvals
+  MVP: Budget heads, commitment→payment, over-budget block
+  Full: IFMIS adapters if available
+  KPI: Cannot exceed allotment without override trail
+  ANTI-SCOPE: Not a full government IFMIS replacement
+
+PACK-PE | Public Enterprise | W3
+  Engines: CORE+SEGMENT(+ any commercial packs) + grant/subsidy
+  MVP: Commercial books + subsidy register + board pack
+  Full: dual mandate MIS
+  KPI: Segment + subsidy clarity
+
+PACK-COOP | Cooperative | W3 SPECIAL
+  Engines: LOAN+CORE(+INV if multipurpose trade)
+  MVP: Member shares, savings/deposits, loans, interest, dividend worksheet
+  Full: centre meetings, AGM pack
+  KPI: Member ledger = shares+deposits+loans
+  ANTI-SCOPE: Not full CBS
+
+PACK-MFI | Microfinance | W3 SPECIAL
+  Engines: LOAN (group/centre)
+  MVP: Group loans, collection sheet, PAR, provisions
+  Full: mobile collection import
+  KPI: Collection efficiency + PAR
+
+PACK-UTIL | Utility Services | W3
+  Engines: METER+PAY+CORE
+  MVP: Bill run, arrears, deposits, collection reconcile
+  Full: prepaid, agent network
+  KPI: Billing vs collection efficiency
+
+----------------------------------------------------------------------
+WAVE 4 — FINANCIAL MARKETS / ENTERPRISE (careful)
+----------------------------------------------------------------------
+
+PACK-INVCO | Investment Company | W4
+  Engines: PORTFOLIO+FX
+  MVP: Holdings, realized/unrealized, income
+  KPI: Portfolio = GL
+
+PACK-INS | Insurance | W4 SPECIAL
+  Engines: CORE + GL bridge; premium/commission/claims worksheets
+  MVP: Accounting layer + agent commission/TDS (not full policy admin)
+  ANTI-SCOPE: Not full policy administration system
+
+PACK-CAPM | Capital Market | W4 SPECIAL
+  Engines: CORE + client ledger + settlement recon + brokerage
+  MVP: Client obligation, brokerage, segregation controls
+  ANTI-SCOPE: Not exchange matching engine
+
+PACK-BANK | Banking & FI | W4 SPECIAL
+  Engines: CORE + GL bridge from CBS + provision journals
+  MVP: Daily CBS→GL import, branch recon, fee income
+  ANTI-SCOPE: Explicitly NOT a core banking system
+
+PACK-MULTI | Multi-Business Enterprise | W4
+  Engines: SEGMENT + union of enabled packs
+  MVP: Multi-nature enable, segment P&L, eliminations lite
+  KPI: Consolidated TB balances after eliminations
+
+PACK-OTHER | Other | any
+  Engines: CORE + optional toggles + custom fields/tags
+  MVP: Strong generic accounting; guided "nearest nature" suggestion
+  KPI: Graduate to named pack without re-setup
+
+================================================================================
+7. NATURE → PACK MAP (ONBOARDING TRUTH TABLE)
+================================================================================
+
+Business Category                         → Primary PACK (+ optional)
+Manufacturing                             → PACK-MFG
+Wholesale Trading                         → PACK-WHOLE
+Retail Trading                            → PACK-RETAIL
+Import Business                           → PACK-IMPORT (or IMPORT-LITE)
+Export Business                           → PACK-EXPORT
+Distribution                              → PACK-DIST
+Professional Services                     → PACK-SVC-PRO
+General Services                          → PACK-SVC-GEN
+Information Technology (IT)               → PACK-IT
+Education                                 → PACK-EDU
+Healthcare                                → PACK-HEALTH
+Hospitality                               → PACK-HOTEL
+Restaurant & Food Service                 → PACK-REST
+Tourism & Travel                          → PACK-TOUR
+Transportation & Logistics                → PACK-TRANS
+Construction                              → PACK-CONST-LITE → PACK-CONST
+Real Estate                               → PACK-RE
+Agriculture                               → PACK-AGRI
+Cooperative                               → PACK-COOP
+Banking & Financial Institution           → PACK-BANK
+Microfinance                              → PACK-MFI
+Investment Company                        → PACK-INVCO
+Insurance                                 → PACK-INS
+Capital Market                            → PACK-CAPM
+Non-Profit Organization (NPO)             → PACK-NPO
+Non-Governmental Organization (NGO)       → PACK-NGO
+International NGO (INGO)                  → PACK-INGO
+Government Organization                   → PACK-GOV
+Public Enterprise                         → PACK-PE (+ commercial packs)
+Utility Services                          → PACK-UTIL
+Media & Entertainment                     → PACK-MEDIA
+Advertising & Marketing                   → PACK-ADS
+Jewellery Business                        → PACK-JEWEL
+Automobile Business                       → PACK-AUTO
+Fuel & Energy                             → PACK-FUEL
+Mining & Quarry                           → PACK-MINE
+Rental & Leasing                          → PACK-RENT
+Franchise Business                        → PACK-FRAN
+Multi-Business Enterprise                 → PACK-MULTI + selected packs
+Other                                     → PACK-OTHER → suggest nearest
+
+7.4 Multi-Nature Composition Rules
+----------------------------------
+1. One Primary nature drives default COA + dashboard + Top-5 training.
+2. Secondary natures enable extra packs; duplicate accounts merge by code.
+3. Conflicting valuation policies → company-level single policy (warn).
+4. Fund packs + trading packs allowed only with fund tags mandatory on
+   expense vouchers (NGO trading desk pattern).
+5. PACK-MULTI required if >2 secondary natures or explicit group reporting.
+6. Invoice series remain company-unique (never per-nature renumber chaos).
+
+================================================================================
+8. STEPWISE PRODUCT DELIVERY — WAVES, WORK PACKAGES, EXIT GATES
+================================================================================
+
+Rule: A Wave is CLOSED only when its Exit Gate checklist is 100% true.
+      Packs in unclosed waves are "Preview / Pilot" — not sold as complete.
+
+----------------------------------------------------------------------
+WAVE 0 — FOUNDATION HARDENING (do first)
+Goal: Make existing product trustworthy as Nepal SME books + tax platform
+----------------------------------------------------------------------
+
+WP-0.1  Route & finish orphans that block trust
+        - Period lock enforce on post
+        - Year-end process DoD
+        - CBMS dashboard routed + sync honesty
+        - Hide or finish PDC / employee loan stubs
+WP-0.2  CAP-TAX-NP harden
+        - Registers ↔ ledger reconcile report
+        - Invoice series FY rules + reprint label
+        - TDS end-to-end sample company test
+WP-0.3  CAP-NATURE MVP
+        - businessNature on company
+        - Enable flags → nav visibility
+        - COA template apply (Retail, Wholesale, Services minimum)
+WP-0.4  CAP-INV harden
+        - Valuation policy tests; negative stock policy
+        - Batch/expiry path for pharmacy-ready
+WP-0.5  CAP-POS harden
+        - Till open/close → GL cash; Z-report
+WP-0.6  Demo company "Kirana + Wholesale" golden path automated
+WP-0.7  Evidence pack for IRD listing process (docs, hosting, audit trail)
+
+WAVE 0 EXIT GATE
+  [ ] Period lock blocks illegal posts
+  [ ] VAT month reconcile report green on demo company
+  [ ] CBMS status never lies (or feature flagged off honestly)
+  [ ] Nature selector enables Retail vs Services nav correctly
+  [ ] POS shift close posts to ledger
+  [ ] No "under construction" pages in default nav
+  [ ] AI production plan gates still respected
+
+----------------------------------------------------------------------
+WAVE 1 — SME VERTICAL VALUE
+Goal: Best for high-volume Nepal SMEs (trade, services, food, tour, site)
+----------------------------------------------------------------------
+
+WP-1.1  PACK-RETAIL + PACK-WHOLE + PACK-DIST (compose TRADE/POS/INV)
+WP-1.2  PACK-SVC-PRO + PACK-SVC-GEN (CAP-PROJECT MVP)
+WP-1.3  PACK-REST (CAP-RECIPE lite + POS)
+WP-1.4  PACK-TOUR (project + advances)
+WP-1.5  PACK-CONST-LITE (project + site stock + retention fields)
+WP-1.6  PACK-IMPORT-LITE (CAP-LANDED MVP + CAP-FX MVP)
+WP-1.7  Nature COA templates EN/NP for Wave 1 packs
+WP-1.8  Ask MokXya: sales/purchase/receipt drafts for Wave 1 natures only
+WP-1.9  Implementation playbooks + 4 demo companies
+
+WAVE 1 EXIT GATE
+  [ ] 6+ packs pass Pack Acceptance Suite (Section 9)
+  [ ] Import lite landed cost changes stock rate correctly
+  [ ] Service job P&L and tour departure P&L demoable
+  [ ] Construction site material + retention field posts
+  [ ] Sales can demo Wave 1 without Excel side story
+  [ ] Customer playbook used on ≥1 pilot company successfully
+
+----------------------------------------------------------------------
+WAVE 2 — DEPTH / DIFFERENTIATION
+Goal: Win against Tally+addons / Busy on manufacturing & verticals
+----------------------------------------------------------------------
+
+WP-2.1  CAP-MFG full MVP (BOM explode production) → PACK-MFG
+WP-2.2  CAP-LANDED+FX full → PACK-IMPORT / PACK-EXPORT
+WP-2.3  CAP-METAL → PACK-JEWEL
+WP-2.4  CAP-WORKSHOP → PACK-AUTO
+WP-2.5  CAP-FEE → PACK-EDU
+WP-2.6  CAP-HEALTH MVP (billing+pharmacy)
+WP-2.7  CAP-FOLIO → PACK-HOTEL
+WP-2.8  PACK-IT, ADS, MEDIA, TRANS, RENT, AGRI, MINE, FUEL, RE, FRAN
+WP-2.9  CAP-RA complete → upgrade CONST-LITE to PACK-CONST
+WP-2.10 Vertical dashboards + sample data per pack
+
+WAVE 2 EXIT GATE
+  [ ] BOM production DoD met
+  [ ] Jewellery metal grams DoD met
+  [ ] Hotel folio DoD met
+  [ ] Education fee demand DoD met
+  [ ] Construction RA+retention DoD met
+  [ ] Each Wave 2 pack has demo company OR scripted demo path
+
+----------------------------------------------------------------------
+WAVE 3 — FUND / PUBLIC / COOP / MFI / UTILITY
+Goal: Credible specialized accounting (not fake core systems)
+----------------------------------------------------------------------
+
+WP-3.1  CAP-FUND → NPO/NGO/INGO
+WP-3.2  CAP-LOAN → COOP/MFI (accounting-grade)
+WP-3.3  PACK-GOV budget mode + PACK-PE
+WP-3.4  CAP-METER → PACK-UTIL
+WP-3.5  Maker-checker + attachments mandatory defaults for these packs
+WP-3.6  Compliance expert review sign-off per SPECIAL pack
+
+WAVE 3 EXIT GATE
+  [ ] Fund cross-post blocked by test
+  [ ] Collection sheet bulk post DoD for MFI/COOP
+  [ ] Utility bill run DoD
+  [ ] Legal/compliance reviewer sign-off recorded
+  [ ] Marketing copy includes ANTI-SCOPE statements
+
+----------------------------------------------------------------------
+WAVE 4 — CAPITAL / INSURANCE / BANK GL / MULTI
+Goal: Enterprise & regulated adjacency via bridges
+----------------------------------------------------------------------
+
+WP-4.1  CAP-PORTFOLIO → PACK-INVCO
+WP-4.2  PACK-INS / PACK-CAPM / PACK-BANK as GL+bridge (not admin cores)
+WP-4.3  CAP-SEGMENT → PACK-MULTI
+WP-4.4  Group consolidation lite
+WP-4.5  Partner integration docs (CBS, policy admin, exchange files)
+
+WAVE 4 EXIT GATE
+  [ ] Bridge import idempotent + audit logged
+  [ ] Client money segregation controls for CAPM
+  [ ] Multi-division TB+segment P&L DoD
+  [ ] Explicit "not CBS/policy admin" in UI and docs
+
+================================================================================
+9. PACK ACCEPTANCE SUITE (DEFINITION OF DONE TEMPLATE)
+================================================================================
+
+For EVERY pack before Exit Gate credit:
+
+A. Functional
+   1. Top-5 daily tasks completable by trained user in <30 min total demo
+   2. All MVP documents post balanced journals (automated tests)
+   3. Key reports match fixture company expected figures
+B. Tax / control
+   4. VAT/TDS path correct for pack's document types (or N/A reasoned)
+   5. Period lock + audit trail verified
+C. UX
+   6. Nav shows only relevant modules (no junk)
+   7. Nature dashboard widgets useful on day 1
+D. Implementation
+   8. COA template + opening checklist exists
+   9. One-page playbook for implementer exists
+E. AI (optional per pack)
+  10. Ask MokXya rows listed; only production_approved enabled
+
+Pack test fixture naming:
+  fixtures/natures/{pack_id}/company.jsonl + expected_reports.json
+
+================================================================================
+10. NEPAL COMPLIANCE PROGRAM (CROSS-WAVE OWNERSHIP)
+================================================================================
+
+Owner role: Compliance Owner (human) — not the LLM.
+
+CP-1  Maintain verified VAT rate/rule pack with effective dates
+CP-2  IRD e-billing listing dossier (architecture, audit trail, hosting,
+      sample invoices, manuals) — Wave 0 evidence
+CP-3  CBMS sync: online + offline queue + retry + status UI honesty
+CP-4  Monthly VAT close checklist in-product (registers ↔ ledger ↔ portal)
+CP-5  TDS natures library (configurable; expert-reviewed)
+CP-6  Digital payment rebate / Schedule messaging only when verified
+CP-7  Cooperative / NRB / SWC templates only after expert sign-off
+CP-8  Change log when rules change; never silent AI updates to law
+
+Market readiness checklist (customer-facing):
+  □ IRD-verified billing path (as applicable to turnover/sector)
+  □ Consistent FY invoice numbering
+  □ Monthly sales/purchase reconciliation workflow
+  □ VAT return support exports
+  □ Secure backup of bills/vouchers
+  □ Team trained on portal verification step (process, not only software)
+
+================================================================================
+11. ASK MOKXYA — NATURE CAPABILITY MATRIX (PLANNING)
+================================================================================
+
+Align with AI production plan. Expand rows only after Wave gates.
+
+Wave 0–1 allowed draft types (examples):
+  Retail/Wholesale: sales invoice, purchase bill, receipt, payment
+  Services: service invoice, expense journal, receipt
+  Restaurant: POS sale summary / receipt (if approved)
+  Tour: booking advance receipt, supplier payment
+Ask Mode reports: TB, P&L, party outstanding, stock summary (authorized)
+
+Never enable for SPECIAL packs until Wave 3+ and production_approved:
+  Loan disbursement, fund utilization, RA retention math, metal purity,
+  insurance claims, CBMS tax law answers
+
+================================================================================
+12. CUSTOMER IMPLEMENTATION PLAYBOOK (PER COMPANY)
+================================================================================
+
+Phase C0 — Discover (Day 0–1)
+  - Legal entity, PAN/VAT, FY, branches
+  - Primary + secondary natures → Pack IDs
+  - Volume: bills/day, godowns, users
+  - Must-have Top-5 tasks confirmation
+  - Compliance: VAT registered? CBMS applicable?
+
+Phase C1 — Configure (Day 1–3)
+  - Apply CAP-NATURE + pack flags
+  - Apply COA template; map legacy ledgers
+  - Tax map, invoice series, roles
+  - Godowns/counters/projects/funds as needed
+  - Print templates bilingual
+
+Phase C2 — Migrate (Day 2–5)
+  - Parties, items, openings (Excel import)
+  - Trial balance match at go-live date
+  - Stock valuation sign-off
+  - Parallel run plan (3–7 days for retail/restaurant)
+
+Phase C3 — Train (Day 4–7)
+  - Role-based: Cashier / Accountant / Owner
+  - Top-5 tasks + month-end VAT checklist
+  - Ask MokXya: only approved drafts
+
+Phase C4 — Go-Live
+  - Period open; openings locked
+  - Hypercare 7 days
+  - Daily: sales vs cash; weekly: dues; monthly: VAT reconcile
+
+Phase C5 — Expand
+  - Only after 1 clean month-end
+  - Enable next CAP/pack (e.g. BOM after trading stable)
+
+Implementer deliverables checklist
+  [ ] Nature & pack record
+  [ ] COA mapping sheet
+  [ ] Opening TB sign-off
+  [ ] User access matrix
+  [ ] Top-5 training attendance
+  [ ] Month-1 VAT reconcile sign-off
+
+================================================================================
+13. COMMERCIAL PACKAGING (SELLABLE SKUS)
+================================================================================
+
+SKU-HISAB          Wave 0 core (books + tax + optional INV)
+SKU-TRADE          Retail + Wholesale + Distribution
+SKU-MAKE           Manufacturing + job-work (+ Import landed add-on)
+SKU-SERVICES       Pro + General + IT + Ads
+SKU-HOSP-TRAVEL    Hotel + Restaurant + Tourism
+SKU-PROJECTS       Construction + Real Estate + Rental + Transport
+SKU-SOCIAL         NPO/NGO/INGO (+ Gov budget as specialty quote)
+SKU-FIN-SPECIALTY  Coop/MFI/Invest/Insurance/CapMarket/Bank-GL (quote)
+ADDON-IMPORT-FX    Landed + FX
+ADDON-JEWEL        Metal engine
+ADDON-HEALTH       Clinic + pharmacy
+ADDON-EDU          Fee engine
+ADDON-UTIL         Meter billing
+ADDON-MULTI        Segment / multi-nature
+ADDON-AI           Ask MokXya production rows (gated)
+
+Rule: SKU cannot include packs from unclosed Waves except Pilot badge.
+
+================================================================================
+14. SUCCESS METRICS (PRODUCT + CUSTOMER)
+================================================================================
+
+Product metrics
+  - Wave Exit Gates closed on schedule
+  - % packs with automated Pack Acceptance Suite
+  - Defect escape rate on tax postings (P0 = 0)
+  - Time-to-configure new company for Wave 1 nature < 1 day
+
+Customer metrics (by nature group)
+  Trade:     daily close < 15 min; stock accuracy > 98% after 30 days
+  Services:  WIP billed within policy days; TDS certificate completeness
+  Make:      BOM variance reviewed weekly; FG cost used in pricing
+  Hospitality: advance liability reconciles nightly
+  Projects:  site/job P&L available without Excel
+  Social:    fund utilization reports accepted by donor/auditor
+  Finance:   collection sheet = GL same day; PAR visible
+
+================================================================================
+15. RISK REGISTER & ANTI-SCOPE
+================================================================================
+
+R1  Building 40 UI silos → MITIGATE: CAP-* platform only
+R2  Selling regulated packs early → MITIGATE: SPECIAL gates + quotes
+R3  AI invents tax law → MITIGATE: AI production plan; refuse; verified packs
+R4  CBMS/IRD listing lag → MITIGATE: Wave 0 dossier; honest feature flags
+R5  Scope creep to CBS/HIS/IFMIS → MITIGATE: ANTI-SCOPE per pack
+R6  Dirty masters at go-live → MITIGATE: Playbook Phase C2 sign-offs
+R7  Multi-nature COA chaos → MITIGATE: composition rules 7.4
+R8  Orphan pages confuse users → MITIGATE: Wave 0 nav hygiene
+R9  Vertical ops without posting tests → MITIGATE: Pack Acceptance Suite
+R10 Ignoring competitor parity on billing → MITIGATE: CAP-TAX-NP gate
+
+ANTI-SCOPE (explicit non-goals)
+  - Full hospital HIS, full airline PSS, full core banking, full insurance
+    policy admin, full government IFMIS, full exchange matching
+  - Autonomous posting from chat assent
+  - Guaranteeing legal conclusions without reviewed sources
+
+================================================================================
+16. DETAILED FEATURE REFERENCE BY NATURE (MVP CHECKLISTS)
+================================================================================
+
+Use this as implementer/QA checklist. Engines listed in Section 6 are
+authoritative for build order; below is the human-readable MVP list.
+
+--- Shared for every nature (PACK-CORE) ---
+[ ] Company PAN/VAT/FY/BS-AD  [ ] COA  [ ] Parties  [ ] Tax masters
+[ ] Journal/Receipt/Payment/Contra  [ ] Sales & Purchase (as applicable)
+[ ] VAT registers + month checklist  [ ] TDS where applicable
+[ ] Audit trail + period lock  [ ] Roles  [ ] Attachments  [ ] Backup
+[ ] Nature pack enabled  [ ] Dashboard  [ ] Ask MokXya only if approved
+
+--- 1 Manufacturing ---
+[ ] BOM  [ ] Production explode  [ ] Scrap  [ ] Job cost  [ ] Job-work
+[ ] RM/FG warehouses  [ ] Cost sheet report  [ ] (O) WIP  [ ] (O) Landed RM
+
+--- 2 Wholesale ---
+[ ] Price lists/slabs  [ ] Credit limit  [ ] Schemes  [ ] DC/LR
+[ ] Broker commission  [ ] Party GP  [ ] Aging
+
+--- 3 Retail ---
+[ ] POS  [ ] Till session  [ ] Mixed tender  [ ] Returns  [ ] Z-report
+[ ] Barcode  [ ] Stock  [ ] (O) Loyalty  [ ] (O) Serial
+
+--- 4 Import ---
+[ ] FX purchase  [ ] Landed cost alloc  [ ] In-transit  [ ] C&F payable
+[ ] Duty/VAT map  [ ] Shipment attachments  [ ] (O) LC/TT
+
+--- 5 Export ---
+[ ] Export invoice/Incoterms  [ ] FX AR  [ ] Realization gain/loss
+[ ] Export cost sheet  [ ] (O) Verified incentives
+
+--- 6 Distribution ---
+[ ] Dealer hierarchy  [ ] Claims/damage/expiry  [ ] Targets
+[ ] Scheme liability  [ ] Channel overdue
+
+--- 7 Professional Services ---
+[ ] Engagement  [ ] Time/expense  [ ] Retainer  [ ] WIP  [ ] TDS fees
+[ ] Realization report
+
+--- 8 General Services ---
+[ ] Job/ticket  [ ] AMC recurring  [ ] Material+labour cost  [ ] Site P&L
+
+--- 9 IT ---
+[ ] Project T&M/milestone  [ ] Deferred revenue lite  [ ] Utilization
+[ ] (O) Subscription billing  [ ] (O) FX export
+
+--- 10 Education ---
+[ ] Student/payer  [ ] Fee structure  [ ] Demand  [ ] Collect/partial
+[ ] Fine/concession  [ ] Dues aging  [ ] (O) Fund if trust
+
+--- 11 Healthcare ---
+[ ] Service billing  [ ] Pharmacy batch/expiry  [ ] Doctor payable
+[ ] Patient advance  [ ] (O) Insurance claim AR
+
+--- 12 Hospitality ---
+[ ] Room/tariff  [ ] Folio  [ ] Advance/deposit  [ ] Checkout bill
+[ ] OTA commission  [ ] (O) F&B POS link
+
+--- 13 Restaurant & Food ---
+[ ] POS modes  [ ] Shift close  [ ] Recipe/food cost  [ ] Wastage
+[ ] Platform commission
+
+--- 14 Tourism & Travel ---
+[ ] Package/booking  [ ] Advances  [ ] Supplier costing  [ ] Departure P&L
+[ ] Refunds  [ ] (O) FX
+
+--- 15 Transport & Logistics ---
+[ ] Vehicle  [ ] Trip/LR  [ ] Freight invoice  [ ] Fuel/maint
+[ ] Driver advance  [ ] Trip P&L
+
+--- 16 Construction ---
+[ ] Project/site  [ ] Site stock  [ ] Subcon+TDS  [ ] RA/IPC
+[ ] Retention  [ ] Mobilization recovery  [ ] Project WIP
+
+--- 17 Real Estate ---
+[ ] Unit inventory  [ ] Booking  [ ] Installments  [ ] Brokerage
+[ ] Unit status
+
+--- 18 Agriculture ---
+[ ] Cycle/season cost  [ ] Inputs stock  [ ] Harvest stock
+[ ] Subsidy income  [ ] Season P&L
+
+--- 19 Cooperative ---
+[ ] Member+shares  [ ] Deposits  [ ] Loans+interest  [ ] Dividend worksheet
+[ ] Member ledger  [ ] ANTI-SCOPE: not full CBS
+
+--- 20 Banking & FI ---
+[ ] CBS→GL bridge  [ ] Provisions  [ ] Branch recon  [ ] Fee income
+[ ] ANTI-SCOPE: not CBS
+
+--- 21 Microfinance ---
+[ ] Group/centre  [ ] Dis burse  [ ] Collection sheet  [ ] PAR
+[ ] Provisions
+
+--- 22 Investment Company ---
+[ ] Holdings  [ ] Buy/sell  [ ] Income  [ ] MTM policy journals
+
+--- 23 Insurance ---
+[ ] Premium/commission/claims accounting worksheets  [ ] Agent TDS
+[ ] ANTI-SCOPE: not policy admin
+
+--- 24 Capital Market ---
+[ ] Client ledger  [ ] Brokerage  [ ] Settlement recon
+[ ] Client money segregation  [ ] ANTI-SCOPE: not matching engine
+
+--- 25 NPO ---
+[ ] Funds  [ ] Donor receipts  [ ] Utilization rules  [ ] Budget vs actual
+
+--- 26 NGO ---
+[ ] NPO + partner advances  [ ] Liquidation  [ ] Procurement approvals
+
+--- 27 INGO ---
+[ ] NGO + FX  [ ] HQ mapping  [ ] Strict approvals  [ ] Award burn
+
+--- 28 Government ---
+[ ] Budget heads  [ ] Commitment chain  [ ] Over-budget block
+[ ] ANTI-SCOPE: not full IFMIS
+
+--- 29 Public Enterprise ---
+[ ] Commercial packs + subsidy/grant  [ ] Segment  [ ] Board pack
+
+--- 30 Utility ---
+[ ] Consumers  [ ] Tariff  [ ] Bill run  [ ] Deposits  [ ] Collection
+
+--- 31 Media & Entertainment ---
+[ ] Title/show jobs  [ ] Ad billing  [ ] Royalties
+
+--- 32 Advertising & Marketing ---
+[ ] Campaign jobs  [ ] Media pass-through  [ ] Retainer schedules
+
+--- 33 Jewellery ---
+[ ] Rate/weight/purity  [ ] Making  [ ] Exchange  [ ] Karigar metal
+[ ] Grams+value stock
+
+--- 34 Automobile ---
+[ ] VIN stock  [ ] Job card  [ ] Parts  [ ] Insurance jobs
+
+--- 35 Fuel & Energy ---
+[ ] Tank/pump  [ ] Shift recon  [ ] Variance  [ ] Credit control
+
+--- 36 Mining & Quarry ---
+[ ] Extraction  [ ] Royalty  [ ] Weighbridge sales  [ ] Site cost/ton
+
+--- 37 Rental & Leasing ---
+[ ] Assets  [ ] Contracts  [ ] Deposits  [ ] Periodic invoices
+[ ] Utilization
+
+--- 38 Franchise ---
+[ ] Outlets  [ ] Royalty calc  [ ] Brand fund  [ ] Outlet P&L
+
+--- 39 Multi-Business ---
+[ ] Multi-pack enable  [ ] Segment tags  [ ] Segment P&L
+[ ] Inter-division eliminations lite
+
+--- 40 Other ---
+[ ] CORE excellence  [ ] Tags/custom fields  [ ] Nearest-nature wizard
+
+================================================================================
+17. ENGINEERING BACKLOG SEED (FIRST 30 WORK PACKAGES)
+================================================================================
+
+Execute in order unless Exit Gate already satisfied:
+
+WP-0.1  Nav hygiene + period lock enforce + CBMS dashboard route
+WP-0.2  VAT register↔ledger reconcile report + FY invoice series tests
+WP-0.3  Company.businessNature + pack flag map + nav filter
+WP-0.4  COA templates: Retail, Wholesale, Services (EN/NP)
+WP-0.5  POS till session → GL posting tests
+WP-0.6  Golden path e2e: open→bill→pay→VAT month
+WP-0.7  IRD listing evidence folder in docs/compliance/
+WP-1.1  Credit limit + scheme posting hardening (Wholesale)
+WP-1.2  CAP-PROJECT MVP (job master, tags, job P&L, milestone invoice)
+WP-1.3  PACK-SVC-PRO/GEN onboarding + templates
+WP-1.4  Restaurant recipe lite + wastage voucher
+WP-1.5  Tour booking advances liability
+WP-1.6  Construction site issue + retention fields
+WP-1.7  CAP-FX MVP + CAP-LANDED MVP
+WP-1.8  Pack Acceptance fixtures for RETAIL/WHOLE/SVC/REST
+WP-1.9  Implementation playbook PDF/TXT short form
+WP-2.1  BOM master real CRUD + production explode
+WP-2.2  Jewellery CAP-METAL MVP
+WP-2.3  CAP-RA RA bill + retention + advance recovery
+WP-2.4  CAP-FEE education demand/collect
+WP-2.5  CAP-FOLIO hotel checkout
+WP-2.6  Auto workshop job card
+WP-2.7  Healthcare pharmacy+OPD MVP
+WP-3.1  CAP-FUND restricted funds
+WP-3.2  CAP-LOAN collection sheet
+WP-3.3  CAP-METER bill run
+WP-4.1  CAP-SEGMENT multi-division
+WP-4.2  CBS/GL bridge pattern (generic import)
+
+When owner says "go", execute the earliest OPEN WP-* above.
+
+================================================================================
+18. DOCUMENT CONTROL
+================================================================================
+
+Status     : V2.0 IMPLEMENTATION-READY MASTER PLAN
+Replaces   : V1.0 feature-intent catalog (same file path)
+Owners     : Product (packs/SKU), Engineering (CAP/WP), Compliance (CP-*),
+             Implementation (Playbook H/Section 12)
+Consumers  : Sales (honest SKU), AI (nature capability rows), Cursor agents
+
+Research inputs incorporated
+  - ERP verticalization: pre-built verticals cut time 30–50%; finance first
+  - SME phased rollout: bottleneck-based modules; stabilize before expand
+  - Nepal IRD e-billing/CBMS/VAT return discipline as market table-stakes
+  - Competitor parity: Busy/Tally trading+BOM; Tally NGO/project add-ons
+  - Repo inventory: strong trade/tax core; thin BOM; missing RA/funds/loans
+
+Change log
+----------
+v1.0  2026-07-19  Initial feature catalog for 40 natures
+v2.0  2026-07-19  Implementation-ready rewrite:
+                  capability engines, baseline gaps, waves+WP IDs,
+                  exit gates, pack acceptance, compliance program,
+                  customer playbook, SKUs, anti-scope, Ask MokXya matrix,
+                  first-30 engineering backlog
+
+NEXT ARTIFACTS (spawn from this plan, do not block Wave 0)
+  - docs/compliance/IRD_EBILLING_EVIDENCE_PACK/
+  - COA JSON/CSV templates per pack
+  - fixtures/natures/* acceptance datasets
+  - Short sales one-pagers per SKU
+  - Per-WP engineering tickets when owner says "go"
+
+END OF DOCUMENT
+================================================================================

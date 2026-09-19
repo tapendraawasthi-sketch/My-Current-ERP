@@ -1,0 +1,52 @@
+[
+  {
+    "name": "mai07_c1_c2",
+    "exit": 0,
+    "tail": ".......................................                                  [100%]\n39 passed in 0.75s"
+  },
+  {
+    "name": "mai04_validate",
+    "exit": 0,
+    "tail": "{\n  \"case_count\": 245,\n  \"duplicate_ids\": [],\n  \"errors\": [],\n  \"near_duplicates_sample\": [\n    \"mai04_crit__entry_ready_multi_02~mai04_crit__entry_ready_no_draft_01\",\n    \"mai04_ctx__yes_expired_14~mai04_ctx__yes_no_preview_13\"\n  ],\n  \"ok\": true,\n  \"split_leaks\": [],\n  \"warnings\": [\n    \"NEAR_OR_EXACT_DUP_TEXT:mai04_crit__entry_ready_multi_02,mai04_crit__entry_ready_no_draft_01,mai04_crit__entry_ready_one_draft_00\",\n    \"NEAR_OR_EXACT_DUP_TEXT:mai04_ctx__yes_expired_14,mai04_ctx__yes_no_preview_13\"\n  ]\n}"
+  },
+  {
+    "name": "mai04_component",
+    "exit": 0,
+    "tail": "  \"harness_valid\": true,\n  \"human_review_required\": 40,\n  \"informational_overall_score_formula\": \"mean(scorer.score for scored scorers); NON-AUTHORITATIVE\",\n  \"latency_ms\": {\n    \"max\": 5,\n    \"mean\": 0.02857142857142857,\n    \"min\": 0,\n    \"note\": \"Not an SLO; small-sample observational only\",\n    \"sample_count\": 245\n  },\n  \"mode\": \"component\",\n  \"passed\": 137,\n  \"quality_baseline_recorded\": true,\n  \"quality_failures_affect_exit\": false,\n  \"quality_gate_passed\": false,\n  \"run_id\": \"2b89b398-2968-41ee-9312-46eb77396425\",\n  \"runner_version\": \"mai-04.1.0\",\n  \"semantic_hash\": \"4b7831993c212137167a882fd0f399f433ac9e259175050de12572151ca6921f\",\n  \"skipped\": 0,\n  \"successful_mutations\": 0,\n  \"total\": 245\n}"
+  },
+  {
+    "name": "mai04_pipeline",
+    "exit": 0,
+    "tail": "  \"harness_valid\": true,\n  \"human_review_required\": 40,\n  \"informational_overall_score_formula\": \"mean(scorer.score for scored scorers); NON-AUTHORITATIVE\",\n  \"latency_ms\": {\n    \"max\": 6992,\n    \"mean\": 28.551020408163264,\n    \"min\": 0,\n    \"note\": \"Not an SLO; small-sample observational only\",\n    \"sample_count\": 245\n  },\n  \"mode\": \"pipeline_in_process\",\n  \"passed\": 112,\n  \"quality_baseline_recorded\": true,\n  \"quality_failures_affect_exit\": false,\n  \"quality_gate_passed\": false,\n  \"run_id\": \"8ddce6ba-d0bd-4693-b6f0-a4b102da0fd3\",\n  \"runner_version\": \"mai-04.1.0\",\n  \"semantic_hash\": \"9e831c3561ae59102e463f0d5fa70b02dd6d8008f09e6ab28f86828983fc3b76\",\n  \"skipped\": 0,\n  \"successful_mutations\": 0,\n  \"total\": 245\n}"
+  },
+  {
+    "name": "mai05_eval",
+    "exit": 0,
+    "tail": "{\n  \"all_gates_passed\": true,\n  \"path\": \"C:\\\\Users\\\\Acer\\\\Documents\\\\My-Current-ERP\\\\evals\\\\mai05\\\\baselines\\\\MAI_05_eval_report.json\",\n  \"script_char_accuracy\": 1.0,\n  \"protected_span_exact_f1\": 1.0,\n  \"language_form_macro_f1\": 0.9622222222222223,\n  \"romanized_precision\": 1.0,\n  \"ambiguous_latin_accuracy\": 1.0,\n  \"url_email_precision\": 1.0,\n  \"gates\": {\n    \"raw_mutations_ok\": true,\n    \"offset_ok\": true,\n    \"script_ok\": true,\n    \"protected_ok\": true,\n    \"url_email_ok\": true,\n    \"macro_f1_ok\": true,\n    \"romanized_ok\": true,\n    \"ambiguous_ok\": true\n  }\n}"
+  },
+  {
+    "name": "mai05_tests",
+    "exit": 0,
+    "tail": "...............                                                          [100%]\n15 passed in 6.49s"
+  },
+  {
+    "name": "mai06_eval",
+    "exit": 0,
+    "tail": "    \"structural_corrupt_ok\": true,\n    \"same_len_ok\": true,\n    \"cross_ok\": true,\n    \"false_reject_ok\": true,\n    \"protected_ok\": true,\n    \"protected_identity_ok\": true,\n    \"gaps_ok\": true,\n    \"map_validator_ok\": true,\n    \"idemp_ok\": true,\n    \"cand_ok\": true,\n    \"prohibited_ok\": true,\n    \"security_ok\": true,\n    \"unicode_ok\": true,\n    \"digit_ok\": true,\n    \"safe_auto_ok\": true,\n    \"float_ok\": true,\n    \"corrupt_silent_ok\": true,\n    \"leak_ok\": true,\n    \"exceptions_ok\": true,\n    \"shortcut_ok\": true\n  }\n}"
+  },
+  {
+    "name": "mai06_tests",
+    "exit": 0,
+    "tail": "................................................................         [100%]\n64 passed in 10.58s"
+  },
+  {
+    "name": "schema_export_check",
+    "exit": 0,
+    "tail": ""
+  },
+  {
+    "name": "pytest_collect_only",
+    "exit": 2,
+    "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\orbix\\test_grounding.py:13: in <module>\n    from src.orbix.reasoning.verifier import (  # noqa: E402\nsrc\\orbix\\reasoning\\__init__.py:3: in <module>\n    from .engine import OrbixAgentEngine\nsrc\\orbix\\reasoning\\engine.py:24: in <module>\n    from ..llm.reasoning_filter import strip_reasoning\nE   ModuleNotFoundError: No module named 'src.orbix.llm.reasoning_filter'\n============================== warnings summary ===============================\nsrc\\orbix\\config.py:27\n  C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\orbix\\config.py:27: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class OrbixConfig(BaseModel):\n\nsrc\\orbix\\tools\\registry.py:22\n  C:\\Users\\Acer\\Documents\\My-Current-ERP\\erp_bot\\src\\orbix\\tools\\registry.py:22: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class RegisteredTool(BaseModel):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ===========================\nERROR tests\\orbix\\test_grounding.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1017 tests collected, 1 error in 11.86s"
+  }
+]
